@@ -3,8 +3,18 @@ use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
+use tracing::Instrument;
+use uuid::Uuid;
 
 pub async fn update(record: web::Json<RecordUpdate>, pool: web::Data<PgPool>) -> HttpResponse {
+    let request_id = Uuid::new_v4();
+    let request_span = tracing::info_span!(
+        "Updating a record.",
+        %request_id,
+        record_id = %record.record_id,
+    );
+    let _request_span_guard = request_span.enter();
+    let query_span = tracing::info_span!("Getting record to be updated from database.");
     let r = match sqlx::query!(
         r#"
         SELECT start_time
@@ -14,15 +24,21 @@ pub async fn update(record: web::Json<RecordUpdate>, pool: web::Data<PgPool>) ->
         record.record_id,
     )
     .fetch_one(pool.get_ref())
+    .instrument(query_span)
     .await
     {
         Ok(r) => r,
         Err(e) => {
-            println!("Failed to execute query: {}", e);
+            tracing::error!(
+                "request_id {} - Failed to execute query: {:?}",
+                request_id,
+                e
+            );
             return HttpResponse::BadRequest().finish();
         }
     };
 
+    let query_span = tracing::info_span!("Updating record in database.");
     match sqlx::query_unchecked!(
         r#"
         UPDATE accounting
@@ -42,11 +58,23 @@ pub async fn update(record: web::Json<RecordUpdate>, pool: web::Data<PgPool>) ->
         Utc::now()
     )
     .execute(pool.get_ref())
+    .instrument(query_span)
     .await
     {
-        Ok(_) => HttpResponse::Ok().finish(),
+        Ok(_) => {
+            tracing::info!(
+                "request_id {} - Record {} updated",
+                request_id,
+                record.record_id
+            );
+            HttpResponse::Ok().finish()
+        }
         Err(e) => {
-            println!("Failed to execute query: {}", e);
+            tracing::error!(
+                "request_id {} - Failed to execute query: {:?}",
+                request_id,
+                e
+            );
             HttpResponse::InternalServerError().finish()
         }
     }

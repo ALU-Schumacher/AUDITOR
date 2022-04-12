@@ -3,8 +3,18 @@ use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
+use tracing::Instrument;
+use uuid::Uuid;
 
 pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpResponse {
+    let request_id = Uuid::new_v4();
+    let request_span = tracing::info_span!(
+        "Adding a new record to database.",
+        %request_id,
+        record_id = %record.record_id,
+    );
+    let _request_span_guard = request_span.enter();
+    let query_span = tracing::info_span!("Adding new record to the database");
     let runtime = match record.stop_time.as_ref() {
         Some(&stop) => Some((stop - record.start_time).num_seconds()),
         _ => None,
@@ -28,12 +38,17 @@ pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpR
         runtime,
         Utc::now()
     )
-    .execute(pool.get_ref())
+    .execute(pool.as_ref())
+    .instrument(query_span)
     .await
     {
         Ok(_) => HttpResponse::Ok().finish(),
         Err(e) => {
-            println!("Failed to execute query: {}", e);
+            tracing::error!(
+                "request_id {} - Failed to execute query: {:?}",
+                request_id,
+                e
+            );
             HttpResponse::InternalServerError().finish()
         }
     }
