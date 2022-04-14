@@ -3,7 +3,13 @@ use secrecy::{ExposeSecret, Secret};
 #[derive(serde::Deserialize)]
 pub struct Settings {
     pub database: DatabaseSettings,
-    pub application_port: u16,
+    #[serde(default = "default_addr")]
+    pub auditor_addr: String,
+    pub auditor_port: u16,
+}
+
+fn default_addr() -> String {
+    "127.0.0.1".to_string()
 }
 
 #[derive(serde::Deserialize)]
