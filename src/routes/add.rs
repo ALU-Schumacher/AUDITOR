@@ -3,24 +3,31 @@ use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
-use tracing::Instrument;
 use uuid::Uuid;
 
-pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpResponse {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-        "Adding a new record to database.",
-        %request_id,
+#[tracing::instrument(
+    name = "Adding a record to the database",
+    skip(record, pool),
+    fields(
+        request_id = %Uuid::new_v4(),
         record_id = %record.record_id,
-    );
-    let _request_span_guard = request_span.enter();
-    let query_span = tracing::info_span!("Adding new record to the database");
+    )
+)]
+pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpResponse {
+    match add_record(&record, &pool).await {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
+#[tracing::instrument(name = "Inserting record into database", skip(record, pool))]
+pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), sqlx::Error> {
     let runtime = match record.stop_time.as_ref() {
         Some(&stop) => Some((stop - record.start_time).num_seconds()),
         _ => None,
     };
 
-    match sqlx::query_unchecked!(
+    sqlx::query_unchecked!(
         r#"
         INSERT INTO accounting (
             record_id, site_id, user_id, group_id,
@@ -38,18 +45,12 @@ pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpR
         runtime,
         Utc::now()
     )
-    .execute(pool.as_ref())
-    .instrument(query_span)
+    .execute(pool)
     .await
-    {
-        Ok(_) => HttpResponse::Ok().finish(),
-        Err(e) => {
-            tracing::error!(
-                "request_id {} - Failed to execute query: {:?}",
-                request_id,
-                e
-            );
-            HttpResponse::InternalServerError().finish()
-        }
-    }
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+
+    Ok(())
 }

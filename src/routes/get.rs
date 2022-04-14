@@ -2,22 +2,23 @@ use crate::record::{Component, Record};
 use actix_web::{web, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
-use tracing::Instrument;
 use uuid::Uuid;
 
+#[tracing::instrument(
+    name = "Getting all records from database",
+    skip(pool),
+    fields(request_id = %Uuid::new_v4())
+)]
 pub async fn get(pool: web::Data<PgPool>) -> HttpResponse {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-        "Getting all records from database",
-        %request_id,
-    );
-    let _request_span_guard = request_span.enter();
-    let query_span = tracing::info_span!("Retrieving records from database");
-    tracing::info!(
-        "request_id {} - Getting all records from database",
-        request_id
-    );
-    match sqlx::query_as!(
+    match get_records(&pool).await {
+        Ok(records) => HttpResponse::Ok().json(records),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
+#[tracing::instrument(name = "Retrieving records from database", skip(pool))]
+pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, sqlx::Error> {
+    sqlx::query_as!(
         Record,
         r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
@@ -25,21 +26,10 @@ pub async fn get(pool: web::Data<PgPool>) -> HttpResponse {
            FROM accounting
         "#,
     )
-    .fetch_all(&**pool)
-    .instrument(query_span)
+    .fetch_all(pool)
     .await
-    {
-        Ok(records) => {
-            tracing::info!("request_id {} - Returned records.", request_id);
-            HttpResponse::Ok().json(records)
-        }
-        Err(e) => {
-            tracing::error!(
-                "request_id {} - Failed to execute query: {:?}",
-                request_id,
-                e
-            );
-            HttpResponse::InternalServerError().finish()
-        }
-    }
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })
 }
