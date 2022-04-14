@@ -22,6 +22,7 @@ pub struct DatabaseSettings {
 }
 
 impl DatabaseSettings {
+    /// Returns the connection string for the PostgreSQL database
     pub fn connection_string(&self) -> Secret<String> {
         Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
@@ -33,6 +34,7 @@ impl DatabaseSettings {
         ))
     }
 
+    /// Returns the connection string for the PostgreSQL database without database name
     pub fn connection_string_without_db(&self) -> Secret<String> {
         Secret::new(format!(
             "postgres://{}:{}@{}:{}",
@@ -44,6 +46,7 @@ impl DatabaseSettings {
     }
 }
 
+/// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // initialize our configuration reader
     let mut settings = config::Config::default();

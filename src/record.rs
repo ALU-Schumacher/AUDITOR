@@ -1,3 +1,5 @@
+//! Record related types used for deserializing HTTP requests and serializing HTTP responses.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgHasArrayType;
