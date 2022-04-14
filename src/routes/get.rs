@@ -2,13 +2,8 @@ use crate::record::{Component, Record};
 use actix_web::{web, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
-use uuid::Uuid;
 
-#[tracing::instrument(
-    name = "Getting all records from database",
-    skip(pool),
-    fields(request_id = %Uuid::new_v4())
-)]
+#[tracing::instrument(name = "Getting all records from database", skip(pool))]
 pub async fn get(pool: web::Data<PgPool>) -> HttpResponse {
     match get_records(&pool).await {
         Ok(records) => HttpResponse::Ok().json(records),

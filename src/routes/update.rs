@@ -3,15 +3,11 @@ use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 #[tracing::instrument(
     name = "Updating a record",
     skip(record, pool),
-    fields(
-        request_id = %Uuid::new_v4(),
-        record_id = %record.record_id,
-    )
+    fields(record_id = %record.record_id)
 )]
 pub async fn update(record: web::Json<RecordUpdate>, pool: web::Data<PgPool>) -> HttpResponse {
     match update_record(&record, &pool).await {

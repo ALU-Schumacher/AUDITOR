@@ -4,7 +4,6 @@ use chrono::{DateTime, Utc};
 use sqlx;
 use sqlx::PgPool;
 use std::fmt;
-use uuid::Uuid;
 
 #[derive(serde::Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
@@ -23,7 +22,6 @@ impl fmt::Display for StartedStopped {
     name = "Getting records since a timestamp",
     skip(info, pool),
     fields(
-        request_id = %Uuid::new_v4(),
         startedstopped = %info.0,
         date = %info.1,
     )

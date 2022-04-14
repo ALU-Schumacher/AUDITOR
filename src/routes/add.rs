@@ -3,13 +3,11 @@ use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 #[tracing::instrument(
     name = "Adding a record to the database",
     skip(record, pool),
     fields(
-        request_id = %Uuid::new_v4(),
         record_id = %record.record_id,
     )
 )]
