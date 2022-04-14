@@ -12,7 +12,7 @@ Requires
 
 ### Rust
 
-Requires a recent Rust version (MSRV probably at least 1.59) and cargo.
+Requires a recent Rust version (MSRV 1.56.1) and cargo.
 
 Ideally installed via rustup:
 
