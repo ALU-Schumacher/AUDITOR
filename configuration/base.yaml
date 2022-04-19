@@ -1,7 +1,7 @@
-auditor_port: 8000
-auditor_addr: "127.0.0.1"
+application:
+  port: 8000
 database:
-  host: "127.0.0.1"
+  host: "localhost"
   port: 5432
   username: "postgres"
   password: "password"

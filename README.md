@@ -73,6 +73,10 @@ The binary can then be found in `target/release/auditor`.
 
 Make sure a database is up and running when starting AUDITOR.
 
+## Configuration
+
+AUDITOR is configured via the files in the `configuration` directory.
+
 
 ## License
 
