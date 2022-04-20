@@ -1,4 +1,4 @@
-use crate::record::RecordAdd;
+use crate::domain::RecordAdd;
 use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
@@ -33,10 +33,10 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), sqlx::E
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         "#,
-        record.record_id,
-        record.site_id,
-        record.user_id,
-        record.group_id,
+        record.record_id.as_ref(),
+        record.site_id.as_ref(),
+        record.user_id.as_ref(),
+        record.group_id.as_ref(),
         record.components,
         record.start_time,
         record.stop_time,

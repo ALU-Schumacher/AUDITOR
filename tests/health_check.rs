@@ -1,7 +1,6 @@
 use auditor::configuration::{get_configuration, DatabaseSettings};
-use auditor::record::{Component, Record, RecordAdd, RecordUpdate};
+use auditor::domain::{Component, Record, RecordTest};
 use auditor::telemetry::{get_subscriber, init_subscriber};
-use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
@@ -85,32 +84,15 @@ async fn add_returns_a_200_for_valid_json_data() {
     let client = reqwest::Client::new();
 
     // Act
-    let body = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-        stop_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-    };
+    let body = RecordTest::new()
+        .with_record_id("hpc-1337")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
         .post(&format!("{}/add", &app.address))
@@ -139,13 +121,16 @@ async fn add_returns_a_200_for_valid_json_data() {
     assert_eq!(saved.site_id.unwrap(), "cluster1");
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name, "CPU");
+    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
     assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
     assert_eq!(
         saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].name, "Memory");
+    assert_eq!(
+        saved.components.as_ref().unwrap()[1].name.as_ref(),
+        "Memory"
+    );
     assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
     assert_eq!(
         saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
@@ -160,52 +145,63 @@ async fn add_returns_a_200_for_valid_json_data() {
 }
 
 #[tokio::test]
+async fn add_returns_a_400_for_invalid_json_data() {
+    // Arange
+    let app = spawn_app().await;
+    let client = reqwest::Client::new();
+
+    // Act
+    let body = RecordTest::new()
+        .with_record_id("hpc-1337()")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
+
+    let response = client
+        .post(&format!("{}/add", &app.address))
+        .header("Content-Type", "application/json")
+        .json(&body)
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    assert_eq!(400, response.status().as_u16());
+
+    let saved = sqlx::query!(
+        r#"SELECT
+           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
+           start_time, stop_time, runtime
+           FROM accounting
+           WHERE record_id = $1
+        "#,
+        "hpc-1337",
+    )
+    .fetch_all(&app.db_pool)
+    .await
+    .expect("Failed to fetch saved subscription.");
+
+    assert_eq!(saved.len(), 0);
+}
+
+#[tokio::test]
 async fn add_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 
-    #[derive(serde::Serialize, serde::Deserialize, Clone)]
-    pub struct TestRecord {
-        pub record_id: Option<String>,
-        pub site_id: Option<String>,
-        pub user_id: Option<String>,
-        pub group_id: Option<String>,
-        pub components: Option<Vec<Component>>,
-        pub start_time: Option<DateTime<Utc>>,
-        pub stop_time: Option<DateTime<Utc>>,
-        pub runtime: Option<i64>,
-    }
-
-    let record = TestRecord {
-        record_id: Some("hpc-1337".into()),
-        site_id: Some("cluster1".into()),
-        user_id: Some("user1".into()),
-        group_id: Some("group1".into()),
-        components: Some(vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ]),
-        start_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-        stop_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-        runtime: Some(3600),
-    };
+    let record = RecordTest::new()
+        .with_record_id("hpc-1337")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let test_cases = vec![
         ("record_id is missing", {
@@ -267,28 +263,14 @@ async fn update_returns_a_400_for_non_existing_record() {
     let client = reqwest::Client::new();
 
     // Act
-    let body = RecordUpdate {
-        record_id: "does_not_exist".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: None,
-        stop_time: DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-    };
+    let body = RecordTest::new()
+        .with_record_id("does_not_exist")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
         .post(&format!("{}/update", &app.address))
@@ -309,28 +291,14 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     // Act
     // first add a record
-    let body = RecordAdd {
-        record_id: "hpc-1234".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-        stop_time: None,
-    };
+    let body = RecordTest::new()
+        .with_record_id("hpc-1234")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00");
 
     let response = client
         .post(&format!("{}/add", &app.address))
@@ -343,28 +311,14 @@ async fn update_returns_a_200_for_valid_form_data() {
     assert_eq!(200, response.status().as_u16());
 
     // Update this record
-    let body = RecordUpdate {
-        record_id: "hpc-1234".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: None,
-        stop_time: DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-    };
+    let body = RecordTest::new()
+        .with_record_id("hpc-1234")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
         .post(&format!("{}/update", &app.address))
@@ -393,13 +347,16 @@ async fn update_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.site_id.unwrap(), "cluster1");
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name, "CPU");
+    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
     assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
     assert_eq!(
         saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].name, "Memory");
+    assert_eq!(
+        saved.components.as_ref().unwrap()[1].name.as_ref(),
+        "Memory"
+    );
     assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
     assert_eq!(
         saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
@@ -420,49 +377,20 @@ async fn get_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-        stop_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-    };
+    let record = RecordTest::new()
+        .with_record_id("hpc-1337")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let test_cases = vec![
-        {
-            let mut r = record.clone();
-            r.record_id = "r1".to_string();
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r2".to_string();
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r3".to_string();
-            r
-        },
+        record.clone().with_record_id("r1"),
+        record.clone().with_record_id("r2"),
+        record.clone().with_record_id("r3"),
     ];
 
     for case in test_cases.iter() {
@@ -487,12 +415,60 @@ async fn get_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
-        assert_eq!(record.components, *received.components.as_ref().unwrap());
-        assert_eq!(record.start_time, received.start_time);
+        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
+        assert_eq!(
+            *record.site_id.as_ref().unwrap(),
+            *received.site_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.user_id.as_ref().unwrap(),
+            *received.user_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.group_id.as_ref().unwrap(),
+            *received.group_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[0].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0].amount.unwrap(),
+            received.components.as_ref().unwrap()[0].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[0]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[1].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1].amount.unwrap(),
+            received.components.as_ref().unwrap()[1].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[1]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(*record.start_time.as_ref().unwrap(), received.start_time);
         assert_eq!(
             record.stop_time.unwrap(),
             *received.stop_time.as_ref().unwrap()
@@ -524,58 +500,29 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-        stop_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-    };
+    let record = RecordTest::new()
+        .with_record_id("hpc-1337")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let test_cases = vec![
-        {
-            let mut r = record.clone();
-            r.record_id = "r1".to_string();
-            r.start_time = DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc);
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r2".to_string();
-            r.start_time = DateTime::parse_from_rfc3339("2022-03-02T12:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc);
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r3".to_string();
-            r.start_time = DateTime::parse_from_rfc3339("2022-03-03T12:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc);
-            r
-        },
+        record
+            .clone()
+            .with_record_id("r1")
+            .with_start_time("2022-03-01T12:00:00-00:00"),
+        record
+            .clone()
+            .with_record_id("r2")
+            .with_start_time("2022-03-02T12:00:00-00:00"),
+        record
+            .clone()
+            .with_record_id("r3")
+            .with_start_time("2022-03-03T12:00:00-00:00"),
     ];
 
     for case in test_cases.iter() {
@@ -603,12 +550,60 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
-        assert_eq!(record.components, *received.components.as_ref().unwrap());
-        assert_eq!(record.start_time, received.start_time);
+        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
+        assert_eq!(
+            *record.site_id.as_ref().unwrap(),
+            *received.site_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.user_id.as_ref().unwrap(),
+            *received.user_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.group_id.as_ref().unwrap(),
+            *received.group_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[0].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0].amount.unwrap(),
+            received.components.as_ref().unwrap()[0].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[0]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[1].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1].amount.unwrap(),
+            received.components.as_ref().unwrap()[1].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[1]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(record.start_time.unwrap(), received.start_time);
         assert_eq!(
             record.stop_time.unwrap(),
             *received.stop_time.as_ref().unwrap()
@@ -643,64 +638,29 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
-        components: vec![
-            Component {
-                name: "CPU".into(),
-                amount: 10,
-                factor: 1.3,
-            },
-            Component {
-                name: "Memory".into(),
-                amount: 120,
-                factor: 1.0,
-            },
-        ],
-        start_time: DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
-            .unwrap()
-            .with_timezone(&Utc),
-        stop_time: Some(
-            DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                .unwrap()
-                .with_timezone(&Utc),
-        ),
-    };
+    let record = RecordTest::new()
+        .with_record_id("hpc-1337")
+        .with_site_id("cluster1")
+        .with_user_id("user1")
+        .with_group_id("group1")
+        .with_component("CPU", 10, 1.3)
+        .with_component("Memory", 120, 1.0)
+        .with_start_time("2022-03-01T12:00:00-00:00")
+        .with_stop_time("2022-03-01T13:00:00-00:00");
 
     let test_cases = vec![
-        {
-            let mut r = record.clone();
-            r.record_id = "r1".to_string();
-            r.stop_time = Some(
-                DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
-                    .unwrap()
-                    .with_timezone(&Utc),
-            );
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r2".to_string();
-            r.stop_time = Some(
-                DateTime::parse_from_rfc3339("2022-03-02T13:00:00-00:00")
-                    .unwrap()
-                    .with_timezone(&Utc),
-            );
-            r
-        },
-        {
-            let mut r = record.clone();
-            r.record_id = "r3".to_string();
-            r.stop_time = Some(
-                DateTime::parse_from_rfc3339("2022-03-03T13:00:00-00:00")
-                    .unwrap()
-                    .with_timezone(&Utc),
-            );
-            r
-        },
+        record
+            .clone()
+            .with_record_id("r1")
+            .with_stop_time("2022-03-01T12:00:00-00:00"),
+        record
+            .clone()
+            .with_record_id("r2")
+            .with_stop_time("2022-03-02T12:00:00-00:00"),
+        record
+            .clone()
+            .with_record_id("r3")
+            .with_stop_time("2022-03-03T12:00:00-00:00"),
     ];
 
     for case in test_cases.iter() {
@@ -728,12 +688,60 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
-        assert_eq!(record.components, *received.components.as_ref().unwrap());
-        assert_eq!(record.start_time, received.start_time);
+        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
+        assert_eq!(
+            *record.site_id.as_ref().unwrap(),
+            *received.site_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.user_id.as_ref().unwrap(),
+            *received.user_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            *record.group_id.as_ref().unwrap(),
+            *received.group_id.as_ref().unwrap()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[0].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0].amount.unwrap(),
+            received.components.as_ref().unwrap()[0].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[0]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[0]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .name
+                .as_ref()
+                .unwrap(),
+            received.components.as_ref().unwrap()[1].name.as_ref()
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1].amount.unwrap(),
+            received.components.as_ref().unwrap()[1].amount
+        );
+        assert_eq!(
+            record.components.as_ref().unwrap()[1]
+                .factor
+                .unwrap()
+                .to_ne_bytes(),
+            received.components.as_ref().unwrap()[1]
+                .factor
+                .to_ne_bytes()
+        );
+        assert_eq!(record.start_time.unwrap(), received.start_time);
         assert_eq!(
             record.stop_time.unwrap(),
             *received.stop_time.as_ref().unwrap()
