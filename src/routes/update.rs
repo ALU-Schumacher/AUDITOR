@@ -1,4 +1,4 @@
-use crate::record::RecordUpdate;
+use crate::domain::RecordUpdate;
 use actix_web::{web, HttpResponse};
 use chrono::Utc;
 use sqlx;
@@ -29,7 +29,7 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), s
         FROM accounting 
         WHERE record_id = $1
         "#,
-        record.record_id,
+        record.record_id.as_ref(),
     )
     .fetch_one(pool)
     .await
@@ -48,10 +48,10 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), s
         WHERE
             record_id = $1 and site_id = $2 and user_id = $3 and group_id = $4 and components = $5
         "#,
-        record.record_id,
-        record.site_id,
-        record.user_id,
-        record.group_id,
+        record.record_id.as_ref(),
+        record.site_id.as_ref(),
+        record.user_id.as_ref(),
+        record.group_id.as_ref(),
         record.components,
         record.stop_time,
         (record.stop_time - start_time).num_seconds(),

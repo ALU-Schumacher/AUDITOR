@@ -1,5 +1,5 @@
 use auditor::configuration::{get_configuration, DatabaseSettings};
-use auditor::record::{Component, Record, RecordAdd, RecordUpdate};
+use auditor::domain::{Component, Record, RecordAdd, RecordUpdate, ValidName};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
@@ -86,18 +86,18 @@ async fn add_returns_a_200_for_valid_json_data() {
 
     // Act
     let body = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1337".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -139,13 +139,16 @@ async fn add_returns_a_200_for_valid_json_data() {
     assert_eq!(saved.site_id.unwrap(), "cluster1");
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name, "CPU");
+    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
     assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
     assert_eq!(
         saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].name, "Memory");
+    assert_eq!(
+        saved.components.as_ref().unwrap()[1].name.as_ref(),
+        "Memory"
+    );
     assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
     assert_eq!(
         saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
@@ -184,12 +187,12 @@ async fn add_returns_a_400_when_data_is_missing() {
         group_id: Some("group1".into()),
         components: Some(vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -268,18 +271,18 @@ async fn update_returns_a_400_for_non_existing_record() {
 
     // Act
     let body = RecordUpdate {
-        record_id: "does_not_exist".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("does_not_exist".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -310,18 +313,18 @@ async fn update_returns_a_200_for_valid_form_data() {
     // Act
     // first add a record
     let body = RecordAdd {
-        record_id: "hpc-1234".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1234".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -344,18 +347,18 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     // Update this record
     let body = RecordUpdate {
-        record_id: "hpc-1234".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1234".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -393,13 +396,16 @@ async fn update_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.site_id.unwrap(), "cluster1");
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name, "CPU");
+    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
     assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
     assert_eq!(
         saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].name, "Memory");
+    assert_eq!(
+        saved.components.as_ref().unwrap()[1].name.as_ref(),
+        "Memory"
+    );
     assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
     assert_eq!(
         saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
@@ -421,18 +427,18 @@ async fn get_returns_a_200_and_list_of_records() {
 
     // First send a couple of records
     let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1337".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -450,17 +456,17 @@ async fn get_returns_a_200_and_list_of_records() {
     let test_cases = vec![
         {
             let mut r = record.clone();
-            r.record_id = "r1".to_string();
+            r.record_id = ValidName::parse("r1".to_string()).unwrap();
             r
         },
         {
             let mut r = record.clone();
-            r.record_id = "r2".to_string();
+            r.record_id = ValidName::parse("r2".to_string()).unwrap();
             r
         },
         {
             let mut r = record.clone();
-            r.record_id = "r3".to_string();
+            r.record_id = ValidName::parse("r3".to_string()).unwrap();
             r
         },
     ];
@@ -487,10 +493,13 @@ async fn get_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
+        assert_eq!(record.record_id.as_ref(), received.record_id);
+        assert_eq!(record.site_id.as_ref(), *received.site_id.as_ref().unwrap());
+        assert_eq!(record.user_id.as_ref(), *received.user_id.as_ref().unwrap());
+        assert_eq!(
+            record.group_id.as_ref(),
+            *received.group_id.as_ref().unwrap()
+        );
         assert_eq!(record.components, *received.components.as_ref().unwrap());
         assert_eq!(record.start_time, received.start_time);
         assert_eq!(
@@ -525,18 +534,18 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 
     // First send a couple of records
     let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1337".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -554,7 +563,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     let test_cases = vec![
         {
             let mut r = record.clone();
-            r.record_id = "r1".to_string();
+            r.record_id = ValidName::parse("r1".to_string()).unwrap();
             r.start_time = DateTime::parse_from_rfc3339("2022-03-01T12:00:00-00:00")
                 .unwrap()
                 .with_timezone(&Utc);
@@ -562,7 +571,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         },
         {
             let mut r = record.clone();
-            r.record_id = "r2".to_string();
+            r.record_id = ValidName::parse("r2".to_string()).unwrap();
             r.start_time = DateTime::parse_from_rfc3339("2022-03-02T12:00:00-00:00")
                 .unwrap()
                 .with_timezone(&Utc);
@@ -570,7 +579,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         },
         {
             let mut r = record.clone();
-            r.record_id = "r3".to_string();
+            r.record_id = ValidName::parse("r3".to_string()).unwrap();
             r.start_time = DateTime::parse_from_rfc3339("2022-03-03T12:00:00-00:00")
                 .unwrap()
                 .with_timezone(&Utc);
@@ -603,10 +612,13 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
+        assert_eq!(record.record_id.as_ref(), received.record_id);
+        assert_eq!(record.site_id.as_ref(), *received.site_id.as_ref().unwrap());
+        assert_eq!(record.user_id.as_ref(), *received.user_id.as_ref().unwrap());
+        assert_eq!(
+            record.group_id.as_ref(),
+            *received.group_id.as_ref().unwrap()
+        );
         assert_eq!(record.components, *received.components.as_ref().unwrap());
         assert_eq!(record.start_time, received.start_time);
         assert_eq!(
@@ -644,18 +656,18 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
     // First send a couple of records
     let record = RecordAdd {
-        record_id: "hpc-1337".into(),
-        site_id: "cluster1".into(),
-        user_id: "user1".into(),
-        group_id: "group1".into(),
+        record_id: ValidName::parse("hpc-1337".into()).unwrap(),
+        site_id: ValidName::parse("cluster1".into()).unwrap(),
+        user_id: ValidName::parse("user1".into()).unwrap(),
+        group_id: ValidName::parse("group1".into()).unwrap(),
         components: vec![
             Component {
-                name: "CPU".into(),
+                name: ValidName::parse("CPU".into()).unwrap(),
                 amount: 10,
                 factor: 1.3,
             },
             Component {
-                name: "Memory".into(),
+                name: ValidName::parse("Memory".into()).unwrap(),
                 amount: 120,
                 factor: 1.0,
             },
@@ -673,7 +685,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     let test_cases = vec![
         {
             let mut r = record.clone();
-            r.record_id = "r1".to_string();
+            r.record_id = ValidName::parse("r1".to_string()).unwrap();
             r.stop_time = Some(
                 DateTime::parse_from_rfc3339("2022-03-01T13:00:00-00:00")
                     .unwrap()
@@ -683,7 +695,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         },
         {
             let mut r = record.clone();
-            r.record_id = "r2".to_string();
+            r.record_id = ValidName::parse("r2".to_string()).unwrap();
             r.stop_time = Some(
                 DateTime::parse_from_rfc3339("2022-03-02T13:00:00-00:00")
                     .unwrap()
@@ -693,7 +705,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         },
         {
             let mut r = record.clone();
-            r.record_id = "r3".to_string();
+            r.record_id = ValidName::parse("r3".to_string()).unwrap();
             r.stop_time = Some(
                 DateTime::parse_from_rfc3339("2022-03-03T13:00:00-00:00")
                     .unwrap()
@@ -728,10 +740,13 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(record.record_id, received.record_id);
-        assert_eq!(record.site_id, *received.site_id.as_ref().unwrap());
-        assert_eq!(record.user_id, *received.user_id.as_ref().unwrap());
-        assert_eq!(record.group_id, *received.group_id.as_ref().unwrap());
+        assert_eq!(record.record_id.as_ref(), received.record_id);
+        assert_eq!(record.site_id.as_ref(), *received.site_id.as_ref().unwrap());
+        assert_eq!(record.user_id.as_ref(), *received.user_id.as_ref().unwrap());
+        assert_eq!(
+            record.group_id.as_ref(),
+            *received.group_id.as_ref().unwrap()
+        );
         assert_eq!(record.components, *received.components.as_ref().unwrap());
         assert_eq!(record.start_time, received.start_time);
         assert_eq!(

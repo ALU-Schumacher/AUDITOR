@@ -1,4 +1,4 @@
-use crate::record::{Component, Record};
+use crate::domain::{Component, Record};
 use actix_web::{web, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
