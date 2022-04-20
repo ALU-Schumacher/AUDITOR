@@ -15,3 +15,10 @@ impl PgHasArrayType for Component {
         sqlx::postgres::PgTypeInfo::with_name("_component")
     }
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ComponentTest {
+    pub name: Option<String>,
+    pub amount: Option<i64>,
+    pub factor: Option<f64>,
+}
