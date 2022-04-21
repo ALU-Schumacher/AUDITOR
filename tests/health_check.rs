@@ -122,18 +122,24 @@ async fn add_returns_a_200_for_valid_json_data() {
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
     assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
-    assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
+    assert_eq!(*saved.components.as_ref().unwrap()[0].amount.as_ref(), 10);
     assert_eq!(
-        saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
+        saved.components.as_ref().unwrap()[0]
+            .factor
+            .as_ref()
+            .to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
     assert_eq!(
         saved.components.as_ref().unwrap()[1].name.as_ref(),
         "Memory"
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
+    assert_eq!(*saved.components.as_ref().unwrap()[1].amount.as_ref(), 120);
     assert_eq!(
-        saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
+        saved.components.as_ref().unwrap()[1]
+            .factor
+            .as_ref()
+            .to_ne_bytes(),
         1.0f64.to_ne_bytes()
     );
     assert_eq!(saved.start_time.to_string(), "2022-03-01 12:00:00 UTC");
@@ -348,18 +354,24 @@ async fn update_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.user_id.unwrap(), "user1");
     assert_eq!(saved.group_id.unwrap(), "group1");
     assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
-    assert_eq!(saved.components.as_ref().unwrap()[0].amount, 10);
+    assert_eq!(*saved.components.as_ref().unwrap()[0].amount.as_ref(), 10);
     assert_eq!(
-        saved.components.as_ref().unwrap()[0].factor.to_ne_bytes(),
+        saved.components.as_ref().unwrap()[0]
+            .factor
+            .as_ref()
+            .to_ne_bytes(),
         1.3f64.to_ne_bytes()
     );
     assert_eq!(
         saved.components.as_ref().unwrap()[1].name.as_ref(),
         "Memory"
     );
-    assert_eq!(saved.components.as_ref().unwrap()[1].amount, 120);
+    assert_eq!(*saved.components.as_ref().unwrap()[1].amount.as_ref(), 120);
     assert_eq!(
-        saved.components.as_ref().unwrap()[1].factor.to_ne_bytes(),
+        saved.components.as_ref().unwrap()[1]
+            .factor
+            .as_ref()
+            .to_ne_bytes(),
         1.0f64.to_ne_bytes()
     );
     assert_eq!(saved.start_time.to_string(), "2022-03-01 12:00:00 UTC");
@@ -437,7 +449,7 @@ async fn get_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0].amount.unwrap(),
-            received.components.as_ref().unwrap()[0].amount
+            *received.components.as_ref().unwrap()[0].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0]
@@ -446,6 +458,7 @@ async fn get_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[0]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(
@@ -457,7 +470,7 @@ async fn get_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1].amount.unwrap(),
-            received.components.as_ref().unwrap()[1].amount
+            *received.components.as_ref().unwrap()[1].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1]
@@ -466,6 +479,7 @@ async fn get_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[1]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(*record.start_time.as_ref().unwrap(), received.start_time);
@@ -572,7 +586,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0].amount.unwrap(),
-            received.components.as_ref().unwrap()[0].amount
+            *received.components.as_ref().unwrap()[0].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0]
@@ -581,6 +595,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[0]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(
@@ -592,7 +607,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1].amount.unwrap(),
-            received.components.as_ref().unwrap()[1].amount
+            *received.components.as_ref().unwrap()[1].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1]
@@ -601,6 +616,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[1]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(record.start_time.unwrap(), received.start_time);
@@ -710,7 +726,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0].amount.unwrap(),
-            received.components.as_ref().unwrap()[0].amount
+            *received.components.as_ref().unwrap()[0].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[0]
@@ -719,6 +735,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[0]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(
@@ -730,7 +747,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1].amount.unwrap(),
-            received.components.as_ref().unwrap()[1].amount
+            *received.components.as_ref().unwrap()[1].amount.as_ref()
         );
         assert_eq!(
             record.components.as_ref().unwrap()[1]
@@ -739,6 +756,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
                 .to_ne_bytes(),
             received.components.as_ref().unwrap()[1]
                 .factor
+                .as_ref()
                 .to_ne_bytes()
         );
         assert_eq!(record.start_time.unwrap(), received.start_time);
