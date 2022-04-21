@@ -1,6 +1,7 @@
 use auditor::configuration::{get_configuration, DatabaseSettings};
 use auditor::domain::{Component, Record, RecordTest};
 use auditor::telemetry::{get_subscriber, init_subscriber};
+use fake::{Fake, Faker};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
@@ -84,70 +85,35 @@ async fn add_returns_a_200_for_valid_json_data() {
     let client = reqwest::Client::new();
 
     // Act
-    let body = RecordTest::new()
-        .with_record_id("hpc-1337")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
+    for _ in 0..100 {
+        let body: RecordTest = Faker.fake();
 
-    let response = client
-        .post(&format!("{}/add", &app.address))
-        .header("Content-Type", "application/json")
-        .json(&body)
-        .send()
-        .await
-        .expect("Failed to execute request.");
+        let response = client
+            .post(&format!("{}/add", &app.address))
+            .header("Content-Type", "application/json")
+            .json(&body)
+            .send()
+            .await
+            .expect("Failed to execute request.");
 
-    assert_eq!(200, response.status().as_u16());
+        assert_eq!(200, response.status().as_u16());
 
-    let saved = sqlx::query!(
-        r#"SELECT
+        let saved = sqlx::query_as!(
+            Record,
+            r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time, stop_time, runtime
            FROM accounting
            WHERE record_id = $1
         "#,
-        "hpc-1337",
-    )
-    .fetch_one(&app.db_pool)
-    .await
-    .expect("Failed to fetch saved subscription.");
+            body.record_id.as_ref().unwrap(),
+        )
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to fetch saved subscription.");
 
-    assert_eq!(saved.record_id, "hpc-1337");
-    assert_eq!(saved.site_id.unwrap(), "cluster1");
-    assert_eq!(saved.user_id.unwrap(), "user1");
-    assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
-    assert_eq!(*saved.components.as_ref().unwrap()[0].amount.as_ref(), 10);
-    assert_eq!(
-        saved.components.as_ref().unwrap()[0]
-            .factor
-            .as_ref()
-            .to_ne_bytes(),
-        1.3f64.to_ne_bytes()
-    );
-    assert_eq!(
-        saved.components.as_ref().unwrap()[1].name.as_ref(),
-        "Memory"
-    );
-    assert_eq!(*saved.components.as_ref().unwrap()[1].amount.as_ref(), 120);
-    assert_eq!(
-        saved.components.as_ref().unwrap()[1]
-            .factor
-            .as_ref()
-            .to_ne_bytes(),
-        1.0f64.to_ne_bytes()
-    );
-    assert_eq!(saved.start_time.to_string(), "2022-03-01 12:00:00 UTC");
-    assert_eq!(
-        saved.stop_time.unwrap().to_string(),
-        "2022-03-01 13:00:00 UTC"
-    );
-    assert_eq!(saved.runtime.unwrap(), 3600);
+        assert_eq!(body, saved);
+    }
 }
 
 #[tokio::test]

@@ -70,8 +70,8 @@ mod tests {
     struct ValidFactorF64(pub f64);
 
     impl quickcheck::Arbitrary for ValidFactorF64 {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
-            Self((0.0..f64::MAX).fake_with_rng(g))
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
+            Self((0.0..f64::MAX).fake())
         }
     }
 
@@ -79,12 +79,12 @@ mod tests {
     struct InValidFactorF64(pub f64);
 
     impl quickcheck::Arbitrary for InValidFactorF64 {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
-            Self((f64::MIN..-f64::EPSILON).fake_with_rng(g))
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
+            Self((f64::MIN..-f64::EPSILON).fake())
         }
     }
 
-    #[quickcheck_macros::quickcheck]
+    #[quickcheck]
     fn a_negative_factor_is_rejected(factor: InValidFactorF64) {
         assert_err!(ValidFactor::parse(factor.0));
     }
@@ -94,7 +94,7 @@ mod tests {
         assert_ok!(ValidFactor::parse(0.0));
     }
 
-    #[quickcheck_macros::quickcheck]
+    #[quickcheck]
     fn a_valid_factor_is_parsed_successfully(factor: ValidFactorF64) {
         assert_ok!(ValidFactor::parse(factor.0));
     }

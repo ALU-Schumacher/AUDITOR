@@ -70,8 +70,8 @@ mod tests {
     struct ValidAmountI64(pub i64);
 
     impl quickcheck::Arbitrary for ValidAmountI64 {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
-            Self((0..i64::MAX).fake_with_rng(g))
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
+            Self((0..i64::MAX).fake())
         }
     }
 
@@ -79,8 +79,8 @@ mod tests {
     struct InValidAmountI64(pub i64);
 
     impl quickcheck::Arbitrary for InValidAmountI64 {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
-            Self((i64::MIN..-1).fake_with_rng(g))
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
+            Self((i64::MIN..-1).fake())
         }
     }
 
