@@ -37,6 +37,45 @@ pub struct ComponentTest {
     pub factor: Option<f64>,
 }
 
+impl PartialEq<Component> for ComponentTest {
+    fn eq(&self, other: &Component) -> bool {
+        let ComponentTest {
+            name: s_name,
+            amount: s_amount,
+            factor: s_factor,
+        } = self;
+        let Component {
+            name: o_name,
+            amount: o_amount,
+            factor: o_factor,
+        } = other;
+
+        // Can't be equal if any field in ComponentTest is None
+        if s_name.is_none() || s_amount.is_none() || s_factor.is_none() {
+            return false;
+        }
+
+        let s_fac = f64::abs(*s_factor.as_ref().unwrap());
+        let o_fac = f64::abs(*o_factor.as_ref());
+
+        let (diff, biggest) = if s_fac > o_fac {
+            (s_fac - o_fac, s_fac)
+        } else {
+            (o_fac - s_fac, o_fac)
+        };
+
+        s_name.as_ref().unwrap() == o_name.as_ref()
+            && s_amount.as_ref().unwrap() == o_amount.as_ref()
+            && (diff < f64::EPSILON || diff < biggest * f64::EPSILON)
+    }
+}
+
+impl PartialEq<ComponentTest> for Component {
+    fn eq(&self, other: &ComponentTest) -> bool {
+        other.eq(self)
+    }
+}
+
 impl Dummy<Faker> for ComponentTest {
     fn dummy_with_rng<R: Rng + ?Sized>(_: &Faker, rng: &mut R) -> ComponentTest {
         let name = StringFaker::with(
@@ -58,12 +97,12 @@ mod tests {
     use claim::assert_ok;
 
     impl quickcheck::Arbitrary for ComponentTest {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
-            Faker.fake_with_rng(g)
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
+            Faker.fake()
         }
     }
 
-    #[quickcheck_macros::quickcheck]
+    #[quickcheck]
     fn a_valid_name_is_parsed_successfully(component: ComponentTest) {
         assert_ok!(Component::try_from(component));
     }

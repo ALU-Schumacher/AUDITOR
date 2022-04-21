@@ -78,12 +78,12 @@ mod tests {
     struct ValidNameString(pub String);
 
     impl quickcheck::Arbitrary for ValidNameString {
-        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
+        fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
             let name = StringFaker::with(
                 String::from("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*&^%$#@!~").into_bytes(),
                 1..256,
             )
-            .fake_with_rng::<String, G>(g);
+            .fake();
             Self(name)
         }
     }
@@ -120,10 +120,8 @@ mod tests {
         }
     }
 
-    // #[test]
-    #[quickcheck_macros::quickcheck]
+    #[quickcheck]
     fn a_valid_name_is_parsed_successfully(name: ValidNameString) {
-        // dbg!(&name.0);
         assert_ok!(ValidName::parse(name.0));
     }
 }
