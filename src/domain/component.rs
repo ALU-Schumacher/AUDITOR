@@ -66,7 +66,7 @@ impl PartialEq<Component> for ComponentTest {
 
         s_name.as_ref().unwrap() == o_name.as_ref()
             && s_amount.as_ref().unwrap() == o_amount.as_ref()
-            && (diff < f64::EPSILON || diff < biggest * f64::EPSILON)
+            && (diff < f64::EPSILON || diff < biggest * f64::EPSILON.sqrt())
     }
 }
 
