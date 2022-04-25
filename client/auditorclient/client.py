@@ -157,8 +157,14 @@ class AuditorClient:
         ) as response:
             return await response.json()
 
-    async def get_since(self, timestamp: str) -> dict:
+    async def get_started_since(self, timestamp: str) -> dict:
         async with self._session.get(
-            f"http://{self._host}:{self._port}/get/since/{timestamp}"
+            f"http://{self._host}:{self._port}/get/started/since/{timestamp}"
+        ) as response:
+            return await response.json()
+
+    async def get_stopped_since(self, timestamp: str) -> dict:
+        async with self._session.get(
+            f"http://{self._host}:{self._port}/get/stopped/since/{timestamp}"
         ) as response:
             return await response.json()
