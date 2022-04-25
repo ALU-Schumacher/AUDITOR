@@ -80,7 +80,10 @@ mod tests {
     impl quickcheck::Arbitrary for ValidNameString {
         fn arbitrary(_g: &mut quickcheck::Gen) -> Self {
             let name = StringFaker::with(
-                String::from("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*&^%$#@!~").into_bytes(),
+                String::from(
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*&^%$#@!~",
+                )
+                .into_bytes(),
                 1..256,
             )
             .fake();

@@ -110,7 +110,7 @@ async fn add_returns_a_200_for_valid_json_data() {
         )
         .fetch_one(&app.db_pool)
         .await
-        .expect("Failed to fetch saved subscription.");
+        .expect("Failed to fetch data.");
 
         assert_eq!(body, saved);
     }
@@ -122,41 +122,50 @@ async fn add_returns_a_400_for_invalid_json_data() {
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 
-    // Act
-    let body = RecordTest::new()
-        .with_record_id("hpc-1337()")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
+    let forbidden_strings: Vec<String> = ['/', '(', ')', '"', '<', '>', '\\', '{', '}']
+        .into_iter()
+        .map(|s| format!("test{}test", s))
+        .collect();
 
-    let response = client
-        .post(&format!("{}/add", &app.address))
-        .header("Content-Type", "application/json")
-        .json(&body)
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    for field in ["record_id", "site_id", "group_id", "user_id"] {
+        for fs in forbidden_strings.iter() {
+            // Act
+            let mut body: RecordTest = Faker.fake();
+            match field {
+                "record_id" => body.record_id = Some(fs.clone()),
+                "site_id" => body.site_id = Some(fs.clone()),
+                "group_id" => body.group_id = Some(fs.clone()),
+                "user_id" => body.user_id = Some(fs.clone()),
+                _ => (),
+            }
 
-    assert_eq!(400, response.status().as_u16());
+            let response = client
+                .post(&format!("{}/add", &app.address))
+                .header("Content-Type", "application/json")
+                .json(&body)
+                .send()
+                .await
+                .expect("Failed to execute request.");
 
-    let saved = sqlx::query!(
-        r#"SELECT
-           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time, stop_time, runtime
-           FROM accounting
-           WHERE record_id = $1
-        "#,
-        "hpc-1337",
-    )
-    .fetch_all(&app.db_pool)
-    .await
-    .expect("Failed to fetch saved subscription.");
+            assert_eq!(400, response.status().as_u16());
 
-    assert_eq!(saved.len(), 0);
+            let saved = sqlx::query!(
+                r#"SELECT
+                   record_id, site_id, user_id, group_id,
+                   components as "components: Vec<Component>",
+                   start_time, stop_time, runtime
+                   FROM accounting
+                   WHERE record_id = $1
+                "#,
+                body.record_id.as_ref().unwrap(),
+            )
+            .fetch_all(&app.db_pool)
+            .await
+            .expect("Failed to fetch data.");
+
+            assert_eq!(saved.len(), 0);
+        }
+    }
 }
 
 #[tokio::test]
@@ -165,15 +174,7 @@ async fn add_returns_a_400_when_data_is_missing() {
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 
-    let record = RecordTest::new()
-        .with_record_id("hpc-1337")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
+    let record: RecordTest = Faker.fake();
 
     let test_cases = vec![
         ("record_id is missing", {
@@ -221,7 +222,6 @@ async fn add_returns_a_400_when_data_is_missing() {
         assert_eq!(
             400,
             response.status().as_u16(),
-            // Additional customized error message on test failure
             "The API did not fail with 400 Bad Request when the payload was {}.",
             error_message
         );
@@ -235,14 +235,7 @@ async fn update_returns_a_400_for_non_existing_record() {
     let client = reqwest::Client::new();
 
     // Act
-    let body = RecordTest::new()
-        .with_record_id("does_not_exist")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_stop_time("2022-03-01T13:00:00-00:00");
+    let body: RecordTest = Faker.fake();
 
     let response = client
         .post(&format!("{}/update", &app.address))
@@ -263,14 +256,9 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     // Act
     // first add a record
-    let body = RecordTest::new()
-        .with_record_id("hpc-1234")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00");
+    let mut body: RecordTest = Faker.fake();
+    body = body.with_start_time("2022-03-01T12:00:00-00:00");
+    body.stop_time = None;
 
     let response = client
         .post(&format!("{}/add", &app.address))
@@ -283,14 +271,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     assert_eq!(200, response.status().as_u16());
 
     // Update this record
-    let body = RecordTest::new()
-        .with_record_id("hpc-1234")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_stop_time("2022-03-01T13:00:00-00:00");
+    let body = body.with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
         .post(&format!("{}/update", &app.address))
@@ -302,50 +283,21 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     assert_eq!(200, response.status().as_u16());
 
-    let saved = sqlx::query!(
+    let saved = sqlx::query_as!(
+        Record,
         r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time, stop_time, runtime
            FROM accounting
            WHERE record_id = $1
         "#,
-        "hpc-1234"
+        body.record_id.as_ref().unwrap()
     )
     .fetch_one(&app.db_pool)
     .await
-    .expect("Failed to fetch saved subscription.");
+    .expect("Failed to fetch data.");
 
-    assert_eq!(saved.record_id, "hpc-1234");
-    assert_eq!(saved.site_id.unwrap(), "cluster1");
-    assert_eq!(saved.user_id.unwrap(), "user1");
-    assert_eq!(saved.group_id.unwrap(), "group1");
-    assert_eq!(saved.components.as_ref().unwrap()[0].name.as_ref(), "CPU");
-    assert_eq!(*saved.components.as_ref().unwrap()[0].amount.as_ref(), 10);
-    assert_eq!(
-        saved.components.as_ref().unwrap()[0]
-            .factor
-            .as_ref()
-            .to_ne_bytes(),
-        1.3f64.to_ne_bytes()
-    );
-    assert_eq!(
-        saved.components.as_ref().unwrap()[1].name.as_ref(),
-        "Memory"
-    );
-    assert_eq!(*saved.components.as_ref().unwrap()[1].amount.as_ref(), 120);
-    assert_eq!(
-        saved.components.as_ref().unwrap()[1]
-            .factor
-            .as_ref()
-            .to_ne_bytes(),
-        1.0f64.to_ne_bytes()
-    );
-    assert_eq!(saved.start_time.to_string(), "2022-03-01 12:00:00 UTC");
-    assert_eq!(
-        saved.stop_time.unwrap().to_string(),
-        "2022-03-01 13:00:00 UTC"
-    );
-    assert_eq!(saved.runtime.unwrap(), 3600);
+    assert_eq!(saved, body);
 }
 
 #[tokio::test]
@@ -355,21 +307,10 @@ async fn get_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordTest::new()
-        .with_record_id("hpc-1337")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
-
-    let test_cases = vec![
-        record.clone().with_record_id("r1"),
-        record.clone().with_record_id("r2"),
-        record.clone().with_record_id("r3"),
-    ];
+    let mut test_cases: Vec<RecordTest> = (0..100)
+        .into_iter()
+        .map(|_| Faker.fake::<RecordTest>())
+        .collect();
 
     for case in test_cases.iter() {
         let response = client
@@ -390,68 +331,25 @@ async fn get_returns_a_200_and_list_of_records() {
         .expect("Failed to execute request.");
     assert_eq!(200, response.status().as_u16());
 
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    let mut received_records = response.json::<Vec<Record>>().await.unwrap();
 
-    for (record, received) in test_cases.iter().zip(received_records.iter()) {
-        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
+    // make sure they are both sorted
+    test_cases.sort_by(|a, b| {
+        a.record_id
+            .as_ref()
+            .unwrap()
+            .cmp(b.record_id.as_ref().unwrap())
+    });
+    received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
+
+    for (i, (record, received)) in test_cases.iter().zip(received_records.iter()).enumerate() {
         assert_eq!(
-            *record.site_id.as_ref().unwrap(),
-            *received.site_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.user_id.as_ref().unwrap(),
-            *received.user_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.group_id.as_ref().unwrap(),
-            *received.group_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[0].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0].amount.unwrap(),
-            *received.components.as_ref().unwrap()[0].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[0]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[1].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1].amount.unwrap(),
-            *received.components.as_ref().unwrap()[1].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[1]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(*record.start_time.as_ref().unwrap(), received.start_time);
-        assert_eq!(
-            record.stop_time.unwrap(),
-            *received.stop_time.as_ref().unwrap()
+            record,
+            received,
+            "Check {}: Record {} and {} did not match.",
+            i,
+            record.record_id.as_ref().unwrap(),
+            received.record_id
         );
     }
 }
@@ -480,30 +378,16 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordTest::new()
-        .with_record_id("hpc-1337")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
-
-    let test_cases = vec![
-        record
-            .clone()
-            .with_record_id("r1")
-            .with_start_time("2022-03-01T12:00:00-00:00"),
-        record
-            .clone()
-            .with_record_id("r2")
-            .with_start_time("2022-03-02T12:00:00-00:00"),
-        record
-            .clone()
-            .with_record_id("r3")
-            .with_start_time("2022-03-03T12:00:00-00:00"),
-    ];
+    let test_cases = (1..10)
+        .into_iter()
+        .map(|i| {
+            Faker
+                .fake::<RecordTest>()
+                // Giving a name which is sorted the same as the time is useful for asserting later
+                .with_record_id(format!("r{}", i))
+                .with_start_time(format!("2022-03-0{}T12:00:00-00:00", i))
+        })
+        .collect::<Vec<_>>();
 
     for case in test_cases.iter() {
         let response = client
@@ -517,79 +401,39 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         assert_eq!(200, response.status().as_u16());
     }
 
-    let response = client
-        .get(&format!(
-            "{}/get/started/since/2022-03-02T00:00:00-00:00",
-            &app.address
-        ))
-        .send()
-        .await
-        .expect("Failed to execute request.");
-    assert_eq!(200, response.status().as_u16());
+    // Try different start dates and receive records
+    for i in 1..10 {
+        let response = client
+            .get(&format!(
+                "{}/get/started/since/2022-03-0{}T00:00:00-00:00",
+                &app.address, i
+            ))
+            .send()
+            .await
+            .expect("Failed to execute request.");
+        assert_eq!(200, response.status().as_u16());
 
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
 
-    for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
-        assert_eq!(
-            *record.site_id.as_ref().unwrap(),
-            *received.site_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.user_id.as_ref().unwrap(),
-            *received.user_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.group_id.as_ref().unwrap(),
-            *received.group_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[0].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0].amount.unwrap(),
-            *received.components.as_ref().unwrap()[0].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[0]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[1].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1].amount.unwrap(),
-            *received.components.as_ref().unwrap()[1].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[1]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(record.start_time.unwrap(), received.start_time);
-        assert_eq!(
-            record.stop_time.unwrap(),
-            *received.stop_time.as_ref().unwrap()
-        );
+        // make sure they are both sorted
+        received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
+
+        for (j, (record, received)) in test_cases
+            .iter()
+            .skip(i - 1)
+            .zip(received_records.iter())
+            .enumerate()
+        {
+            assert_eq!(
+                record,
+                received,
+                "Check {}|{}: Record {} and {} did not match.",
+                i,
+                j,
+                record.record_id.as_ref().unwrap(),
+                received.record_id
+            );
+        }
     }
 }
 
@@ -620,30 +464,16 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     let client = reqwest::Client::new();
 
     // First send a couple of records
-    let record = RecordTest::new()
-        .with_record_id("hpc-1337")
-        .with_site_id("cluster1")
-        .with_user_id("user1")
-        .with_group_id("group1")
-        .with_component("CPU", 10, 1.3)
-        .with_component("Memory", 120, 1.0)
-        .with_start_time("2022-03-01T12:00:00-00:00")
-        .with_stop_time("2022-03-01T13:00:00-00:00");
-
-    let test_cases = vec![
-        record
-            .clone()
-            .with_record_id("r1")
-            .with_stop_time("2022-03-01T12:00:00-00:00"),
-        record
-            .clone()
-            .with_record_id("r2")
-            .with_stop_time("2022-03-02T12:00:00-00:00"),
-        record
-            .clone()
-            .with_record_id("r3")
-            .with_stop_time("2022-03-03T12:00:00-00:00"),
-    ];
+    let test_cases = (1..10)
+        .into_iter()
+        .map(|i| {
+            Faker
+                .fake::<RecordTest>()
+                // Giving a name which is sorted the same as the time is useful for asserting later
+                .with_record_id(format!("r{}", i))
+                .with_stop_time(format!("2022-03-0{}T12:00:00-00:00", i))
+        })
+        .collect::<Vec<_>>();
 
     for case in test_cases.iter() {
         let response = client
@@ -657,79 +487,39 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         assert_eq!(200, response.status().as_u16());
     }
 
-    let response = client
-        .get(&format!(
-            "{}/get/stopped/since/2022-03-02T00:00:00-00:00",
-            &app.address
-        ))
-        .send()
-        .await
-        .expect("Failed to execute request.");
-    assert_eq!(200, response.status().as_u16());
+    // Try different start dates and receive records
+    for i in 1..10 {
+        let response = client
+            .get(&format!(
+                "{}/get/stopped/since/2022-03-0{}T00:00:00-00:00",
+                &app.address, i
+            ))
+            .send()
+            .await
+            .expect("Failed to execute request.");
+        assert_eq!(200, response.status().as_u16());
 
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
 
-    for (record, received) in test_cases.iter().skip(1).zip(received_records.iter()) {
-        assert_eq!(*record.record_id.as_ref().unwrap(), received.record_id);
-        assert_eq!(
-            *record.site_id.as_ref().unwrap(),
-            *received.site_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.user_id.as_ref().unwrap(),
-            *received.user_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            *record.group_id.as_ref().unwrap(),
-            *received.group_id.as_ref().unwrap()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[0].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0].amount.unwrap(),
-            *received.components.as_ref().unwrap()[0].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[0]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[0]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .name
-                .as_ref()
-                .unwrap(),
-            received.components.as_ref().unwrap()[1].name.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1].amount.unwrap(),
-            *received.components.as_ref().unwrap()[1].amount.as_ref()
-        );
-        assert_eq!(
-            record.components.as_ref().unwrap()[1]
-                .factor
-                .unwrap()
-                .to_ne_bytes(),
-            received.components.as_ref().unwrap()[1]
-                .factor
-                .as_ref()
-                .to_ne_bytes()
-        );
-        assert_eq!(record.start_time.unwrap(), received.start_time);
-        assert_eq!(
-            record.stop_time.unwrap(),
-            *received.stop_time.as_ref().unwrap()
-        );
+        // make sure they are both sorted
+        received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
+
+        for (j, (record, received)) in test_cases
+            .iter()
+            .skip(i - 1)
+            .zip(received_records.iter())
+            .enumerate()
+        {
+            assert_eq!(
+                record,
+                received,
+                "Check {}|{}: Record {} and {} did not match.",
+                i,
+                j,
+                record.record_id.as_ref().unwrap(),
+                received.record_id
+            );
+        }
     }
 }
 
