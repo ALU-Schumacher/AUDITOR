@@ -104,11 +104,19 @@ class TestAuditorClient(IsolatedAsyncioTestCase):
         self.assertEqual(response, self.get_response)
 
         mocked.get(
-            "http://localhost:8080/get/since/2021-06-08T00:00:00.000000Z",
+            "http://localhost:8080/get/started/since/2021-06-08T00:00:00.000000Z",
             status=200,
             body=json.dumps(self.get_response),
         )
-        response = await client.get_since("2021-06-08T00:00:00.000000Z")
+        response = await client.get_started_since("2021-06-08T00:00:00.000000Z")
+        self.assertEqual(response, self.get_response)
+
+        mocked.get(
+            "http://localhost:8080/get/stopped/since/2021-06-08T00:00:00.000000Z",
+            status=200,
+            body=json.dumps(self.get_response),
+        )
+        response = await client.get_stopped_since("2021-06-08T00:00:00.000000Z")
         self.assertEqual(response, self.get_response)
 
         mocked.post("http://localhost:8080/add", status=409, body="test")
