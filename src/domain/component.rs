@@ -1,20 +1,48 @@
-use super::{ValidAmount, ValidFactor, ValidName};
+use super::{Score, ScoreTest, ValidAmount, ValidName};
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use sqlx::postgres::PgHasArrayType;
+use sqlx::{
+    postgres::{PgHasArrayType, PgTypeInfo},
+    Postgres, Type,
+};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, sqlx::Type, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, sqlx::Encode, Clone)]
 #[sqlx(type_name = "component")]
 pub struct Component {
     pub name: ValidName,
     pub amount: ValidAmount,
-    pub factor: ValidFactor,
+    pub scores: Vec<Score>,
+}
+
+// manual impl of decode because of a compiler bug. See:
+// https://github.com/launchbadge/sqlx/issues/1031
+// https://github.com/rust-lang/rust/issues/82219
+impl sqlx::decode::Decode<'_, sqlx::Postgres> for Component {
+    fn decode(
+        value: sqlx::postgres::PgValueRef<'_>,
+    ) -> Result<Self, std::boxed::Box<dyn std::error::Error + 'static + Send + Sync>> {
+        let mut decoder = sqlx::postgres::types::PgRecordDecoder::new(value)?;
+        let name = decoder.try_decode::<ValidName>()?;
+        let amount = decoder.try_decode::<ValidAmount>()?;
+        let scores = decoder.try_decode::<Vec<Score>>()?;
+        Ok(Component {
+            name,
+            amount,
+            scores,
+        })
+    }
+}
+
+impl Type<Postgres> for Component {
+    fn type_info() -> PgTypeInfo {
+        PgTypeInfo::with_name("component")
+    }
 }
 
 impl PgHasArrayType for Component {
-    fn array_type_info() -> sqlx::postgres::PgTypeInfo {
-        sqlx::postgres::PgTypeInfo::with_name("_component")
+    fn array_type_info() -> PgTypeInfo {
+        PgTypeInfo::with_name("_component")
     }
 }
 
@@ -25,7 +53,11 @@ impl TryFrom<ComponentTest> for Component {
         Ok(Component {
             name: ValidName::parse(value.name.ok_or_else(|| "name is None".to_string())?)?,
             amount: ValidAmount::parse(value.amount.ok_or_else(|| "amount is None".to_string())?)?,
-            factor: ValidFactor::parse(value.factor.ok_or_else(|| "factor is None".to_string())?)?,
+            scores: value
+                .scores
+                .into_iter()
+                .map(Score::try_from)
+                .collect::<Result<_, Self::Error>>()?,
         })
     }
 }
@@ -34,7 +66,8 @@ impl TryFrom<ComponentTest> for Component {
 pub struct ComponentTest {
     pub name: Option<String>,
     pub amount: Option<i64>,
-    pub factor: Option<f64>,
+    // Vecs can be empty, therefore no option needed
+    pub scores: Vec<ScoreTest>,
 }
 
 impl PartialEq<Component> for ComponentTest {
@@ -42,31 +75,31 @@ impl PartialEq<Component> for ComponentTest {
         let ComponentTest {
             name: s_name,
             amount: s_amount,
-            factor: s_factor,
+            scores: s_scores,
         } = self;
         let Component {
             name: o_name,
             amount: o_amount,
-            factor: o_factor,
+            scores: o_scores,
         } = other;
 
         // Can't be equal if any field in ComponentTest is None
-        if s_name.is_none() || s_amount.is_none() || s_factor.is_none() {
+        if s_name.is_none() || s_amount.is_none() {
             return false;
         }
 
-        let s_fac = f64::abs(*s_factor.as_ref().unwrap());
-        let o_fac = f64::abs(*o_factor.as_ref());
+        let mut s_scores = s_scores.clone();
+        let mut o_scores = o_scores.clone();
 
-        let (diff, biggest) = if s_fac > o_fac {
-            (s_fac - o_fac, s_fac)
-        } else {
-            (o_fac - s_fac, o_fac)
-        };
+        s_scores.sort();
+        o_scores.sort();
 
         s_name.as_ref().unwrap() == o_name.as_ref()
             && s_amount.as_ref().unwrap() == o_amount.as_ref()
-            && (diff < f64::EPSILON || diff < biggest * f64::EPSILON.sqrt())
+            && s_scores
+                .into_iter()
+                .zip(o_scores.into_iter())
+                .fold(true, |acc, (a, b)| acc && a == b)
     }
 }
 
@@ -79,14 +112,18 @@ impl PartialEq<ComponentTest> for Component {
 impl Dummy<Faker> for ComponentTest {
     fn dummy_with_rng<R: Rng + ?Sized>(_: &Faker, rng: &mut R) -> ComponentTest {
         let name = StringFaker::with(
-            String::from("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*&^%$#@!~").into_bytes(),
+            String::from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*&^%$#@!~")
+                .into_bytes(),
             1..256,
         )
         .fake_with_rng(rng);
         ComponentTest {
             name: Some(name),
             amount: Some((0..i64::MAX).fake_with_rng(rng)),
-            factor: Some((0.0..f64::MAX).fake_with_rng(rng)),
+            scores: (0..(0..10u64).fake_with_rng(rng))
+                .into_iter()
+                .map(|_| Faker.fake_with_rng::<ScoreTest, _>(rng))
+                .collect(),
         }
     }
 }

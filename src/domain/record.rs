@@ -1,6 +1,6 @@
 //! Record related types used for deserializing HTTP requests and serializing HTTP responses.
 
-use super::{Component, ComponentTest, ValidName};
+use super::{Component, ComponentTest, ScoreTest, ValidName};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
 #[cfg(test)]
@@ -78,14 +78,19 @@ impl RecordTest {
         self
     }
 
-    pub fn with_component<T: AsRef<str>>(mut self, name: T, amount: i64, factor: f64) -> Self {
+    pub fn with_component<T: AsRef<str>>(
+        mut self,
+        name: T,
+        amount: i64,
+        scores: Vec<ScoreTest>,
+    ) -> Self {
         if self.components.is_none() {
             self.components = Some(vec![])
         }
         self.components.as_mut().unwrap().push(ComponentTest {
             name: Some(name.as_ref().to_string()),
             amount: Some(amount),
-            factor: Some(factor),
+            scores,
         });
         self
     }
@@ -119,7 +124,11 @@ impl Dummy<Faker> for RecordTest {
             .fake()
         };
         let fakeamount = || (0..i64::MAX).fake();
-        let fakefactor = || (0.0..f64::MAX).fake();
+        let fakescores = || {
+            (0..(0..3u64).fake())
+                .map(|_| Faker.fake::<ScoreTest>())
+                .collect::<Vec<_>>()
+        };
         let fakedate = || -> DateTime<Utc> { Faker.fake() };
 
         let mut out = RecordTest::new()
@@ -130,7 +139,7 @@ impl Dummy<Faker> for RecordTest {
             .with_start_time(fakedate().to_rfc3339())
             .with_stop_time(fakedate().to_rfc3339());
         for _ in 0..(1..10).fake_with_rng(rng) {
-            out = out.with_component(fakename(), fakeamount(), fakefactor());
+            out = out.with_component(fakename(), fakeamount(), fakescores());
         }
         out
     }
