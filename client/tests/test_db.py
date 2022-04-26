@@ -1,6 +1,6 @@
 from unittest import IsolatedAsyncioTestCase, TestCase, mock
 from auditorclient.db import DB, DBsqlite
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 from auditorclient.task import Task, Instruction
 
 import aiosqlite
@@ -58,7 +58,11 @@ class TestDBsqlite(IsolatedAsyncioTestCase):
                 self.assertEqual(" ".join(row[0].split()), self.sql_create_cmd)
 
         record = Record(
-            "record", "site", "user", "group", Components().add_component("comp1", 1, 2.0)
+            "record",
+            "site",
+            "user",
+            "group",
+            Components().add_component("comp1", 1, Scores().add_score("score1", 2.0)),
         )
         retries = 5
         task = Task(Instruction.ADD, record, retries)
@@ -66,9 +70,7 @@ class TestDBsqlite(IsolatedAsyncioTestCase):
         await db.put(task)
 
         async with aiosqlite.connect(self.test_db) as con:
-            async with con.execute(
-                "SELECT * FROM auditorclient;"
-            ) as cursor:
+            async with con.execute("SELECT * FROM auditorclient;") as cursor:
                 row = await cursor.fetchone()
                 self.assertEqual(Record(json_str=row[3]), record)
 

@@ -1,7 +1,7 @@
 from unittest import IsolatedAsyncioTestCase, TestCase, mock
 import auditorclient
 from auditorclient.db import MockDB
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 from auditorclient.task import Task, Instruction
 from auditorclient.client import AuditorClient
 from auditorclient.errors import RecordExistsError, RecordDoesNotExistError
@@ -25,7 +25,13 @@ class TestAuditorClient(IsolatedAsyncioTestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "grop",
-                "components": [{"name": "CPU", "amount": 1, "factor": 1.3}],
+                "components": [
+                    {
+                        "name": "CPU",
+                        "amount": 1,
+                        "scores": [{"name": "score1", "factor": 1.3}],
+                    }
+                ],
                 "start_time": "2019-11-28T12:45:59.324310Z",
                 "stop_time": "2020-11-29T12:45:59.324310Z",
                 "runtime": 31708800,
@@ -36,7 +42,13 @@ class TestAuditorClient(IsolatedAsyncioTestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "group",
-                "components": [{"name": "CPU", "amount": 2, "factor": 1.3}],
+                "components": [
+                    {
+                        "name": "CPU",
+                        "amount": 2,
+                        "scores": [{"name": "score1", "factor": 1.3}],
+                    }
+                ],
                 "start_time": "2019-11-28T12:45:59.324310Z",
                 "stop_time": "2020-11-29T12:45:59.324310Z",
                 "runtime": 31708800,
@@ -79,7 +91,7 @@ class TestAuditorClient(IsolatedAsyncioTestCase):
             "site",
             "user",
             "group",
-            Components().add_component("comp1", 1, 2.0),
+            Components().add_component("comp1", 1, Scores().add_score("score1", 2.0)),
         )
 
         response = await client.add_record(record)
@@ -143,7 +155,7 @@ class TestAuditorClient(IsolatedAsyncioTestCase):
             "site",
             "user",
             "group",
-            Components().add_component("comp1", 1, 2.0),
+            Components().add_component("comp1", 1, Scores().add_score("score1", 2.0)),
         )
 
         mocked.post("http://localhost:8080/add", status=200, body="test")
