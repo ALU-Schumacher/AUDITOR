@@ -1,4 +1,3 @@
-use sqlx::{postgres::PgTypeInfo, Postgres, Type};
 use std::fmt;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -6,7 +5,8 @@ use unicode_segmentation::UnicodeSegmentation;
 // possible to create this type outside of this module, hence enforcing the use of `parse`. This
 // ensures that every string stored in this type satisfies the validation criteria checked by
 // `parse`.
-#[derive(Debug, Clone, PartialEq, sqlx::Decode, sqlx::Encode)]
+#[derive(Debug, Clone, PartialEq, sqlx::Type)]
+#[sqlx(transparent)]
 pub struct ValidName(String);
 
 impl ValidName {
@@ -30,16 +30,6 @@ impl ValidName {
 impl AsRef<str> for ValidName {
     fn as_ref(&self) -> &str {
         &self.0
-    }
-}
-
-impl Type<Postgres> for ValidName {
-    fn type_info() -> PgTypeInfo {
-        <&str as Type<Postgres>>::type_info()
-    }
-
-    fn compatible(ty: &PgTypeInfo) -> bool {
-        <&str as Type<Postgres>>::compatible(ty)
     }
 }
 

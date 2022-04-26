@@ -1,8 +1,13 @@
 -- Create accounting table
+CREATE TYPE score AS (
+    name        TEXT,
+    factor      double precision
+);
+
 CREATE TYPE component AS (
     name        TEXT,
     amount      BIGINT,
-    factor      double precision
+    scores      score[]
 );
 
 CREATE TABLE accounting (

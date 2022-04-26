@@ -62,8 +62,31 @@
                           "Int8"
                         ],
                         [
-                          "factor",
-                          "Float8"
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
                         ]
                       ]
                     },
@@ -149,8 +172,31 @@
                           "Int8"
                         ],
                         [
-                          "factor",
-                          "Float8"
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
                         ]
                       ]
                     },
@@ -238,8 +284,31 @@
                           "Int8"
                         ],
                         [
-                          "factor",
-                          "Float8"
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
                         ]
                       ]
                     },
@@ -311,8 +380,31 @@
                           "Int8"
                         ],
                         [
-                          "factor",
-                          "Float8"
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
                         ]
                       ]
                     },
@@ -358,8 +450,31 @@
                           "Int8"
                         ],
                         [
-                          "factor",
-                          "Float8"
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
                         ]
                       ]
                     },
