@@ -1,5 +1,5 @@
 from unittest import TestCase
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 from auditorclient.errors import InsufficientParametersError
 
 
@@ -8,14 +8,31 @@ class TestComponents(TestCase):
         comp = Components()
         self.assertEqual(comp._components, [])
         self.assertEqual(comp.get(), [])
-        comp.add_component("blaah", 1, 1.2)
-        self.assertEqual(comp.get(), [{"name": "blaah", "amount": 1, "factor": 1.2}])
-        comp.add_component("blubb", 2, 5)
+        comp.add_component("blaah", 1, Scores().add_score("score1", 1.2))
         self.assertEqual(
             comp.get(),
             [
-                {"name": "blaah", "amount": 1, "factor": 1.2},
-                {"name": "blubb", "amount": 2, "factor": 5},
+                {
+                    "name": "blaah",
+                    "amount": 1,
+                    "scores": [{"name": "score1", "factor": 1.2}],
+                }
+            ],
+        )
+        comp.add_component("blubb", 2, Scores().add_score("score2", 5))
+        self.assertEqual(
+            comp.get(),
+            [
+                {
+                    "name": "blaah",
+                    "amount": 1,
+                    "scores": [{"name": "score1", "factor": 1.2}],
+                },
+                {
+                    "name": "blubb",
+                    "amount": 2,
+                    "scores": [{"name": "score2", "factor": 5}],
+                },
             ],
         )
         self.assertEqual(comp.__str__(), comp._components.__str__())
@@ -27,7 +44,11 @@ class TestRecord(TestCase):
             record = Record()
 
         record = Record(
-            "record", "site", "user", "group", Components().add_component("comp1", 1, 2.0)
+            "record",
+            "site",
+            "user",
+            "group",
+            Components().add_component("comp1", 1, Scores().add_score("score1", 2.0)),
         )
         self.assertEqual(record.record_id(), "record")
         self.assertEqual(record.site_id(), "site")
@@ -38,7 +59,13 @@ class TestRecord(TestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "group",
-                "components": [{"name": "comp1", "amount": 1, "factor": 2.0}],
+                "components": [
+                    {
+                        "name": "comp1",
+                        "amount": 1,
+                        "scores": [{"name": "score1", "factor": 2.0}],
+                    }
+                ],
                 "start_time": None,
                 "stop_time": None,
             },
@@ -52,7 +79,13 @@ class TestRecord(TestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "group",
-                "components": [{"name": "comp1", "amount": 1, "factor": 2.0}],
+                "components": [
+                    {
+                        "name": "comp1",
+                        "amount": 1,
+                        "scores": [{"name": "score1", "factor": 2.0}],
+                    }
+                ],
                 "start_time": "time1",
                 "stop_time": None,
             },
@@ -66,7 +99,13 @@ class TestRecord(TestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "group",
-                "components": [{"name": "comp1", "amount": 1, "factor": 2.0}],
+                "components": [
+                    {
+                        "name": "comp1",
+                        "amount": 1,
+                        "scores": [{"name": "score1", "factor": 2.0}],
+                    }
+                ],
                 "start_time": "time1",
                 "stop_time": "time2",
             },
@@ -76,15 +115,16 @@ class TestRecord(TestCase):
             record.as_json(),
             '{"record_id": "record", "site_id": "site", "user_id": "user", '
             + '"group_id": "group", '
-            + '"components": [{"name": "comp1", "amount": 1, "factor": 2.0}], '
+            + '"components": [{"name": "comp1", "amount": 1, '
+            + '"scores": [{"name": "score1", "factor": 2.0}]}], '
             + '"start_time": "time1", "stop_time": "time2"}',
         )
 
     def test_record_from_json(self):
         record = Record(
             json_str='{"record_id": "record", "site_id": "site", "user_id": "user", '
-            + '"group_id": "group", '
-            + '"components": [{"name": "comp1", "amount": 1, "factor": 2.0}], '
+            + '"group_id": "group", "components": '
+            + '[ { "name": "comp1", "amount": 1, "scores": [{"name": "score1", "factor": 2.0}] } ], '
             + '"start_time": "time1", "stop_time": "time2"}',
         )
         self.assertEqual(
@@ -94,7 +134,13 @@ class TestRecord(TestCase):
                 "site_id": "site",
                 "user_id": "user",
                 "group_id": "group",
-                "components": [{"name": "comp1", "amount": 1, "factor": 2.0}],
+                "components": [
+                    {
+                        "name": "comp1",
+                        "amount": 1,
+                        "scores": [{"name": "score1", "factor": 2.0}],
+                    }
+                ],
                 "start_time": "time1",
                 "stop_time": "time2",
             },

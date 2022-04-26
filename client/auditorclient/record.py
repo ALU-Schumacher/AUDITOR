@@ -15,12 +15,35 @@ class Components:
     def __eq__(self, other: Components) -> bool:
         return self._components == other._components
 
-    def add_component(self, name: str, amount: int, factor: float) -> Components:
-        self._components.append({"name": name, "amount": amount, "factor": factor})
+    def add_component(self, name: str, amount: int, scores: Scores=None) -> Components:
+        if scores is not None:
+            self._components.append({"name": name, "amount": amount, "scores": scores.get()})
+        else:
+            self._components.append({"name": name, "amount": amount, "scores": []})
         return self
 
     def get(self) -> [dict]:
         return self._components
+
+class Scores:
+    def __init__(self, json_str=None):
+        if json_str is not None:
+            self._scores = json.loads(json_str)
+        else:
+            self._scores = []
+
+    def __str__(self) -> str:
+        return self._scores.__str__()
+
+    def __eq__(self, other: Scores) -> bool:
+        return self._scores == other._scores
+
+    def add_score(self, name: str, factor: float) -> Scores:
+        self._scores.append({"name": name, "factor": factor})
+        return self
+
+    def get(self) -> [dict]:
+        return self._scores
 
 
 class Record:
@@ -54,7 +77,10 @@ class Record:
             d = json.loads(json_str)
             c = Components()
             for comp in d["components"]:
-                c.add_component(comp["name"], comp["amount"], comp["factor"])
+                score = Scores()
+                for s in comp["scores"]:
+                    score.add_score(s["name"], s["factor"])
+                c.add_component(comp["name"], comp["amount"], score)
             self._record_id = d["record_id"]
             self._site_id = d["site_id"]
             self._user_id = d["user_id"]
@@ -85,10 +111,6 @@ class Record:
     def with_stop_time(self, stop_time: str) -> Record:
         self._stop_time = stop_time
         return self
-
-    #  def with_runtime(self, runtime: str) -> Record:
-    #      self._runtime = runtime
-    #      return self
 
     def record_id(self) -> str:
         return self._record_id

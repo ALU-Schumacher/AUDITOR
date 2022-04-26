@@ -5,7 +5,7 @@ from __future__ import annotations  # not necessary in 3.10
 import asyncio
 import logging
 from uuid import uuid4
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 from auditorclient.client import AuditorClient
 from pprint import pprint
 
@@ -22,9 +22,9 @@ async def main(client: AuditorClient):
 
     components = (
         Components()
-        .add_component("Cores", 40, 1)
-        .add_component("Memory", 100, 1)
-        .add_component("Disk", 196, 1)
+        .add_component("Cores", 40, Scores().add_score("score1", 1.0))
+        .add_component("Memory", 100)
+        .add_component("Disk", 196)
     )
     record_id = "nemo-13312889"
     record = Record(record_id, "NEMO", "atlsch", "atlsch", components).with_start_time(

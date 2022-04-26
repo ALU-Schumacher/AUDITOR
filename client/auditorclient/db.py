@@ -5,7 +5,7 @@ import os.path
 import logging
 from dateutil import parser
 from .task import Task, Instruction
-from .record import Record, Components
+from .record import Record, Components, Scores
 
 
 class DB(ABC):
@@ -140,7 +140,9 @@ class MockDB(DB):
                         "site",
                         "user",
                         "group",
-                        Components().add_component("comp1", 1, 2.0),
+                        Components().add_component(
+                            "comp1", 1, Scores().add_score("score1", 2.0)
+                        ),
                     ),
                     5,
                 )

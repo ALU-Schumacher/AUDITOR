@@ -21,10 +21,11 @@ def compute_cputime_per_group(response):
             data[group_id]["count"] += 1
             print(rec["start_time"])
             print(rec["stop_time"])
+            print(rec["components"])
             data[group_id]["cpu_time"] += (
                 (parser.parse(rec["stop_time"]) - parser.parse(rec["start_time"]))
                 * rec["components"][0]["amount"]
-                * rec["components"][0]["factor"]
+                * rec["components"][0]["scores"][0]["factor"]
             ).total_seconds()
     return data
 

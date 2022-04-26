@@ -2,7 +2,7 @@ import asyncio
 from auditorclient.db import MockDB
 from auditorclient.queue import Queue
 from auditorclient.task import Task, Instruction
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 from unittest import IsolatedAsyncioTestCase, TestCase, mock
 
 
@@ -29,7 +29,9 @@ class TestQueue(IsolatedAsyncioTestCase):
                 "site",
                 "user",
                 "group",
-                Components().add_component("comp1", 1, 2.0),
+                Components().add_component(
+                    "comp1", 1, Scores().add_score("score1", 2.0)
+                ),
             ),
             5,
         )

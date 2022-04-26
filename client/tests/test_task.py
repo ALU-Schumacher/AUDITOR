@@ -1,5 +1,5 @@
 from auditorclient.task import Instruction, Task
-from auditorclient.record import Record, Components
+from auditorclient.record import Record, Components, Scores
 
 from unittest import TestCase
 from unittest.mock import patch
@@ -22,8 +22,11 @@ class TestTask(TestCase):
             1992, 11, 3, 0, 0, 0
         )
         record = Record(
-            "record", "site", "user", "group",
-            Components().add_component("comp1", 1, 2.0)
+            "record",
+            "site",
+            "user",
+            "group",
+            Components().add_component("comp1", 1, Scores().add_score("score1", 2.0)),
         )
         retries = 5
         task1 = Task(Instruction.ADD, record, retries)
