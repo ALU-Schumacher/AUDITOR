@@ -218,3 +218,26 @@ impl quickcheck::Arbitrary for RecordTest {
         Faker.fake()
     }
 }
+
+impl TryFrom<RecordTest> for RecordAdd {
+    type Error = String;
+
+    fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
+        Ok(RecordAdd {
+            record_id: ValidName::parse(
+                value.record_id.ok_or_else(|| "name is None".to_string())?,
+            )?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            components: value
+                .components
+                .unwrap_or_default()
+                .into_iter()
+                .map(Component::try_from)
+                .collect::<Result<Vec<_>, _>>()?,
+            start_time: value.start_time.unwrap(),
+            stop_time: value.stop_time,
+        })
+    }
+}

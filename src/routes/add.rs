@@ -7,9 +7,7 @@ use sqlx::PgPool;
 #[tracing::instrument(
     name = "Adding a record to the database",
     skip(record, pool),
-    fields(
-        record_id = %record.record_id,
-    )
+    fields(record_id = %record.record_id)
 )]
 pub async fn add(record: web::Json<RecordAdd>, pool: web::Data<PgPool>) -> HttpResponse {
     match add_record(&record, &pool).await {
