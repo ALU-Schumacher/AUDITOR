@@ -1,6 +1,6 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
-use auditor::domain::{Component, Record, RecordAdd, RecordTest};
+use auditor::domain::{Component, Record, RecordAdd, RecordTest, RecordUpdate};
 use chrono::Utc;
 use fake::{Fake, Faker};
 
@@ -102,6 +102,73 @@ async fn add_records() {
 
     for record in test_cases {
         client.add(record).await.unwrap();
+    }
+
+    let mut saved_records = sqlx::query_as!(
+        Record,
+        r#"SELECT
+           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
+           start_time, stop_time, runtime
+           FROM accounting
+        "#
+    )
+    .fetch_all(&app.db_pool)
+    .await
+    .expect("Failed to fetch data.");
+
+    // make sure they are both sorted
+    test_cases_comp.sort_by(|a, b| {
+        a.record_id
+            .as_ref()
+            .unwrap()
+            .cmp(b.record_id.as_ref().unwrap())
+    });
+    saved_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
+
+    for (i, (record, saved)) in test_cases_comp.iter().zip(saved_records.iter()).enumerate() {
+        assert_eq!(
+            record,
+            saved,
+            "Check {}: Record {} and {} did not match.",
+            i,
+            record.record_id.as_ref().unwrap(),
+            saved.record_id
+        );
+    }
+}
+
+#[tokio::test]
+async fn update_records() {
+    // Arange
+    let app = spawn_app().await;
+    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+
+    let mut test_cases_comp: Vec<RecordTest> = (0..100)
+        .into_iter()
+        .map(|_| Faker.fake::<RecordTest>())
+        .collect();
+
+    let test_cases: Vec<RecordAdd> = test_cases_comp
+        .iter()
+        .cloned()
+        .map(RecordAdd::try_from)
+        .map(Result::unwrap)
+        .collect();
+
+    for mut record in test_cases {
+        record.stop_time = None;
+        client.add(record).await.unwrap();
+    }
+
+    let test_cases: Vec<RecordUpdate> = test_cases_comp
+        .iter()
+        .cloned()
+        .map(RecordUpdate::try_from)
+        .map(Result::unwrap)
+        .collect();
+
+    for record in test_cases {
+        client.update(record).await.unwrap();
     }
 
     let mut saved_records = sqlx::query_as!(

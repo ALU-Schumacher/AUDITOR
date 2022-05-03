@@ -180,13 +180,13 @@ impl PartialEq<Record> for RecordTest {
             *o_start - *s_start
         };
 
-        let s_stop = s_stop.as_ref().unwrap();
-        let o_stop = o_stop.as_ref().unwrap();
-
-        let stop_diff = if s_stop > o_stop {
-            *s_stop - *o_stop
-        } else {
-            *o_stop - *s_stop
+        let stop = match (s_stop, o_stop) {
+            (Some(s), Some(o)) => {
+                let stop_diff = if s > o { *s - *o } else { *o - *s };
+                stop_diff < chrono::Duration::milliseconds(1)
+            }
+            (None, None) => true,
+            _ => false,
         };
 
         s_rid.as_ref().unwrap() == o_rid
@@ -194,7 +194,7 @@ impl PartialEq<Record> for RecordTest {
             && s_uid == o_uid
             && s_gid == o_gid
             && start_diff < chrono::Duration::milliseconds(1)
-            && stop_diff < chrono::Duration::milliseconds(1)
+            && stop
             && ((s_comp.is_none() && o_comp.is_none())
                 || (s_comp.as_ref().unwrap().len() == o_comp.as_ref().unwrap().len()
                     && s_comp
@@ -238,6 +238,29 @@ impl TryFrom<RecordTest> for RecordAdd {
                 .collect::<Result<Vec<_>, _>>()?,
             start_time: value.start_time.unwrap(),
             stop_time: value.stop_time,
+        })
+    }
+}
+
+impl TryFrom<RecordTest> for RecordUpdate {
+    type Error = String;
+
+    fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
+        Ok(RecordUpdate {
+            record_id: ValidName::parse(
+                value.record_id.ok_or_else(|| "name is None".to_string())?,
+            )?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            components: value
+                .components
+                .unwrap_or_default()
+                .into_iter()
+                .map(Component::try_from)
+                .collect::<Result<Vec<_>, _>>()?,
+            start_time: value.start_time,
+            stop_time: value.stop_time.unwrap(),
         })
     }
 }
