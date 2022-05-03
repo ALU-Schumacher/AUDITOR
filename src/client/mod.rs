@@ -1,3 +1,5 @@
+//! TODO: Handle failures.
+
 use crate::domain::{Record, RecordAdd};
 use reqwest;
 
@@ -29,6 +31,7 @@ impl AuditorClient {
         })
     }
 
+    #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub async fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
         self.client
             .get(&format!("{}/get", &self.address))
@@ -38,7 +41,18 @@ impl AuditorClient {
             .await
     }
 
-    pub async fn add(_record: RecordAdd) -> Result<(), std::io::Error> {
-        todo!()
+    #[tracing::instrument(
+        name = "Sending a record to AUDITOR server.",
+        skip(self),
+        fields(record_id = %record.record_id)
+    )]
+    pub async fn add(&self, record: RecordAdd) -> Result<(), reqwest::Error> {
+        self.client
+            .post(&format!("{}/add", &self.address))
+            .header("Content-Type", "application/json")
+            .json(&record)
+            .send()
+            .await?;
+        Ok(())
     }
 }
