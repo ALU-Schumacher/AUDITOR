@@ -77,6 +77,38 @@ Make sure a database is up and running when starting AUDITOR.
 
 AUDITOR is configured via the files in the `configuration` directory.
 
+## Running in Docker
+
+AUDITOR can be run in a Docker container from [Docker Hub](https://hub.docker.com/repository/docker/aluschumacher/auditor) or [Github Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor).
+When running in a container, a PostgreSQL database needs to be set up and configured manually.
+After installing PostgreSQL, the database needs to be migrated with `sqlx`.
+
+To do so, run the following from the root directory of the repo:
+```bash
+# Adapt these variables to your setup
+DB_USER=${POSTGRES_USER:=postgres}
+DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
+DB_NAME="${POSTGRES_DB:=auditor}"
+DB_PORT="${POSTGRES_PORT:=5432}"
+
+export DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
+sqlx database create
+sqlx migrate run
+```
+
+AUDITORs configuration can be adapted with environment variables.
+
+| Variable                          | Description                                               |
+| --------                          | -----------                                               |
+| `AUDITOR_APPLICATION__ADDR`       | Address to bind to (default `0.0.0.0`)                    |
+| `AUDITOR_APPLICATION__PORT`       | Port to bind to (default `8000`)                          |
+| `AUDITOR_DATABASE__HOST`          | Host address of PostgreSQL database (default `localhost`) |
+| `AUDITOR_DATABASE__PORT`          | Port of PostgreSQL database (default `5432`)              |
+| `AUDITOR_DATABASE__USERNAME`      | PostgreSQL database username (default `postgres`)         |
+| `AUDITOR_DATABASE__PASSWORD`      | PostgreSQL database password (default `password`)         |
+| `AUDITOR_DATABASE__REQUIRE_SSL`   | Whether or not to use SSL (default `true`)                |
+
+
 
 ## License
 
