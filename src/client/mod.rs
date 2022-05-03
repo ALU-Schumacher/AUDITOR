@@ -1,6 +1,6 @@
 //! TODO: Handle failures.
 
-use crate::domain::{Record, RecordAdd};
+use crate::domain::{Record, RecordAdd, RecordUpdate};
 use reqwest;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
@@ -43,12 +43,27 @@ impl AuditorClient {
 
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
-        skip(self),
+        skip(self, record),
         fields(record_id = %record.record_id)
     )]
     pub async fn add(&self, record: RecordAdd) -> Result<(), reqwest::Error> {
         self.client
             .post(&format!("{}/add", &self.address))
+            .header("Content-Type", "application/json")
+            .json(&record)
+            .send()
+            .await?;
+        Ok(())
+    }
+
+    #[tracing::instrument(
+        name = "Sending a record update to AUDITOR server.",
+        skip(self, record),
+        fields(record_id = %record.record_id)
+    )]
+    pub async fn update(&self, record: RecordUpdate) -> Result<(), reqwest::Error> {
+        self.client
+            .post(&format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(&record)
             .send()
