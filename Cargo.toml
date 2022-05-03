@@ -27,6 +27,7 @@ secrecy = { version = "0.8", features = ["serde"] }
 unicode-segmentation = "1"
 fake = { version = "2.4", features = ["chrono"] }
 rand = "0.8"
+reqwest = { version = "0.11.10", features = ["json"] }
 
 [dependencies.sqlx]
 version = "0.5.7"
@@ -42,7 +43,6 @@ features = [
 ]
 
 [dev-dependencies]
-reqwest = { version = "0.11.10", features = ["json"] }
 once_cell = "1"
 claim = "0.5"
 quickcheck = "1"
