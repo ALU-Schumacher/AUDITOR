@@ -10,6 +10,10 @@ path = "src/lib.rs"
 name = "auditor"
 path = "src/main.rs"
 
+[[bin]]
+name = "auditor-slurm-epilog-collector"
+path = "src/collectors/slurm_epilog/main.rs"
+
 [dependencies]
 actix-web = "4.0.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
@@ -28,6 +32,7 @@ unicode-segmentation = "1"
 fake = { version = "2.4", features = ["chrono"] }
 rand = "0.8"
 reqwest = { version = "0.11.10", features = ["json"] }
+anyhow = "1"
 
 [dependencies.sqlx]
 version = "0.5.7"
