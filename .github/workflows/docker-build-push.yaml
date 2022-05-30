@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         containers:
-          - AUDITOR
+          - auditor
 
     steps:
       - name: Checkout repository
@@ -46,7 +46,7 @@ jobs:
         with:
           images: |
             aluschumacher/${{ matrix.containers }}
-            ghcr.io/${{ matrix.containers }}
+            ghcr.io/ALU-Schumacher/${{ matrix.containers }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
