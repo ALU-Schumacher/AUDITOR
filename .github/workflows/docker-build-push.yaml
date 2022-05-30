@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         containers:
-          - auditor
+          - AUDITOR
 
     steps:
       - name: Checkout repository
