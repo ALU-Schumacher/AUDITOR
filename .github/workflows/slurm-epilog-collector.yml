@@ -73,13 +73,13 @@ jobs:
       - name: Build auditor
         uses: actions-rs/cargo@v1
         with:
-          command: test
+          command: build
           args: --bin auditor
 
       - name: Build Slurm epilog collector
         uses: actions-rs/cargo@v1
         with:
-          command: test
+          command: build
           args: --bin auditor-slurm-epilog-collector
 
       - name: Test Slurm epilog collector
