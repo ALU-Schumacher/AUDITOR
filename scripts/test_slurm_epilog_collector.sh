@@ -6,11 +6,25 @@ DOCKER_COMPOSE_FILE="containers/docker-centos7-slurm/docker-compose.yml"
 DOCKER_PROJECT_DIR="."
 
 function start_container() {
-	docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR up -d
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		up -d
 	# Copy slurm.conf to container
-	docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR cp ./containers/docker-centos7-slurm/slurm.conf slurm:/etc/slurm/slurm.conf
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp ./containers/docker-centos7-slurm/slurm.conf slurm:/etc/slurm/slurm.conf
 	# Copy epilog.sh to container
-	docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR cp ./containers/docker-centos7-slurm/epilog.sh slurm:/epilog.sh
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp ./containers/docker-centos7-slurm/epilog.sh slurm:/epilog.sh
+	# Copy Slurm epilog collector to container
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp ./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector slurm:/auditor-slurm-epilog-collector
 
 	COUNTER=0
 	until docker exec auditor-slurm-1 scontrol ping; do
@@ -31,7 +45,10 @@ function start_container() {
 
 function stop_container() {
 	echo >&2 "Stopping container"
-	docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		down
 }
 
 function start_auditor() {
@@ -62,7 +79,7 @@ start_auditor
 
 # docker ps -a
 
-docker exec auditor-slurm-1 sinfo
+docker exec auditor-slurm-1 /auditor-slurm-epilog-collector
 
 stop_container
 stop_auditor
