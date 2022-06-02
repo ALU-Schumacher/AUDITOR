@@ -21,6 +21,7 @@ jobs:
     env:
       SQLX_VERSION: 0.5.7
       SQLX_FEATURES: postgres
+      RUSTFLAGS: -C link-arg=-s
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -41,6 +42,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+          target: x86_64-unknown-linux-musl
 
       - name: Cache sqlx-cli
         uses: actions/cache@v2
@@ -70,17 +72,21 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
+      - name: Install musl
+        run: |
+          sudo apt-get install musl musl-tools
+
       - name: Build auditor
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --bin auditor
+          args: --bin auditor --target x86_64-unknown-linux-musl
 
       - name: Build Slurm epilog collector
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --bin auditor-slurm-epilog-collector
+          args: --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
 
       - name: Test Slurm epilog collector
         run: |
