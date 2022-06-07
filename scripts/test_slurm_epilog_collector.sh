@@ -24,7 +24,14 @@ function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
-		cp ./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector slurm:/auditor-slurm-epilog-collector
+		cp \
+		./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector \
+		slurm:/auditor-slurm-epilog-collector
+
+	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-epilog-collector
+	docker exec auditor-slurm-1 chown slurm:slurm /epilog.sh
+	docker exec auditor-slurm-1 mkdir /epilog_logs
+	docker exec auditor-slurm-1 chown slurm:slurm /epilog_logs
 
 	COUNTER=0
 	until docker exec auditor-slurm-1 scontrol ping; do
@@ -52,7 +59,7 @@ function stop_container() {
 }
 
 function start_auditor() {
-	./target/debug/auditor &
+	AUDITOR_APPLICATION__ADDR=0.0.0.0 ./target/debug/auditor &
 	AUDITOR_SERVER_PID=$!
 	COUNTER=0
 	until curl http://localhost:8000/health_check; do
@@ -77,10 +84,14 @@ function stop_auditor() {
 start_container
 start_auditor
 
-# docker ps -a
+docker exec auditor-slurm-1 sbatch --wrap="sleep 1"
+sleep 5
 
-docker exec auditor-slurm-1 /auditor-slurm-epilog-collector
+docker exec auditor-slurm-1 scontrol show job 1
+docker exec auditor-slurm-1 ls -la /epilog_logs
+docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
+sleep 2
 stop_container
 stop_auditor
 

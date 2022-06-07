@@ -28,6 +28,7 @@ fn get_slurm_job_info() -> Result<HashMap<String, String>, Error> {
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    println!("woohooo");
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
