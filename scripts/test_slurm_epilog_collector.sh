@@ -2,8 +2,12 @@
 set -x
 set -eo pipefail
 
-DOCKER_COMPOSE_FILE="containers/docker-centos7-slurm/docker-compose.yml"
-DOCKER_PROJECT_DIR="."
+# Docker
+DOCKER_COMPOSE_FILE=${DOCKER_COMPOSE_FILE:="containers/docker-centos7-slurm/docker-compose.yml"}
+DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR:="."}
+# Collector build
+RELEASE_MODE=${RELEASE_MODE:=false}
+TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 
 function start_container() {
 	docker compose \
@@ -58,6 +62,21 @@ function stop_container() {
 		down
 }
 
+function compile_collector() {
+	if [ "$RELEASE_MODE" = true ]; then
+		RUSTFLAGS='-C link-args=-s' \
+			cargo build \
+			--target $TARGET_ARCH \
+			--bin auditor-slurm-epilog-collector \
+			--release
+	else
+		RUSTFLAGS='-C link-args=-s' \
+			cargo build \
+			--target $TARGET_ARCH \
+			--bin auditor-slurm-epilog-collector
+	fi
+}
+
 function start_auditor() {
 	AUDITOR_APPLICATION__ADDR=0.0.0.0 ./target/debug/auditor &
 	AUDITOR_SERVER_PID=$!
@@ -81,6 +100,7 @@ function stop_auditor() {
 }
 
 
+compile_collector
 start_container
 start_auditor
 
