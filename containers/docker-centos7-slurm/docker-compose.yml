@@ -4,6 +4,9 @@ services:
     hostname: slurmctl
     stdin_open: true
     tty: true
+    extra_hosts:
+      # "host.docker.internal" will resolve to the hosts IP
+      - "host.docker.internal:host-gateway"
     # Persistance not wanted.
     # volumes:
     #   - ./volumes/lib:/var/lib/slurmd
