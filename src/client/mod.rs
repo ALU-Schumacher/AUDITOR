@@ -32,6 +32,17 @@ impl AuditorClient {
         })
     }
 
+    #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
+    pub async fn health_check(&self) -> bool {
+        matches!(
+            self.client
+                .get(&format!("{}/health_check", &self.address))
+                .send()
+                .await,
+            Ok(_)
+        )
+    }
+
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),

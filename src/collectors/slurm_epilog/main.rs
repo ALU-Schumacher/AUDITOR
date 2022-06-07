@@ -28,7 +28,6 @@ fn get_slurm_job_info() -> Result<HashMap<String, String>, Error> {
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    println!("woohooo");
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
@@ -37,12 +36,15 @@ async fn main() -> Result<(), Error> {
     );
     init_subscriber(subscriber);
 
-    let auditor_host = "localhost";
+    let auditor_host = "host.docker.internal";
     let auditor_port = 8000;
 
-    let _client = AuditorClient::new(&auditor_host, auditor_port)?;
+    let client = AuditorClient::new(&auditor_host, auditor_port)?;
 
-    let _job_info = get_slurm_job_info();
+    let job_info = get_slurm_job_info()?;
+
+    println!("{:?}", job_info);
+    println!("Server health: {}", client.health_check().await);
 
     //  let output: String = r#"JobId=19771 JobName=arc_pilot
     // UserId=atlpr001(301501) GroupId=atlpr(300001) MCS_label=N/A
