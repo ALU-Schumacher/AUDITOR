@@ -5,16 +5,18 @@ use std::collections::HashMap;
 use std::env;
 use std::process::Command;
 
-fn get_slurm_job_id() -> Result<String, Error> {
-    Ok(env::var("SLURM_JOB_ID")?)
+#[tracing::instrument(name = "Obtaining Slurm job id from environment")]
+fn get_slurm_job_id() -> Result<u64, Error> {
+    Ok(env::var("SLURM_JOB_ID")?.parse()?)
 }
 
-fn get_slurm_job_info() -> Result<HashMap<String, String>, Error> {
+#[tracing::instrument(name = "Getting Slurm job info via scontrol")]
+fn get_slurm_job_info(job_id: u64) -> Result<HashMap<String, String>, Error> {
     Ok(std::str::from_utf8(
         &Command::new("scontrol")
             .arg("show")
             .arg("job")
-            .arg(get_slurm_job_id()?)
+            .arg(job_id.to_string())
             .output()?
             .stdout,
     )?
@@ -41,7 +43,8 @@ async fn main() -> Result<(), Error> {
 
     let client = AuditorClient::new(&auditor_host, auditor_port)?;
 
-    let job_info = get_slurm_job_info()?;
+    let job_id = get_slurm_job_id()?;
+    let job_info = get_slurm_job_info(job_id)?;
 
     println!("{:?}", job_info);
     println!("Server health: {}", client.health_check().await);
