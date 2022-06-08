@@ -1,11 +1,16 @@
+// use crate::slurm_epilog::configuration::get_configuration;
 use anyhow::Error;
 use auditor::client::AuditorClient;
+use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use std::collections::HashMap;
 use std::env;
+use std::fmt;
 use std::process::Command;
+
+mod configuration;
 
 #[tracing::instrument(name = "Obtaining Slurm job id from environment")]
 fn get_slurm_job_id() -> Result<u64, Error> {
@@ -30,7 +35,7 @@ fn get_slurm_job_info(job_id: u64) -> Result<HashMap<String, String>, Error> {
     .collect())
 }
 
-#[tracing::instrument(name = "Parsing Slurm timestamp")]
+#[tracing::instrument(name = "Parsing Slurm timestamp", level = "debug")]
 fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
     timestamp: T,
 ) -> Result<DateTime<Utc>, Error> {
@@ -38,6 +43,11 @@ fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
         NaiveDateTime::parse_from_str(timestamp.as_ref(), "%Y-%m-%dT%H:%M:%S")?,
         Utc,
     ))
+}
+
+#[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
+fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
+    input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
 }
 
 #[tokio::main]
@@ -50,42 +60,36 @@ async fn main() -> Result<(), Error> {
     );
     init_subscriber(subscriber);
 
-    let auditor_host = "host.docker.internal";
-    let auditor_port = 8000;
+    let config = configuration::get_configuration()?;
 
-    let client = AuditorClient::new(&auditor_host, auditor_port)?;
+    let client = AuditorClient::new(&config.addr, config.port)?;
 
-    let job_id = get_slurm_job_id()?;
-    let job_info = get_slurm_job_info(job_id)?;
+    let job_id = get_slurm_job_id().expect("Collector not run in the context of a Slurm epilog");
+    let job = get_slurm_job_info(job_id)?;
 
-    // println!("{:?}", job_info);
-    println!("Server health: {}", client.health_check().await);
-
-    let record_prefix = "slurm-".to_string();
-    let site_id = "cluster1".to_string();
-    let user_id = "user1".to_string();
-    let group_id = "group1".to_string();
+    // println!("{:?}", job);
+    // println!("Server health: {}", client.health_check().await);
 
     let components = vec![Component::new(
         "Cores",
-        job_info["NumCPUs"].parse()?,
+        job["NumCPUs"].parse()?,
         vec![Score::new("FakeHEPSPEC", 1.3).unwrap()],
     )
     .unwrap()];
 
     let record = RecordAdd::new(
-        format!("{}{}", record_prefix, job_id),
-        site_id,
-        user_id,
-        group_id,
+        format!("{}-{}", make_string_valid(config.record_prefix), job_id),
+        make_string_valid(config.site_id),
+        make_string_valid(&job["UserId"]),
+        make_string_valid(&job["GroupId"]),
         components,
-        parse_slurm_timestamp(&job_info["StartTime"])?,
+        parse_slurm_timestamp(&job["StartTime"])?,
     )
     // Get rid of unwrap once rest of the library has proper error handling
     .unwrap()
-    .with_stop_time(parse_slurm_timestamp(&job_info["EndTime"])?);
+    .with_stop_time(parse_slurm_timestamp(&job["EndTime"])?);
 
-    println!("{:?}", record);
+    // println!("{:?}", record);
 
     client.add(record).await?;
 
