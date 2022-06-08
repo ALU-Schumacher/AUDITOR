@@ -12,6 +12,15 @@ pub struct Score {
     pub factor: ValidFactor,
 }
 
+impl Score {
+    pub fn new<T: AsRef<str>>(name: T, factor: f64) -> Result<Self, String> {
+        Ok(Score {
+            name: ValidName::parse(name.as_ref().to_string())?,
+            factor: ValidFactor::parse(factor)?,
+        })
+    }
+}
+
 impl PgHasArrayType for Score {
     fn array_type_info() -> sqlx::postgres::PgTypeInfo {
         sqlx::postgres::PgTypeInfo::with_name("_score")
