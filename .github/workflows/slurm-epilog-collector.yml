@@ -88,7 +88,8 @@ jobs:
           command: build
           args: --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
 
+      - name: Install Docker Compose
+        run: sudo apt-get install docker-compose
+
       - name: Test Slurm epilog collector
-        run: |
-          sudo apt-get install docker-compose
-          ./scripts/test_slurm_epilog_collector.sh
+        run: SKIP_COMPILATION=true ./scripts/test_slurm_epilog_collector.sh

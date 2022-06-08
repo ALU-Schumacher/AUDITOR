@@ -15,6 +15,16 @@ pub struct Component {
     pub scores: Vec<Score>,
 }
 
+impl Component {
+    pub fn new<T: AsRef<str>>(name: T, amount: i64, scores: Vec<Score>) -> Result<Self, String> {
+        Ok(Component {
+            name: ValidName::parse(name.as_ref().to_string())?,
+            amount: ValidAmount::parse(amount)?,
+            scores,
+        })
+    }
+}
+
 // manual impl of decode because of a compiler bug. See:
 // https://github.com/launchbadge/sqlx/issues/1031
 // https://github.com/rust-lang/rust/issues/82219

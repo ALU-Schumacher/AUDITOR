@@ -100,16 +100,21 @@ function stop_auditor() {
 }
 
 
-compile_collector
+if [[ -z "${SKIP_COMPILATION}" ]]
+then
+	compile_collector
+fi
 start_container
 start_auditor
 
 docker exec auditor-slurm-1 sbatch --wrap="sleep 1"
 sleep 5
 
-docker exec auditor-slurm-1 scontrol show job 1
-docker exec auditor-slurm-1 ls -la /epilog_logs
+# docker exec auditor-slurm-1 scontrol show job 1
+# docker exec auditor-slurm-1 ls -la /epilog_logs
 docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
+
+curl -vvv http://localhost:8000/get
 
 sleep 2
 stop_container

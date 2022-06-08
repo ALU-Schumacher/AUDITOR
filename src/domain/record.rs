@@ -53,6 +53,33 @@ pub struct RecordTest {
     pub stop_time: Option<DateTime<Utc>>,
 }
 
+impl RecordAdd {
+    pub fn new<T: AsRef<str>>(
+        record_id: T,
+        site_id: T,
+        user_id: T,
+        group_id: T,
+        components: Vec<Component>,
+        start_time: DateTime<Utc>,
+    ) -> Result<Self, String> {
+        Ok(RecordAdd {
+            record_id: ValidName::parse(record_id.as_ref().to_string())?,
+            site_id: ValidName::parse(site_id.as_ref().to_string())?,
+            user_id: ValidName::parse(user_id.as_ref().to_string())?,
+            group_id: ValidName::parse(group_id.as_ref().to_string())?,
+            components,
+            start_time,
+            stop_time: None,
+        })
+    }
+
+    #[must_use]
+    pub fn with_stop_time(mut self, stop_time: DateTime<Utc>) -> Self {
+        self.stop_time = Some(stop_time);
+        self
+    }
+}
+
 impl RecordTest {
     pub fn new() -> Self {
         RecordTest::default()
