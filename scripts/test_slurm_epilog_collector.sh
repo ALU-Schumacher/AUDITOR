@@ -8,6 +8,7 @@ DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR:="."}
 # Collector build
 RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
+DB_NAME=${DB_NAME:=$(uuidgen)}
 
 function start_container() {
 	docker compose \
@@ -78,7 +79,7 @@ function compile_collector() {
 }
 
 function start_auditor() {
-	AUDITOR_APPLICATION__ADDR=0.0.0.0 ./target/debug/auditor &
+	AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor &
 	AUDITOR_SERVER_PID=$!
 	COUNTER=0
 	until curl http://localhost:8000/health_check; do
@@ -99,6 +100,7 @@ function stop_auditor() {
 	kill $AUDITOR_SERVER_PID
 }
 
+SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
 
 if [[ -z "${SKIP_COMPILATION}" ]]
 then
