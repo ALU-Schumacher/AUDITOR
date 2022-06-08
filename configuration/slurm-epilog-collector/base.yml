@@ -1,0 +1,4 @@
+addr: "localhost"
+port: 8000
+record_prefix: "slurm"
+site_id: "site"

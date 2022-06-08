@@ -1,3 +1,4 @@
+use crate::constants::FORBIDDEN_CHARACTERS;
 use std::fmt;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -17,10 +18,9 @@ impl ValidName {
         // count characters
         let is_too_long = s.graphemes(true).count() > 256;
         // check for forbidden characters
-        let forbidden_characters = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
-        let contains_forbidden_characters = s.chars().any(|g| forbidden_characters.contains(&g));
+        let contains_forbidden_characters = s.chars().any(|g| FORBIDDEN_CHARACTERS.contains(&g));
         if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(format!("Invalid record ID: {}", s))
+            Err(format!("Invalid Name: {}", s))
         } else {
             Ok(Self(s))
         }

@@ -12,7 +12,7 @@ pub struct AuditorClient {
 }
 
 impl AuditorClient {
-    pub fn new<T: AsRef<str>>(address: &T, port: usize) -> Result<AuditorClient, reqwest::Error> {
+    pub fn new<T: AsRef<str>>(address: &T, port: u16) -> Result<AuditorClient, reqwest::Error> {
         Ok(AuditorClient {
             address: format!("http://{}:{}", address.as_ref(), port),
             client: reqwest::ClientBuilder::new()
