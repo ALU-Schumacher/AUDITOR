@@ -116,7 +116,32 @@ sleep 5
 # docker exec auditor-slurm-1 ls -la /epilog_logs
 docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
-curl -vvv http://localhost:8000/get
+curl http://localhost:8000/get
+
+if [ "$(curl http://localhost:8000/get | jq '. | length')" != 1 ]
+then
+	echo >&2 "Incorrect number of records in accounting database."
+	stop_container
+	stop_auditor
+	exit 1
+fi
+
+docker exec auditor-slurm-1 sbatch --wrap="sleep 1"
+sleep 2
+docker exec auditor-slurm-1 sbatch --wrap="sleep 1"
+sleep 2
+docker exec auditor-slurm-1 sbatch --wrap="sleep 1"
+sleep 5
+
+if [ "$(curl http://localhost:8000/get | jq '. | length')" != 4 ]
+then
+	echo >&2 "Incorrect number of records in accounting database."
+	docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
+	docker exec auditor-slurm-1 squeue
+	stop_container
+	stop_auditor
+	exit 1
+fi
 
 sleep 2
 stop_container
