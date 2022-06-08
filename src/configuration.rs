@@ -59,25 +59,36 @@ impl DatabaseSettings {
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // initialize our configuration reader
-    let mut settings = config::Config::default();
+    // let mut settings = config::Config::default();
 
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
-
-    settings.merge(config::File::from(configuration_directory.join("base")).required(true))?;
 
     let environment: Environment = std::env::var("AUDITOR_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
         .try_into()
         .expect("Failed to parse AUDITOR_ENVIRONMENT.");
 
-    settings.merge(
-        config::File::from(configuration_directory.join(environment.as_str())).required(true),
-    )?;
+    let settings = config::Config::builder()
+        .add_source(config::File::from(configuration_directory.join("base")).required(true))
+        .add_source(
+            config::File::from(configuration_directory.join(environment.as_str())).required(true),
+        )
+        .add_source(config::Environment::with_prefix("auditor").separator("__"));
+    // settings.merge(config::File::from(configuration_directory.join("base")).required(true))?;
 
-    settings.merge(config::Environment::with_prefix("auditor").separator("__"))?;
+    // settings.merge(
+    //     config::File::from(configuration_directory.join(environment.as_str())).required(true),
+    // )?;
 
-    settings.try_into()
+    // settings.merge(config::Environment::with_prefix("auditor").separator("__"))?;
+
+    // settings.try_into()
+
+    match settings.build() {
+        Ok(config) => config.try_deserialize(),
+        Err(e) => Err(e),
+    }
 }
 
 // The possible runtime environment for AUDITOR.
