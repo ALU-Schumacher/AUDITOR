@@ -1,4 +1,3 @@
-// use crate::slurm_epilog::configuration::get_configuration;
 use anyhow::Error;
 use auditor::client::AuditorClient;
 use auditor::constants::FORBIDDEN_CHARACTERS;
@@ -10,6 +9,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fmt;
 use std::process::Command;
+use tracing::{debug, info};
 
 mod configuration;
 
@@ -112,15 +112,21 @@ async fn main() -> Result<(), Error> {
     );
     init_subscriber(subscriber);
 
+    info!("AUDITOR-slurm-epilog-collector started.");
+
     let config = configuration::get_configuration()?;
+
+    debug!(?config, "Loaded config");
 
     let client = AuditorClient::new(&config.addr, config.port)?;
 
     let job_id = get_slurm_job_id().expect("Collector not run in the context of a Slurm epilog");
+
+    info!(slurm_job_id = job_id, "Acquired SLURM job ID");
+
     let job = get_slurm_job_info(job_id)?;
 
-    // println!("{:?}", job);
-    // println!("Server health: {}", client.health_check().await);
+    debug!(?job, "Acquired SLURM job info");
 
     let record = RecordAdd::new(
         format!("{}-{}", make_string_valid(&config.record_prefix), job_id),
@@ -133,8 +139,9 @@ async fn main() -> Result<(), Error> {
     .expect("Could not construct record")
     .with_stop_time(parse_slurm_timestamp(&job["EndTime"])?);
 
-    // println!("{:?}", record);
+    debug!(?record, "Constructed record.");
 
+    info!("Sending record to AUDITOR instance.");
     client.add(record).await?;
 
     Ok(())
