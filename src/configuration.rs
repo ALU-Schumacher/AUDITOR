@@ -3,13 +3,13 @@ use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use sqlx::ConnectOptions;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: AuditorSettings,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct AuditorSettings {
     #[serde(default = "default_addr")]
     pub addr: String,
@@ -21,7 +21,7 @@ fn default_addr() -> String {
     "127.0.0.1".to_string()
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: Secret<String>,
@@ -58,9 +58,6 @@ impl DatabaseSettings {
 
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-    // initialize our configuration reader
-    // let mut settings = config::Config::default();
-
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
 
@@ -74,21 +71,13 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(
             config::File::from(configuration_directory.join(environment.as_str())).required(true),
         )
-        .add_source(config::Environment::with_prefix("auditor").separator("__"));
-    // settings.merge(config::File::from(configuration_directory.join("base")).required(true))?;
+        .add_source(
+            config::Environment::with_prefix("AUDITOR")
+                .separator("__")
+                .prefix_separator("_"),
+        );
 
-    // settings.merge(
-    //     config::File::from(configuration_directory.join(environment.as_str())).required(true),
-    // )?;
-
-    // settings.merge(config::Environment::with_prefix("auditor").separator("__"))?;
-
-    // settings.try_into()
-
-    match settings.build() {
-        Ok(config) => config.try_deserialize(),
-        Err(e) => Err(e),
-    }
+    settings.build()?.try_deserialize()
 }
 
 // The possible runtime environment for AUDITOR.

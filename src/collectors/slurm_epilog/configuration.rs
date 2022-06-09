@@ -38,25 +38,20 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .join("slurm-epilog-collector");
 
     let settings = config::Config::builder()
-        .add_source(config::File::from(configuration_directory.join("base")).required(true));
+        .add_source(config::File::from(configuration_directory.join("base")).required(false));
     let settings = match std::env::args().nth(1) {
-        Some(file) => settings.add_source(config::File::from(file.as_ref()).required(false)),
+        Some(file) => settings.add_source(
+            config::File::from(file.as_ref())
+                .required(false)
+                .format(config::FileFormat::Yaml),
+        ),
         None => settings,
     };
-    let settings = settings.add_source(config::Environment::with_prefix("auditor").separator("__"));
-    // settings.merge(config::File::from(configuration_directory.join("base")).required(false))?;
+    let settings = settings.add_source(
+        config::Environment::with_prefix("AUDITOR")
+            .separator("__")
+            .prefix_separator("_"),
+    );
 
-    // match std::env::args().nth(1) {
-    //     Some(file) => {
-    //         settings.merge(config::File::from(file.as_ref()).required(false))?;
-    //     }
-    //     None => (),
-    // }
-
-    // settings.merge(config::Environment::with_prefix("auditor").separator("_"))?;
-
-    match settings.build() {
-        Ok(config) => config.try_deserialize(),
-        Err(e) => Err(e),
-    }
+    settings.build()?.try_deserialize()
 }
