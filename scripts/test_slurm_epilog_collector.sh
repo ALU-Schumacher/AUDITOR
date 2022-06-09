@@ -63,6 +63,14 @@ function stop_container() {
 		down
 }
 
+function compile_auditor() {
+	if [ "$RELEASE_MODE" = true ]; then
+		cargo build --bin auditor --release
+	else
+		cargo build --bin auditor
+	fi
+}
+
 function compile_collector() {
 	if [ "$RELEASE_MODE" = true ]; then
 		RUSTFLAGS='-C link-args=-s' \
@@ -79,7 +87,15 @@ function compile_collector() {
 }
 
 function start_auditor() {
-	AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor &
+	if [[ -z "${SKIP_COMPILATION}" ]]
+	then
+		compile_auditor
+	fi
+	if [ "$RELEASE_MODE" = true ]; then
+		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/release/auditor &
+	else
+		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor &
+	fi
 	AUDITOR_SERVER_PID=$!
 	COUNTER=0
 	until curl http://localhost:8000/health_check; do
