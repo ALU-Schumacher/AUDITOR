@@ -83,7 +83,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --bin auditor --target x86_64-unknown-linux-musl
+          args: --bin auditor
 
       - name: Build Slurm epilog collector
         uses: actions-rs/cargo@v1
