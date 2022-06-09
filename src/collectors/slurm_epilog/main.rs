@@ -5,6 +5,7 @@ use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::{DateTime, NaiveDateTime, Utc};
+use regex::Regex;
 use std::collections::HashMap;
 use std::env;
 use std::fmt;
@@ -63,8 +64,12 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
         .iter()
         .cloned()
         .filter(|c| {
-            c.only_if.is_none()
-                || job[&c.only_if.as_ref().unwrap().key] == c.only_if.as_ref().unwrap().matches
+            c.only_if.is_none() || {
+                let only_if = c.only_if.as_ref().unwrap();
+                let re = Regex::new(&only_if.matches)
+                    .expect(&format!("Invalid regex expression: {}", &only_if.matches));
+                re.is_match(&job[&only_if.key])
+            }
         })
         .map(|c| {
             Component::new(

@@ -271,6 +271,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "rand",
+ "regex",
  "reqwest",
  "secrecy",
  "serde",
