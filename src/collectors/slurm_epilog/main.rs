@@ -2,7 +2,7 @@
 use anyhow::Error;
 use auditor::client::AuditorClient;
 use auditor::constants::FORBIDDEN_CHARACTERS;
-use auditor::domain::{Component, RecordAdd, Score};
+use auditor::domain::{Component, RecordAdd};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use std::collections::HashMap;
@@ -17,13 +17,16 @@ fn get_slurm_job_id() -> Result<u64, Error> {
     Ok(env::var("SLURM_JOB_ID")?.parse()?)
 }
 
+type Job = HashMap<String, String>;
+
 #[tracing::instrument(name = "Getting Slurm job info via scontrol")]
-fn get_slurm_job_info(job_id: u64) -> Result<HashMap<String, String>, Error> {
+fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
     Ok(std::str::from_utf8(
         &Command::new("scontrol")
             .arg("show")
             .arg("job")
             .arg(job_id.to_string())
+            .arg("--details")
             .output()?
             .stdout,
     )?
@@ -50,6 +53,33 @@ fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
     input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
 }
 
+#[tracing::instrument(
+    name = "Construct components from job info and configuration",
+    level = "debug"
+)]
+fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Component> {
+    config
+        .components
+        .iter()
+        .cloned()
+        .filter(|c| {
+            c.only_if.is_none()
+                || job[&c.only_if.as_ref().unwrap().key] == c.only_if.as_ref().unwrap().matches
+        })
+        .map(|c| {
+            Component::new(
+                make_string_valid(c.name),
+                job[&c.key].parse().expect(&format!(
+                    "Cannot parse key {} (value: {}) into u64.",
+                    c.key, job[&c.key]
+                )),
+                c.scores,
+            )
+            .expect("Cannot construct component. Please check your configuration!")
+        })
+        .collect()
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     // Set up logging
@@ -70,23 +100,15 @@ async fn main() -> Result<(), Error> {
     // println!("{:?}", job);
     // println!("Server health: {}", client.health_check().await);
 
-    let components = vec![Component::new(
-        "Cores",
-        job["NumCPUs"].parse()?,
-        vec![Score::new("FakeHEPSPEC", 1.3).unwrap()],
-    )
-    .unwrap()];
-
     let record = RecordAdd::new(
-        format!("{}-{}", make_string_valid(config.record_prefix), job_id),
-        make_string_valid(config.site_id),
+        format!("{}-{}", make_string_valid(&config.record_prefix), job_id),
+        make_string_valid(&config.site_id),
         make_string_valid(&job["UserId"]),
         make_string_valid(&job["GroupId"]),
-        components,
+        construct_components(&config, &job),
         parse_slurm_timestamp(&job["StartTime"])?,
     )
-    // Get rid of unwrap once rest of the library has proper error handling
-    .unwrap()
+    .expect("Could not construct record")
     .with_stop_time(parse_slurm_timestamp(&job["EndTime"])?);
 
     // println!("{:?}", record);

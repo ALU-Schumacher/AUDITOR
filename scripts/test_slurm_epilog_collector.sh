@@ -32,6 +32,10 @@ function start_container() {
 		cp \
 		./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector \
 		slurm:/auditor-slurm-epilog-collector
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp ./containers/docker-centos7-slurm/collector_config.yaml slurm:/collector_config.yaml
 
 	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-epilog-collector
 	docker exec auditor-slurm-1 chown slurm:slurm /epilog.sh
@@ -132,7 +136,7 @@ sleep 5
 # docker exec auditor-slurm-1 ls -la /epilog_logs
 docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
-curl http://localhost:8000/get
+curl http://localhost:8000/get | jq
 
 if [ "$(curl http://localhost:8000/get | jq '. | length')" != 1 ]
 then
