@@ -6,4 +6,5 @@ exec 2>> /epilog_logs/epilog.log
 # curl -v http://localhost:8000/health_check
 # curl -vvv http://host.docker.internal:8000/health_check
 
-AUDITOR_ADDR=host.docker.internal AUDITOR_PORT=8000 /auditor-slurm-epilog-collector
+# AUDITOR_ADDR=host.docker.internal AUDITOR_PORT=8000 /auditor-slurm-epilog-collector
+/auditor-slurm-epilog-collector collector_config.yaml

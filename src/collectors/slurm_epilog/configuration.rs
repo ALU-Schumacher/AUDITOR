@@ -1,6 +1,7 @@
+use auditor::domain::Score;
 use serde_aux::field_attributes::deserialize_number_from_string;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
     #[serde(default = "default_addr")]
     pub addr: String,
@@ -11,6 +12,23 @@ pub struct Settings {
     pub record_prefix: String,
     #[serde(default = "default_string")]
     pub site_id: String,
+    #[serde(default = "default_components")]
+    pub components: Vec<ComponentConfig>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct ComponentConfig {
+    pub name: String,
+    pub key: String,
+    #[serde(default = "default_score")]
+    pub scores: Vec<Score>,
+    pub only_if: Option<OnlyIf>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct OnlyIf {
+    pub key: String,
+    pub matches: String,
 }
 
 fn default_addr() -> String {
@@ -27,6 +45,19 @@ fn default_record_prefix() -> String {
 
 fn default_string() -> String {
     "none".to_string()
+}
+
+fn default_score() -> Vec<Score> {
+    vec![]
+}
+
+fn default_components() -> Vec<ComponentConfig> {
+    vec![ComponentConfig {
+        name: "Cores".into(),
+        key: "NumCPUs".into(),
+        scores: vec![],
+        only_if: None,
+    }]
 }
 
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
