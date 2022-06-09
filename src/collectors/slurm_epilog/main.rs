@@ -2,7 +2,7 @@
 use anyhow::Error;
 use auditor::client::AuditorClient;
 use auditor::constants::FORBIDDEN_CHARACTERS;
-use auditor::domain::{Component, RecordAdd};
+use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use regex::Regex;
@@ -67,18 +67,35 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
             c.only_if.is_none() || {
                 let only_if = c.only_if.as_ref().unwrap();
                 let re = Regex::new(&only_if.matches)
-                    .expect(&format!("Invalid regex expression: {}", &only_if.matches));
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
                 re.is_match(&job[&only_if.key])
             }
         })
         .map(|c| {
             Component::new(
                 make_string_valid(c.name),
-                job[&c.key].parse().expect(&format!(
-                    "Cannot parse key {} (value: {}) into u64.",
-                    c.key, job[&c.key]
-                )),
-                c.scores,
+                job[&c.key].parse().unwrap_or_else(|_| {
+                    panic!(
+                        "Cannot parse key {} (value: {}) into u64.",
+                        c.key, job[&c.key]
+                    )
+                }),
+                c.scores
+                    .iter()
+                    .filter(|s| {
+                        s.only_if.is_none() || {
+                            let only_if = s.only_if.as_ref().unwrap();
+                            let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
+                                panic!("Invalid regex expression: {}", &only_if.matches)
+                            });
+                            re.is_match(&job[&only_if.key])
+                        }
+                    })
+                    .map(|s| {
+                        Score::new(s.name.clone(), s.factor)
+                            .unwrap_or_else(|_| panic!("Cannot construct score from {:?}", s))
+                    })
+                    .collect(),
             )
             .expect("Cannot construct component. Please check your configuration!")
         })

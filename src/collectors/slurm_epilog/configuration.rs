@@ -1,4 +1,3 @@
-use auditor::domain::Score;
 use serde_aux::field_attributes::deserialize_number_from_string;
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -21,7 +20,14 @@ pub struct ComponentConfig {
     pub name: String,
     pub key: String,
     #[serde(default = "default_score")]
-    pub scores: Vec<Score>,
+    pub scores: Vec<ScoreConfig>,
+    pub only_if: Option<OnlyIf>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct ScoreConfig {
+    pub name: String,
+    pub factor: f64,
     pub only_if: Option<OnlyIf>,
 }
 
@@ -47,7 +53,7 @@ fn default_string() -> String {
     "none".to_string()
 }
 
-fn default_score() -> Vec<Score> {
+fn default_score() -> Vec<ScoreConfig> {
     vec![]
 }
 
