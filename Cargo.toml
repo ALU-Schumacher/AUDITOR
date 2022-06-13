@@ -19,7 +19,7 @@ path = "src/collectors/slurm_epilog/main.rs"
 strip = true
 
 [dependencies]
-actix-web = "4.0.0"
+actix-web = "4.1.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 serde = { version = "1", features = ["derive"] }
 serde-aux = "3"
