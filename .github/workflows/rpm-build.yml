@@ -1,0 +1,75 @@
+name: RPM
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    name: RPM build 
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        binary:
+          - auditor
+          - auditor-slurm-epilog-collector
+
+    env:
+      SQLX_OFFLINE: true 
+      CARGO_GET_VERSION: 0.3.3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: x86_64-unknown-linux-musl
+
+      - name: Cache cargo-get
+        uses: actions/cache@v2
+        id: cache-cargo-get
+        with:
+          path: |
+            ~/.cargo/bin/cargo-get
+          key: ${{ runner.os }}-cargo-get-${{ env.CARGO_GET_VERSION }}
+
+
+      - name: Install cargo-get
+        uses: actions-rs/cargo@v1
+        if: steps.cache-cargo-get.outputs.cache-hit == false
+        with:
+          command: install 
+          args: >
+            cargo-get
+            --force
+            --version=${{ env.CARGO_GET_VERSION }}
+            --locked
+
+      - name: Install musl and rpm
+        run: |
+          sudo apt-get install musl musl-tools rpm
+
+      - name: Build Slurm epilog collector
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --bin ${{ matrix.binary }} --target x86_64-unknown-linux-musl --release
+
+      - name: Build RPM
+        run: |
+          BINARY=${{ matrix.binary }} ./scripts/build_rpm.sh

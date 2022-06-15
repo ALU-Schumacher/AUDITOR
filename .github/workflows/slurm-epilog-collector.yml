@@ -1,5 +1,4 @@
-
-name: Rust
+name: slurm-epilog-collector
 
 on: [push, pull_request]
 

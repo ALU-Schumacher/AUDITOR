@@ -3,6 +3,9 @@ name = "auditor"
 version = "0.1.0"
 edition = "2021"
 default-run = "auditor"
+license = "MIT OR Apache-2.0"
+description = "An accounting system"
+exclude = [".cargo", ".dockerignore", ".git", ".gitattributes", ".github", ".gitignore", ".pytest_cache", "containers", "target"]
 
 [lib]
 path = "src/lib.rs"
