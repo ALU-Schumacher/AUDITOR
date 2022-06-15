@@ -1,5 +1,4 @@
-
-name: Rust
+name: Auditor
 
 on: [push, pull_request]
 

@@ -1,4 +1,4 @@
-name: Build and push Docker container
+name: Containers
 
 on:
   pull_request:
