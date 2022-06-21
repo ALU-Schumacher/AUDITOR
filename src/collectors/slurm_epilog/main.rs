@@ -23,7 +23,7 @@ type Job = HashMap<String, String>;
 #[tracing::instrument(name = "Getting Slurm job info via scontrol")]
 fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
     Ok(std::str::from_utf8(
-        &Command::new("scontrol")
+        &Command::new("/usr/bin/scontrol")
             .arg("show")
             .arg("job")
             .arg(job_id.to_string())
