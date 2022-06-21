@@ -131,7 +131,7 @@ When using the Docker container, the environment variable has to be passed expli
 exec >> /epilog_logs/epilog.log
 exec 2>> /epilog_logs/epilog.log
 
-docker run -e SLURM_JOB_ID=$SLURM_JOB_ID -e AUDITOR_ADDR=auditor_host_address -e AUDITOR_PORT=8000 aluschumacher/auditor-slurm-epilog-collector:latest
+docker run -e SLURM_JOB_ID=$SLURM_JOB_ID -e AUDITOR_ADDR=auditor_host_address -e AUDITOR_PORT=8000 aluschumacher/auditor-slurm-epilog-collector:main
 ```
 
 TODO: This is likely not complete, because the container probably needs access to the host network. Test this.
