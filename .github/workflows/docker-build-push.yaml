@@ -20,7 +20,6 @@ jobs:
       matrix:
         containers:
           - auditor
-          - auditor-slurm-epilog-collector
 
     steps:
       - name: Checkout repository
