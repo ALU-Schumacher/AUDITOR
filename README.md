@@ -123,19 +123,6 @@ AUDITOR_ADDR=auditor_host_address AUDITOR_PORT=8000 /auditor-slurm-epilog-collec
 
 This will read the `$SLURM_JOB_ID` environment variable.
 
-When using the Docker container, the environment variable has to be passed explicitly:
-
-
-```bash
-# Divert stdout and sterr. Make sure the slurmuser has write access to both locations.
-exec >> /epilog_logs/epilog.log
-exec 2>> /epilog_logs/epilog.log
-
-docker run -e SLURM_JOB_ID=$SLURM_JOB_ID -e AUDITOR_ADDR=auditor_host_address -e AUDITOR_PORT=8000 aluschumacher/auditor-slurm-epilog-collector:main
-```
-
-TODO: This is likely not complete, because the container probably needs access to the host network. Test this.
-
 ### Filtering which records should be sent to Auditor
 
 Filtering should be done in the epilog script. Only call the collector for jobs which should be sent to Auditor.
