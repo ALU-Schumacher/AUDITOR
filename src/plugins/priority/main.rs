@@ -1,13 +1,7 @@
 use anyhow::Error;
 use auditor::client::AuditorClient;
-// use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
-// use chrono::{DateTime, NaiveDateTime, Utc};
-// use regex::Regex;
-// use std::collections::HashMap;
-// use std::env;
-// use std::fmt;
 use configuration::Settings;
 use num_traits::cast::FromPrimitive;
 use std::collections::HashMap;
@@ -155,16 +149,6 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
     let command = shell_words::split(&config.command)?;
     for (group, params) in config.group_mapping.iter() {
         let command = construct_command(&command.clone(), *priorities.get(group).unwrap(), params);
-        // let mut cmd = command.clone();
-        // for c in cmd.iter_mut() {
-        //     *c = c.replace("{priority}", &format!("{}", priorities.get(group).unwrap()));
-        // }
-        //
-        // for (index, p) in params.iter().enumerate() {
-        //     for c in cmd.iter_mut() {
-        //         *c = c.replace(&format!("{{{}}}", index), p);
-        //     }
-        // }
 
         let cmd_run = Command::new(&command[0])
             .args(&command[1..])
@@ -178,13 +162,6 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
     }
     Ok(())
 }
-// &Command::new("/usr/bin/scontrol")
-//     .arg("update")
-//     .arg(format!("PartitionName={}", params[0]))
-//     .arg(format!("PriorityFactor={}", priorities.get(group).unwrap()))
-//     .output()?
-//     .stdout,
-// "sudo scontrol update PartitionName=<BLAH> PriorityJobFactor=<BLAH>"
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -215,6 +192,31 @@ async fn main() -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_compute_priorities() {
+        let resources = HashMap::from([
+            ("blah1".to_string(), 2.0),
+            ("blah3".to_string(), 4.0),
+            ("blah2".to_string(), 3.0),
+        ]);
+        let config = Settings {
+            addr: "whatever".to_string(),
+            port: 1234,
+            components: HashMap::new(),
+            min_priority: 1,
+            max_priority: 10,
+            group_mapping: HashMap::new(),
+            command: "whatever".to_string(),
+        };
+
+        let prios = compute_priorities(resources, &config);
+        // println!("{:?}", priorities);
+
+        assert_eq!(*prios.get("blah1").unwrap(), 1i64);
+        assert_eq!(*prios.get("blah2").unwrap(), 6i64);
+        assert_eq!(*prios.get("blah3").unwrap(), 10i64);
+    }
 
     #[test]
     fn test_construct_command() {
