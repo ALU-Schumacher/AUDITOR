@@ -33,7 +33,7 @@ tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1"
-tracing-actix-web = "0.5"
+tracing-actix-web = "0.6"
 secrecy = { version = "0.8", features = ["serde"] }
 unicode-segmentation = "1"
 fake = { version = "2.5", features = ["chrono"] }
