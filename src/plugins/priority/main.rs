@@ -10,7 +10,7 @@ use tracing::{debug, error, info, warn};
 
 mod configuration;
 
-#[tracing::instrument(name = "Extracting resources from records")]
+#[tracing::instrument(name = "Extracting resources from records", skip(records, config))]
 fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
     if config.components.is_empty() {
         warn!(concat!(
@@ -85,10 +85,10 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
                     }
                 }
         } else {
-            debug!(record_id = %r.record_id, "Record without runtime, ignoring.");
+            error!(record_id = %r.record_id, "Record without runtime, ignoring.");
             continue;
         };
-        // If not group id is present in the record, then record will be silently ignored
+        // If no group_id is present in the record, then record will be silently ignored
         if let Some(group_id) = r.group_id.as_ref() {
             if let Some(v) = resources.get_mut(group_id) {
                 *v += val;
@@ -96,14 +96,14 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
                 resources.insert(group_id.to_string(), val);
             }
         } else {
-            debug!(record_id = %r.record_id, "Record without group_id, ignoring.");
+            error!(record_id = %r.record_id, "Record without group_id, ignoring.");
         }
     }
 
     resources
 }
 
-#[tracing::instrument(name = "Computing priorities")]
+#[tracing::instrument(name = "Computing priorities", skip(config))]
 fn compute_priorities(resources: HashMap<String, f64>, config: &Settings) -> HashMap<String, i64> {
     let (v_min, v_max) = resources.iter().fold(
         (f64::INFINITY, f64::NEG_INFINITY),
@@ -144,21 +144,25 @@ fn construct_command(cmd: &[String], priority: i64, params: &[String]) -> Vec<St
         .collect()
 }
 
-#[tracing::instrument(name = "Setting priorities")]
+#[tracing::instrument(name = "Setting priorities", skip(config))]
 fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result<(), Error> {
     let command = shell_words::split(&config.command)?;
     for (group, params) in config.group_mapping.iter() {
-        let command = construct_command(&command.clone(), *priorities.get(group).unwrap(), params);
+        // Only set priority if group actually exists.
+        if let Some(prio) = priorities.get(group) {
+            let command = construct_command(&command.clone(), *prio, params);
 
-        let cmd_run = Command::new(&command[0])
-            .args(&command[1..])
-            .output()
-            .map_err(|e| {
-                error!("Setting priority failed!");
-                e
-            })?;
-        let output = std::str::from_utf8(&cmd_run.stdout)?;
-        debug!(command_output = %output, "Command output");
+            let cmd_run = Command::new(&command[0])
+                .args(&command[1..])
+                .output()
+                .map_err(|e| {
+                    error!("Setting priority failed!");
+                    e
+                })?;
+            debug!(command = ?cmd_run, "Command");
+            let output = std::str::from_utf8(&cmd_run.stdout)?;
+            debug!(command_output = %output, "Command output");
+        }
     }
     Ok(())
 }
@@ -211,7 +215,6 @@ mod tests {
         };
 
         let prios = compute_priorities(resources, &config);
-        // println!("{:?}", priorities);
 
         assert_eq!(*prios.get("blah1").unwrap(), 1i64);
         assert_eq!(*prios.get("blah2").unwrap(), 6i64);

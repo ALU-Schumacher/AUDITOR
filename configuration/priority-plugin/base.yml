@@ -1,0 +1,17 @@
+addr: "localhost"
+port: 8000
+record_prefix: "slurm"
+components:
+  NumCPUs: "HEPSPEC"
+min_priority: 1
+max_priority: 65335
+group_mapping:
+  atlsch: 
+    - "nemo_vm_atlsch"
+  atljak:
+    - "nemo_vm_atljak"
+  atlher:
+    - "nemo_vm_atlher"
+  atlhei:
+    - "nemo_vm_atlhei"
+command: "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
