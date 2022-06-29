@@ -14,6 +14,7 @@ jobs:
         binary:
           - auditor
           - auditor-slurm-epilog-collector
+          - auditor-priority-plugin
 
     env:
       SQLX_OFFLINE: true 
