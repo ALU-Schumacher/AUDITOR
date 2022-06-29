@@ -1,0 +1,20 @@
+addr: "host.docker.internal"
+port: 8000
+record_prefix: "slurm"
+components:
+  NumCPUs: "HEPSPEC"
+min_priority: 1
+max_priority: 65335
+group_mapping:
+  group1: 
+    - "part1"
+  group2:
+    - "part2"
+  group3:
+    - "part3"
+  group4:
+    - "part4"
+  ## this one has no records.
+  group5:
+    - "part5"
+command: "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
