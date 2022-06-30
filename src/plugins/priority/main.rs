@@ -131,9 +131,15 @@ fn compute_priorities(resources: HashMap<String, f64>, config: &Settings) -> Has
 }
 
 #[tracing::instrument(name = "Constructing command for setting priorities")]
-fn construct_command(cmd: &[String], priority: i64, params: &[String]) -> Vec<String> {
+fn construct_command(
+    cmd: &[String],
+    priority: i64,
+    group: &String,
+    params: &[String],
+) -> Vec<String> {
     cmd.iter()
         .map(|c| c.replace("{priority}", &format!("{}", priority)))
+        .map(|c| c.replace("{group}", group))
         .map(|c| {
             let mut cc = c;
             for (index, p) in params.iter().enumerate() {
@@ -146,22 +152,24 @@ fn construct_command(cmd: &[String], priority: i64, params: &[String]) -> Vec<St
 
 #[tracing::instrument(name = "Setting priorities", skip(config))]
 fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result<(), Error> {
-    let command = shell_words::split(&config.command)?;
-    for (group, params) in config.group_mapping.iter() {
-        // Only set priority if group actually exists.
-        if let Some(prio) = priorities.get(group) {
-            let command = construct_command(&command.clone(), *prio, params);
+    for command in config.commands.iter() {
+        let command = shell_words::split(command)?;
+        for (group, params) in config.group_mapping.iter() {
+            // Only set priority if group actually exists.
+            if let Some(prio) = priorities.get(group) {
+                let command = construct_command(&command.clone(), *prio, group, params);
 
-            let cmd_run = Command::new(&command[0])
-                .args(&command[1..])
-                .output()
-                .map_err(|e| {
-                    error!("Setting priority failed!");
-                    e
-                })?;
-            debug!(command = ?cmd_run, "Command");
-            let output = std::str::from_utf8(&cmd_run.stdout)?;
-            debug!(command_output = %output, "Command output");
+                let cmd_run = Command::new(&command[0])
+                    .args(&command[1..])
+                    .output()
+                    .map_err(|e| {
+                        error!("Setting priority failed!");
+                        e
+                    })?;
+                debug!(command = ?cmd_run, "Command");
+                let output = std::str::from_utf8(&cmd_run.stdout)?;
+                debug!(command_output = %output, "Command output");
+            }
         }
     }
     Ok(())
@@ -211,7 +219,7 @@ mod tests {
             min_priority: 1,
             max_priority: 10,
             group_mapping: HashMap::new(),
-            command: "whatever".to_string(),
+            commands: vec!["whatever".to_string()],
         };
 
         let prios = compute_priorities(resources, &config);
@@ -228,16 +236,19 @@ mod tests {
             "update".to_string(),
             "PartitionName={1}".to_string(),
             "PriorityFactor={priority}".to_string(),
+            "SomeGroup={group}".to_string(),
             "SomethingElse={2}".to_string(),
         ];
         let priority = 10i64;
+        let group = "atlas".to_string();
         let params = vec!["some_partition".to_string(), "blah".to_string()];
 
-        let cmd = construct_command(&cmd, priority, &params);
+        let cmd = construct_command(&cmd, priority, &group, &params);
         assert_eq!(cmd[0], "/usr/bin/scontrol");
         assert_eq!(cmd[1], "update");
         assert_eq!(cmd[2], "PartitionName=some_partition");
         assert_eq!(cmd[3], "PriorityFactor=10");
-        assert_eq!(cmd[4], "SomethingElse=blah");
+        assert_eq!(cmd[4], "SomeGroup=atlas");
+        assert_eq!(cmd[5], "SomethingElse=blah");
     }
 }

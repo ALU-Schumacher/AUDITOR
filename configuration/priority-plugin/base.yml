@@ -14,4 +14,6 @@ group_mapping:
     - "nemo_vm_atlher"
   atlhei:
     - "nemo_vm_atlhei"
-command: "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+command:
+  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+  - "echo '{group}: {priority}'"

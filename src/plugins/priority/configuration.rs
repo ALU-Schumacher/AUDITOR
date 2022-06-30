@@ -17,7 +17,7 @@ pub struct Settings {
     pub max_priority: u64,
     pub group_mapping: HashMap<String, Vec<String>>,
     #[serde(default = "default_command")]
-    pub command: String,
+    pub commands: Vec<String>,
 }
 
 fn default_addr() -> String {
@@ -36,8 +36,8 @@ fn default_max_priority() -> u64 {
     1024
 }
 
-fn default_command() -> String {
-    "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}".to_string()
+fn default_command() -> Vec<String> {
+    vec!["/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}".to_string()]
 }
 
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
