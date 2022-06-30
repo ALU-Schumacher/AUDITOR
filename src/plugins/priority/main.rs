@@ -159,14 +159,21 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
             if let Some(prio) = priorities.get(group) {
                 let command = construct_command(&command.clone(), *prio, group, params);
 
-                let cmd_run = Command::new(&command[0])
-                    .args(&command[1..])
-                    .status()
-                    .map_err(|e| {
-                        error!("Setting priority failed!");
-                        e
-                    })?;
-                debug!(command = ?cmd_run, "Command");
+                let mut cmd = Command::new(&command[0]);
+                cmd.args(&command[1..]);
+
+                info!(?cmd, "Constructed command");
+
+                let status = cmd.status().map_err(|e| {
+                    error!("Executing command failed!");
+                    e
+                })?;
+
+                debug!(?status, "Command status");
+
+                if !status.success() {
+                    error!("Setting priority failed!");
+                }
                 // let output = std::str::from_utf8(&cmd_run.stdout)?;
                 // info!(command_output = %output, "Command output");
             }
