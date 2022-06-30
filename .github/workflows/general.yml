@@ -19,7 +19,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.5.13
-      SQLX_FEATURES: postgres
+      SQLX_FEATURES: postgres,rustls
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
