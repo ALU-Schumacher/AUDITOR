@@ -21,6 +21,10 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
 
     let mut resources: HashMap<String, f64> = HashMap::new();
 
+    for group in config.group_mapping.keys() {
+        resources.insert(group.to_string(), 0.0);
+    }
+
     for r in records {
         let val: f64 = if let Some(runtime) = r.runtime {
             f64::from_i64(runtime).unwrap()
@@ -92,11 +96,8 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
         if let Some(group_id) = r.group_id.as_ref() {
             // Only consider configured groups
             if config.group_mapping.contains_key(group_id) {
-                if let Some(v) = resources.get_mut(group_id) {
-                    *v += val;
-                } else {
-                    resources.insert(group_id.to_string(), val);
-                }
+                // we know that the key exists (we filled it beforehand), therefore we can unwrap
+                *resources.get_mut(group_id).unwrap() += val;
             }
         } else {
             error!(record_id = %r.record_id, "Record without group_id, ignoring.");
