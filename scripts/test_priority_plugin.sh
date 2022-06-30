@@ -142,6 +142,11 @@ function test_priority_plugin() {
                 --data '{ "record_id": "6", "site_id": "test", "user_id": "stefan", "group_id": "group4", "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "factor": 1.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T12:01:00Z" }' \
                 http://localhost:8000/add
 
+  # Group5 (Is not configured and therefore is not allowed to affect the calculation)
+	curl --header "Content-Type: application/json" \
+                --data '{ "record_id": "7", "site_id": "test", "user_id": "stefan", "group_id": "group5", "components": [{ "name": "NumCPUs", "amount": 10000, "scores": [{ "name": "HEPSPEC", "factor": 100.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
+                http://localhost:8000/add
+
 
 	sleep 1
 	docker exec -e RUST_LOG=debug auditor-slurm-1 /auditor-priority-plugin plugin_config.yaml
