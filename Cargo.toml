@@ -49,7 +49,7 @@ num-traits = "^0.2"
 shell-words = "^1"
 
 [dependencies.sqlx]
-version = "0.5.7"
+version = "0.5.13"
 default-features = false
 features = [
     "runtime-actix-rustls",
