@@ -19,7 +19,9 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.5.13
-      SQLX_FEATURES: postgres,rustls
+      SQLX_FEATURES: 
+        - postgres
+        - rustls
       RUSTFLAGS: -C link-arg=-s
     steps:
       - name: Checkout repository
@@ -50,7 +52,8 @@ jobs:
           path: |
             ~/.cargo/bin/sqlx
             ~/.cargo/bin/cargo-sqlx
-          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+          # key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ join(env.SQLX_FEATURES, '-') }}
 
 
       - name: Install sqlx-cli 
@@ -62,7 +65,8 @@ jobs:
             sqlx-cli
             --force
             --version=${{ env.SQLX_VERSION }}
-            --features=${{ env.SQLX_FEATURES }}
+            # --features=${{ env.SQLX_FEATURES }}
+            --features=${{ join(env.SQLX_FEATURES, ',') }}
             --no-default-features
             --locked
 
