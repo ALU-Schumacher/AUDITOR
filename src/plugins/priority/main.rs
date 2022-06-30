@@ -168,7 +168,7 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
                     })?;
                 debug!(command = ?cmd_run, "Command");
                 let output = std::str::from_utf8(&cmd_run.stdout)?;
-                debug!(command_output = %output, "Command output");
+                info!(command_output = %output, "Command output");
             }
         }
     }
