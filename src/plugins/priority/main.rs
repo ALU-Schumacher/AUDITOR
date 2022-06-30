@@ -161,14 +161,14 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
 
                 let cmd_run = Command::new(&command[0])
                     .args(&command[1..])
-                    .output()
+                    .status()
                     .map_err(|e| {
                         error!("Setting priority failed!");
                         e
                     })?;
                 debug!(command = ?cmd_run, "Command");
-                let output = std::str::from_utf8(&cmd_run.stdout)?;
-                info!(command_output = %output, "Command output");
+                // let output = std::str::from_utf8(&cmd_run.stdout)?;
+                // info!(command_output = %output, "Command output");
             }
         }
     }
