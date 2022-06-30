@@ -90,10 +90,13 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<String, f64> {
         };
         // If no group_id is present in the record, then record will be silently ignored
         if let Some(group_id) = r.group_id.as_ref() {
-            if let Some(v) = resources.get_mut(group_id) {
-                *v += val;
-            } else {
-                resources.insert(group_id.to_string(), val);
+            // Only consider configured groups
+            if config.group_mapping.contains_key(group_id) {
+                if let Some(v) = resources.get_mut(group_id) {
+                    *v += val;
+                } else {
+                    resources.insert(group_id.to_string(), val);
+                }
             }
         } else {
             error!(record_id = %r.record_id, "Record without group_id, ignoring.");
@@ -162,7 +165,7 @@ fn set_priorities(priorities: HashMap<String, i64>, config: &Settings) -> Result
                 let mut cmd = Command::new(&command[0]);
                 cmd.args(&command[1..]);
 
-                info!(?cmd, "Constructed command");
+                debug!(?cmd, "Constructed command");
 
                 let status = cmd.status().map_err(|e| {
                     error!("Executing command failed!");
