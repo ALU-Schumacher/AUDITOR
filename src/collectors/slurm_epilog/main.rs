@@ -131,8 +131,8 @@ async fn main() -> Result<(), Error> {
     let record = RecordAdd::new(
         format!("{}-{}", make_string_valid(&config.record_prefix), job_id),
         make_string_valid(&config.site_id),
-        make_string_valid(&job["UserId"]),
-        make_string_valid(&job["GroupId"]),
+        make_string_valid(&job["UserId"].split('(').take(1).collect::<Vec<_>>()[0]),
+        make_string_valid(&job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0]),
         construct_components(&config, &job),
         parse_slurm_timestamp(&job["StartTime"])?,
     )
