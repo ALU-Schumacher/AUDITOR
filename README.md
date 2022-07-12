@@ -71,7 +71,7 @@ cargo build --release
 
 The binary can then be found in `target/release/auditor`.
 
-Make sure a database is up and running when starting AUDITOR.
+Make sure a database is up and running when starting Auditor.
 
 ## Configuration
 
@@ -121,7 +121,7 @@ exec 2>> /epilog_logs/epilog.log
 AUDITOR_ADDR=auditor_host_address AUDITOR_PORT=8000 /auditor-slurm-epilog-collector
 ```
 
-This will read the `$SLURM_JOB_ID` environment variable.
+This will read the `$SLURM_JOB_ID` environment variable, which is only available in the cotext of a SLURM epilog script.
 
 ### Filtering which records should be sent to Auditor
 
@@ -129,4 +129,13 @@ Filtering should be done in the epilog script. Only call the collector for jobs 
 
 ## License
 
-TODO
+Licensed under either of
+
+ - Apache License, Version 2.0, ([LICENSE-APACHE](https://github.com/ALU-Schumacher/AUDITOR/blob/main/LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+ - MIT License ([LICENSE-MIT](https://github.com/ALU-Schumacher/AUDITOR/blob/main/LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
+
+at your option.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
