@@ -1,0 +1,38 @@
+name: Website
+
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v3.0.0
+      - name: Build only 
+        uses: shalzz/zola-deploy-action@master
+        env:
+          BUILD_DIR: media/website
+          BUILD_ONLY: true
+          BUILD_FLAGS: --drafts
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v3.0.0
+      - name: Build and deploy
+        uses: shalzz/zola-deploy-action@master
+        env:
+          BUILD_DIR: media/website
+          PAGES_BRANCH: gh-pages
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
