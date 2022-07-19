@@ -14,7 +14,8 @@ group_mapping:
     - "part3"
   group4:
     - "part4"
-  ## this one has no records.
+  ## group 5 deliberately does not exist
+  ## group 6 has no records.
   group6:
     - "part6"
 command: "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
