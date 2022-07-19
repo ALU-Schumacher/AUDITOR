@@ -9,6 +9,7 @@ use anyhow::Error;
 use auditor::client::AuditorClient;
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
+use chrono::Utc;
 use configuration::Settings;
 use num_traits::cast::FromPrimitive;
 use std::collections::HashMap;
@@ -211,8 +212,13 @@ async fn main() -> Result<(), Error> {
 
     let client = AuditorClient::new(&config.addr, config.port)?;
 
+    let records = match config.duration {
+        Some(duration) => client.get_stopped_since(Utc::now() - duration).await?,
+        None => client.get().await?,
+    };
+
     set_priorities(
-        compute_priorities(extract(client.get().await?, &config), &config),
+        compute_priorities(extract(records, &config), &config),
         &config,
     )?;
 
@@ -238,6 +244,7 @@ mod tests {
             max_priority: 10,
             group_mapping: HashMap::new(),
             commands: vec!["whatever".to_string()],
+            duration: None,
         };
 
         let prios = compute_priorities(resources, &config);

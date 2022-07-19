@@ -5,9 +5,11 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use chrono::Duration;
 use serde_aux::field_attributes::deserialize_number_from_string;
 use std::collections::HashMap;
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
     #[serde(default = "default_addr")]
@@ -25,6 +27,8 @@ pub struct Settings {
     pub group_mapping: HashMap<String, Vec<String>>,
     #[serde(default = "default_command")]
     pub commands: Vec<String>,
+    #[serde_as(as = "Option<serde_with::DurationSeconds<i64>>")]
+    pub duration: Option<Duration>,
 }
 
 fn default_addr() -> String {
