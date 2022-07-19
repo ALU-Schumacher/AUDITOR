@@ -12,7 +12,7 @@ use std::fmt;
 // possible to create this type outside of this module, hence enforcing the use of `parse`. This
 // ensures that every string stored in this type satisfies the validation criteria checked by
 // `parse`.
-#[derive(Debug, Clone, PartialEq, sqlx::Decode, sqlx::Encode)]
+#[derive(Debug, Clone, PartialEq, Eq, sqlx::Decode, sqlx::Encode)]
 pub struct ValidAmount(i64);
 
 impl ValidAmount {
