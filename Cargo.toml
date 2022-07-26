@@ -1,11 +1,31 @@
 [package]
 name = "auditor"
-version = "0.1.0"
+version = "0.0.1"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2021"
 default-run = "auditor"
 license = "MIT OR Apache-2.0"
-description = "An accounting system"
-exclude = [".cargo", ".dockerignore", ".git", ".gitattributes", ".github", ".gitignore", ".pytest_cache", "containers", "target"]
+description = "AccoUnting Data handlIng Toolbox for Opportunistic Resources"
+documentation = "https://docs.rs/auditor/"
+homepage = "https://alu-schumacher.github.io/AUDITOR/"
+repository = "https://github.com/alu-schumacher/AUDITOR"
+readme = "README.md"
+keywords = ["accounting", "opportunistic resources", "grid computing", "batch systems"]
+exclude = [
+    ".cargo",
+    ".dockerignore",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    ".pytest_cache",
+    "containers",
+    "target",
+    "./client",
+    "media",
+    "./rpm"
+]
+
 
 [lib]
 path = "src/lib.rs"
