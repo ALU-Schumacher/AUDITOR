@@ -10,7 +10,7 @@ use auditor::client::AuditorClient;
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::Utc;
-use configuration::Settings;
+use configuration::{ComputationMode, Settings};
 use num_traits::cast::FromPrimitive;
 use std::collections::HashMap;
 use std::process::Command;
@@ -125,12 +125,13 @@ fn compute_priorities(
     resources: &HashMap<ResourceName, ResourceValue>,
     config: &Settings,
 ) -> HashMap<PriorityName, PriorityValue> {
-    let (v_min, v_max) = resources.iter().fold(
-        (f64::INFINITY, f64::NEG_INFINITY),
-        |(cur_min, cur_max), (_, v)| {
+    let (v_min, v_max, v_sum) = resources.iter().fold(
+        (f64::INFINITY, f64::NEG_INFINITY, 0.0),
+        |(cur_min, cur_max, sum), (_, v)| {
             (
                 if *v < cur_min { *v } else { cur_min },
                 if *v > cur_max { *v } else { cur_max },
+                sum + *v,
             )
         },
     );
@@ -138,16 +139,27 @@ fn compute_priorities(
     let max_priority = f64::from_u64(config.max_priority).unwrap();
     let min_priority = f64::from_u64(config.min_priority).unwrap();
 
-    resources
-        .iter()
-        .map(|(k, v)| {
-            (
-                k.clone(),
-                ((v - v_min) / (v_max - v_min) * (max_priority - min_priority) + min_priority)
-                    .round() as i64,
-            )
-        })
-        .collect()
+    match config.computation_mode {
+        ComputationMode::FullSpread => resources
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.clone(),
+                    ((v - v_min) / (v_max - v_min) * (max_priority - min_priority) + min_priority)
+                        .round() as i64,
+                )
+            })
+            .collect(),
+        ComputationMode::ScaledBySum => resources
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.clone(),
+                    ((max_priority - min_priority) / v_sum * v + min_priority).round() as i64,
+                )
+            })
+            .collect(),
+    }
 }
 
 #[tracing::instrument(name = "Constructing command for setting priorities")]
@@ -244,7 +256,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_compute_priorities() {
+    fn test_compute_priorities_fullspread() {
         let resources = HashMap::from([
             ("blah1".to_string(), 2.0),
             ("blah3".to_string(), 4.0),
@@ -259,6 +271,7 @@ mod tests {
             group_mapping: HashMap::new(),
             commands: vec!["whatever".to_string()],
             duration: None,
+            computation_mode: ComputationMode::FullSpread,
         };
 
         let prios = compute_priorities(&resources, &config);
@@ -266,6 +279,32 @@ mod tests {
         assert_eq!(*prios.get("blah1").unwrap(), 1i64);
         assert_eq!(*prios.get("blah2").unwrap(), 6i64);
         assert_eq!(*prios.get("blah3").unwrap(), 10i64);
+    }
+
+    #[test]
+    fn test_compute_priorities_scaledbysum() {
+        let resources = HashMap::from([
+            ("blah1".to_string(), 2.0),
+            ("blah3".to_string(), 4.0),
+            ("blah2".to_string(), 3.0),
+        ]);
+        let config = Settings {
+            addr: "whatever".to_string(),
+            port: 1234,
+            components: HashMap::new(),
+            min_priority: 1,
+            max_priority: 10,
+            group_mapping: HashMap::new(),
+            commands: vec!["whatever".to_string()],
+            duration: None,
+            computation_mode: ComputationMode::ScaledBySum,
+        };
+
+        let prios = compute_priorities(&resources, &config);
+
+        assert_eq!(*prios.get("blah1").unwrap(), 3i64);
+        assert_eq!(*prios.get("blah2").unwrap(), 4i64);
+        assert_eq!(*prios.get("blah3").unwrap(), 5i64);
     }
 
     #[test]
