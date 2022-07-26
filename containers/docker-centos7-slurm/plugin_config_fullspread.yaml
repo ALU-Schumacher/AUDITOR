@@ -5,6 +5,7 @@ components:
   NumCPUs: "HEPSPEC"
 min_priority: 1
 max_priority: 65335
+computation_mode: FullSpread
 group_mapping:
   group1: 
     - "part1"
@@ -18,4 +19,5 @@ group_mapping:
   ## group 6 has no records.
   group6:
     - "part6"
-command: "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+command:
+  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"

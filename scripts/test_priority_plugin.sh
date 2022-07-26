@@ -20,18 +20,22 @@ function start_container() {
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
 		cp ./containers/docker-centos7-slurm/slurm.conf slurm:/etc/slurm/slurm.conf
-	# Copy Slurm epilog collector to container
+	# Copy priority plugin to container
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
 		cp \
 		./target/x86_64-unknown-linux-musl/debug/auditor-priority-plugin \
 		slurm:/auditor-priority-plugin
-	# Copy config for collector
+	# Copy configs for plugin
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
-		cp ./containers/docker-centos7-slurm/plugin_config.yaml slurm:/plugin_config.yaml
+		cp ./containers/docker-centos7-slurm/plugin_config_fullspread.yaml slurm:/plugin_config_fullspread.yaml
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp ./containers/docker-centos7-slurm/plugin_config_scaledbysum.yaml slurm:/plugin_config_scaledbysum.yaml
 
 	docker exec auditor-slurm-1 chown slurm:slurm /auditor-priority-plugin
 	docker exec auditor-slurm-1 mkdir /priority_plugin_logs
@@ -115,7 +119,7 @@ function stop_auditor() {
 	kill $AUDITOR_SERVER_PID
 }
 
-function test_priority_plugin() {
+function fill_auditor() {
 	# Group1 (40 * 1.2 * 60 + 40 * 1.5 * 4*60 = 17280)
 	curl --header "Content-Type: application/json" \
                 --data '{ "record_id": "1", "site_id": "test", "user_id": "stefan", "group_id": "group1", "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "factor": 1.2 }] }], "start_time": "2022-06-27T15:00:00Z", "stop_time": "2022-06-27T15:01:00Z" }' \
@@ -146,16 +150,31 @@ function test_priority_plugin() {
 	curl --header "Content-Type: application/json" \
                 --data '{ "record_id": "7", "site_id": "test", "user_id": "stefan", "group_id": "group5", "components": [{ "name": "NumCPUs", "amount": 10000, "scores": [{ "name": "HEPSPEC", "factor": 100.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
                 http://localhost:8000/add
+}
 
-
+function test_priority_plugin_fullspread() {
 	sleep 1
-	docker exec -e RUST_LOG=debug auditor-slurm-1 /auditor-priority-plugin plugin_config.yaml
+	docker exec -e RUST_LOG=debug auditor-slurm-1 /auditor-priority-plugin plugin_config_fullspread.yaml
 	sleep 2
 
 	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part1 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "47041" ]; then exit 1; fi }
 	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part2 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "48348" ]; then exit 1; fi }
 	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part3 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "65335" ]; then exit 1; fi }
 	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part4 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" !=  "1634" ]; then exit 1; fi }
+	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part6 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" !=     "1" ]; then exit 1; fi }
+
+	sleep 2
+}
+
+function test_priority_plugin_scaledbysum() {
+	sleep 1
+	docker exec -e RUST_LOG=debug auditor-slurm-1 /auditor-priority-plugin plugin_config_scaledbysum.yaml
+	sleep 2
+
+	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part1 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "18931" ]; then exit 1; fi }
+	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part2 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "19457" ]; then exit 1; fi }
+	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part3 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" != "26292" ]; then exit 1; fi }
+	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part4 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" !=   "658" ]; then exit 1; fi }
 	docker exec auditor-slurm-1 /usr/bin/scontrol show Partition=part6 | grep PriorityJobFactor | awk '{print $1}' | awk -F "=" '{print $2}' | { read prio; if [ "$prio" !=     "1" ]; then exit 1; fi }
 
 	sleep 2
@@ -170,7 +189,9 @@ fi
 start_container
 start_auditor
 
-test_priority_plugin
+fill_auditor
+test_priority_plugin_fullspread
+test_priority_plugin_scaledbysum
 
 stop_container
 stop_auditor

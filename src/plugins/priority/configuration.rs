@@ -9,6 +9,12 @@ use chrono::Duration;
 use serde_aux::field_attributes::deserialize_number_from_string;
 use std::collections::HashMap;
 
+#[derive(serde::Deserialize, Debug, Clone)]
+pub enum ComputationMode {
+    FullSpread,
+    ScaledBySum,
+}
+
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
@@ -29,6 +35,8 @@ pub struct Settings {
     pub commands: Vec<String>,
     #[serde_as(as = "Option<serde_with::DurationSeconds<i64>>")]
     pub duration: Option<Duration>,
+    #[serde(default = "default_computation_mode")]
+    pub computation_mode: ComputationMode,
 }
 
 fn default_addr() -> String {
@@ -49,6 +57,10 @@ fn default_max_priority() -> u64 {
 
 fn default_command() -> Vec<String> {
     vec!["/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}".to_string()]
+}
+
+fn default_computation_mode() -> ComputationMode {
+    ComputationMode::ScaledBySum
 }
 
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
