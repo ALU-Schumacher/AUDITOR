@@ -79,3 +79,9 @@ jobs:
         with:
           name: ${{ matrix.binary }}
           path: target/rpm/${{ matrix.binary }}/rpmbuild/RPMS/x86_64/*.rpm
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/rpm/${{ matrix.binary }}/rpmbuild/RPMS/x86_64/*.rpm
