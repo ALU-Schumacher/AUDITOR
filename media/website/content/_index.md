@@ -213,11 +213,11 @@ Auditor is configured via the files in the `configuration` directory or via envi
 
 # Packages
 
-RPMs will be provided in the future.
+RPMs are provided for each release on the [Github release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
 
 # SLURM Epilog Collector
 
-The Slurm epilog collector can be built with this command:
+The Slurm epilog collector can installed from the provided RPM or can be built with this command:
 
 ```bash
 RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-epilog-collector
@@ -225,7 +225,7 @@ RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-m
 
 The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-slurm-epilog-collector` and is ideally placed on the Slurm head node.
 
-Add this to your epilog shell script:
+Add this to your epilog shell script (on the slurm head node):
 
 ```bash
 #!/bin/sh
@@ -290,7 +290,7 @@ The matching is performed on values associated with certain keys in the `scontro
 Regex is accepted.
 
 ```yaml
-addr: "auditor_host_addr"
+addr: "auditor_host_address"
 port: 8000
 record_prefix: "slurm"
 site_id: "site_name"
@@ -319,7 +319,70 @@ components:
 
 # Priority Plugin
 
-todo
+The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
+This allows one to transfer provided resources on one system to priorities in another system.
+The computed priorities are set via shelling out, and the executed commands can be defined as needed.
+
+The priority plugin is available as RPM or can be built with the command:
+
+```bash
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-priority-plugin
+```
+
+The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-priority-plugin` and is ideally placed on a node where the priorities should be set.
+
+One run of the priority plugin will update the priorities once.
+In general, the priority plugin should be run on a regular basis (for instance as a cron job), depending on how often the update should be performed.
+
+A typical configuration for the SLURM batch system may look like this:
+
+```yaml
+addr: "auditor_host_address"
+port: 8000
+duration: 1209600 # in seconds
+components:
+  NumCPUs: "HEPSPEC"
+group_mapping:
+  group1: 
+    - "part1"
+  group2:
+    - "part2"
+  group3:
+    - "part3"
+command:
+  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+min_priority: 1
+max_priority: 65335
+computation_mode: ScaledBySum
+```
+
+The resources used for calculating the priorities can be configured via the `components` field.
+It defines which components to extract from the `components` field of the record (`NumCPUs` in this example), as well as the corresponding score (`HEPSPEC` in this example).
+Multiple components can be extracted. 
+The configured components and scores must be part of the records.
+The resources of each component will be multiplied by the corresponding score and the resulting provided resource per group is the sum of all these.
+The records considered in the computation can be limited to all records which finished in the past X seconds via the `duration` field (in seconds).
+Omitting this field takes all records in the database into account.
+Via the `group_mapping` field, it is possible to attach certain additional information to the individual groups which are to be considered in the calculation.
+In the example configuration above are three groups `group{1,2,3}`, where each has a corresponding partition `part{1,2.3}`.
+These mappings can be accessed when constructing the `command`s which will be executed after computing the priorities by using `{N}` where `N` corresponds to number of the element in the list of the `group_mapping`.
+For instance, for `group1`, the string `{1}` indicates `part1` while for `group2` the same string `{1}` indicates `part2`.
+The `command` field in the configuration illustrates the usage of these mappings.
+This allows one to adapt the command for the various groups involved.
+In the `command` field one can also see a string `{priority}`, which will be replaced by the computed priority for the group.
+Another special string, `{resources}` is available, which is replaced by the computed provided resource per group.
+The command is executed for each group separately and multiple commands can be provided.
+
+## Priority computation modes
+
+As stated above, the priorities are computed from the provided resources of each group.
+However, the computed resources and the priorities are in different units and span different ranges.
+Therefore a mapping between resources and priorities needs to be in place.
+This plugin offers two `computation_modes`: `FullSpread` and `ScaledBySum`.
+Via `min_priority` and `max_priority`, lower and upper limits on the computed priority are set.
+
+* `FullSpread`:  This mode will spread the resources on the full range given by `min_priority` and `max_priority`, such that the group with the least provided resources will be assigned a priority equal to `min_priority` and the group with the most provided resources will be assigned a priority equal to `max_priority`. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorites of two consecutive runs can be substantially different, leading to large jumps in priorities.
+* `ScaledBySum`: Computes the priorities such that `max_priority` is equal to the sum of all provide resources plus `min_priority`. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources. 
 
 # License
 

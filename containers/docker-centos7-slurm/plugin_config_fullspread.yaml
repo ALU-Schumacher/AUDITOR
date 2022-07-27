@@ -1,6 +1,5 @@
 addr: "host.docker.internal"
 port: 8000
-record_prefix: "slurm"
 components:
   NumCPUs: "HEPSPEC"
 min_priority: 1
