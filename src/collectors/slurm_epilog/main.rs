@@ -39,9 +39,12 @@ fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
             .stdout,
     )?
     .split_whitespace()
-    .map(|s| {
-        let t = s.split('=').take(2).collect::<Vec<_>>();
-        (t[0].to_string(), t[1].to_string())
+    .filter_map(|s| {
+        if let Some((k, v)) = s.split_once('=') {
+            Some((k.to_string(), v.to_string()))
+        } else {
+            None
+        }
     })
     .collect())
 }
