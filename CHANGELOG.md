@@ -5,11 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.0.2] - 2022-08-01
 ### Added
 - Documentation of priority plugin on website ([@stefan-k](https://github.com/stefan-k)).
 
+### Changed
+- CI: Run clippy for all targets ([@stefan-k](https://github.com/stefan-k)).
+- Build docker containers when pushing a version tag ([@stefan-k](https://github.com/stefan-k)).
+- Updated tracing from 1.0.35 to 1.0.36 ([@stefan-k](https://github.com/stefan-k)).
+
 ### Fixed
 - Correctly parse scontrol output in slurm epilog collector (Thanks to Raphael Kleinemuehl for the hint!) ([@stefan-k](https://github.com/stefan-k)).
+- Fixed building of docs on docs.rs by activating sqlx offline mode ([@stefan-k](https://github.com/stefan-k)).
 
 ## [0.0.1] - 2022-07-26
 ### Added
@@ -24,3 +32,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.0.1...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
+[0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
