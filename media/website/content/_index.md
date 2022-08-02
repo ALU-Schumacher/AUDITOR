@@ -211,6 +211,10 @@ The resulting binaries will be placed in `target/x86_64-unknown-linux-musl/relea
 
 Auditor is configured via the files in the `configuration` directory or via environment variables as mentioned above.
 
+## Prometheus integration
+
+Metrics for prometheus are exposed via the `/metrics` endpoint.
+
 # Packages
 
 RPMs are provided for each release on the [Github release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
