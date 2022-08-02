@@ -14,11 +14,22 @@ use tracing_actix_web::TracingLogger;
 
 /// Configures and starts the HttpServer
 pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
+    // prometheus exporter
+    let metrics_exporter = opentelemetry_prometheus::exporter().init();
+    let request_metrics = actix_web_opentelemetry::RequestMetrics::new(
+        opentelemetry::global::meter("actix_http_tracing"),
+        Some(|req: &actix_web::dev::ServiceRequest| {
+            req.path() == "/metrics" && req.method() == actix_web::http::Method::GET
+        }),
+        Some(metrics_exporter),
+    );
+
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         App::new()
             // Logging middleware
             .wrap(TracingLogger::default())
+            .wrap(request_metrics.clone())
             // Routes
             .route("/health_check", web::get().to(health_check))
             .route("/add", web::post().to(add))
