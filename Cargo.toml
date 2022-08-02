@@ -73,7 +73,7 @@ opentelemetry = "0.17"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
 
 [dependencies.sqlx]
-version = "0.5.7"
+version = "0.6.0"
 default-features = false
 features = [
     "runtime-actix-rustls",
