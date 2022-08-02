@@ -14,7 +14,8 @@ use configuration::{ComputationMode, Settings};
 use num_traits::cast::FromPrimitive;
 use std::collections::HashMap;
 use std::process::Command;
-use tracing::{debug, error, info, warn};
+use tracing::{debug, error, warn};
+use uuid::Uuid;
 
 mod configuration;
 
@@ -229,7 +230,12 @@ async fn main() -> Result<(), Error> {
     );
     init_subscriber(subscriber);
 
-    info!("AUDITOR-priority-plugin started.");
+    let run_id = Uuid::new_v4();
+    let span = tracing::info_span!(
+        "Running priority plugin",
+        %run_id,
+    );
+    let _span_guard = span.enter();
 
     let config = configuration::get_configuration()?;
 

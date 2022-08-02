@@ -17,6 +17,7 @@ use std::env;
 use std::fmt;
 use std::process::Command;
 use tracing::{debug, info};
+use uuid::Uuid;
 
 mod configuration;
 
@@ -122,7 +123,12 @@ async fn main() -> Result<(), Error> {
     );
     init_subscriber(subscriber);
 
-    info!("AUDITOR-slurm-epilog-collector started.");
+    let run_id = Uuid::new_v4();
+    let span = tracing::info_span!(
+        "Running slurm epilog collector",
+        %run_id,
+    );
+    let _span_guard = span.enter();
 
     let config = configuration::get_configuration()?;
 
