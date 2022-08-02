@@ -244,7 +244,7 @@ async fn main() -> Result<(), Error> {
     let client = AuditorClient::new(&config.addr, config.port)?;
 
     let records = match config.duration {
-        Some(duration) => client.get_stopped_since(Utc::now() - duration).await?,
+        Some(duration) => client.get_stopped_since(&(Utc::now() - duration)).await?,
         None => client.get().await?,
     };
 

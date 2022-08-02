@@ -37,7 +37,7 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Record {
     pub record_id: String,
     pub site_id: Option<String>,
@@ -295,6 +295,52 @@ impl TryFrom<RecordTest> for RecordUpdate {
                 .collect::<Result<Vec<_>, _>>()?,
             start_time: value.start_time,
             stop_time: value.stop_time.unwrap(),
+        })
+    }
+}
+
+impl TryFrom<RecordTest> for Record {
+    type Error = String;
+
+    fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
+        Ok(Record {
+            record_id: ValidName::parse(
+                value.record_id.ok_or_else(|| "name is None".to_string())?,
+            )?
+            .as_ref()
+            .to_string(),
+            site_id: if let Some(site_id) = value.site_id {
+                Some(ValidName::parse(site_id)?.as_ref().to_string())
+            } else {
+                None
+            },
+            user_id: if let Some(user_id) = value.user_id {
+                Some(ValidName::parse(user_id)?.as_ref().to_string())
+            } else {
+                None
+            },
+            group_id: if let Some(group_id) = value.group_id {
+                Some(ValidName::parse(group_id)?.as_ref().to_string())
+            } else {
+                None
+            },
+            components: if let Some(components) = value.components {
+                Some(
+                    components
+                        .into_iter()
+                        .map(Component::try_from)
+                        .collect::<Result<Vec<_>, _>>()?,
+                )
+            } else {
+                None
+            },
+            start_time: value.start_time.unwrap(),
+            stop_time: value.stop_time,
+            runtime: if let (Some(start), Some(stop)) = (value.start_time, value.stop_time) {
+                Some((stop - start).num_seconds())
+            } else {
+                None
+            },
         })
     }
 }

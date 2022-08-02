@@ -158,7 +158,7 @@ async fn main() -> Result<(), Error> {
     debug!(?record, "Constructed record.");
 
     info!("Sending record to AUDITOR instance.");
-    client.add(record).await?;
+    client.add(&record).await?;
 
     Ok(())
 }

@@ -22,7 +22,7 @@ async fn add_records() {
         .collect();
 
     for record in test_cases {
-        client.add(record).await.unwrap();
+        client.add(&record).await.unwrap();
     }
 
     let mut saved_records = sqlx::query_as!(
@@ -78,7 +78,7 @@ async fn update_records() {
 
     for mut record in test_cases {
         record.stop_time = None;
-        client.add(record).await.unwrap();
+        client.add(&record).await.unwrap();
     }
 
     let test_cases: Vec<RecordUpdate> = test_cases_comp
@@ -89,7 +89,7 @@ async fn update_records() {
         .collect();
 
     for record in test_cases {
-        client.update(record).await.unwrap();
+        client.update(&record).await.unwrap();
     }
 
     let mut saved_records = sqlx::query_as!(
@@ -253,7 +253,7 @@ async fn get_started_since_returns_a_list_of_records() {
     }
 
     let mut received_records = client
-        .get_started_since(Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
+        .get_started_since(&Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
         .await
         .unwrap();
 
@@ -334,7 +334,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
     }
 
     let mut received_records = client
-        .get_stopped_since(Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
+        .get_stopped_since(&Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
         .await
         .unwrap();
 
