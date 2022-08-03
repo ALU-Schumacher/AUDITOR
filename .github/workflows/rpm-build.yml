@@ -65,7 +65,7 @@ jobs:
         run: |
           sudo apt-get install musl musl-tools rpm
 
-      - name: Build Slurm epilog collector
+      - name: Build binary
         uses: actions-rs/cargo@v1
         with:
           command: build
