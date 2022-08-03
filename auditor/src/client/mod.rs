@@ -14,6 +14,7 @@ use reqwest;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
+#[derive(Clone)]
 pub struct AuditorClientBuilder {
     address: String,
     timeout: Duration,
@@ -62,6 +63,7 @@ impl Default for AuditorClientBuilder {
     }
 }
 
+#[derive(Clone)]
 pub struct AuditorClient {
     address: String,
     client: reqwest::Client,
