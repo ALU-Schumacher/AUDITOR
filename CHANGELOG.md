@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `add` and `update` methods of `AuditorClient` now take references to `Record` ([@stefan-k](https://github.com/stefan-k)).
 - Updated config from 0.13.1 to 0.13.2 ([@stefan-k](https://github.com/stefan-k)).
+- Introduced workspaces (as preparation for the python client written in Rust) ([@stefan-k](https://github.com/stefan-k)).
 
 ## [0.0.2] - 2022-08-01
 ### Added

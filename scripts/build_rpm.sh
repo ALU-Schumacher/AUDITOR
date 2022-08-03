@@ -3,7 +3,7 @@ set -x
 set -eo pipefail
 
 BINARY=${BINARY:="auditor-slurm-epilog-collector"}
-CRATE_VERSION=$(cargo get version)
+CRATE_VERSION=$(cargo get --root auditor version)
 
 
 mkdir -p target/rpm/${BINARY}/rpmbuild
