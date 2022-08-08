@@ -116,7 +116,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           components: clippy
-          toolchain: stable
+          toolchain: beta
           override: true
 
       - name: Cache sqlx-cli
