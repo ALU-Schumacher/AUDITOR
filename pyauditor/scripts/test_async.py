@@ -2,13 +2,19 @@
 # countasync.py
 
 import asyncio
-from pyauditor import AuditorClientBuilder
+from pyauditor import AuditorClientBuilder, Record
+import datetime
 
 
 async def main():
     blah = AuditorClientBuilder().address("127.0.0.1", 8000).timeout(100).build()
     fu = await blah.health_check()
     print(fu)
+    fu = await blah.get()
+    print(fu)
+    start = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043);
+    record = Record("name", "site", "user", "group", start)
+    await blah.add(record)
     fu = await blah.get()
     print(fu)
     #  await asyncio.gather(count(), count(), count())

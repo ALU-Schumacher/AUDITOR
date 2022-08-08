@@ -26,7 +26,7 @@ async fn add_returns_a_200_for_valid_json_data() {
             Record,
             r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time, stop_time, runtime
+           start_time as "start_time?", stop_time, runtime
            FROM accounting
            WHERE record_id = $1
         "#,

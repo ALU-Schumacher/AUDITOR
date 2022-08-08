@@ -29,7 +29,7 @@ async fn add_records() {
         Record,
         r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time, stop_time, runtime
+           start_time as "start_time?", stop_time, runtime
            FROM accounting
         "#
     )
@@ -96,7 +96,7 @@ async fn update_records() {
         Record,
         r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time, stop_time, runtime
+           start_time as "start_time?", stop_time, runtime
            FROM accounting
         "#
     )

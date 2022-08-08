@@ -45,7 +45,7 @@ pub struct Record {
     pub user_id: Option<String>,
     pub group_id: Option<String>,
     pub components: Option<Vec<Component>>,
-    pub start_time: DateTime<Utc>,
+    pub start_time: Option<DateTime<Utc>>,
     pub stop_time: Option<DateTime<Utc>>,
     pub runtime: Option<i64>,
 }
@@ -208,6 +208,7 @@ impl PartialEq<Record> for RecordTest {
         }
 
         let s_start = s_start.as_ref().unwrap();
+        let o_start = o_start.as_ref().unwrap();
 
         let start_diff = if s_start > o_start {
             *s_start - *o_start
@@ -279,6 +280,29 @@ impl TryFrom<RecordTest> for RecordAdd {
     }
 }
 
+impl TryFrom<Record> for RecordAdd {
+    type Error = Error;
+
+    fn try_from(value: Record) -> Result<Self, Self::Error> {
+        Ok(RecordAdd {
+            record_id: ValidName::parse(value.record_id)?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            components: value
+                .components
+                .unwrap_or_default()
+                .into_iter()
+                .map(Component::try_from)
+                .collect::<Result<Vec<_>, _>>()?,
+            start_time: value
+                .start_time
+                .ok_or_else(|| anyhow::anyhow!("No start time"))?,
+            stop_time: value.stop_time,
+        })
+    }
+}
+
 impl TryFrom<RecordTest> for RecordUpdate {
     type Error = Error;
 
@@ -289,6 +313,27 @@ impl TryFrom<RecordTest> for RecordUpdate {
                     .record_id
                     .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            components: value
+                .components
+                .unwrap_or_default()
+                .into_iter()
+                .map(Component::try_from)
+                .collect::<Result<Vec<_>, _>>()?,
+            start_time: value.start_time,
+            stop_time: value.stop_time.unwrap(),
+        })
+    }
+}
+
+impl TryFrom<Record> for RecordUpdate {
+    type Error = Error;
+
+    fn try_from(value: Record) -> Result<Self, Self::Error> {
+        Ok(RecordUpdate {
+            record_id: ValidName::parse(value.record_id)?,
             site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
             user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
             group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
@@ -341,7 +386,7 @@ impl TryFrom<RecordTest> for Record {
             } else {
                 None
             },
-            start_time: value.start_time.unwrap(),
+            start_time: value.start_time,
             stop_time: value.stop_time,
             runtime: if let (Some(start), Some(stop)) = (value.start_time, value.stop_time) {
                 Some((stop - start).num_seconds())

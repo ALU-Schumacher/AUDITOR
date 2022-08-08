@@ -20,7 +20,7 @@
     },
     "query": "\n        SELECT start_time\n        FROM accounting \n        WHERE record_id = $1\n        "
   },
-  "25470892ca0466e64359819039d0c82f7f20498e5844cfe3363ffa654f64a067": {
+  "4e8d70f6eda4c524bd519b6d0c9389e7c9fb53a6c46902e5ee2544cd37036bdc": {
     "describe": {
       "columns": [
         {
@@ -99,7 +99,7 @@
           }
         },
         {
-          "name": "start_time",
+          "name": "start_time?",
           "ordinal": 5,
           "type_info": "Timestamptz"
         },
@@ -128,9 +128,9 @@
         "Left": []
       }
     },
-    "query": "SELECT\n           record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n           start_time, stop_time, runtime\n           FROM accounting\n        "
+    "query": "SELECT\n           record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n           start_time as \"start_time?\", stop_time, runtime\n           FROM accounting\n        "
   },
-  "334a7138fbb97f66c320e1dff6b98e5b0295a27eed981d32da9ffeb96a9a78c7": {
+  "985cbc282418272684dceb3d6dfc01a64bbd9c04d34f477746f4d184a06e40f9": {
     "describe": {
       "columns": [
         {
@@ -209,7 +209,7 @@
           }
         },
         {
-          "name": "start_time",
+          "name": "start_time?",
           "ordinal": 5,
           "type_info": "Timestamptz"
         },
@@ -240,119 +240,7 @@
         ]
       }
     },
-    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time, stop_time, runtime\n                FROM accounting\n                WHERE start_time > $1 and runtime IS NOT NULL\n                "
-  },
-  "55335a9b6e166b9e53c27f7654b80e969ecaa2b98ffcbe65c8e8d63a487bad0b": {
-    "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "site_id",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "group_id",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 4,
-          "type_info": {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "factor",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          }
-        },
-        {
-          "name": "start_time",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 6,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 7,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Timestamptz"
-        ]
-      }
-    },
-    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time, stop_time, runtime\n                FROM accounting\n                WHERE stop_time > $1 and runtime IS NOT NULL\n                "
+    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE start_time > $1 and runtime IS NOT NULL\n                "
   },
   "a02e5c8ddc8434592c872057b8ff806a59aae1bfdc749fe574a3ac03c6a072a7": {
     "describe": {
@@ -423,6 +311,118 @@
       }
     },
     "query": "\n        INSERT INTO accounting (\n            record_id, site_id, user_id, group_id,\n            components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n        "
+  },
+  "e67100ccbd0d3e93f5e2d1fc4feed4a797c13f2525a61d1d4db063445db52c6c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "site_id",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "group_id",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 4,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "factor",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 6,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 7,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE stop_time > $1 and runtime IS NOT NULL\n                "
   },
   "fedad59ceb43fb163bae765fdd12949cddb641d68677177e5e6483a358ced32a": {
     "describe": {

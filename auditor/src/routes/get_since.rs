@@ -54,7 +54,7 @@ pub async fn get_records_since(
                 Record,
                 r#"SELECT
                 record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-                start_time, stop_time, runtime
+                start_time as "start_time?", stop_time, runtime
                 FROM accounting
                 WHERE start_time > $1 and runtime IS NOT NULL
                 "#,
@@ -68,7 +68,7 @@ pub async fn get_records_since(
                 Record,
                 r#"SELECT
                 record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-                start_time, stop_time, runtime
+                start_time as "start_time?", stop_time, runtime
                 FROM accounting
                 WHERE stop_time > $1 and runtime IS NOT NULL
                 "#,
