@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use super::{Score, ScoreTest, ValidAmount, ValidName};
+use anyhow::Error;
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -23,7 +24,7 @@ pub struct Component {
 }
 
 impl Component {
-    pub fn new<T: AsRef<str>>(name: T, amount: i64, scores: Vec<Score>) -> Result<Self, String> {
+    pub fn new<T: AsRef<str>>(name: T, amount: i64, scores: Vec<Score>) -> Result<Self, Error> {
         Ok(Component {
             name: ValidName::parse(name.as_ref().to_string())?,
             amount: ValidAmount::parse(amount)?,
@@ -64,12 +65,16 @@ impl PgHasArrayType for Component {
 }
 
 impl TryFrom<ComponentTest> for Component {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: ComponentTest) -> Result<Self, Self::Error> {
         Ok(Component {
-            name: ValidName::parse(value.name.ok_or_else(|| "name is None".to_string())?)?,
-            amount: ValidAmount::parse(value.amount.ok_or_else(|| "amount is None".to_string())?)?,
+            name: ValidName::parse(value.name.ok_or_else(|| anyhow::anyhow!("name is None"))?)?,
+            amount: ValidAmount::parse(
+                value
+                    .amount
+                    .ok_or_else(|| anyhow::anyhow!("amount is None"))?,
+            )?,
             scores: value
                 .scores
                 .into_iter()

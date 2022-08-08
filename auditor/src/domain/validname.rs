@@ -19,7 +19,7 @@ pub struct ValidName(String);
 
 impl ValidName {
     /// Returns `ValidName` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: String) -> Result<ValidName, String> {
+    pub fn parse(s: String) -> Result<ValidName, anyhow::Error> {
         // remove trailing whitespace and check if string is then empty
         let is_empty_or_whitespace = s.trim().is_empty();
         // count characters
@@ -27,7 +27,7 @@ impl ValidName {
         // check for forbidden characters
         let contains_forbidden_characters = s.chars().any(|g| FORBIDDEN_CHARACTERS.contains(&g));
         if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(format!("Invalid Name: {}", s))
+            Err(anyhow::anyhow!("Invalid Name: {}", s))
         } else {
             Ok(Self(s))
         }

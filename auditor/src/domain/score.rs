@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use super::{ValidFactor, ValidName};
+use anyhow::Error;
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -20,7 +21,7 @@ pub struct Score {
 }
 
 impl Score {
-    pub fn new<T: AsRef<str>>(name: T, factor: f64) -> Result<Self, String> {
+    pub fn new<T: AsRef<str>>(name: T, factor: f64) -> Result<Self, Error> {
         Ok(Score {
             name: ValidName::parse(name.as_ref().to_string())?,
             factor: ValidFactor::parse(factor)?,
@@ -35,12 +36,16 @@ impl PgHasArrayType for Score {
 }
 
 impl TryFrom<ScoreTest> for Score {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: ScoreTest) -> Result<Self, Self::Error> {
         Ok(Score {
-            name: ValidName::parse(value.name.ok_or_else(|| "name is None".to_string())?)?,
-            factor: ValidFactor::parse(value.factor.ok_or_else(|| "factor is None".to_string())?)?,
+            name: ValidName::parse(value.name.ok_or_else(|| anyhow::anyhow!("name is None"))?)?,
+            factor: ValidFactor::parse(
+                value
+                    .factor
+                    .ok_or_else(|| anyhow::anyhow!("factor is None"))?,
+            )?,
         })
     }
 }

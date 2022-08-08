@@ -1706,8 +1706,10 @@ version = "0.0.2"
 dependencies = [
  "anyhow",
  "auditor",
+ "chrono",
  "pyo3",
  "pyo3-asyncio",
+ "pyo3-chrono",
  "tokio",
 ]
 
@@ -1762,6 +1764,16 @@ checksum = "b5b65b546c35d8a3b1b2f0ddbac7c6a569d759f357f2b9df884f5d6b719152c8"
 dependencies = [
  "once_cell",
  "target-lexicon",
+]
+
+[[package]]
+name = "pyo3-chrono"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3cf262a150bf60208502d7cd03c68a12ca408122bb41ace6c0b221dd2157b4b4"
+dependencies = [
+ "chrono",
+ "pyo3",
 ]
 
 [[package]]
