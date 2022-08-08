@@ -18,7 +18,7 @@ use pyo3_chrono::NaiveDateTime;
 #[pyclass]
 #[derive(Clone)]
 pub struct Record {
-    inner: auditor::domain::Record,
+    pub(crate) inner: auditor::domain::Record,
 }
 
 #[pymethods]
@@ -43,11 +43,37 @@ impl Record {
                 user_id: Some(ValidName::parse(user_id)?.as_ref().to_owned()),
                 group_id: Some(ValidName::parse(group_id)?.as_ref().to_owned()),
                 components: Some(vec![]),
-                start_time,
+                start_time: Some(start_time),
                 stop_time: None,
                 runtime: None,
             },
         })
+    }
+
+    fn with_component(
+        mut self_: PyRefMut<Self>,
+        component: Component,
+    ) -> Result<PyRefMut<Self>, Error> {
+        self_
+            .inner
+            .components
+            .as_mut()
+            .unwrap()
+            .push(component.inner);
+        Ok(self_)
+    }
+
+    fn with_stop_time<'a>(
+        mut self_: PyRefMut<'a, Self>,
+        stop_time: &'a PyDateTime,
+    ) -> Result<PyRefMut<'a, Self>, Error> {
+        let stop_time: NaiveDateTime = stop_time.extract()?;
+        let stop_time = Local
+            .from_local_datetime(&stop_time.into())
+            .unwrap()
+            .with_timezone(&Utc);
+        self_.inner.stop_time = Some(stop_time);
+        Ok(self_)
     }
 
     #[getter]
@@ -79,8 +105,11 @@ impl Record {
     }
 
     #[getter]
-    fn start_time(&self, py: Python) -> Py<PyAny> {
-        NaiveDateTime(self.inner.start_time.naive_utc()).into_py(py)
+    fn start_time(&self, py: Python) -> Option<Py<PyAny>> {
+        self.inner
+            .start_time
+            .as_ref()
+            .map(|start_time| NaiveDateTime(start_time.naive_utc()).into_py(py))
     }
 
     #[getter]

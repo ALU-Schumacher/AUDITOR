@@ -24,7 +24,7 @@ pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, sqlx::Error> {
         Record,
         r#"SELECT
            record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time, stop_time, runtime
+           start_time as "start_time?", stop_time, runtime
            FROM accounting
         "#,
     )

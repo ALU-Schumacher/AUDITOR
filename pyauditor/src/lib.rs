@@ -152,4 +152,25 @@ impl AuditorClient {
             // Ok(Python::with_gil(|py| py.None()))
         })
     }
+
+    fn add<'a>(&self, record: Record, py: Python<'a>) -> PyResult<&'a PyAny> {
+        let inner = self.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            inner
+                .add(&auditor::domain::RecordAdd::try_from(record.inner)?)
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))
+        })
+    }
+
+    fn update<'a>(&self, record: Record, py: Python<'a>) -> PyResult<&'a PyAny> {
+        let inner = self.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            inner
+                .update(&auditor::domain::RecordUpdate::try_from(record.inner)?)
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))
+        })
+    }
 }
+// Ok(Python::with_gil(|py| py.None()))
