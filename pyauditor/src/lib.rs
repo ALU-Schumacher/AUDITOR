@@ -1,22 +1,48 @@
+// Copyright 2021-2022 AUDITOR developers
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
+// http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
+#![allow(clippy::borrow_deref_ref)]
+
+mod domain;
+
+use crate::domain::{Component, Record, Score};
 use anyhow::Error;
+use chrono::{offset::TimeZone, Local, Utc};
 use pyo3::prelude::*;
+use pyo3::types::PyDateTime;
+use pyo3_chrono::NaiveDateTime;
 
 /// A Python module implemented in Rust.
 #[pymodule]
 fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<AuditorClient>()?;
     m.add_class::<AuditorClientBuilder>()?;
+    m.add_class::<Record>()?;
+    m.add_class::<Component>()?;
+    m.add_class::<Score>()?;
     Ok(())
 }
 
 #[pyclass]
+#[derive(Clone)]
 pub struct AuditorClient {
     inner: auditor::client::AuditorClient,
 }
 
 #[pyclass]
+#[derive(Clone)]
 pub struct AuditorClientBuilder {
     inner: auditor::client::AuditorClientBuilder,
+}
+
+impl Default for AuditorClientBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[pymethods]
@@ -55,32 +81,75 @@ impl AuditorClientBuilder {
     }
 }
 
-// #[pymethods]
-// impl AuditorClient {
-//     pub fn health_check(self_: PyRef<'_, Self>, py: Python) -> PyResult<&PyAny> {
-//         let locals = pyo3_asyncio::tokio::get_current_locals(py)?;
-//
-//         pyo3_asyncio::tokio::future_into_py_with_locals(
-//             py,
-//             locals.clone(),
-//             // Store the current locals in task-local data
-//             pyo3_asyncio::tokio::scope(locals.clone(), async move {
-//                 // let py_sleep = Python::with_gil(|py| {
-//                 //     pyo3_asyncio::into_future_with_locals(
-//                 //         // Now we can get the current locals through task-local data
-//                 //         &pyo3_asyncio::tokio::get_current_locals(py)?,
-//                 //         py.import("asyncio")?.call_method1("sleep", (1,))?,
-//                 //     )
-//                 // })?;
-//
-//                 // py_sleep.await?;
-//
-//                 Ok(Python::with_gil(|py| py.None()))
-//             }),
-//         )
-//         // pyo3_asyncio::tokio::future_into_py(py, async {
-//         //     self_.inner.health_check();
-//         //     Ok(Python::with_gil(|py| py.None()))
-//         // })
-//     }
-// }
+#[pymethods]
+impl AuditorClient {
+    fn health_check<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<&'a PyAny> {
+        let inner = self_.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            Ok(inner.health_check().await)
+            // Ok(Python::with_gil(|py| py.None()))
+        })
+    }
+
+    fn get<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<&'a PyAny> {
+        let inner = self_.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            Ok(inner
+                .get()
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .into_iter()
+                .map(Record::from)
+                .collect::<Vec<_>>())
+            // Ok(Python::with_gil(|py| py.None()))
+        })
+    }
+
+    fn get_started_since<'a>(
+        self_: PyRef<'a, Self>,
+        timestamp: &PyDateTime,
+        py: Python<'a>,
+    ) -> PyResult<&'a PyAny> {
+        let timestamp: NaiveDateTime = timestamp.extract()?;
+        // TODO: Check whats happening to the timezones!
+        let timestamp = Local
+            .from_local_datetime(&timestamp.into())
+            .unwrap()
+            .with_timezone(&Utc);
+        let inner = self_.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            Ok(inner
+                .get_started_since(&timestamp)
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .into_iter()
+                .map(Record::from)
+                .collect::<Vec<_>>())
+            // Ok(Python::with_gil(|py| py.None()))
+        })
+    }
+
+    fn get_stopped_since<'a>(
+        self_: PyRef<'a, Self>,
+        timestamp: &PyDateTime,
+        py: Python<'a>,
+    ) -> PyResult<&'a PyAny> {
+        let timestamp: NaiveDateTime = timestamp.extract()?;
+        // TODO: Check whats happening to the timezones!
+        let timestamp = Local
+            .from_local_datetime(&timestamp.into())
+            .unwrap()
+            .with_timezone(&Utc);
+        let inner = self_.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            Ok(inner
+                .get_stopped_since(&timestamp)
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .into_iter()
+                .map(Record::from)
+                .collect::<Vec<_>>())
+            // Ok(Python::with_gil(|py| py.None()))
+        })
+    }
+}

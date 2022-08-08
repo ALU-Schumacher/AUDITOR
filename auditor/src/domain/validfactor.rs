@@ -17,9 +17,9 @@ pub struct ValidFactor(f64);
 
 impl ValidFactor {
     /// Returns `ValidFactor` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: f64) -> Result<ValidFactor, String> {
+    pub fn parse(s: f64) -> Result<ValidFactor, anyhow::Error> {
         if s < 0.0 {
-            Err(format!("Invalid factor: {}", s))
+            Err(anyhow::anyhow!("Invalid factor: {}", s))
         } else {
             Ok(Self(s))
         }

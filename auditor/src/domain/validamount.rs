@@ -17,9 +17,9 @@ pub struct ValidAmount(i64);
 
 impl ValidAmount {
     /// Returns `ValidAmount` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: i64) -> Result<ValidAmount, String> {
+    pub fn parse(s: i64) -> Result<ValidAmount, anyhow::Error> {
         if s < 0 {
-            Err(format!("Invalid amount: {}", s))
+            Err(anyhow::anyhow!("Invalid amount: {}", s))
         } else {
             Ok(Self(s))
         }

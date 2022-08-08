@@ -8,6 +8,7 @@
 //! Record related types used for deserializing HTTP requests and serializing HTTP responses.
 
 use super::{Component, ComponentTest, ScoreTest, ValidName};
+use anyhow::Error;
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
 #[cfg(test)]
@@ -68,7 +69,7 @@ impl RecordAdd {
         group_id: T,
         components: Vec<Component>,
         start_time: DateTime<Utc>,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, Error> {
         Ok(RecordAdd {
             record_id: ValidName::parse(record_id.as_ref().to_string())?,
             site_id: ValidName::parse(site_id.as_ref().to_string())?,
@@ -254,12 +255,14 @@ impl quickcheck::Arbitrary for RecordTest {
 }
 
 impl TryFrom<RecordTest> for RecordAdd {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
         Ok(RecordAdd {
             record_id: ValidName::parse(
-                value.record_id.ok_or_else(|| "name is None".to_string())?,
+                value
+                    .record_id
+                    .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
             site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
             user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
@@ -277,12 +280,14 @@ impl TryFrom<RecordTest> for RecordAdd {
 }
 
 impl TryFrom<RecordTest> for RecordUpdate {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
         Ok(RecordUpdate {
             record_id: ValidName::parse(
-                value.record_id.ok_or_else(|| "name is None".to_string())?,
+                value
+                    .record_id
+                    .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
             site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
             user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
@@ -300,12 +305,14 @@ impl TryFrom<RecordTest> for RecordUpdate {
 }
 
 impl TryFrom<RecordTest> for Record {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
         Ok(Record {
             record_id: ValidName::parse(
-                value.record_id.ok_or_else(|| "name is None".to_string())?,
+                value
+                    .record_id
+                    .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?
             .as_ref()
             .to_string(),
