@@ -10,7 +10,7 @@
 use crate::domain::Component;
 use anyhow::Error;
 use auditor::domain::ValidName;
-use chrono::{offset::TimeZone, Local, Utc};
+use chrono::{offset::TimeZone, Utc};
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use pyo3_chrono::NaiveDateTime;
@@ -32,10 +32,7 @@ impl Record {
         start_time: &PyDateTime,
     ) -> Result<Self, Error> {
         let start_time: NaiveDateTime = start_time.extract()?;
-        let start_time = Local
-            .from_local_datetime(&start_time.into())
-            .unwrap()
-            .with_timezone(&Utc);
+        let start_time = Utc.from_utc_datetime(&start_time.into());
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
@@ -68,10 +65,7 @@ impl Record {
         stop_time: &'a PyDateTime,
     ) -> Result<PyRefMut<'a, Self>, Error> {
         let stop_time: NaiveDateTime = stop_time.extract()?;
-        let stop_time = Local
-            .from_local_datetime(&stop_time.into())
-            .unwrap()
-            .with_timezone(&Utc);
+        let stop_time = Utc.from_utc_datetime(&stop_time.into());
         self_.inner.stop_time = Some(stop_time);
         Ok(self_)
     }

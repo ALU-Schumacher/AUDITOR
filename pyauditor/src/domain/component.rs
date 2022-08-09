@@ -17,14 +17,15 @@ pub struct Component {
 #[pymethods]
 impl Component {
     #[new]
-    pub fn new(name: String, amount: i64, scores: Vec<Score>) -> Result<Self, anyhow::Error> {
+    pub fn new(name: String, amount: i64) -> Result<Self, anyhow::Error> {
         Ok(Component {
-            inner: auditor::domain::Component::new(
-                name,
-                amount,
-                scores.iter().map(|s| s.inner.clone()).collect(),
-            )?,
+            inner: auditor::domain::Component::new(name, amount)?,
         })
+    }
+
+    fn with_score(mut self_: PyRefMut<Self>, score: Score) -> PyRefMut<Self> {
+        self_.inner = self_.inner.clone().with_score(score.inner);
+        self_
     }
 
     #[getter]

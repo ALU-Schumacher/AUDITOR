@@ -34,7 +34,7 @@ impl Score {
     }
 
     #[getter]
-    fn amount(&self) -> f64 {
+    fn factor(&self) -> f64 {
         *self.inner.factor.as_ref()
     }
 }

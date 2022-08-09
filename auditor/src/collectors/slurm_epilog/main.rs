@@ -91,6 +91,9 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                         c.key, job[&c.key]
                     )
                 }),
+            )
+            .expect("Cannot construct component. Please check your configuration!")
+            .with_scores(
                 c.scores
                     .iter()
                     .filter(|s| {
@@ -108,7 +111,6 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                     })
                     .collect(),
             )
-            .expect("Cannot construct component. Please check your configuration!")
         })
         .collect()
 }
