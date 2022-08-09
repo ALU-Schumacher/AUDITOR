@@ -5,7 +5,7 @@ set -eo pipefail
 # Docker
 DOCKER_COMPOSE_FILE=${DOCKER_COMPOSE_FILE:="containers/docker-centos7-slurm/docker-compose.yml"}
 DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR:="."}
-# Collector build
+# Plugin build
 RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 DB_NAME=${DB_NAME:=$(uuidgen)}

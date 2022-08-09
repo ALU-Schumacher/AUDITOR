@@ -11,7 +11,7 @@ mod domain;
 
 use crate::domain::{Component, Record, Score};
 use anyhow::Error;
-use chrono::{offset::TimeZone, Local, Utc};
+use chrono::{offset::TimeZone, Utc};
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use pyo3_chrono::NaiveDateTime;
@@ -111,11 +111,7 @@ impl AuditorClient {
         py: Python<'a>,
     ) -> PyResult<&'a PyAny> {
         let timestamp: NaiveDateTime = timestamp.extract()?;
-        // TODO: Check whats happening to the timezones!
-        let timestamp = Local
-            .from_local_datetime(&timestamp.into())
-            .unwrap()
-            .with_timezone(&Utc);
+        let timestamp = Utc.from_utc_datetime(&timestamp.into());
         let inner = self_.inner.clone();
         pyo3_asyncio::tokio::future_into_py(py, async move {
             Ok(inner
@@ -135,11 +131,7 @@ impl AuditorClient {
         py: Python<'a>,
     ) -> PyResult<&'a PyAny> {
         let timestamp: NaiveDateTime = timestamp.extract()?;
-        // TODO: Check whats happening to the timezones!
-        let timestamp = Local
-            .from_local_datetime(&timestamp.into())
-            .unwrap()
-            .with_timezone(&Utc);
+        let timestamp = Utc.from_utc_datetime(&timestamp.into());
         let inner = self_.inner.clone();
         pyo3_asyncio::tokio::future_into_py(py, async move {
             Ok(inner
