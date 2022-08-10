@@ -1,6 +1,6 @@
 [package]
 name = "auditor"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2021"
 default-run = "auditor"
@@ -9,7 +9,7 @@ description = "AccoUnting Data handlIng Toolbox for Opportunistic Resources"
 documentation = "https://docs.rs/auditor/"
 homepage = "https://alu-schumacher.github.io/AUDITOR/"
 repository = "https://github.com/alu-schumacher/AUDITOR"
-readme = "README.md"
+readme = "../README.md"
 keywords = ["accounting", "opportunistic", "grid-computing", "batch-systems"]
 exclude = [
     ".cargo",
@@ -19,11 +19,8 @@ exclude = [
     ".github",
     ".gitignore",
     ".pytest_cache",
-    "containers",
     "target",
-    "./client",
-    "media",
-    "./rpm"
+    "nohup.out"
 ]
 
 
