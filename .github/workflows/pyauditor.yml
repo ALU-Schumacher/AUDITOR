@@ -3,37 +3,27 @@ name: pyauditor
 on: [push, pull_request]
 
 jobs:
-  build:
+  linux:
     runs-on: ubuntu-latest
-    env:
-      SQLX_OFFLINE: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      - name: Create fake .cargo/config.toml
+        run: |
+          mkdir -p .cargo
+          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
 
       - name: Maturin
         uses: messense/maturin-action@v1
         with:
-          manylinux: off
+          target: x86_64
+          manylinux: auto
           command: build
-          args: --release --sdist -o dist --find-interpreter --manifest-path pyauditor/Cargo.toml
+          args: --release --sdist -o dist --interpreter python3.7 python3.8 python3.9 python3.10 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -41,22 +31,76 @@ jobs:
           name: wheels
           path: dist
 
-  # release:
-  #   name: Release
-  #   runs-on: ubuntu-latest
-  #   if: "startsWith(github.ref, 'refs/tags/')"
-  #   needs: [ build ]
-  #   steps:
-  #     - uses: actions/download-artifact@v2
-  #       with:
-  #         name: wheels
-  #     - name: Publish to PyPI
-  #       uses: messense/maturin-action@v1
-  #       env:
-  #         MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-  #       with:
-  #         command: upload
-  #         args: --skip-existing *
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      # I don't know how to script this on windows (and I don't care). Therefore
+      # I'll just copy the config.toml from the pyauditor directory. This may lead to 
+      # problems when there is a .cargo/config.toml, which will then be overwritten.
+      - name: Create fake .cargo\config.toml
+        run: |
+          copy pyauditor\.cargo\config.toml .cargo\config.toml
+          # echo "[env]" >> .cargo\config.toml
+          # Fails here, saying "echo." doesn't exist.
+          # echo. >> .cargo\config.toml
+          # echo "SQLX_OFFLINE = \"true\"" >> .cargo\config.toml
+          # type .cargo\config.toml
+
+      - uses: messense/maturin-action@v1
+        with:
+          command: build
+          args: --release -o dist --interpreter python3.7 python3.8 python3.9 python3.10 --manifest-path pyauditor/Cargo.toml
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      - name: Create fake .cargo/config.toml
+        run: |
+          mkdir -p .cargo
+          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
+
+      - uses: messense/maturin-action@v1
+        with:
+          command: build
+          args: --release -o dist --universal2 --interpreter python3.7 python3.8 python3.9 python3.10 --manifest-path pyauditor/Cargo.toml
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: [ linux, windows, macos ]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheels
+      - name: Publish to PyPI
+        uses: messense/maturin-action@v1
+        env:
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        with:
+          command: upload
+          args: --skip-existing *
   
   test:
     name: pyauditor tests
