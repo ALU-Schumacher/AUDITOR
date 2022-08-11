@@ -7,6 +7,19 @@
 
 use pyo3::prelude::*;
 
+/// Score(name: str, factor: float)
+/// An individual score which consists of a ``name`` (str) and a ``factor`` (float).
+/// Scores are attached to a ``Component`` and are used to relate different components of the same
+/// kind to each other in some kind of performance characteristic. For instance, in case of CPUs, a
+/// score could be the corresponding HEPSPEC06 values.
+///
+/// The factor must be ``>= 0.0`` and the name must not include the characters. ``/``, ``(``, ``)``,
+/// ``"``, ``<``, ``>``, ``\``, ``{``, ``}``.
+///
+/// :param name: Name of the score
+/// :type name: str
+/// :param factor: Factor
+/// :type factor: float
 #[pyclass]
 #[derive(Clone)]
 pub struct Score {
@@ -28,11 +41,13 @@ impl Score {
         })
     }
 
+    /// Returns the name
     #[getter]
     fn name(&self) -> String {
         self.inner.name.as_ref().to_string()
     }
 
+    /// Returns the factor
     #[getter]
     fn factor(&self) -> f64 {
         *self.inner.factor.as_ref()
