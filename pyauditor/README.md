@@ -1,9 +1,13 @@
 <p align="center">
-  <a href="https://crates.io/crates/pyauditor"
-    ><img
-      src="https://img.shields.io/crates/v/pyauditor?style=flat-square"
-      alt="Crates.io version"
-  /></a>
+  <a href="https://pypi.org/project/python-auditor/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/python-auditor?style=flat-square">
+  </a>
+  <a href="https://pypi.org/project/python-auditor/">
+    <img alt="PyPI - Status" src="https://img.shields.io/pypi/status/python-auditor?style=flat-square">
+  </a>
+  <a href="https://pypi.org/project/python-auditor/">
+    <img alt="PyPI - Format" src="https://img.shields.io/pypi/format/python-auditor?style=flat-square">
+  </a>
   <a href="https://github.com/alu-schumacher/AUDITOR/actions"
     ><img
       src="https://img.shields.io/github/workflow/status/alu-schumacher/AUDITOR/Auditor/main?label=Auditor CI&style=flat-square"
