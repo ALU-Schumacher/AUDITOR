@@ -123,23 +123,6 @@ jobs:
           pip install --upgrade twine
           twine upload --skip-existing *
 
-  # release:
-  #   name: Release
-  #   runs-on: ubuntu-latest
-  #   if: "startsWith(github.ref, 'refs/tags/')"
-  #   needs: [ linux, windows, macos ]
-  #   steps:
-  #     - uses: actions/download-artifact@v2
-  #       with:
-  #         name: wheels
-  #     - name: Publish to PyPI
-  #       uses: messense/maturin-action@v1
-  #       env:
-  #         MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-  #       with:
-  #         command: upload
-  #         args: --skip-existing *
-  
   test:
     name: pyauditor tests
     runs-on: ubuntu-latest
@@ -212,5 +195,59 @@ jobs:
           command: build
           args: --bin auditor
 
-      - name: Test Slurm epilog collector
+      - name: Test pyauditor
         run: SKIP_COMPILATION=true ./scripts/test_pyauditor.sh
+
+  docs:
+    name: pyauditor docs
+    runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('!(volumes)**/Cargo.lock') }}
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: x86_64-unknown-linux-musl
+
+      - name: Build pyauditor docs
+        run: ./scripts/docs_pyauditor.sh
+
+      - name: Upload pyauditor docs
+        uses: actions/upload-artifact@v2
+        with:
+          name: pyauditor_docs
+          path: pyauditor/docs/_build/html
+
+  upload_docs:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [ docs ]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: pyauditor_docs
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Deploy pyauditor docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: pyauditor_docs
+          target-folder: pyauditor
+          token: ${{ secrets.GITHUB_TOKEN }}

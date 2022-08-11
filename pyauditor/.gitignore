@@ -73,3 +73,4 @@ docs/_build/
 
 # Environment
 .env
+.env_test

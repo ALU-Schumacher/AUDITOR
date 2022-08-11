@@ -8,6 +8,19 @@
 use crate::domain::Score;
 use pyo3::prelude::*;
 
+/// Component(name: str, amount: int)
+/// A component represents a single componenent which is to be accounted for. It consists at least
+/// of a ``name`` and an ``amount`` (how many or how much of this component is to be accounted
+/// for).
+/// Multiple scores can be attached to a single ``Component``.
+///
+/// The amount must be ``>= 0`` and the name must not include the characters. ``/``, ``(``, ``)``,
+/// ``"``, ``<``, ``>``, ``\``, ``{``, ``}``.
+///
+/// :param name: Name of the component
+/// :type name: str
+/// :param amount: Amount
+/// :type amount: int
 #[pyclass]
 #[derive(Clone)]
 pub struct Component {
@@ -23,21 +36,26 @@ impl Component {
         })
     }
 
+    /// with_score(score: Score)
+    /// Attaches a score to the ``Component``.
     fn with_score(mut self_: PyRefMut<Self>, score: Score) -> PyRefMut<Self> {
         self_.inner = self_.inner.clone().with_score(score.inner);
         self_
     }
 
+    /// Returns the name of the component
     #[getter]
     fn name(&self) -> String {
         self.inner.name.as_ref().to_string()
     }
 
+    /// Returns the amount of the component
     #[getter]
     fn amount(&self) -> i64 {
         *self.inner.amount.as_ref()
     }
 
+    /// Returns all scores attached to the component
     #[getter]
     fn scores(&self) -> Vec<Score> {
         self.inner.scores.iter().cloned().map(Score::from).collect()
