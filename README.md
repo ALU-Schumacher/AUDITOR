@@ -4,6 +4,9 @@
       src="https://img.shields.io/crates/v/auditor?style=flat-square"
       alt="Crates.io version"
   /></a>
+  <a href="https://pypi.org/project/python-auditor/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/python-auditor?label=pyauditor&style=flat-square">
+  </a>
   <a href="https://github.com/alu-schumacher/AUDITOR/actions"
     ><img
       src="https://img.shields.io/github/workflow/status/alu-schumacher/AUDITOR/Auditor/main?label=Auditor CI&style=flat-square"
@@ -43,6 +46,8 @@ For more information on how to obtain and use AUDITOR, please [visit our website
   <a href="https://alu-schumacher.github.io/AUDITOR/">Documentation</a>
   |
   <a href="https://docs.rs/auditor">API Documentation</a>
+  |
+  <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor Documentation</a>
 </p>
 
 

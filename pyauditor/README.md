@@ -27,9 +27,9 @@ For more information please [visit our website](https://alu-schumacher.github.io
 
 
 <p align="center">
-  <a href="https://alu-schumacher.github.io/AUDITOR/">Documentation</a>
+  <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor Documentation</a>
   |
-  <a href="https://docs.rs/pyauditor">API Documentation</a>
+  <a href="https://alu-schumacher.github.io/AUDITOR/">Auditor Documentation</a>
 </p>
 
 ## License
