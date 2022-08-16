@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Sphinx documentation for pyauditor module ([@stefan-k](https://github.com/stefan-k)).
+- Tutorial for pyauditor module ([@stefan-k](https://github.com/stefan-k)).
+- Automatic deployment of pyauditor documentation ([@stefan-k](https://github.com/stefan-k)).
+
+### Changed
+- Updated chrono from 0.4.21 to 0.4.22 ([@stefan-k](https://github.com/stefan-k)).
+
+### Fixed
+- Correct badges for pyauditor Readme ([@stefan-k](https://github.com/stefan-k)).
+
 ## [0.0.3] - 2022-08-11
 ### Added
 - Python interface exported from Rust code (pyauditor) including test harness ([@stefan-k](https://github.com/stefan-k)).

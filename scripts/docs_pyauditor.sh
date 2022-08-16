@@ -11,6 +11,7 @@ function make_docs() {
   pip install maturin
   pip install sphinx
   pip install sphinx_rtd_theme
+  pip install myst-parser
   SQLX_OFFLINE=true maturin develop
   cd docs
   make html
