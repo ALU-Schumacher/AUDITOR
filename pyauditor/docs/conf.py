@@ -17,7 +17,8 @@ author = 'Stefan Kroboth'
 
 extensions = [
         'sphinx.ext.autodoc',
-        'sphinx_rtd_theme'
+        'sphinx_rtd_theme',
+        'myst_parser'
 ]
 
 templates_path = ['_templates']

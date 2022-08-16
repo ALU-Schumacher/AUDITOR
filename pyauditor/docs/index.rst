@@ -6,14 +6,20 @@
 Welcome to pyauditor's documentation!
 =====================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+
+pyauditor is a client for interacting with an Auditor instance via Python.
+It provides functionality to create records and send records to and receive records from Auditor and as such serves as the basic building block for `Collectors` and `Plugins` written in Python.
 
 
-.. automodule:: pyauditor
-   :members:
-   :undoc-members:
+Installation
+============
+
+pyauditor requires a Python version >= 3.7.
+
+.. code-block::
+
+    python3 -m pip install python-auditor
+
 
 
 
@@ -23,3 +29,13 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Contents:
+
+   Introduction <self>
+   examples
+   api
+   changelog
