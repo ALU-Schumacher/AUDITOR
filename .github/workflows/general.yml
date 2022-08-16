@@ -71,7 +71,9 @@ jobs:
           
       - name: Check sqlx-data.json is up-to-date
         run: |
-          cargo sqlx prepare --check -- --package auditor --bin auditor
+          cd auditor
+          # cargo sqlx prepare --check -- --lib
+          cargo sqlx prepare --check -- --bin auditor
 
       - name: Run cargo test
         uses: actions-rs/cargo@v1

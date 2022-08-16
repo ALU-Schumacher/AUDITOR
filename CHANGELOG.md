@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Correct badges for pyauditor Readme ([@stefan-k](https://github.com/stefan-k)).
+- Moved sqlx-data.json to auditor folder to fix docs.rs build ([@stefan-k](https://github.com/stefan-k)).
 
 ## [0.0.3] - 2022-08-11
 ### Added
