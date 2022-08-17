@@ -6,6 +6,8 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::constants::FORBIDDEN_CHARACTERS;
+use crate::domain::ValidationError;
+use anyhow::Context;
 use std::fmt;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -19,7 +21,7 @@ pub struct ValidName(String);
 
 impl ValidName {
     /// Returns `ValidName` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: String) -> Result<ValidName, anyhow::Error> {
+    pub fn parse(s: String) -> Result<ValidName, ValidationError> {
         // remove trailing whitespace and check if string is then empty
         let is_empty_or_whitespace = s.trim().is_empty();
         // count characters
@@ -27,7 +29,7 @@ impl ValidName {
         // check for forbidden characters
         let contains_forbidden_characters = s.chars().any(|g| FORBIDDEN_CHARACTERS.contains(&g));
         if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(anyhow::anyhow!("Invalid Name: {}", s))
+            Err(ValidationError(format!("Invalid Name: {}", s)))
         } else {
             Ok(Self(s))
         }
@@ -55,7 +57,12 @@ impl<'de> serde::Deserialize<'de> for ValidName {
         D: serde::Deserializer<'de>,
     {
         let buf = String::deserialize(deserializer)?;
-        ValidName::parse(buf).map_err(serde::de::Error::custom)
+        // Aaaah I don't like this clone at all... If stuff is slow, figure this out.
+        // I could remove the context, but it's nice to inform the user what's wrong. On the other
+        // hand, if users use our clients, this parsing can't fail.
+        ValidName::parse(buf.clone())
+            .with_context(|| format!("Parsing '{}' failed", buf))
+            .map_err(serde::de::Error::custom)
     }
 }
 

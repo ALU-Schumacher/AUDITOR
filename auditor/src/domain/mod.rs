@@ -12,9 +12,33 @@ mod validamount;
 mod validfactor;
 mod validname;
 
+use actix_web::{http::StatusCode, ResponseError};
 pub use component::{Component, ComponentTest};
 pub use record::{Record, RecordAdd, RecordTest, RecordUpdate};
 pub use score::{Score, ScoreTest};
 pub use validamount::ValidAmount;
 pub use validfactor::ValidFactor;
 pub use validname::ValidName;
+
+use crate::error::error_chain_fmt;
+
+#[derive(thiserror::Error)]
+pub struct ValidationError(String);
+
+impl std::fmt::Debug for ValidationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
+    }
+}
+
+impl std::fmt::Display for ValidationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Validating input failed: {}", self.0)
+    }
+}
+
+impl ResponseError for ValidationError {
+    fn status_code(&self) -> StatusCode {
+        StatusCode::BAD_REQUEST
+    }
+}
