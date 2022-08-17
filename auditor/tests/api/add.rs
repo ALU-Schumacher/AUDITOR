@@ -6,19 +6,12 @@ use fake::{Fake, Faker};
 async fn add_returns_a_200_for_valid_json_data() {
     // Arange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     // Act
     for _ in 0..100 {
         let body: RecordTest = Faker.fake();
 
-        let response = client
-            .post(&format!("{}/add", &app.address))
-            .header("Content-Type", "application/json")
-            .json(&body)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.add_record(&body).await;
 
         assert_eq!(200, response.status().as_u16());
 
@@ -44,7 +37,6 @@ async fn add_returns_a_200_for_valid_json_data() {
 async fn add_returns_a_400_for_invalid_json_data() {
     // Arange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     let forbidden_strings: Vec<String> = ['/', '(', ')', '"', '<', '>', '\\', '{', '}']
         .into_iter()
@@ -63,13 +55,7 @@ async fn add_returns_a_400_for_invalid_json_data() {
                 _ => (),
             }
 
-            let response = client
-                .post(&format!("{}/add", &app.address))
-                .header("Content-Type", "application/json")
-                .json(&body)
-                .send()
-                .await
-                .expect("Failed to execute request.");
+            let response = app.add_record(&body).await;
 
             assert_eq!(400, response.status().as_u16());
 
@@ -96,7 +82,6 @@ async fn add_returns_a_400_for_invalid_json_data() {
 async fn add_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     let record: RecordTest = Faker.fake();
 
@@ -135,13 +120,7 @@ async fn add_returns_a_400_when_data_is_missing() {
 
     for (error_message, invalid_body) in test_cases {
         // Act
-        let response = client
-            .post(&format!("{}/add", &app.address))
-            .header("Content-Type", "application/json")
-            .json(&invalid_body)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.add_record(&invalid_body).await;
 
         assert_eq!(
             400,

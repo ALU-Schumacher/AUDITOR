@@ -6,7 +6,6 @@ use fake::{Fake, Faker};
 async fn get_started_since_returns_a_200_and_list_of_records() {
     // Arange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     // First send a couple of records
     let test_cases = (1..10)
@@ -21,27 +20,17 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
         .collect::<Vec<_>>();
 
     for case in test_cases.iter() {
-        let response = client
-            .post(&format!("{}/add", &app.address))
-            .header("Content-Type", "application/json")
-            .json(&case)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.add_record(&case).await;
 
         assert_eq!(200, response.status().as_u16());
     }
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = client
-            .get(&format!(
-                "{}/get/started/since/2022-03-0{}T00:00:00-00:00",
-                &app.address, i
-            ))
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app
+            .get_started_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .await;
+
         assert_eq!(200, response.status().as_u16());
 
         let mut received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -71,16 +60,11 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 #[tokio::test]
 async fn get_started_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
-    let response = client
-        .get(&format!(
-            "{}/get/started/since/2022-03-01T13:00:00-00:00",
-            &app.address
-        ))
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    let response = app
+        .get_started_since_records("2022-03-01T13:00:00-00:00")
+        .await;
+
     assert_eq!(200, response.status().as_u16());
 
     let received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -92,7 +76,6 @@ async fn get_started_since_returns_a_200_and_no_records() {
 async fn get_stopped_since_returns_a_200_and_list_of_records() {
     // Arange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     // First send a couple of records
     let test_cases = (1..10)
@@ -107,27 +90,16 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         .collect::<Vec<_>>();
 
     for case in test_cases.iter() {
-        let response = client
-            .post(&format!("{}/add", &app.address))
-            .header("Content-Type", "application/json")
-            .json(&case)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.add_record(&case).await;
 
         assert_eq!(200, response.status().as_u16());
     }
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = client
-            .get(&format!(
-                "{}/get/stopped/since/2022-03-0{}T00:00:00-00:00",
-                &app.address, i
-            ))
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app
+            .get_stopped_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .await;
         assert_eq!(200, response.status().as_u16());
 
         let mut received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -157,16 +129,10 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 #[tokio::test]
 async fn get_stopped_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
-    let response = client
-        .get(&format!(
-            "{}/get/stopped/since/2022-03-01T13:00:00-00:00",
-            &app.address
-        ))
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    let response = app
+        .get_stopped_since_records("2022-03-01T13:00:00-00:00")
+        .await;
     assert_eq!(200, response.status().as_u16());
 
     let received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -177,9 +143,8 @@ async fn get_stopped_since_returns_a_200_and_no_records() {
 #[tokio::test]
 async fn get_wrong_since_returns_a_404() {
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
-    let response = client
+    let response = reqwest::Client::new()
         .get(&format!(
             "{}/get/wrong/since/2022-03-01T13:00:00-00:00",
             &app.address

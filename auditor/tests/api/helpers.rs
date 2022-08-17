@@ -22,6 +22,64 @@ pub struct TestApp {
     pub db_pool: PgPool,
 }
 
+impl TestApp {
+    pub async fn health_check(&self) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(format!("{}/health_check", self.address))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn add_record<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
+        reqwest::Client::new()
+            .post(&format!("{}/add", &self.address))
+            .header("Content-Type", "application/json")
+            .json(record)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_records(&self) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(&format!("{}/get", &self.address))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_started_since_records<T: AsRef<str>>(
+        &self,
+        timestamp: T,
+    ) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(&format!(
+                "{}/get/started/since/{}",
+                &self.address,
+                timestamp.as_ref()
+            ))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_stopped_since_records<T: AsRef<str>>(
+        &self,
+        timestamp: T,
+    ) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(&format!(
+                "{}/get/stopped/since/{}",
+                &self.address,
+                timestamp.as_ref()
+            ))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+}
+
 pub async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
 

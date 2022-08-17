@@ -6,7 +6,6 @@ use fake::{Fake, Faker};
 async fn get_returns_a_200_and_list_of_records() {
     // Arange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     // First send a couple of records
     let mut test_cases: Vec<RecordTest> = (0..100)
@@ -15,22 +14,13 @@ async fn get_returns_a_200_and_list_of_records() {
         .collect();
 
     for case in test_cases.iter() {
-        let response = client
-            .post(&format!("{}/add", &app.address))
-            .header("Content-Type", "application/json")
-            .json(&case)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.add_record(&case).await;
 
         assert_eq!(200, response.status().as_u16());
     }
 
-    let response = client
-        .get(&format!("{}/get", &app.address))
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    let response = app.get_records().await;
+
     assert_eq!(200, response.status().as_u16());
 
     let mut received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -59,13 +49,9 @@ async fn get_returns_a_200_and_list_of_records() {
 #[tokio::test]
 async fn get_returns_a_200_and_no_records() {
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
-    let response = client
-        .get(&format!("{}/get", &app.address))
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    let response = app.get_records().await;
+
     assert_eq!(200, response.status().as_u16());
 
     let received_records = response.json::<Vec<Record>>().await.unwrap();
