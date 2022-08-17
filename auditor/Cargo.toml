@@ -68,6 +68,7 @@ shell-words = "^1"
 opentelemetry-prometheus = "0.10"
 opentelemetry = "0.17"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
+thiserror = "1"
 
 [dependencies.sqlx]
 version = "0.5.7"

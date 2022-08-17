@@ -329,6 +329,7 @@ dependencies = [
  "serde_with",
  "shell-words",
  "sqlx",
+ "thiserror",
  "tokio",
  "tracing",
  "tracing-actix-web",

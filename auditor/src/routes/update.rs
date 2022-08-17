@@ -11,24 +11,40 @@ use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
 
+#[derive(thiserror::Error)]
+pub enum UpdateError {
+    #[error("Updating unknown record {0} not possible.")]
+    UnknownRecord(String),
+    #[error(transparent)]
+    UnexpectedError(#[from] anyhow::Error),
+}
+
+debug_for_error!(UpdateError);
+responseerror_for_error!(
+    UpdateError,
+    UnknownRecord => BAD_REQUEST;
+    UnexpectedError => INTERNAL_SERVER_ERROR;
+);
+
 #[tracing::instrument(
     name = "Updating a record",
     skip(record, pool),
     fields(record_id = %record.record_id)
 )]
-pub async fn update(record: web::Json<RecordUpdate>, pool: web::Data<PgPool>) -> HttpResponse {
-    match update_record(&record, &pool).await {
-        Ok(_) => HttpResponse::Ok().finish(),
-        Err(e) => match e {
-            // TODO: See if this can be solved better
-            sqlx::Error::RowNotFound => HttpResponse::BadRequest().finish(),
-            _ => HttpResponse::InternalServerError().finish(),
-        },
-    }
+pub async fn update(
+    record: web::Json<RecordUpdate>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, UpdateError> {
+    update_record(&record, &pool).await.map_err(|e| match e {
+        UpdateRecordError::RowNotFoundError(s) => UpdateError::UnknownRecord(s),
+        UpdateRecordError::OtherError(err) => UpdateError::UnexpectedError(err.into()),
+    })?;
+
+    Ok(HttpResponse::Ok().finish())
 }
 
 #[tracing::instrument(name = "Updating a record in the database", skip(record, pool))]
-pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), sqlx::Error> {
+pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), UpdateRecordError> {
     // TODO: Can and probably should be merged into a single query.
     let start_time = sqlx::query!(
         r#"
@@ -40,9 +56,11 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), s
     )
     .fetch_one(pool)
     .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
+    .map_err(|e| match e {
+        sqlx::Error::RowNotFound => {
+            UpdateRecordError::RowNotFoundError(record.record_id.as_ref().into())
+        }
+        e => UpdateRecordError::OtherError(e),
     })?
     .start_time;
 
@@ -66,9 +84,16 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), s
     )
     .execute(pool)
     .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })?;
+    .map_err(UpdateRecordError::OtherError)?;
     Ok(())
 }
+
+#[derive(thiserror::Error)]
+pub enum UpdateRecordError {
+    #[error("Entry {0} not found in database")]
+    RowNotFoundError(String),
+    #[error(transparent)]
+    OtherError(sqlx::Error),
+}
+
+debug_for_error!(UpdateRecordError);

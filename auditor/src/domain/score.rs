@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use super::{ValidFactor, ValidName};
-use anyhow::Error;
+use anyhow::{Context, Error};
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -23,8 +23,9 @@ pub struct Score {
 impl Score {
     pub fn new<T: AsRef<str>>(name: T, factor: f64) -> Result<Self, Error> {
         Ok(Score {
-            name: ValidName::parse(name.as_ref().to_string())?,
-            factor: ValidFactor::parse(factor)?,
+            name: ValidName::parse(name.as_ref().to_string())
+                .context("Failed to parse score name.")?,
+            factor: ValidFactor::parse(factor).context("Failed to parse score factor.")?,
         })
     }
 }

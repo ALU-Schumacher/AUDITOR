@@ -8,7 +8,7 @@
 //! Record related types used for deserializing HTTP requests and serializing HTTP responses.
 
 use super::{Component, ComponentTest, ScoreTest, ValidName};
-use anyhow::Error;
+use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
 #[cfg(test)]
@@ -71,10 +71,14 @@ impl RecordAdd {
         start_time: DateTime<Utc>,
     ) -> Result<Self, Error> {
         Ok(RecordAdd {
-            record_id: ValidName::parse(record_id.as_ref().to_string())?,
-            site_id: ValidName::parse(site_id.as_ref().to_string())?,
-            user_id: ValidName::parse(user_id.as_ref().to_string())?,
-            group_id: ValidName::parse(group_id.as_ref().to_string())?,
+            record_id: ValidName::parse(record_id.as_ref().to_string())
+                .context("Failed to parse record_id.")?,
+            site_id: ValidName::parse(site_id.as_ref().to_string())
+                .context("Failed to parse site_id.")?,
+            user_id: ValidName::parse(user_id.as_ref().to_string())
+                .context("Failed to parse user_id.")?,
+            group_id: ValidName::parse(group_id.as_ref().to_string())
+                .context("Failed to parse group_id.")?,
             components,
             start_time,
             stop_time: None,
@@ -285,10 +289,13 @@ impl TryFrom<Record> for RecordAdd {
 
     fn try_from(value: Record) -> Result<Self, Self::Error> {
         Ok(RecordAdd {
-            record_id: ValidName::parse(value.record_id)?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse site_id.")?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse user_id.")?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse group_id.")?,
             components: value
                 .components
                 .unwrap_or_default()
@@ -333,10 +340,13 @@ impl TryFrom<Record> for RecordUpdate {
 
     fn try_from(value: Record) -> Result<Self, Self::Error> {
         Ok(RecordUpdate {
-            record_id: ValidName::parse(value.record_id)?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))?,
+            record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
+            site_id: ValidName::parse(value.site_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse site_id.")?,
+            user_id: ValidName::parse(value.user_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse user_id.")?,
+            group_id: ValidName::parse(value.group_id.unwrap_or_else(|| "".to_string()))
+                .context("Failed to parse group_id.")?,
             components: value
                 .components
                 .unwrap_or_default()

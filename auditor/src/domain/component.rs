@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use super::{Score, ScoreTest, ValidAmount, ValidName};
-use anyhow::Error;
+use anyhow::{Context, Error};
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -26,8 +26,9 @@ pub struct Component {
 impl Component {
     pub fn new<T: AsRef<str>>(name: T, amount: i64) -> Result<Self, Error> {
         Ok(Component {
-            name: ValidName::parse(name.as_ref().to_string())?,
-            amount: ValidAmount::parse(amount)?,
+            name: ValidName::parse(name.as_ref().to_string())
+                .context("Failed to parse component name.")?,
+            amount: ValidAmount::parse(amount).context("Failed to parse component amount.")?,
             scores: vec![],
         })
     }

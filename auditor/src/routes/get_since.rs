@@ -12,6 +12,15 @@ use sqlx;
 use sqlx::PgPool;
 use std::fmt;
 
+#[derive(thiserror::Error)]
+pub enum GetSinceError {
+    #[error(transparent)]
+    UnexpectedError(#[from] anyhow::Error),
+}
+
+debug_for_error!(GetSinceError);
+responseerror_for_error!(GetSinceError, UnexpectedError => INTERNAL_SERVER_ERROR;);
+
 #[derive(serde::Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum StartedStopped {
@@ -36,19 +45,19 @@ impl fmt::Display for StartedStopped {
 pub async fn get_since(
     info: web::Path<(StartedStopped, DateTime<Utc>)>,
     pool: web::Data<PgPool>,
-) -> HttpResponse {
-    match get_records_since(&info, &pool).await {
-        Ok(records) => HttpResponse::Ok().json(records),
-        Err(_) => HttpResponse::InternalServerError().finish(),
-    }
+) -> Result<HttpResponse, GetSinceError> {
+    let records = get_records_since(&info, &pool)
+        .await
+        .map_err(GetSinceError::UnexpectedError)?;
+    Ok(HttpResponse::Ok().json(records))
 }
 
 #[tracing::instrument(name = "Get all records since a given timepoint", skip(info, pool))]
 pub async fn get_records_since(
     info: &(StartedStopped, DateTime<Utc>),
     pool: &PgPool,
-) -> Result<Vec<Record>, sqlx::Error> {
-    match info.0 {
+) -> Result<Vec<Record>, anyhow::Error> {
+    Ok(match info.0 {
         StartedStopped::Started => {
             sqlx::query_as!(
                 Record,
@@ -78,8 +87,14 @@ pub async fn get_records_since(
             .await
         }
     }
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })
+    .map_err(GetRecordSinceError)?)
 }
+
+pub struct GetRecordSinceError(sqlx::Error);
+
+error_for_error!(GetRecordSinceError);
+debug_for_error!(GetRecordSinceError);
+display_for_error!(
+    GetRecordSinceError,
+    "A database error was encountered while trying to get a record from the database."
+);

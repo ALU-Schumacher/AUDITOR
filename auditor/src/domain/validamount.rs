@@ -5,6 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::domain::ValidationError;
+use anyhow::Context;
 use sqlx::{postgres::PgTypeInfo, Postgres, Type};
 use std::fmt;
 
@@ -17,9 +19,9 @@ pub struct ValidAmount(i64);
 
 impl ValidAmount {
     /// Returns `ValidAmount` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: i64) -> Result<ValidAmount, anyhow::Error> {
+    pub fn parse(s: i64) -> Result<ValidAmount, ValidationError> {
         if s < 0 {
-            Err(anyhow::anyhow!("Invalid amount: {}", s))
+            Err(ValidationError(format!("Invalid amount: {}", s)))
         } else {
             Ok(Self(s))
         }
@@ -57,7 +59,9 @@ impl<'de> serde::Deserialize<'de> for ValidAmount {
         D: serde::Deserializer<'de>,
     {
         let buf = i64::deserialize(deserializer)?;
-        ValidAmount::parse(buf).map_err(serde::de::Error::custom)
+        ValidAmount::parse(buf)
+            .with_context(|| format!("Parsing '{}' failed.", buf))
+            .map_err(serde::de::Error::custom)
     }
 }
 

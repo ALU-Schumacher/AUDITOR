@@ -5,6 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::domain::ValidationError;
+use anyhow::Context;
 use sqlx::{postgres::PgTypeInfo, Postgres, Type};
 use std::fmt;
 
@@ -17,9 +19,9 @@ pub struct ValidFactor(f64);
 
 impl ValidFactor {
     /// Returns `ValidFactor` only if input satisfies validation criteria, otherwise panics.
-    pub fn parse(s: f64) -> Result<ValidFactor, anyhow::Error> {
+    pub fn parse(s: f64) -> Result<ValidFactor, ValidationError> {
         if s < 0.0 {
-            Err(anyhow::anyhow!("Invalid factor: {}", s))
+            Err(ValidationError(format!("Invalid factor: {}", s)))
         } else {
             Ok(Self(s))
         }
@@ -57,7 +59,9 @@ impl<'de> serde::Deserialize<'de> for ValidFactor {
         D: serde::Deserializer<'de>,
     {
         let buf = f64::deserialize(deserializer)?;
-        ValidFactor::parse(buf).map_err(serde::de::Error::custom)
+        ValidFactor::parse(buf)
+            .with_context(|| format!("Parsing '{}' failed.", buf))
+            .map_err(serde::de::Error::custom)
     }
 }
 
