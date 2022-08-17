@@ -92,13 +92,15 @@ impl AuditorClient {
 
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub async fn health_check(&self) -> bool {
-        matches!(
-            self.client
-                .get(&format!("{}/health_check", &self.address))
-                .send()
-                .await,
-            Ok(_)
-        )
+        match self
+            .client
+            .get(&format!("{}/health_check", &self.address))
+            .send()
+            .await
+        {
+            Ok(s) => matches!(s.error_for_status(), Ok(_)),
+            Err(_) => false,
+        }
     }
 
     #[tracing::instrument(
@@ -112,7 +114,8 @@ impl AuditorClient {
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
         Ok(())
     }
 
@@ -127,7 +130,8 @@ impl AuditorClient {
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
         Ok(())
     }
 
@@ -137,6 +141,7 @@ impl AuditorClient {
             .get(&format!("{}/get", &self.address))
             .send()
             .await?
+            .error_for_status()?
             .json()
             .await
     }
@@ -159,6 +164,7 @@ impl AuditorClient {
             ))
             .send()
             .await?
+            .error_for_status()?
             .json()
             .await
     }
@@ -180,6 +186,7 @@ impl AuditorClient {
             ))
             .send()
             .await?
+            .error_for_status()?
             .json()
             .await
     }
@@ -190,16 +197,24 @@ mod tests {
     use super::*;
     use crate::domain::RecordTest;
     use chrono::TimeZone;
+    use claim::assert_err;
     use fake::{Fake, Faker};
-    use wiremock::matchers::{body_json, header, method, path};
+    use wiremock::matchers::{any, body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
+
+    fn record<T: TryFrom<RecordTest>>() -> T
+    where
+        <T as TryFrom<RecordTest>>::Error: std::fmt::Debug,
+    {
+        T::try_from(Faker.fake::<RecordTest>()).unwrap()
+    }
 
     #[tokio::test]
     async fn get_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
-        let body: Vec<Record> = vec![Record::try_from(Faker.fake::<RecordTest>()).unwrap()];
+        let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
             .and(path("/get"))
@@ -233,7 +248,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn health_check_fails() {
+    async fn health_check_fails_on_timeout() {
         let mock_server = MockServer::start().await;
         let client = AuditorClientBuilder::new()
             .connection_string(&mock_server.uri())
@@ -254,11 +269,30 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn health_check_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .timeout(1)
+            .build()
+            .unwrap();
+
+        Mock::given(method("GET"))
+            .and(path("/health_check"))
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert!(!client.health_check().await);
+    }
+
+    #[tokio::test]
     async fn add_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
-        let record = RecordAdd::try_from(Faker.fake::<RecordTest>()).unwrap();
+        let record: RecordAdd = record();
 
         Mock::given(method("POST"))
             .and(path("/add"))
@@ -273,11 +307,27 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn add_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+
+        let record: RecordAdd = record();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert_err!(client.add(&record).await);
+    }
+
+    #[tokio::test]
     async fn update_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
-        let record = RecordUpdate::try_from(Faker.fake::<RecordTest>()).unwrap();
+        let record: RecordUpdate = record();
 
         Mock::given(method("POST"))
             .and(path("/update"))
@@ -292,11 +342,27 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn update_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+
+        let record: RecordUpdate = record();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert_err!(client.update(&record).await);
+    }
+
+    #[tokio::test]
     async fn get_started_since_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
-        let body: Vec<Record> = vec![Record::try_from(Faker.fake::<RecordTest>()).unwrap()];
+        let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
             .and(path("/get/started/since/2022-08-03T09:47:00+00:00"))
@@ -318,11 +384,29 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn get_started_since_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert_err!(
+            client
+                .get_started_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+                .await
+        );
+    }
+
+    #[tokio::test]
     async fn get_stopped_since_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
-        let body: Vec<Record> = vec![Record::try_from(Faker.fake::<RecordTest>()).unwrap()];
+        let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
             .and(path("/get/stopped/since/2022-08-03T09:47:00+00:00"))
@@ -341,5 +425,23 @@ mod tests {
             .zip(body.into_iter())
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
+    }
+
+    #[tokio::test]
+    async fn get_stopped_since_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert_err!(
+            client
+                .get_stopped_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+                .await
+        );
     }
 }
