@@ -14,6 +14,8 @@ use sqlx::ConnectOptions;
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: AuditorSettings,
+    #[serde(default = "default_metrics")]
+    pub metrics: MetricsSettings,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -37,6 +39,33 @@ pub struct DatabaseSettings {
     pub host: String,
     pub database_name: String,
     pub require_ssl: bool,
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct MetricsSettings {
+    pub database: DatabaseMetricsSettings,
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Deserialize, Debug)]
+pub struct DatabaseMetricsSettings {
+    #[serde(default = "default_db_metrics_frequency")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
+    pub frequency: chrono::Duration,
+    pub metrics: Vec<crate::metrics::DatabaseMetricsOptions>,
+}
+
+fn default_db_metrics_frequency() -> chrono::Duration {
+    chrono::Duration::seconds(30)
+}
+
+fn default_metrics() -> MetricsSettings {
+    MetricsSettings {
+        database: DatabaseMetricsSettings {
+            frequency: default_db_metrics_frequency(),
+            metrics: vec![],
+        },
+    }
 }
 
 impl DatabaseSettings {
@@ -77,12 +106,20 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(config::File::from(configuration_directory.join("base")).required(true))
         .add_source(
             config::File::from(configuration_directory.join(environment.as_str())).required(true),
-        )
-        .add_source(
-            config::Environment::with_prefix("AUDITOR")
-                .separator("__")
-                .prefix_separator("_"),
         );
+    let settings = match std::env::args().nth(1) {
+        Some(file) => settings.add_source(
+            config::File::from(file.as_ref())
+                .required(false)
+                .format(config::FileFormat::Yaml),
+        ),
+        None => settings,
+    };
+    let settings = settings.add_source(
+        config::Environment::with_prefix("AUDITOR")
+            .separator("__")
+            .prefix_separator("_"),
+    );
 
     settings.build()?.try_deserialize()
 }

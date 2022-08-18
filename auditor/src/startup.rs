@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
 use crate::routes::{add, get, get_since, health_check, update};
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
@@ -13,16 +14,16 @@ use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 /// Configures and starts the HttpServer
-pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
-    // prometheus exporter
-    let metrics_exporter = opentelemetry_prometheus::exporter().init();
-    let request_metrics = actix_web_opentelemetry::RequestMetrics::new(
-        opentelemetry::global::meter("actix_http_tracing"),
-        Some(|req: &actix_web::dev::ServiceRequest| {
-            req.path() == "/metrics" && req.method() == actix_web::http::Method::GET
-        }),
-        Some(metrics_exporter),
-    );
+pub fn run(
+    listener: TcpListener,
+    db_pool: PgPool,
+    db_watcher: DatabaseMetricsWatcher,
+) -> Result<Server, anyhow::Error> {
+    let request_metrics = PrometheusExporterBuilder::new(|req: &actix_web::dev::ServiceRequest| {
+        req.path() == "/metrics" && req.method() == actix_web::http::Method::GET
+    })
+    .with_database_watcher(db_watcher)
+    .build()?;
 
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {

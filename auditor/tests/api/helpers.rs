@@ -1,4 +1,5 @@
 use auditor::configuration::{get_configuration, DatabaseSettings};
+use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
@@ -90,8 +91,9 @@ pub async fn spawn_app() -> TestApp {
     let mut configuration = get_configuration().expect("Failed to read configuration.");
     configuration.database.database_name = Uuid::new_v4().to_string();
     let connection_pool = configure_database(&configuration.database).await;
-    let server =
-        auditor::startup::run(listener, connection_pool.clone()).expect("Failed to bind address");
+    let db_watcher = DatabaseMetricsWatcher::new(connection_pool.clone(), &configuration).unwrap();
+    let server = auditor::startup::run(listener, connection_pool.clone(), db_watcher)
+        .expect("Failed to bind address");
     let _ = tokio::spawn(server);
     TestApp {
         address,

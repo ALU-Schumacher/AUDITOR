@@ -44,7 +44,7 @@ strip = true
 
 [dependencies]
 actix-web = "4.1.0"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 serde = { version = "1", features = ["derive"] }
 serde-aux = "3"
 serde_with = { version = "2", features = ["chrono_0_4"] }
@@ -69,6 +69,9 @@ opentelemetry-prometheus = "0.10"
 opentelemetry = "0.17"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
 thiserror = "1"
+prometheus = "0.13"
+protobuf = "2.27"
+futures = "0.3"
 
 [dependencies.sqlx]
 version = "0.5.7"

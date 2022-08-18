@@ -14,6 +14,7 @@ pub mod configuration;
 pub mod constants;
 pub mod domain;
 pub mod error;
+pub mod metrics;
 #[macro_use]
 mod macros;
 pub mod routes;
