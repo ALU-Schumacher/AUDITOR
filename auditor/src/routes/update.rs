@@ -101,7 +101,7 @@ pub enum UpdateRecordError {
     #[error("Entry {0} not found in database")]
     RowNotFoundError(String),
     #[error(transparent)]
-    OtherError(sqlx::Error),
+    OtherError(#[from] sqlx::Error),
 }
 
 debug_for_error!(UpdateRecordError);
