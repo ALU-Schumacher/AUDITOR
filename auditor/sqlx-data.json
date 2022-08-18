@@ -1,5 +1,29 @@
 {
   "db": "PostgreSQL",
+  "019a3efa384d22e1ac9b6fa64f47a7670a8edff49268e54d2c97cb5f2e8e4c8e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT user_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE user_id IS NOT NULL\n               GROUP BY user_id;"
+  },
   "0de2b3aa2731428f5c749d7c166ab8be945eb01c6515fb3db329e45e39fd7d12": {
     "describe": {
       "columns": [
@@ -129,6 +153,30 @@
       }
     },
     "query": "SELECT\n           record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n           start_time as \"start_time?\", stop_time, runtime\n           FROM accounting\n        "
+  },
+  "7ebe9b100144b4c7b0ba7bd9ca5ecc4c7e80e77f5dfacbeaa95e94f7e5d22baf": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT site_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE site_id IS NOT NULL\n               GROUP BY site_id;"
   },
   "985cbc282418272684dceb3d6dfc01a64bbd9c04d34f477746f4d184a06e40f9": {
     "describe": {
@@ -311,6 +359,48 @@
       }
     },
     "query": "\n        INSERT INTO accounting (\n            record_id, site_id, user_id, group_id,\n            components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n        "
+  },
+  "a0efb85a024e1f2e9b1775b41cd0beb860517f14645ac3f32b1cd94639d411a9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT group_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE group_id IS NOT NULL\n               GROUP BY group_id;"
+  },
+  "b205b9e460541ad09dcd6de4d75df490a88f4b31b3ef45a9ec68047c39081eb5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "count!",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT count(*) as \"count!\" FROM accounting;"
   },
   "e67100ccbd0d3e93f5e2d1fc4feed4a797c13f2525a61d1d4db063445db52c6c": {
     "describe": {
