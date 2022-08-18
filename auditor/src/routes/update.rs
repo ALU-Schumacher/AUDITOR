@@ -45,7 +45,11 @@ pub async fn update(
 
 #[tracing::instrument(name = "Updating a record in the database", skip(record, pool))]
 pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), UpdateRecordError> {
-    // TODO: Can and probably should be merged into a single query.
+    let mut transaction = match pool.begin().await {
+        Ok(transaction) => transaction,
+        Err(e) => return Err(UpdateRecordError::OtherError(e)),
+    };
+
     let start_time = sqlx::query!(
         r#"
         SELECT start_time
@@ -54,7 +58,7 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
         "#,
         record.record_id.as_ref(),
     )
-    .fetch_one(pool)
+    .fetch_one(&mut transaction)
     .await
     .map_err(|e| match e {
         sqlx::Error::RowNotFound => {
@@ -82,10 +86,14 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
         (record.stop_time - start_time).num_seconds(),
         Utc::now()
     )
-    .execute(pool)
+    .execute(&mut transaction)
     .await
     .map_err(UpdateRecordError::OtherError)?;
-    Ok(())
+    if let Err(e) = transaction.commit().await {
+        Err(UpdateRecordError::OtherError(e))
+    } else {
+        Ok(())
+    }
 }
 
 #[derive(thiserror::Error)]
