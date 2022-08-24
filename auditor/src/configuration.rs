@@ -97,6 +97,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
 
+    // if the directory doesn't exist, we're probably in the wrong directory. Let's get inside
+    // "auditor/configuration" then!
     let configuration_directory = if configuration_directory.exists() {
         configuration_directory
     } else {
