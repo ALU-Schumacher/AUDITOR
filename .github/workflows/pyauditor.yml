@@ -235,3 +235,4 @@ jobs:
           folder: pyauditor/docs/_build/html
           target-folder: pyauditor
           token: ${{ secrets.GITHUB_TOKEN }}
+          clean: false
