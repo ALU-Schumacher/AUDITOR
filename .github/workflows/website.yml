@@ -31,3 +31,4 @@ jobs:
           folder: media/website/public
           target-folder: .
           token: ${{ secrets.GITHUB_TOKEN }}
+          clean: false
