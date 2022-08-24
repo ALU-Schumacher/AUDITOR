@@ -90,6 +90,60 @@ The configuration parameters can be set by passing environment variables via `-e
 docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:main
 ```
 
+## Configuration files
+
+Besides environment variables, a YAML configuration file can be used:
+
+```yaml
+application:
+  addr: 0.0.0.0
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+  require_ssl: false
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+```
+
+This configuration file can be passed to Auditor and will overwrite the default configuration.
+
+## Metrics exporter for Prometheus
+
+Metrics for Prometheus are exposed via the `/metrics` endpoint.
+By default HTTP metrics are exported.
+In addition, database metrics are exported as well (optional).
+These include the current number of records in the database, as a well as the number of records per site, group and user.
+Database metrics export can be configured in the configuration:
+
+```yaml
+metrics:
+  database:
+    # How often thes values are computed (default: every 30 seconds)
+    frequency: 30
+    # Type of metrics to export (default: None)
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+```
+
+How often the database metrics are computed is defined by the `frequency` configuration variable. 
+Note that computing the database metrics is a potentially expensive operation.
+Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
+The frequency setting should be somewhat in accordance with the Prometheus scraping interval.
+
+
 # Compiling Auditor
 
 Alternatively, Auditor can be compiled and run directly.
@@ -209,11 +263,8 @@ The resulting binaries will be placed in `target/x86_64-unknown-linux-musl/relea
 
 ## Configuration
 
-Auditor is configured via the files in the `configuration` directory or via environment variables as mentioned above.
+Auditor is configured via the files in the `configuration` directory, a configuration file passed to the binary, or via environment variables as mentioned above.
 
-## Prometheus integration
-
-Metrics for prometheus are exposed via the `/metrics` endpoint.
 
 # Packages
 
