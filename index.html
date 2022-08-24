@@ -134,6 +134,14 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#using-docker"><small>- Using Docker</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#configuration-files"><small>- Configuration files</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#metrics-exporter-for-prometheus"><small>- Metrics exporter for Prometheus</small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -165,10 +173,6 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#configuration"><small>- Configuration</small></a>
                 </div>
                 
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#prometheus-integration"><small>- Prometheus integration</small></a>
-                </div>
-                
                 
                 
                 <div class="toc-item">
@@ -196,6 +200,11 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#priority-computation-modes"><small>- Priority computation modes</small></a>
                 </div>
                 
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#auditor-clients">Auditor Clients</a>
+                </div>
                 
                 
                 <div class="toc-item">
@@ -274,6 +283,49 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <p>The configuration parameters can be set by passing environment variables via <code>-e</code>:</p>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">docker</span></span><span class="z-meta z-function-call z-arguments z-shell"> run<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>e</span> AUDITOR_APPLICATION__ADDR=localhost<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>e</span> AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:main</span>
 </span></code></pre>
+<h2 id="configuration-files">Configuration files</h2>
+<p>Besides environment variables, a YAML configuration file can be used:</p>
+<pre data-lang="yaml" class="language-yaml z-code"><code class="language-yaml" data-lang="yaml"><span class="z-source z-yaml"><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">application</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">addr</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-float z-decimal z-yaml">0<span class="z-punctuation z-separator z-decimal z-yaml">.</span>0.0.0</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">port</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">8000</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">database</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">host</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>localhost<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">port</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">5432</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">username</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>postgres<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">password</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>password<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">database_name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>auditor<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">require_ssl</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-language z-boolean z-yaml">false</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">metrics</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">database</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">frequency</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">30</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">metrics</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCount</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerSite</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerGroup</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerUser</span>
+</span></code></pre>
+<p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
+<h2 id="metrics-exporter-for-prometheus">Metrics exporter for Prometheus</h2>
+<p>Metrics for Prometheus are exposed via the <code>/metrics</code> endpoint.
+By default HTTP metrics are exported.
+In addition, database metrics are exported as well (optional).
+These include the current number of records in the database, as a well as the number of records per site, group and user.
+Database metrics export can be configured in the configuration:</p>
+<pre data-lang="yaml" class="language-yaml z-code"><code class="language-yaml" data-lang="yaml"><span class="z-source z-yaml"><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">metrics</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">database</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> How often thes values are computed (default: every 30 seconds)
+</span>    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">frequency</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">30</span>
+    <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> Type of metrics to export (default: None)
+</span>    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">metrics</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCount</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerSite</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerGroup</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerUser</span>
+</span></code></pre>
+<p>How often the database metrics are computed is defined by the <code>frequency</code> configuration variable. 
+Note that computing the database metrics is a potentially expensive operation.
+Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
+The frequency setting should be somewhat in accordance with the Prometheus scraping interval.</p>
 <h1 id="compiling-auditor">Compiling Auditor</h1>
 <p>Alternatively, Auditor can be compiled and run directly.
 This section descibes how to set up the required development environment.
@@ -343,9 +395,7 @@ Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be 
 </span></code></pre>
 <p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
 <h2 id="configuration">Configuration</h2>
-<p>Auditor is configured via the files in the <code>configuration</code> directory or via environment variables as mentioned above.</p>
-<h2 id="prometheus-integration">Prometheus integration</h2>
-<p>Metrics for prometheus are exposed via the <code>/metrics</code> endpoint.</p>
+<p>Auditor is configured via the files in the <code>configuration</code> directory, a configuration file passed to the binary, or via environment variables as mentioned above.</p>
 <h1 id="packages">Packages</h1>
 <p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>.</p>
 <h1 id="slurm-epilog-collector">SLURM Epilog Collector</h1>
@@ -484,6 +534,9 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <li><code>FullSpread</code>:  This mode will spread the resources on the full range given by <code>min_priority</code> and <code>max_priority</code>, such that the group with the least provided resources will be assigned a priority equal to <code>min_priority</code> and the group with the most provided resources will be assigned a priority equal to <code>max_priority</code>. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorites of two consecutive runs can be substantially different, leading to large jumps in priorities.</li>
 <li><code>ScaledBySum</code>: Computes the priorities such that <code>max_priority</code> is equal to the sum of all provide resources plus <code>min_priority</code>. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources. </li>
 </ul>
+<h1 id="auditor-clients">Auditor Clients</h1>
+<p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
+For details please consult the respective documentation pages for <a href="https://docs.rs/auditor/">the Rust client</a> and <a href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
 <h1 id="license">License</h1>
 <p>Licensed under either of</p>
 <ul>
