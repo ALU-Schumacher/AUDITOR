@@ -30,7 +30,7 @@ RUN apt-get update -y \
 
 COPY --from=builder /auditor/target/release/auditor auditor
 
-COPY configuration configuration
+COPY auditor/configuration configuration
 
 ENV AUDITOR_ENVIRONMENT production
 ENTRYPOINT ["./auditor"]
