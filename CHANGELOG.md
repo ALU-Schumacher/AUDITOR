@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2022-08-25
+### Added
+- Database metrics in Prometheus exporter ([@stefan-k](https://github.com/stefan-k)).
+- Added cargo-deny to CI ([@stefan-k](https://github.com/stefan-k)).
+
+### Changed
+- Better errors, error handling, error logging and exposing errors to users ([@stefan-k](https://github.com/stefan-k)).
+- Using a SQL transaction for updating records ([@stefan-k](https://github.com/stefan-k)).
+- pyauditor wheels now also have support for python 3.6 (for TARDIS). This required downgrading the pyo3 libraries ([@stefan-k](https://github.com/stefan-k)).
+- Restructured and simplified test suite ([@stefan-k](https://github.com/stefan-k)).
+- AuditorClient now properly errors on server errors ([@stefan-k](https://github.com/stefan-k)).
+- Updated once-cell from 1.13.0 to 1.13.1 ([@stefan-k](https://github.com/stefan-k)).
+- Updated anyhow from 1.0.61 to 1.0.62 ([@stefan-k](https://github.com/stefan-k)).
+- Updated serde from 1.0.143 to 1.0.144 ([@stefan-k](https://github.com/stefan-k)).
+
+### Fixed
+- Fixed broken website build in CI ([@stefan-k](https://github.com/stefan-k)).
+- Removed duplicate configuration directory ([@stefan-k](https://github.com/stefan-k)).
+
 ## [0.0.4] - 2022-08-16
 ### Added
 - Sphinx documentation for pyauditor module ([@stefan-k](https://github.com/stefan-k)).
@@ -70,8 +89,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.0.5...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
 [0.0.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4
+[0.0.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5
