@@ -44,26 +44,32 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.0.4 - 2022-08-16</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">[0.0.5] - 2022-08-25</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.0.3 - 2022-08-11</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.0.4 - 2022-08-16</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id5">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">0.0.2 - 2022-08-01</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.0.3 - 2022-08-11</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id7">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id8">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id9">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">0.0.1 - 2022-07-26</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.0.2 - 2022-08-01</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id11">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">0.0.1 - 2022-07-26</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -100,36 +106,66 @@
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <section id="unreleased">
-<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/compare/v0.0.4...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/compare/v0.0.5...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this heading"></a></h2>
 </section>
 <section id="id1">
-<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4">0.0.4</a> - 2022-08-16<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<h2>[0.0.5] - 2022-08-25<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Database metrics in Prometheus exporter (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Added cargo-deny to CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Better errors, error handling, error logging and exposing errors to users (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Using a SQL transaction for updating records (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>pyauditor wheels now also have support for python 3.6 (for TARDIS). This required downgrading the pyo3 libraries (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Restructured and simplified test suite (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>AuditorClient now properly errors on server errors (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated once-cell from 1.13.0 to 1.13.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated anyhow from 1.0.61 to 1.0.62 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated serde from 1.0.143 to 1.0.144 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fixed broken website build in CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Removed duplicate configuration directory (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4">0.0.4</a> - 2022-08-16<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<section id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Sphinx documentation for pyauditor module (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Tutorial for pyauditor module (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Automatic deployment of pyauditor documentation (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="changed">
-<h3>Changed<a class="headerlink" href="#changed" title="Permalink to this heading"></a></h3>
+<section id="id4">
+<h3>Changed<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Updated chrono from 0.4.21 to 0.4.22 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this heading"></a></h3>
+<section id="id5">
+<h3>Fixed<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Correct badges for pyauditor Readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Moved sqlx-data.json to auditor folder to fix docs.rs build (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3">0.0.3</a> - 2022-08-11<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
-<section id="id3">
-<h3>Added<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<section id="id6">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3">0.0.3</a> - 2022-08-11<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
+<section id="id7">
+<h3>Added<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Python interface exported from Rust code (pyauditor) including test harness (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Logging spans with unique id for priority plugin and slurm epilog collector (helps differentiate different runs in logs) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
@@ -141,8 +177,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Added pyauditor readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Changed<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<section id="id8">
+<h3>Changed<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> methods of <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> now take references to <code class="docutils literal notranslate"><span class="pre">Record</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Updated config from 0.13.1 to 0.13.2 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
@@ -157,41 +193,41 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Changed some of the interfaces in <code class="docutils literal notranslate"><span class="pre">domain</span></code> module to better fit pyauditor (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Fixed<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<section id="id9">
+<h3>Fixed<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Pointed auditor Cargo.toml to correct readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2">0.0.2</a> - 2022-08-01<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
-<section id="id7">
-<h3>Added<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<section id="id10">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2">0.0.2</a> - 2022-08-01<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h2>
+<section id="id11">
+<h3>Added<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Documentation of priority plugin on website (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3>Changed<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<section id="id12">
+<h3>Changed<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>CI: Run clippy for all targets (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Build docker containers when pushing a version tag (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Updated tracing from 1.0.35 to 1.0.36 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
-<section id="id9">
-<h3>Fixed<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<section id="id13">
+<h3>Fixed<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Correctly parse scontrol output in slurm epilog collector (Thanks to Raphael Kleinemuehl for the hint!) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Fixed building of docs on docs.rs by activating sqlx offline mode (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 </ul>
 </section>
 </section>
-<section id="id10">
-<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1">0.0.1</a> - 2022-07-26<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h2>
-<section id="id11">
-<h3>Added<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<section id="id14">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1">0.0.1</a> - 2022-07-26<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h2>
+<section id="id15">
+<h3>Added<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Auditor (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
 <li><p>Auditor slurm epilog collector (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
