@@ -11,6 +11,7 @@ use crate::domain::Component;
 use anyhow::Error;
 use auditor::domain::ValidName;
 use chrono::{offset::TimeZone, Utc};
+use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use pyo3_chrono::NaiveDateTime;
@@ -55,7 +56,7 @@ use pyo3_chrono::NaiveDateTime;
 /// :param start_time: Timestamp from which the resource became available
 /// :type group_id: datetime.datetime
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
     pub(crate) inner: auditor::domain::Record,
 }
@@ -177,6 +178,18 @@ impl Record {
     #[getter]
     fn runtime(&self) -> Option<i64> {
         self.inner.runtime
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for Record {
+    fn __richcmp__(&self, other: PyRef<Record>, op: CompareOp) -> Py<PyAny> {
+        let py = other.py();
+        match op {
+            CompareOp::Eq => (self.inner == other.inner).into_py(py),
+            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            _ => py.NotImplemented(),
+        }
     }
 }
 

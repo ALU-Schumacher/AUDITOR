@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
 
 /// Score(name: str, factor: float)
@@ -21,7 +22,7 @@ use pyo3::prelude::*;
 /// :param factor: Factor
 /// :type factor: float
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Score {
     pub(crate) inner: auditor::domain::Score,
 }
@@ -51,5 +52,17 @@ impl Score {
     #[getter]
     fn factor(&self) -> f64 {
         *self.inner.factor.as_ref()
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for Score {
+    fn __richcmp__(&self, other: PyRef<Score>, op: CompareOp) -> Py<PyAny> {
+        let py = other.py();
+        match op {
+            CompareOp::Eq => (self.inner == other.inner).into_py(py),
+            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            _ => py.NotImplemented(),
+        }
     }
 }

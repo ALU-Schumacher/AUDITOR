@@ -15,7 +15,7 @@ use sqlx::{
     Postgres, Type,
 };
 
-#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, sqlx::Encode, Clone)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, sqlx::Encode, Clone, PartialOrd, Ord)]
 #[sqlx(type_name = "component")]
 pub struct Component {
     pub name: ValidName,
