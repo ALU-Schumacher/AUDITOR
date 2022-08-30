@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::domain::Score;
+use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
 
 /// Component(name: str, amount: int)
@@ -22,7 +23,7 @@ use pyo3::prelude::*;
 /// :param amount: Amount
 /// :type amount: int
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Component {
     pub(crate) inner: auditor::domain::Component,
 }
@@ -59,6 +60,18 @@ impl Component {
     #[getter]
     fn scores(&self) -> Vec<Score> {
         self.inner.scores.iter().cloned().map(Score::from).collect()
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for Component {
+    fn __richcmp__(&self, other: PyRef<Component>, op: CompareOp) -> Py<PyAny> {
+        let py = other.py();
+        match op {
+            CompareOp::Eq => (self.inner == other.inner).into_py(py),
+            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            _ => py.NotImplemented(),
+        }
     }
 }
 

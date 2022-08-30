@@ -15,7 +15,7 @@ use unicode_segmentation::UnicodeSegmentation;
 // possible to create this type outside of this module, hence enforcing the use of `parse`. This
 // ensures that every string stored in this type satisfies the validation criteria checked by
 // `parse`.
-#[derive(Debug, Clone, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct ValidName(String);
 
