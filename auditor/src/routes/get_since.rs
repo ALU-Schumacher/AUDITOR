@@ -66,6 +66,7 @@ pub async fn get_records_since(
                 start_time as "start_time?", stop_time, runtime
                 FROM accounting
                 WHERE start_time > $1 and runtime IS NOT NULL
+                ORDER BY stop_time
                 "#,
                 info.1,
             )
@@ -80,6 +81,7 @@ pub async fn get_records_since(
                 start_time as "start_time?", stop_time, runtime
                 FROM accounting
                 WHERE stop_time > $1 and runtime IS NOT NULL
+                ORDER BY stop_time
                 "#,
                 info.1,
             )
