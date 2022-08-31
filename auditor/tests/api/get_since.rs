@@ -58,6 +58,61 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 }
 
 #[tokio::test]
+async fn get_started_since_returns_a_list_of_sorted_records() {
+    // Arange
+    let app = spawn_app().await;
+
+    // First send a couple of records
+    let test_cases = (1..10)
+        .into_iter()
+        .map(|i| {
+            Faker
+                .fake::<RecordTest>()
+                // Giving a name which is sorted the same as the time is useful for asserting later
+                .with_record_id(format!("r{}", i))
+                .with_start_time(format!("2022-03-0{}T12:00:00-00:00", i))
+        })
+        .collect::<Vec<_>>();
+
+    for case in test_cases.iter() {
+        let response = app.add_record(&case).await;
+
+        assert_eq!(200, response.status().as_u16());
+    }
+
+    // Try different start dates and receive records
+    for i in 1..10 {
+        let response = app
+            .get_started_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .await;
+
+        assert_eq!(200, response.status().as_u16());
+
+        let received_records = response.json::<Vec<Record>>().await.unwrap();
+
+        // make sure the test cases are sorted by stop_time
+        let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
+        tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
+
+        for (j, (record, received)) in tmp_test_cases
+            .iter()
+            .zip(received_records.iter())
+            .enumerate()
+        {
+            assert_eq!(
+                record,
+                received,
+                "Check {}|{}: Record {} and {} did not match.",
+                i,
+                j,
+                record.record_id.as_ref().unwrap(),
+                received.record_id
+            );
+        }
+    }
+}
+
+#[tokio::test]
 async fn get_started_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
@@ -110,6 +165,60 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         for (j, (record, received)) in test_cases
             .iter()
             .skip(i - 1)
+            .zip(received_records.iter())
+            .enumerate()
+        {
+            assert_eq!(
+                record,
+                received,
+                "Check {}|{}: Record {} and {} did not match.",
+                i,
+                j,
+                record.record_id.as_ref().unwrap(),
+                received.record_id
+            );
+        }
+    }
+}
+
+#[tokio::test]
+async fn get_stopped_since_returns_a_list_of_sorted_records() {
+    // Arange
+    let app = spawn_app().await;
+
+    // First send a couple of records
+    let test_cases = (1..10)
+        .into_iter()
+        .map(|i| {
+            Faker
+                .fake::<RecordTest>()
+                // Giving a name which is sorted the same as the time is useful for asserting later
+                .with_record_id(format!("r{}", i))
+                .with_stop_time(format!("2022-03-0{}T12:00:00-00:00", i))
+        })
+        .collect::<Vec<_>>();
+
+    for case in test_cases.iter() {
+        let response = app.add_record(&case).await;
+
+        assert_eq!(200, response.status().as_u16());
+    }
+
+    // Try different start dates and receive records
+    for i in 1..10 {
+        let response = app
+            .get_stopped_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .await;
+        assert_eq!(200, response.status().as_u16());
+
+        let received_records = response.json::<Vec<Record>>().await.unwrap();
+
+        // make sure the test cases are sorted by stop_time
+        let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
+        tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
+
+        for (j, (record, received)) in tmp_test_cases
+            .iter()
             .zip(received_records.iter())
             .enumerate()
         {
