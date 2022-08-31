@@ -23,7 +23,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
     // Create a connection pool for the PostgreSQL database
     let connection_pool = PgPoolOptions::new()
-        .connect_timeout(std::time::Duration::from_secs(2))
+        .acquire_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.database.with_db());
 
     // Start background task
