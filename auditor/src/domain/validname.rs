@@ -57,7 +57,7 @@ impl<'de> serde::Deserialize<'de> for ValidName {
         D: serde::Deserializer<'de>,
     {
         let buf = String::deserialize(deserializer)?;
-        // Aaaah I don't like this clone at all... If stuff is slow, figure this out.
+        // Aah I don't like this clone at all... If stuff is slow, figure this out.
         // I could remove the context, but it's nice to inform the user what's wrong. On the other
         // hand, if users use our clients, this parsing can't fail.
         ValidName::parse(buf.clone())

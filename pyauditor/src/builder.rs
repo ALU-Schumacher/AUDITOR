@@ -83,7 +83,7 @@ impl AuditorClientBuilder {
     /// timeout(timeout: int)
     /// Set a timeout in seconds for HTTP requests
     ///
-    /// :param timeout: Timout in sections
+    /// :param timeout: Timeout in sections
     /// :type timeout: int
     pub fn timeout(mut self_: PyRefMut<Self>, timeout: i64) -> PyRefMut<Self> {
         self_.inner = self_.inner.clone().timeout(timeout);
