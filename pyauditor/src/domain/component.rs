@@ -10,7 +10,7 @@ use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
 
 /// Component(name: str, amount: int)
-/// A component represents a single componenent which is to be accounted for. It consists at least
+/// A component represents a single component which is to be accounted for. It consists at least
 /// of a ``name`` and an ``amount`` (how many or how much of this component is to be accounted
 /// for).
 /// Multiple scores can be attached to a single ``Component``.

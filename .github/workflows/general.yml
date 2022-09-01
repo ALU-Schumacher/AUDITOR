@@ -141,10 +141,12 @@ jobs:
             --features=${{ env.SQLX_FEATURES }}
             --no-default-features
             --locked
+
       - name: Migrate database
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
         with:
@@ -167,6 +169,50 @@ jobs:
     - uses: EmbarkStudios/cargo-deny-action@v1
       with:
         command: check ${{ matrix.checks }}
+
+  spellcheck:
+    name: Spellcheck
+    runs-on: ubuntu-latest
+    env:
+      SPELLCHECK_VERSION: 0.12.0
+    steps:
+      - name: Checkout reposityor
+        uses: actions/checkout@v2
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          components: clippy
+          toolchain: beta
+          override: true
+
+      - name: Cache cargo-spellcheck
+        uses: actions/cache@v2
+        id: cache-spellcheck
+        with:
+          path: |
+            ~/.cargo/bin/cargo-spellcheck
+          key: ${{ runner.os }}-spellcheck-${{ env.SPELLCHECK_VERSION }}
+
+      - name: Install clang
+        run: |
+          sudo apt-get install clang
+
+      - name: Install cargo-spellcheck
+        uses: actions-rs/cargo@v1
+        if: steps.cache-spellcheck.outputs.cache-hit == false
+        with:
+          command: install 
+          args: >
+            cargo-spellcheck
+            --force
+            --version=${{ env.SPELLCHECK_VERSION }}
+            --locked
+
+      - name: Check spelling
+        run: |
+          cargo spellcheck check --cfg .cargo/spellcheck.toml --recursive --code 1
+
 
   # coverage:
   #   name: Code coverage
