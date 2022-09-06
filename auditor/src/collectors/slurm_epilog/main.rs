@@ -10,7 +10,7 @@ use auditor::client::AuditorClient;
 use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use regex::Regex;
 use std::collections::HashMap;
 use std::env;
@@ -54,10 +54,11 @@ fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
 fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
     timestamp: T,
 ) -> Result<DateTime<Utc>, Error> {
-    Ok(DateTime::<Utc>::from_utc(
+    let local_offset = Local::now().offset().local_minus_utc();
+    Ok(DateTime::<Utc>::from(DateTime::<Local>::from_local(
         NaiveDateTime::parse_from_str(timestamp.as_ref(), "%Y-%m-%dT%H:%M:%S")?,
-        Utc,
-    ))
+        FixedOffset::east(local_offset),
+    )))
 }
 
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
