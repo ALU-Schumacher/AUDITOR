@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2022-09-06
+### Added
+- Spellcheck in CI ([@stefan-k](https://github.com/stefan-k)).
+- cargo-deny in CI ([@stefan-k](https://github.com/stefan-k)).
+- Implemented comparison operators for pyauditor types ([@stefan-k](https://github.com/stefan-k)).
+
+### Changed
+- Any `get` endpoint now returns a list of records sorted by `stop_time` ([@stefan-k](https://github.com/stefan-k)).
+- Updated anyhow from 1.0.63 to 1.0.64 ([@stefan-k](https://github.com/stefan-k)).
+- Updated thiserror from 1.0.33 to 1.0.34 ([@stefan-k](https://github.com/stefan-k)).
+- Updated serde-aux from 3.1.0 to 4.0.0 ([@stefan-k](https://github.com/stefan-k)).
+- Updated once-cell from 1.13.1 to 1.14.0 ([@stefan-k](https://github.com/stefan-k)).
+- Updated sqlx from 0.5.7 to 0.6.1 ([@stefan-k](https://github.com/stefan-k)).
+
+### Fixed
+- Fixed Slurm Epilog Collector to correctly send UTC timestamps ([@stefan-k](https://github.com/stefan-k)).
+
+### Deprecated
+- Old python client written in python is deprecated ([@stefan-k](https://github.com/stefan-k)).
+
 ## [0.0.5] - 2022-08-25
 ### Added
 - Database metrics in Prometheus exporter ([@stefan-k](https://github.com/stefan-k)).
@@ -89,9 +109,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.0.6...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
 [0.0.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4
-[0.0.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5
+[0.0.5]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5
+[0.0.6]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.6
