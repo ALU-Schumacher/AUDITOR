@@ -14,10 +14,10 @@ use std::{
 use uuid::Uuid;
 
 use auditor::telemetry::{get_subscriber, init_subscriber};
-use configuration::client::get_configuration;
+use configuration_client::get_configuration;
 use message::Message;
 
-mod configuration;
+mod configuration_client;
 mod message;
 
 const NAME: &str = "AUDITOR-slurm-epilog-collector-client";
@@ -32,7 +32,7 @@ fn run() -> Result<(), anyhow::Error> {
     ))?;
 
     tracing::debug!("Connecting to {}", addr);
-    let mut stream = TcpStream::connect("127.0.0.1:4687")?;
+    let mut stream = TcpStream::connect(addr)?;
     let local_addr = stream.local_addr()?;
     tracing::debug!("Connected to {}:{}", local_addr.ip(), local_addr.port());
 
@@ -42,11 +42,11 @@ fn run() -> Result<(), anyhow::Error> {
 
     tracing::debug!("Receiving response from server");
     let mut buffer = [0; 1024];
-    stream
+    let len = stream
         .read(&mut buffer)
         .context("Reading response from server failed")?;
 
-    match Message::unpack(&BytesMut::from(&buffer[..]))
+    match Message::unpack(&BytesMut::from(&buffer[..len]))
         .context("Deserializing message from server failed.")?
     {
         Message::Ok => (),

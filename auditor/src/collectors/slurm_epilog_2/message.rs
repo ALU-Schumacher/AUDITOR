@@ -11,7 +11,7 @@ use bytes::{Bytes, BytesMut};
 use rmp_serde::Serializer;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum Message {
     JobInfo { job_id: u64 },
     Ok,
