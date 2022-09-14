@@ -10,4 +10,4 @@ exec 2>> /epilog_logs/epilog.log
 # AUDITOR_ADDR=host.docker.internal AUDITOR_PORT=8000 /auditor-slurm-epilog-collector
 # Set DEBUG loglevel (verbose)
 # RUST_LOG=debug /auditor-slurm-epilog-collector collector_config.yaml
-/auditor-slurm-epilog-collector collector_config.yaml
+AUDITOR_SLURM_EPILOG_COLLECTOR__ADDR=host.docker.internal /auditor-slurm-epilog-collector-client 

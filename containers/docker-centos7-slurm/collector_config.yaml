@@ -4,7 +4,7 @@ record_prefix: "slurm"
 site_id: "site"
 components:
   - name: "Cores"
-    key: "NumCPUs"
+    key: "NCPUS"
     scores:
       - name: "HEPSPECK"
         factor: 1.1
@@ -12,12 +12,18 @@ components:
           key: "Partition"
           matches: "^part1$"
   - name: "Cores"
-    key: "NumCPUs"
+    key: "NCPUS"
     scores:
       - name: "HEPSPECK"
         factor: 1.2
         only_if:
           key: "Partition"
           matches: "^part2$"
+  # - name: "SystemCPU"
+  #   key: "SystemCPU"
+  #   key_type: Time
+  #   only_if:
+  #     key: "Partition"
+  #     matches: "^part1$"
   - name: "Memory"
-    key: "Mem"
+    key: "MaxRSS"

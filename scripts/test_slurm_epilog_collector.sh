@@ -32,6 +32,13 @@ function start_container() {
 		cp \
 		./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector \
 		slurm:/auditor-slurm-epilog-collector
+	# Copy Slurm epilog collector client to container
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		cp \
+		./target/x86_64-unknown-linux-musl/debug/auditor-slurm-epilog-collector-client \
+		slurm:/auditor-slurm-epilog-collector-client
 	# Copy config for collector
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
@@ -44,9 +51,11 @@ function start_container() {
 		cp ./containers/docker-centos7-slurm/batch.sh slurm:/batch.sh
 
 	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-epilog-collector
+	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-epilog-collector-client
 	docker exec auditor-slurm-1 chown slurm:slurm /epilog.sh
 	docker exec auditor-slurm-1 mkdir /epilog_logs
 	docker exec auditor-slurm-1 chown slurm:slurm /epilog_logs
+	docker exec -u slurm auditor-slurm-1 /auditor-slurm-epilog-collector&
 
 	COUNTER=0
 	until docker exec auditor-slurm-1 scontrol ping; do
@@ -54,11 +63,11 @@ function start_container() {
 		let COUNTER=COUNTER+1
 		if [ "$COUNTER" -gt "30" ]; then
 			echo >&2 "Docker container did not come up in time."
-			echo >&2 "Docker logs:"
+			echo >&2 'Docker logs:'
 			docker logs auditor-slurm-1
 			docker exec auditor-slurm-1 cat /var/log/slurm/slurmctld.log
 			stop_container
-			echo >&2 "Exiting."
+			echo >&2 'Exiting.'
 			exit 1
 		fi
 		sleep 1
@@ -88,11 +97,19 @@ function compile_collector() {
 			--target $TARGET_ARCH \
 			--bin auditor-slurm-epilog-collector \
 			--release
+			cargo build \
+			--target $TARGET_ARCH \
+			--bin auditor-slurm-epilog-collector-client \
+			--release
 	else
 		RUSTFLAGS='-C link-args=-s' \
 			cargo build \
 			--target $TARGET_ARCH \
 			--bin auditor-slurm-epilog-collector
+		RUSTFLAGS='-C link-args=-s' \
+			cargo build \
+			--target $TARGET_ARCH \
+			--bin auditor-slurm-epilog-collector-client
 	fi
 }
 
@@ -114,7 +131,7 @@ function start_auditor() {
 		if [ "$COUNTER" -gt "30" ]; then
 			echo >&2 "Auditor did not come up in time."
 			stop_auditor $AUDITOR_SERVER_PID
-			echo >&2 "Exiting."
+			echo >&2 'Exiting.'
 			exit 1
 		fi
 		sleep 1
@@ -179,6 +196,14 @@ function test_epilog_collector() {
 }
 
 SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
+
+cleanup_exit() {
+  setsid nohup bash -c "
+    kill $AUDITOR_SERVER_PID
+		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
+  "
+}
+trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
 
 if [[ -z "${SKIP_COMPILATION}" ]]
 then

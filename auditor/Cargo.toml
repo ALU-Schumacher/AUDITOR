@@ -33,15 +33,15 @@ path = "src/main.rs"
 
 [[bin]]
 name = "auditor-slurm-epilog-collector-old"
-path = "src/collectors/slurm_epilog/main.rs"
+path = "src/collectors/slurm_epilog_old/main.rs"
 
 [[bin]]
 name = "auditor-slurm-epilog-collector-client"
-path = "src/collectors/slurm_epilog_2/client.rs"
+path = "src/collectors/slurm_epilog/client.rs"
 
 [[bin]]
 name = "auditor-slurm-epilog-collector"
-path = "src/collectors/slurm_epilog_2/server.rs"
+path = "src/collectors/slurm_epilog/server.rs"
 
 [[bin]]
 name = "auditor-priority-plugin"
