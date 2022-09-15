@@ -1,3 +1,4 @@
-#!/usr/bin/env/ bash
+#!/usr/bin/env bash
+#SBATCH --mem=10M
 
-sleep 1
+sleep 3

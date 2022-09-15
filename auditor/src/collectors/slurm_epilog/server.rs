@@ -104,28 +104,29 @@ impl QueueProcessor {
                     jq.pop_front()
                 };
 
-                //todo
                 if let Some(job_id) = job_id {
+                    std::thread::sleep(std::time::Duration::from_secs(5));
                     match get_slurm_job_info(job_id).await {
                         Ok(job) => {
                             tracing::debug!(?job, "Acquired SLURM job info");
                             let record = RecordAdd::new(
                                 format!("{}-{}", make_string_valid(&CONFIG.record_prefix), job_id),
                                 make_string_valid(&CONFIG.site_id),
-                                make_string_valid(&job["UserId"].extract_string()?),
-                                make_string_valid(&job["GroupId"].extract_string()?),
+                                make_string_valid(&job["User"].extract_string()?),
+                                make_string_valid(&job["Group"].extract_string()?),
                                 construct_components(&CONFIG, &job),
-                                job["StartTime"].extract_datetime()?,
+                                job["Start"].extract_datetime()?,
                             )
                             .expect("Could not construct record")
-                            .with_stop_time(job["EndTime"].extract_datetime()?);
+                            .with_stop_time(job["End"].extract_datetime()?);
 
                             tracing::debug!(?record, "Constructed record.");
 
                             tracing::info!("Sending record to AUDITOR instance.");
-                            client.add(&record).await?;
-                            // do something with job
-                            Message::Ok
+                            if let Err(e) = client.add(&record).await {
+                                tracing::error!("Could not send record to Auditor: {:?}", e);
+                                // todo: requeue
+                            }
                         }
                         Err(e) => {
                             tracing::error!(
@@ -133,13 +134,10 @@ impl QueueProcessor {
                                 job_id,
                                 e
                             );
-                            Message::Error {
-                                msg: "Could not obtain job info".to_string(),
-                            }
                         }
                     };
                 }
-                std::thread::sleep(std::time::Duration::from_secs(5));
+                // std::thread::sleep(std::time::Duration::from_secs(5));
             }
 
             // Ok::<(), anyhow::Error>(())
@@ -166,8 +164,10 @@ impl Manager {
         let manager = tokio::spawn(async move {
             // Start receiving messages
             while let Some((job_id, responder)) = rx.recv().await {
-                let mut jq = job_queue.lock().unwrap();
-                jq.push_back(job_id);
+                {
+                    let mut jq = job_queue.lock().unwrap();
+                    jq.push_back(job_id);
+                }
                 let _ = responder.send(());
             }
             Ok::<(), anyhow::Error>(())
@@ -208,10 +208,19 @@ async fn handle_connection(
 
             let (resp_tx, resp_rx) = oneshot::channel();
 
+            tracing::debug!("Sending job_id to manager.");
             tx.send((job_id, resp_tx)).await?;
 
-            resp_rx.await?;
-            Message::Ok
+            tracing::debug!("Awaiting response from manager.");
+            match resp_rx.await {
+                Ok(_) => Message::Ok,
+                Err(e) => {
+                    tracing::error!("Error when adding job id to queue: {:?}", e);
+                    Message::Error {
+                        msg: "something went wrong".to_string(),
+                    }
+                }
+            }
         }
         msg => {
             tracing::warn!("Received unacceptable message: {:?}", msg);
@@ -221,7 +230,7 @@ async fn handle_connection(
         }
     };
 
-    let _ = stream.write_all(&response.pack()).await;
+    // let _ = stream.write_all(&response.pack()).await;
     Ok(())
 }
 
@@ -230,8 +239,8 @@ async fn get_slurm_job_info(job_id: u64) -> Result<Job, anyhow::Error> {
     let mut keys = KEYS.clone();
     keys.push(("Start".to_owned(), ParsableType::DateTime));
     keys.push(("End".to_owned(), ParsableType::DateTime));
-    keys.push(("User".to_owned(), ParsableType::Id));
-    keys.push(("Group".to_owned(), ParsableType::Id));
+    keys.push(("Group".to_owned(), ParsableType::String));
+    keys.push(("User".to_owned(), ParsableType::String));
 
     let cmd_out = Command::new("/usr/bin/sacct")
         .arg("-a")
@@ -258,8 +267,13 @@ async fn get_slurm_job_info(job_id: u64) -> Result<Job, anyhow::Error> {
 
     let lines = std::str::from_utf8(&cmd_out)?
         .lines()
-        .map(|l| l.split('|').map(|s| s.to_owned()).collect::<Vec<String>>())
+        .map(|l| {
+            println!("line: {}", l);
+            l.split('|').map(|s| s.to_owned()).collect::<Vec<String>>()
+        })
         .collect::<Vec<_>>();
+
+    println!("lines: {:?}", lines);
 
     let mut merged_lines: Vec<String> = vec![String::new(); keys.len()];
     for (j, merged_line) in merged_lines.iter_mut().enumerate() {
@@ -272,6 +286,8 @@ async fn get_slurm_job_info(job_id: u64) -> Result<Job, anyhow::Error> {
             // }
         }
     }
+
+    println!("merged_lines: {:?}", merged_lines);
 
     Ok(merged_lines
         .iter()

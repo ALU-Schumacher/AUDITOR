@@ -55,7 +55,7 @@ function start_container() {
 	docker exec auditor-slurm-1 chown slurm:slurm /epilog.sh
 	docker exec auditor-slurm-1 mkdir /epilog_logs
 	docker exec auditor-slurm-1 chown slurm:slurm /epilog_logs
-	docker exec -u slurm auditor-slurm-1 /auditor-slurm-epilog-collector&
+	docker exec -e RUST_LOG='debug' -u slurm auditor-slurm-1 /auditor-slurm-epilog-collector collector_config.yaml &
 
 	COUNTER=0
 	until docker exec auditor-slurm-1 scontrol ping; do
@@ -146,7 +146,7 @@ function stop_auditor() {
 function test_epilog_collector() {
 	# Run on partition1
 	docker exec auditor-slurm-1 sbatch --job-name="test_part1" --partition=part1 /batch.sh 
-	sleep 5
+	sleep 20
 
 	docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
@@ -171,7 +171,11 @@ function test_epilog_collector() {
 
 	# Run on partition2
 	docker exec auditor-slurm-1 sbatch --job-name="test_part2" --partition=part2 /batch.sh 
-	sleep 5
+	docker exec auditor-slurm-1 squeue
+	sleep 20
+	docker exec auditor-slurm-1 scontrol show job 2
+	docker exec auditor-slurm-1 cat /slurm-2.out
+	docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
 	TEST2=$(curl http://localhost:8000/get | jq)
 

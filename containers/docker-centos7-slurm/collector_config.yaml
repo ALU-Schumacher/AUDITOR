@@ -19,11 +19,18 @@ components:
         only_if:
           key: "Partition"
           matches: "^part2$"
-  # - name: "SystemCPU"
-  #   key: "SystemCPU"
-  #   key_type: Time
-  #   only_if:
-  #     key: "Partition"
-  #     matches: "^part1$"
+  - name: "SystemCPU"
+    key: "SystemCPU"
+    key_type: Time
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
+  - name: "UserCPU"
+    key: "UserCPU"
+    key_type: Time
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
   - name: "Memory"
-    key: "MaxRSS"
+    key: "ReqMem"
+    key_type: IntegerMega

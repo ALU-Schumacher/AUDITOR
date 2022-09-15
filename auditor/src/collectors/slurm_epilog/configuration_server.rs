@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use anyhow::{anyhow, Error};
+use anyhow::{anyhow, Context, Error};
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -169,6 +169,7 @@ impl AllowedTypes {
 pub enum ParsableType {
     #[default]
     Integer,
+    IntegerMega,
     Time,
     String,
     DateTime,
@@ -182,8 +183,27 @@ impl ParsableType {
             ParsableType::Integer => AllowedTypes::Integer(
                 input
                     .parse()
-                    .unwrap_or_else(|_| panic!("Cannot parse {} into i64.", input)),
+                    .map_err(|e| {
+                        tracing::error!("Cannot parse {} into i64.", input);
+                        e
+                    })
+                    .context(format!("Parsing of {} into i64 failed.", input))?,
             ),
+            ParsableType::IntegerMega => {
+                let mut chars = input.chars();
+                chars.next_back();
+                let input = chars.as_str();
+                println!("INPUT M GONE: {}", input);
+                AllowedTypes::Integer(
+                    input
+                        .parse()
+                        .map_err(|e| {
+                            tracing::error!("Cannot parse {} into i64.", input);
+                            e
+                        })
+                        .context(format!("Parsing of {} into i64 failed.", input))?,
+                )
+            }
             ParsableType::Time => {
                 lazy_static! {
                     static ref RE: Regex = Regex::new(r"(\d{2}):(\d{2}).(\d+)").unwrap();
@@ -197,10 +217,10 @@ impl ParsableType {
                 let cap = cap
                     .iter()
                     .map(|c| {
-                        c.unwrap()
-                            .as_str()
-                            .parse::<i64>()
-                            .unwrap_or_else(|_| panic!("Cannot parse {} into i64.", input))
+                        c.unwrap().as_str().parse::<i64>().unwrap_or_else(|_| {
+                            tracing::error!("Cannot parse {} into Time, assuming 0.", input);
+                            0
+                        })
                     })
                     .collect::<Vec<_>>();
                 let (min, sec, milli): (i64, i64, i64) = (cap[0], cap[1], cap[2]);
