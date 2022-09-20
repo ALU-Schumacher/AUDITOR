@@ -95,5 +95,12 @@ jobs:
           command: build
           args: --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
 
+      - name: Build Slurm epilog collector client
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --bin auditor-slurm-epilog-collector-client --target x86_64-unknown-linux-musl
+
+
       - name: Test Slurm epilog collector
         run: SKIP_COMPILATION=true ./scripts/test_slurm_epilog_collector.sh
