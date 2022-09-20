@@ -168,9 +168,7 @@ impl Manager {
                 tracing::debug!("Received message with job id: {}", job_id);
                 {
                     tracing::debug!("Acquiring lock on job queue for pushing job id: {}", job_id);
-                    // let mut jq = job_queue.lock().await;
                     job_queue.lock().await.push_back(job_id);
-                    // jq.push_back(job_id);
                 }
                 let _ = responder.send(());
             }
@@ -294,16 +292,6 @@ async fn get_slurm_job_info(job_id: u64) -> Result<Job, anyhow::Error> {
             }
         }
     }
-
-    // merged_lines[0] = "part1".to_string();
-    // merged_lines[1] = "1".to_string();
-    // merged_lines[2] = "00:00.002".to_string();
-    // merged_lines[3] = "00:00.004".to_string();
-    // merged_lines[4] = "10M".to_string();
-    // merged_lines[5] = "2022-09-12T08:00:00".to_string();
-    // merged_lines[6] = "2022-09-12T08:00:00".to_string();
-    // merged_lines[7] = "root".to_string();
-    // merged_lines[8] = "root".to_string();
 
     println!("merged_lines: {:?}", merged_lines);
 
