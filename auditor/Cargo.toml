@@ -32,10 +32,6 @@ name = "auditor"
 path = "src/main.rs"
 
 [[bin]]
-name = "auditor-slurm-epilog-collector-old"
-path = "src/collectors/slurm_epilog_old/main.rs"
-
-[[bin]]
 name = "auditor-slurm-epilog-collector-client"
 path = "src/collectors/slurm_epilog/client.rs"
 
