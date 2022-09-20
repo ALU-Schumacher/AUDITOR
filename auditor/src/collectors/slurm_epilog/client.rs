@@ -38,25 +38,24 @@ fn run() -> Result<(), anyhow::Error> {
 
     tracing::debug!("Serializing message and writing to TCP stream");
     stream.write_all(&message.pack())?;
-    let _ = stream.flush();
 
-    // tracing::debug!("Receiving response from server");
-    // let mut buffer = [0; 1024];
-    // let len = stream
-    //     .read(&mut buffer)
-    //     .context("Reading response from server failed")?;
+    tracing::debug!("Receiving response from server");
+    let mut buffer = Vec::new();
+    let len = stream
+        .read_to_end(&mut buffer)
+        .context("Reading response from server failed")?;
 
-    // match Message::unpack(&BytesMut::from(&buffer[..len]))
-    //     .context("Deserializing message from server failed.")?
-    // {
-    //     Message::Ok => (),
-    //     Message::Error { msg } => return Err(anyhow::anyhow!("Server said no: {}", msg)),
-    //     _ => {
-    //         return Err(anyhow::anyhow!(
-    //             "Received unacceptable message from server."
-    //         ))
-    //     }
-    // }
+    match Message::unpack(&BytesMut::from(&buffer[..len]))
+        .context("Deserializing message from server failed.")?
+    {
+        Message::Ok => (),
+        Message::Error { msg } => return Err(anyhow::anyhow!("Server said no: {}", msg)),
+        _ => {
+            return Err(anyhow::anyhow!(
+                "Received unacceptable message from server."
+            ))
+        }
+    }
 
     Ok(())
 }

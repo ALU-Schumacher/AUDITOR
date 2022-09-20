@@ -21,9 +21,9 @@ pub enum Message {
 impl Message {
     #[tracing::instrument(name = "Obtaining Slurm job info from environment")]
     pub fn jobinfo_from_env() -> Result<Message, anyhow::Error> {
-        Ok(Message::JobInfo {
-            job_id: env::var("SLURM_JOB_ID")?.parse()?,
-        })
+        let job_id = env::var("SLURM_JOB_ID")?.parse()?;
+        tracing::debug!("Got Slurm job id: {}", job_id);
+        Ok(Message::JobInfo { job_id })
     }
 
     pub fn pack(&self) -> Bytes {
@@ -33,6 +33,6 @@ impl Message {
     }
 
     pub fn unpack(buf: &BytesMut) -> Result<Self, anyhow::Error> {
-        Ok(rmp_serde::from_slice::<Self>(buf)?)
+        Ok(rmp_serde::from_slice::<Message>(buf)?)
     }
 }

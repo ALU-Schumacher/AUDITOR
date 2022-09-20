@@ -21,13 +21,13 @@ use regex::Regex;
 use std::{
     collections::{HashMap, VecDeque},
     fmt,
-    sync::{Arc, Mutex},
+    sync::Arc,
 };
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
     process::Command,
-    sync::{mpsc, oneshot},
+    sync::{mpsc, oneshot, Mutex},
 };
 use uuid::Uuid;
 
@@ -57,7 +57,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
     let run_id = Uuid::new_v4();
     let span = tracing::info_span!(
-        "Running slurm epilog collector client",
+        "Running slurm epilog collector server",
         %run_id,
     );
     let _span_guard = span.enter();
@@ -75,14 +75,18 @@ async fn main() -> Result<(), anyhow::Error> {
     let _manager = Manager::new(rx);
 
     loop {
-        match listener.accept().await {
+        let tx = tx.clone();
+        let blah = listener.accept().await;
+        match blah {
+            // match listener.accept().await {
             Ok((socket, _)) => {
-                let tx = tx.clone();
+                tracing::debug!("socket thingy");
                 tokio::spawn(async move {
                     if let Err(e) = handle_connection(socket, tx).await {
                         tracing::error!("Failure during handling of the conection: {}", e);
                     }
                 });
+                tracing::debug!("THREAD SPAWNED!!!!");
             }
             Err(e) => tracing::error!("Accepting socket failed: {}", e),
         }
@@ -99,13 +103,11 @@ impl QueueProcessor {
         let queue_processor = tokio::spawn(async move {
             let client = AuditorClient::new(&CONFIG.addr, CONFIG.port)?;
             loop {
-                let job_id = {
-                    let mut jq = job_queue.lock().unwrap();
-                    jq.pop_front()
-                };
+                // tracing::debug!("Locking queue.");
+                let job_id = { job_queue.lock().await.pop_front() };
 
                 if let Some(job_id) = job_id {
-                    std::thread::sleep(std::time::Duration::from_secs(5));
+                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                     match get_slurm_job_info(job_id).await {
                         Ok(job) => {
                             tracing::debug!(?job, "Acquired SLURM job info");
@@ -127,6 +129,7 @@ impl QueueProcessor {
                                 tracing::error!("Could not send record to Auditor: {:?}", e);
                                 // todo: requeue
                             }
+                            tracing::debug!("DONE Sending record to AUDITOR instance.");
                         }
                         Err(e) => {
                             tracing::error!(
@@ -137,10 +140,8 @@ impl QueueProcessor {
                         }
                     };
                 }
-                // std::thread::sleep(std::time::Duration::from_secs(5));
+                tokio::time::sleep(std::time::Duration::from_millis(500)).await;
             }
-
-            // Ok::<(), anyhow::Error>(())
         });
         QueueProcessor { queue_processor }
     }
@@ -164,9 +165,12 @@ impl Manager {
         let manager = tokio::spawn(async move {
             // Start receiving messages
             while let Some((job_id, responder)) = rx.recv().await {
+                tracing::debug!("Received message with job id: {}", job_id);
                 {
-                    let mut jq = job_queue.lock().unwrap();
-                    jq.push_back(job_id);
+                    tracing::debug!("Acquiring lock on job queue for pushing job id: {}", job_id);
+                    // let mut jq = job_queue.lock().await;
+                    job_queue.lock().await.push_back(job_id);
+                    // jq.push_back(job_id);
                 }
                 let _ = responder.send(());
             }
@@ -191,6 +195,8 @@ async fn handle_connection(
     mut stream: TcpStream,
     tx: TransmitChannel,
 ) -> Result<(), anyhow::Error> {
+    tracing::debug!("New connection");
+
     let mut buffer = [0; 1024];
 
     let len = stream
@@ -213,7 +219,10 @@ async fn handle_connection(
 
             tracing::debug!("Awaiting response from manager.");
             match resp_rx.await {
-                Ok(_) => Message::Ok,
+                Ok(_) => {
+                    tracing::debug!("Received response from manager.");
+                    Message::Ok
+                }
                 Err(e) => {
                     tracing::error!("Error when adding job id to queue: {:?}", e);
                     Message::Error {
@@ -230,7 +239,8 @@ async fn handle_connection(
         }
     };
 
-    // let _ = stream.write_all(&response.pack()).await;
+    let _ = stream.write_all(&response.pack()).await;
+    let _ = stream.flush();
     Ok(())
 }
 
@@ -278,14 +288,22 @@ async fn get_slurm_job_info(job_id: u64) -> Result<Job, anyhow::Error> {
     let mut merged_lines: Vec<String> = vec![String::new(); keys.len()];
     for (j, merged_line) in merged_lines.iter_mut().enumerate() {
         for (i, line) in lines.iter().enumerate() {
-            // if merged_lines[j].is_empty() {
             println!("i: {}, j: {}, lines: {}", i, j, line[j]);
             if !line[j].is_empty() {
                 *merged_line = line[j].clone();
             }
-            // }
         }
     }
+
+    // merged_lines[0] = "part1".to_string();
+    // merged_lines[1] = "1".to_string();
+    // merged_lines[2] = "00:00.002".to_string();
+    // merged_lines[3] = "00:00.004".to_string();
+    // merged_lines[4] = "10M".to_string();
+    // merged_lines[5] = "2022-09-12T08:00:00".to_string();
+    // merged_lines[6] = "2022-09-12T08:00:00".to_string();
+    // merged_lines[7] = "root".to_string();
+    // merged_lines[8] = "root".to_string();
 
     println!("merged_lines: {:?}", merged_lines);
 
