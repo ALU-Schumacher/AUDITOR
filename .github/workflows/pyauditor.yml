@@ -162,6 +162,12 @@ jobs:
           override: true
           target: x86_64-unknown-linux-musl
 
+      - name: Massage sqlx features env variable...
+        run: |
+          TMP=${{ env.SQLX_FEATURES }}
+          SQLX_FEATURES_CACHE="${TMP//,/_}"
+          echo "SQLX_FEATURES_CACHE=${SQLX_FEATURES_CACHE}" >> $GITHUB_ENV
+
       - name: Cache sqlx-cli
         uses: actions/cache@v2
         id: cache-sqlx
@@ -169,7 +175,7 @@ jobs:
           path: |
             ~/.cargo/bin/sqlx
             ~/.cargo/bin/cargo-sqlx
-          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES_CACHE }}
 
 
       - name: Install sqlx-cli 
