@@ -36,6 +36,10 @@ name = "auditor-slurm-epilog-collector"
 path = "src/collectors/slurm_epilog/main.rs"
 
 [[bin]]
+name = "auditor-slurm-collector"
+path = "src/collectors/slurm/main.rs"
+
+[[bin]]
 name = "auditor-priority-plugin"
 path = "src/plugins/priority/main.rs"
 
@@ -70,6 +74,7 @@ opentelemetry = "0.17"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
 thiserror = "1"
 prometheus = "0.13"
+color-eyre = "0.6.2"
 
 [dependencies.sqlx]
 version = "0.6.2"
@@ -81,7 +86,8 @@ features = [
     "uuid",
     "chrono",
     "migrate",
-    "offline"
+    "offline",
+    "sqlite",
 ]
 
 [dev-dependencies]
