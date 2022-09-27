@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -42,7 +43,50 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Tutorial</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClientBuilder"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.address"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.address()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.connection_string"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.connection_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.timeout"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.timeout()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClient"><code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.add"><code class="docutils literal notranslate"><span class="pre">AuditorClient.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_started_since"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_started_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_stopped_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.health_check"><code class="docutils literal notranslate"><span class="pre">AuditorClient.health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.update"><code class="docutils literal notranslate"><span class="pre">AuditorClient.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Record"><code class="docutils literal notranslate"><span class="pre">Record</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.components"><code class="docutils literal notranslate"><span class="pre">Record.components</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.group_id"><code class="docutils literal notranslate"><span class="pre">Record.group_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.record_id"><code class="docutils literal notranslate"><span class="pre">Record.record_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.runtime"><code class="docutils literal notranslate"><span class="pre">Record.runtime</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.site_id"><code class="docutils literal notranslate"><span class="pre">Record.site_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.start_time"><code class="docutils literal notranslate"><span class="pre">Record.start_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.stop_time"><code class="docutils literal notranslate"><span class="pre">Record.stop_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.user_id"><code class="docutils literal notranslate"><span class="pre">Record.user_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_component"><code class="docutils literal notranslate"><span class="pre">Record.with_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_stop_time"><code class="docutils literal notranslate"><span class="pre">Record.with_stop_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.amount"><code class="docutils literal notranslate"><span class="pre">Component.amount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.name"><code class="docutils literal notranslate"><span class="pre">Component.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.scores"><code class="docutils literal notranslate"><span class="pre">Component.scores</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.with_score"><code class="docutils literal notranslate"><span class="pre">Component.with_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.factor"><code class="docutils literal notranslate"><span class="pre">Score.factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.name"><code class="docutils literal notranslate"><span class="pre">Score.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
@@ -70,10 +114,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyauditor">
-<span id="api-documentation"></span><span id="ref-api"></span><h1>API Documentation<a class="headerlink" href="#module-pyauditor" title="Permalink to this heading"></a></h1>
+  <section id="api-documentation">
+<span id="ref-api"></span><h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading"></a></h1>
 <p>pyauditor is a client for interacting with an Auditor instance via Python.</p>
-<dl class="py class">
+<span class="target" id="module-pyauditor"></span><dl class="py class">
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">AuditorClientBuilder</span></span><a class="headerlink" href="#pyauditor.AuditorClientBuilder" title="Permalink to this definition"></a></dt>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code> class is used to build an instance of <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code>.</p>
