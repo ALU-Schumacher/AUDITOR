@@ -1,6 +1,4 @@
--- Add migration script here
-CREATE TABLE records (
-	id          TEXT NOT NULL UNIQUE,
-    PRIMARY KEY (id),
-    record      BLOB NOT NULL,
+CREATE TABLE IF NOT EXISTS records (
+	id          TEXT NOT NULL UNIQUE PRIMARY KEY,
+    record      BLOB NOT NULL
 );

@@ -10,6 +10,7 @@ use auditor::{
     telemetry::{get_subscriber, init_subscriber},
 };
 use color_eyre::eyre::Result;
+use fake::{Fake, Faker};
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqliteJournalMode},
     SqlitePool,
@@ -45,6 +46,10 @@ impl ShutdownSender {
         }
     }
 
+    #[tracing::instrument(
+        name = "Sending shutdown signal to SacctCaller and AuditorSender",
+        skip(self)
+    )]
     pub fn shutdown(&self) -> Result<()> {
         self.notify_sacctcaller.send(())?;
         self.notify_auditorsender.send(())?;
@@ -119,7 +124,11 @@ impl SacctCaller {
         }
     }
 
-    #[tracing::instrument(name = "Placing records on queue", level = "debug", skip(records))]
+    #[tracing::instrument(
+        name = "Placing records on queue",
+        level = "debug",
+        skip(self, records)
+    )]
     async fn place_records_on_queue(&self, records: Vec<Record>) {
         for record in records {
             let record_id = record.record_id.clone();
@@ -130,7 +139,9 @@ impl SacctCaller {
     }
 
     async fn get_job_info(&self) -> Result<Vec<Record>> {
-        todo!()
+        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        let record: auditor::domain::RecordTest = Faker.fake();
+        Ok(vec![record.try_into().unwrap()])
     }
 }
 
@@ -142,16 +153,18 @@ impl Database {
     async fn new<S: AsRef<str>>(path: S) -> Result<Database> {
         let db_pool = SqlitePool::connect_with(
             SqliteConnectOptions::from_str(path.as_ref())?
-                .journal_mode(SqliteJournalMode::Wal)
+                //.journal_mode(SqliteJournalMode::Wal)
                 .create_if_missing(true),
         )
         .await?;
-        sqlx::migrate!("src/collectors/slurm/migrations")
+        tracing::debug!("Migrating database");
+        sqlx::migrate!("./src/collectors/slurm/migrations")
             .run(&db_pool)
             .await?;
         Ok(Database { db_pool })
     }
 
+    #[tracing::instrument(name = "Closing database connection", level = "info", skip(self))]
     async fn close(&self) {
         self.db_pool.close().await
     }
@@ -179,6 +192,7 @@ impl<'a> AuditorSender {
         })
     }
 
+    #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
     pub async fn run(mut self) {
         let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
 
@@ -187,12 +201,14 @@ impl<'a> AuditorSender {
             tokio::select! {
                 _ = self.handle_record(record) => {},
                 _ = shutdown.recv() => {
+                    tracing::debug!("AuditorSender received shutdown signal");
                     self.database.close().await
                 },
             }
         }
     }
 
+    #[tracing::instrument(name = "Handling new record", skip(self))]
     pub async fn handle_record(&self, record: Record) {
         tracing::debug!("Handling record: {:?}", record);
     }
@@ -215,7 +231,7 @@ async fn main() -> Result<()> {
     let _span_guard = span.enter();
 
     let frequency = Duration::from_secs(10);
-    let database_path = "delete_me";
+    let database_path = "sqlite://delete_me.sql";
 
     let (record_send, record_recv) = mpsc::channel(1024);
     let (shutdown_send, mut shutdown_recv) = mpsc::unbounded_channel();
@@ -243,13 +259,18 @@ async fn main() -> Result<()> {
     tokio::spawn(async move { auditorsender.run().await });
 
     tokio::select! {
-        _ = signal::ctrl_c() => {},
-        _ = shutdown_recv.recv() => {},
+        _ = signal::ctrl_c() => {
+            tracing::info!("CTRL-C recieved");
+        },
+        _ = shutdown_recv.recv() => {
+            tracing::info!("Shutdown signal from inside application received.");
+        },
     }
 
     if let Err(e) = shutdown_sender.shutdown() {
         tracing::error!("Could not send shutdown signal to tasks: {:?}", e);
     }
+
     Ok(())
 }
 
