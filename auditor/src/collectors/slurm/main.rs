@@ -153,7 +153,7 @@ impl Database {
     async fn new<S: AsRef<str>>(path: S) -> Result<Database> {
         let db_pool = SqlitePool::connect_with(
             SqliteConnectOptions::from_str(path.as_ref())?
-                //.journal_mode(SqliteJournalMode::Wal)
+                .journal_mode(SqliteJournalMode::Wal)
                 .create_if_missing(true),
         )
         .await?;
