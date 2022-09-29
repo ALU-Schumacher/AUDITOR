@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS records (
+	id          TEXT NOT NULL UNIQUE PRIMARY KEY,
+    record      BLOB NOT NULL
+);
