@@ -15,8 +15,7 @@ use sqlx::{
     sqlite::{SqliteConnectOptions, SqliteJournalMode},
     SqlitePool,
 };
-use std::str::FromStr;
-use std::time::Duration;
+use std::{str::FromStr, time::Duration};
 use tokio::{
     signal,
     sync::{broadcast, mpsc},
@@ -162,6 +161,15 @@ impl Database {
             .run(&db_pool)
             .await?;
         Ok(Database { db_pool })
+    }
+
+    async fn insert(&self, record: Record) -> Result<()> {
+        let record_id = record.record_id.clone();
+        let record = bincode::serialize(&record);
+        // sqlx::query!(r#"INSERT INTO records (id, record) VALUES (record_id, record)"#)
+        //     .execute(&self.db_pool)
+        //     .await;
+        Ok(())
     }
 
     #[tracing::instrument(name = "Closing database connection", level = "info", skip(self))]
