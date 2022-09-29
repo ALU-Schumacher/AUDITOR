@@ -2,6 +2,8 @@
 members = [
     "auditor",
     "pyauditor",
+    "collectors/*",
+    "plugins/*",
 ]
 
 [profile.release]

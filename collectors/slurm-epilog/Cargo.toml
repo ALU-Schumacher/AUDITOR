@@ -1,0 +1,82 @@
+[package]
+name = "auditor-slurm-epilog-collector"
+version = "0.0.6"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Slurm epilog collector for AUDITOR"
+documentation = "https://docs.rs/auditor/"
+homepage = "https://alu-schumacher.github.io/AUDITOR/"
+repository = "https://github.com/alu-schumacher/AUDITOR"
+readme = "../../README.md"
+keywords = ["accounting", "opportunistic", "grid-computing", "batch-systems"]
+exclude = [
+    ".cargo",
+    ".dockerignore",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    ".pytest_cache",
+    "target",
+    "nohup.out"
+]
+
+
+[[bin]]
+name = "auditor-slurm-epilog-collector"
+path = "src/main.rs"
+
+[profile.release]
+strip = true
+
+[dependencies]
+auditor = { path = "../../auditor", version = "0.0.6" }
+chrono = { version = "0.4.22", features = ["serde"] }
+anyhow = "1"
+regex = "1"
+tracing = { version = "0.1", features = ["log"] }
+serde = { version = "1", features = ["derive"] }
+serde-aux = "4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
+config = "0.13"
+uuid = { version = "1.1", features = ["v4"] }
+# actix-web = "4.2.1"
+# serde_with = { version = "2", features = ["chrono_0_4"] }
+# tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+# tracing-bunyan-formatter = "0.3"
+# tracing-log = "0.1"
+# tracing-actix-web = "0.6"
+# secrecy = { version = "0.8", features = ["serde"] }
+# unicode-segmentation = "1"
+# fake = { version = "2.5", features = ["chrono"] }
+# rand = "0.8"
+# reqwest = { version = "0.11.12", default-features = false, features = ["json", "rustls-tls"] }
+# num-traits = "^0.2"
+# shell-words = "^1"
+# opentelemetry-prometheus = "0.10"
+# opentelemetry = "0.17"
+# actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
+# thiserror = "1"
+# prometheus = "0.13"
+
+# [dependencies.sqlx]
+# version = "0.6.2"
+# default-features = false
+# features = [
+#     "runtime-actix-rustls",
+#     "macros",
+#     "postgres",
+#     "uuid",
+#     "chrono",
+#     "migrate",
+#     "offline"
+# ]
+
+[dev-dependencies]
+# once_cell = "1"
+# claim = "0.5"
+# quickcheck = "1"
+# quickcheck_macros = "1"
+# tokio = { version = "1", features = ["macros", "rt"] }
+# wiremock = "0.5"
