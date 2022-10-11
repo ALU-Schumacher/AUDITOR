@@ -39,7 +39,7 @@ serde_with = { version = "2", features = ["chrono_0_4"] }
 serde-aux = "4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 chrono = { version = "0.4.22", features = ["serde"] }
-uuid = { version = "1.1", features = ["v4"] }
+uuid = { version = "1.2", features = ["v4"] }
 num-traits = "^0.2"
 anyhow = "1"
 shell-words = "^1"

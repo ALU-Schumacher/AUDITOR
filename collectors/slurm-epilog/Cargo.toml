@@ -40,7 +40,7 @@ serde = { version = "1", features = ["derive"] }
 serde-aux = "4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 config = "0.13"
-uuid = { version = "1.1", features = ["v4"] }
+uuid = { version = "1.2", features = ["v4"] }
 # actix-web = "4.2.1"
 # serde_with = { version = "2", features = ["chrono_0_4"] }
 # tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
