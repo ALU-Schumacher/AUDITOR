@@ -43,7 +43,7 @@ async fn main() -> Result<()> {
     let _span_guard = span.enter();
 
     let frequency = Duration::from_secs(10);
-    let database_path = "sqlite://delete_me.sql";
+    let database_path = "sqlite://testdb.db";
 
     let (record_send, record_recv) = mpsc::channel(1024);
     let (shutdown_send, mut shutdown_recv) = mpsc::unbounded_channel();
