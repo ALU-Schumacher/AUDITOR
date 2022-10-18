@@ -201,16 +201,16 @@ impl<'a> AuditorSender {
     #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
     pub async fn run(mut self) {
         let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
-
-        while let Some(record) = self.rx.recv().await {
-            tracing::debug!("Received record: {:?}", record);
-            tokio::select! {
-                _ = self.handle_record(record) => {},
+        
+        while let Some(record) = tokio::select! {
+                some_record = self.rx.recv() => { some_record }
                 _ = shutdown.recv() => {
-                    tracing::debug!("AuditorSender received shutdown signal");
-                    self.database.close().await
+                    tracing::info!("AuditorSender received shutdown signal");
+                    self.database.close().await;
+                    None
                 },
-            }
+            } {
+            self.handle_record(record).await;
         }
     }
 
