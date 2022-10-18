@@ -78,6 +78,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: Migrate slurm collector sqlite database
+        run: ./scripts/init_slurm_collector_sqlite.sh
           
       - name: Check sqlx-data.json is up-to-date
         run: |
@@ -163,6 +166,9 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
+      - name: Migrate slurm collector sqlite database
+        run: ./scripts/init_slurm_collector_sqlite.sh
+          
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
         with:

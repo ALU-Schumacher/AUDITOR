@@ -28,12 +28,16 @@ impl Database {
         Ok(Database { db_pool })
     }
 
-    pub(crate) async fn _insert(&self, _record: Record) -> Result<()> {
-        // let record_id = record.record_id.clone();
-        // let record = bincode::serialize(&record);
-        // sqlx::query!(r#"INSERT INTO records (id, record) VALUES (record_id, record)"#)
-        //     .execute(&self.db_pool)
-        //     .await;
+    pub(crate) async fn _insert(&self, record: Record) -> Result<()> {
+        let record_id = record.record_id.clone();
+        let record = bincode::serialize(&record)?;
+        sqlx::query!(
+            r#"INSERT INTO records (id, record) VALUES ($1, $2)"#,
+            record_id,
+            record
+        )
+        .execute(&self.db_pool)
+        .await?;
         Ok(())
     }
 

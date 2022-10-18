@@ -1,0 +1,11 @@
+{
+  "query": "INSERT INTO records (id, record) VALUES ($1, $2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "a713e7ac3e3934de863363656f6be969904c0424dc94dfbd0822d22fb8f2a5c4"
+}

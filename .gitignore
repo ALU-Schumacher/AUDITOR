@@ -2,3 +2,4 @@
 /volumes
 nohup.out
 dist/
+**/testdb.db
