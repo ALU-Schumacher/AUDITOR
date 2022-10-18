@@ -5,220 +5,26 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use auditor::{
-    domain::Record,
-    telemetry::{get_subscriber, init_subscriber},
-};
+mod auditorsender;
+mod database;
+mod sacctcaller;
+mod shutdown;
+
+use std::time::Duration;
+
+use auditor::telemetry::{get_subscriber, init_subscriber};
 use color_eyre::eyre::Result;
-use fake::{Fake, Faker};
-use sqlx::{
-    sqlite::{SqliteConnectOptions, SqliteJournalMode},
-    SqlitePool,
-};
-use std::{str::FromStr, time::Duration};
+use sacctcaller::SacctCaller;
+use shutdown::{Shutdown, ShutdownSender};
 use tokio::{
     signal,
     sync::{broadcast, mpsc},
 };
 use uuid::Uuid;
 
+use crate::auditorsender::AuditorSender;
+
 const NAME: &str = "AUDITOR-slurm-collector";
-
-pub struct Shutdown {
-    shutdown: bool,
-    notify: broadcast::Receiver<()>,
-}
-
-pub struct ShutdownSender {
-    notify_sacctcaller: broadcast::Sender<()>,
-    notify_auditorsender: broadcast::Sender<()>,
-}
-
-impl ShutdownSender {
-    pub fn new(
-        notify_sacctcaller: broadcast::Sender<()>,
-        notify_auditorsender: broadcast::Sender<()>,
-    ) -> ShutdownSender {
-        ShutdownSender {
-            notify_sacctcaller,
-            notify_auditorsender,
-        }
-    }
-
-    #[tracing::instrument(
-        name = "Sending shutdown signal to SacctCaller and AuditorSender",
-        skip(self)
-    )]
-    pub fn shutdown(&self) -> Result<()> {
-        self.notify_sacctcaller.send(())?;
-        self.notify_auditorsender.send(())?;
-        Ok(())
-    }
-}
-
-impl Shutdown {
-    fn new(notify: broadcast::Receiver<()>) -> Shutdown {
-        Shutdown {
-            shutdown: false,
-            notify,
-        }
-    }
-
-    /// Receive the shutdown notice, waiting if necessary.
-    async fn recv(&mut self) {
-        if self.shutdown {
-            return;
-        }
-
-        let _ = self.notify.recv().await;
-
-        self.shutdown = true;
-    }
-}
-
-struct SacctCaller {
-    frequency: Duration,
-    tx: mpsc::Sender<Record>,
-    _shutdown_notifier: mpsc::UnboundedSender<()>,
-    shutdown: Option<Shutdown>,
-}
-
-impl SacctCaller {
-    pub fn new(
-        frequency: Duration,
-        tx: mpsc::Sender<Record>,
-        shutdown_notifier: mpsc::UnboundedSender<()>,
-        shutdown: Shutdown,
-    ) -> SacctCaller {
-        SacctCaller {
-            frequency,
-            tx,
-            _shutdown_notifier: shutdown_notifier,
-            shutdown: Some(shutdown),
-        }
-    }
-
-    #[tracing::instrument(name = "Starting SacctCaller", skip(self))]
-    pub async fn run(mut self) {
-        let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
-        let mut interval = tokio::time::interval(self.frequency);
-        loop {
-            interval.tick().await;
-            tokio::select! {
-                records = self.get_job_info() => {
-                    match records {
-                        Ok(records) => self.place_records_on_queue(records).await,
-                        Err(e) => {
-                            tracing::error!("something went wrong: {:?}", e);
-                            continue
-                        }
-                    };
-                },
-                _ = shutdown.recv() => {
-                    tracing::info!("SacctCaller received shutdown signal. Shutting down.");
-                    // shutdown properly
-                    break
-                },
-            }
-        }
-    }
-
-    #[tracing::instrument(
-        name = "Placing records on queue",
-        level = "debug",
-        skip(self, records)
-    )]
-    async fn place_records_on_queue(&self, records: Vec<Record>) {
-        for record in records {
-            let record_id = record.record_id.clone();
-            if let Err(e) = self.tx.send(record).await {
-                tracing::error!("Could not send record {:?} to queue: {:?}", record_id, e);
-            }
-        }
-    }
-
-    async fn get_job_info(&self) -> Result<Vec<Record>> {
-        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-        let record: auditor::domain::RecordTest = Faker.fake();
-        Ok(vec![record.try_into().unwrap()])
-    }
-}
-
-struct Database {
-    db_pool: SqlitePool,
-}
-
-impl Database {
-    async fn new<S: AsRef<str>>(path: S) -> Result<Database> {
-        let db_pool = SqlitePool::connect_with(
-            SqliteConnectOptions::from_str(path.as_ref())?
-                .journal_mode(SqliteJournalMode::Wal)
-                .create_if_missing(true),
-        )
-        .await?;
-        tracing::debug!("Migrating database");
-        sqlx::migrate!().run(&db_pool).await?;
-        Ok(Database { db_pool })
-    }
-
-    async fn _insert(&self, _record: Record) -> Result<()> {
-        // let record_id = record.record_id.clone();
-        // let record = bincode::serialize(&record);
-        // sqlx::query!(r#"INSERT INTO records (id, record) VALUES (record_id, record)"#)
-        //     .execute(&self.db_pool)
-        //     .await;
-        Ok(())
-    }
-
-    #[tracing::instrument(name = "Closing database connection", level = "info", skip(self))]
-    async fn close(&self) {
-        self.db_pool.close().await
-    }
-}
-
-pub struct AuditorSender {
-    database: Database,
-    rx: mpsc::Receiver<Record>,
-    _shutdown_notifier: mpsc::UnboundedSender<()>,
-    shutdown: Option<Shutdown>,
-}
-
-impl<'a> AuditorSender {
-    pub async fn new<S: AsRef<str>>(
-        database_path: S,
-        rx: mpsc::Receiver<Record>,
-        shutdown_notifier: mpsc::UnboundedSender<()>,
-        shutdown: Shutdown,
-    ) -> Result<AuditorSender> {
-        Ok(AuditorSender {
-            database: Database::new(database_path).await?,
-            rx,
-            _shutdown_notifier: shutdown_notifier,
-            shutdown: Some(shutdown),
-        })
-    }
-
-    #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
-    pub async fn run(mut self) {
-        let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
-
-        while let Some(record) = tokio::select! {
-            some_record = self.rx.recv() => { some_record }
-            _ = shutdown.recv() => {
-                tracing::info!("AuditorSender received shutdown signal");
-                self.database.close().await;
-                None
-            },
-        } {
-            self.handle_record(record).await;
-        }
-    }
-
-    #[tracing::instrument(name = "Handling new record", skip(self))]
-    pub async fn handle_record(&self, record: Record) {
-        tracing::debug!("Handling record: {:?}", record);
-    }
-}
 
 // # CONFIGURATION TODOS:
 //
