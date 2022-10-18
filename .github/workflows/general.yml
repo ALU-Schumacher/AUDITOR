@@ -23,7 +23,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.6.2
-      SQLX_FEATURES: postgres,rustls
+      SQLX_FEATURES: postgres,rustls,sqlite
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -122,7 +122,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.6.2
-      SQLX_FEATURES: postgres,rustls
+      SQLX_FEATURES: postgres,rustls,sqlite
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -250,7 +250,7 @@ jobs:
   #         - 5432:5432
   #   env:
   #     SQLX_VERSION: 0.6.2
-  #     SQLX_FEATURES: postgres,rustls
+  #     SQLX_FEATURES: postgres,rustls,sqlite
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v2
