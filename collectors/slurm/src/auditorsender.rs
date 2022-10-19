@@ -5,14 +5,16 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use std::time::Duration;
+
 use auditor::domain::Record;
-use color_eyre::eyre::Result;
-use tokio::sync::mpsc;
+use color_eyre::eyre::{Result, WrapErr};
+use tokio::sync::{mpsc, oneshot};
 
 use crate::{database::Database, shutdown::Shutdown};
 
 pub(crate) struct AuditorSender {
-    database: Database,
+    sender: QueuedSender,
     rx: mpsc::Receiver<Record>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     shutdown: Option<Shutdown>,
@@ -24,9 +26,10 @@ impl<'a> AuditorSender {
         rx: mpsc::Receiver<Record>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
+        frequency: Duration,
     ) -> Result<AuditorSender> {
         Ok(AuditorSender {
-            database: Database::new(database_path).await?,
+            sender: QueuedSender::new(database_path, frequency).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
@@ -34,23 +37,86 @@ impl<'a> AuditorSender {
     }
 
     #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
-    pub(crate) async fn run(mut self) {
+    pub(crate) async fn run(mut self) -> Result<()> {
         let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
 
         while let Some(record) = tokio::select! {
             some_record = self.rx.recv() => { some_record }
             _ = shutdown.recv() => {
                 tracing::info!("AuditorSender received shutdown signal");
-                self.database.close().await;
+                self.sender.stop().await?;
                 None
             },
         } {
-            self.handle_record(record).await;
+            self.handle_record(record).await.unwrap();
         }
+        Ok(())
     }
 
     #[tracing::instrument(name = "Handling new record", skip(self))]
-    pub(crate) async fn handle_record(&self, record: Record) {
+    async fn handle_record(&self, record: Record) -> Result<()> {
         tracing::debug!("Handling record: {:?}", record);
+        self.sender.add_record(record).await
+    }
+}
+
+pub(crate) struct QueuedSender {
+    database: Database,
+    shutdown_tx: Option<oneshot::Sender<oneshot::Sender<()>>>,
+    shutdown_rx: Option<oneshot::Receiver<oneshot::Sender<()>>>,
+    frequency: Duration,
+}
+
+impl QueuedSender {
+    pub(crate) async fn new<S: AsRef<str>>(
+        database_path: S,
+        frequency: Duration,
+    ) -> Result<QueuedSender> {
+        let (shutdown_tx, shutdown_rx) = oneshot::channel();
+        let mut sender = QueuedSender {
+            database: Database::new(database_path).await?,
+            shutdown_tx: Some(shutdown_tx),
+            shutdown_rx: Some(shutdown_rx),
+            frequency,
+        };
+        sender.run().await;
+        Ok(sender)
+    }
+
+    pub(crate) async fn add_record(&self, record: Record) -> Result<()> {
+        self.database.insert(record).await
+    }
+
+    pub(crate) async fn stop(&mut self) -> Result<()> {
+        if let Some(shutdown_tx) = self.shutdown_tx.take() {
+            let (tx, rx) = oneshot::channel();
+            shutdown_tx.send(tx).unwrap();
+            rx.await.context("Shutting down QueuedSender failed.")?;
+        }
+        self.database.close().await;
+        Ok(())
+    }
+
+    pub(crate) async fn run(&mut self) {
+        let mut interval = tokio::time::interval(self.frequency);
+        let shutdown_rx = self.shutdown_rx.take().expect("Bug.");
+
+        tokio::spawn(async move {
+            loop {
+                interval.tick().await;
+                tokio::select! {
+                    res = shutdown_rx => {
+                        tracing::info!("QueuedSender received shutdown signal. Shutting down.");
+                        // shutdown properly
+                        // Report back shutdown
+                        match res {
+                            Ok(tx) => { tx.send(()).unwrap() },
+                            Err(e) => { tracing::error!("Error: {:?}", e) },
+                        }
+                        break
+                    },
+                }
+            }
+        });
     }
 }

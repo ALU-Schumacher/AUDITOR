@@ -34,28 +34,40 @@ impl Shutdown {
 }
 
 pub(crate) struct ShutdownSender {
-    notify_sacctcaller: broadcast::Sender<()>,
-    notify_auditorsender: broadcast::Sender<()>,
+    notify: Vec<broadcast::Sender<()>>,
+    // notify_sacctcaller: broadcast::Sender<()>,
+    // notify_auditorsender: broadcast::Sender<()>,
 }
 
 impl ShutdownSender {
-    pub(crate) fn new(
-        notify_sacctcaller: broadcast::Sender<()>,
-        notify_auditorsender: broadcast::Sender<()>,
-    ) -> ShutdownSender {
-        ShutdownSender {
-            notify_sacctcaller,
-            notify_auditorsender,
-        }
+    // pub(crate) fn new(
+    //     notify_sacctcaller: broadcast::Sender<()>,
+    //     notify_auditorsender: broadcast::Sender<()>,
+    // ) -> ShutdownSender {
+    //     ShutdownSender {
+    //         notify_sacctcaller,
+    //         notify_auditorsender,
+    //     }
+    // }
+    pub(crate) fn new() -> ShutdownSender {
+        ShutdownSender { notify: vec![] }
+    }
+
+    pub(crate) fn with_sender(mut self, sender: broadcast::Sender<()>) -> ShutdownSender {
+        self.notify.push(sender);
+        self
     }
 
     #[tracing::instrument(
         name = "Sending shutdown signal to SacctCaller and AuditorSender",
         skip(self)
     )]
-    pub(crate) fn shutdown(&self) -> Result<()> {
-        self.notify_sacctcaller.send(())?;
-        self.notify_auditorsender.send(())?;
+    pub(crate) fn shutdown(self) -> Result<()> {
+        for notify in self.notify {
+            notify.send(())?;
+        }
+        // self.notify_sacctcaller.send(())?;
+        // self.notify_auditorsender.send(())?;
         Ok(())
     }
 }

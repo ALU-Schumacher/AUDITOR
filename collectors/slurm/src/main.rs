@@ -43,13 +43,16 @@ async fn main() -> Result<()> {
     let _span_guard = span.enter();
 
     let frequency = Duration::from_secs(10);
+    let sender_frequency = Duration::from_secs(5);
     let database_path = "sqlite://testdb.db";
 
     let (record_send, record_recv) = mpsc::channel(1024);
     let (shutdown_send, mut shutdown_recv) = mpsc::unbounded_channel();
     let (notify_sacctcaller_send, notify_sacctcaller_recv) = broadcast::channel(12);
     let (notify_auditorsender_send, notify_auditorsender_recv) = broadcast::channel(12);
-    let shutdown_sender = ShutdownSender::new(notify_sacctcaller_send, notify_auditorsender_send);
+    let shutdown_sender = ShutdownSender::new()
+        .with_sender(notify_sacctcaller_send)
+        .with_sender(notify_auditorsender_send);
 
     let shutdown_sacctcaller = Shutdown::new(notify_sacctcaller_recv);
     let sacctcaller = SacctCaller::new(
@@ -66,6 +69,7 @@ async fn main() -> Result<()> {
         record_recv,
         shutdown_send,
         shutdown_auditorsender,
+        sender_frequency,
     )
     .await?;
     tokio::spawn(async move { auditorsender.run().await });
