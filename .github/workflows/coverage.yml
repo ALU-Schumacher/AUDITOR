@@ -73,6 +73,10 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
+      - name: Migrate slurm collector sqlite database
+        run: |
+          ./scripts/init_slurm_collector_sqlite.sh
+
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
 

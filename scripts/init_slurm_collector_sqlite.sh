@@ -10,12 +10,12 @@ if ! [ -x "$(command -v sqlx)" ]; then
 	exit 1
 fi
 
-SQLITE_DB=${SQLITE_DB:=collectors/slurm/testdb.db}
+SQLITE_DB=${SQLITE_DB:=testdb.db}
 
-# MIGRATIONS_DIR=${MIGRATIONS_DIR:=collectors/slurm/migrations}
+MIGRATIONS_DIR=${MIGRATIONS_DIR:=collectors/slurm/migrations}
 
 export DATABASE_URL=sqlite://${SQLITE_DB}
 sqlx database create
-# sqlx migrate run --source ${MIGRATIONS_DIR}
+sqlx migrate run --source ${MIGRATIONS_DIR}
 
 >&2 echo "Slurm collector sqlite DB has been migrated."

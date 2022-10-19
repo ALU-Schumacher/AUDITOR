@@ -80,9 +80,11 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
 
       - name: Migrate slurm collector sqlite database
-        run: ./scripts/init_slurm_collector_sqlite.sh
+        run: |
+          sudo apt-get install sqlite3
+          ./scripts/init_slurm_collector_sqlite.sh
           
-      - name: Check sqlx-data.json is up-to-date
+      - name: Check sqlx-data.json for auditor is up-to-date
         run: |
           cd auditor
           # cargo sqlx prepare --check -- --lib
