@@ -11,6 +11,7 @@ use auditor::domain::Record;
 use color_eyre::eyre::Result;
 use sqlx::{sqlite::SqliteJournalMode, SqlitePool};
 
+#[derive(Clone)]
 pub(crate) struct Database {
     db_pool: SqlitePool,
 }
@@ -28,7 +29,7 @@ impl Database {
         Ok(Database { db_pool })
     }
 
-    pub(crate) async fn _insert(&self, record: Record) -> Result<()> {
+    pub(crate) async fn insert(&self, record: Record) -> Result<()> {
         let record_id = record.record_id.clone();
         let record = bincode::serialize(&record)?;
         sqlx::query!(
