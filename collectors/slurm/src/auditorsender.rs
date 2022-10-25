@@ -18,38 +18,50 @@ pub(crate) struct AuditorSender {
     rx: mpsc::Receiver<Record>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     shutdown: Option<Shutdown>,
+    hold_till_shutdown: Option<mpsc::Sender<()>>,
 }
 
 impl<'a> AuditorSender {
-    pub(crate) async fn new<S: AsRef<str>>(
+    pub(crate) async fn run<S: AsRef<str>>(
         database_path: S,
         rx: mpsc::Receiver<Record>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
         frequency: Duration,
-    ) -> Result<AuditorSender> {
-        Ok(AuditorSender {
+        channel: mpsc::Sender<()>,
+    ) -> Result<()> {
+        let auditor_sender = AuditorSender {
             sender: QueuedSender::new(database_path, frequency).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
-        })
+            hold_till_shutdown: Some(channel),
+        };
+        auditor_sender.run_internal().await?;
+
+        Ok(())
     }
 
     #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
-    pub(crate) async fn run(mut self) -> Result<()> {
-        let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
+    pub(crate) async fn run_internal(mut self) -> Result<()> {
+        tokio::spawn(async move {
+            let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
 
-        while let Some(record) = tokio::select! {
-            some_record = self.rx.recv() => { some_record }
-            _ = shutdown.recv() => {
-                tracing::info!("AuditorSender received shutdown signal");
-                self.sender.stop().await?;
-                None
-            },
-        } {
-            self.handle_record(record).await.unwrap();
-        }
+            while let Some(record) = tokio::select! {
+                some_record = self.rx.recv() => { some_record }
+                _ = shutdown.recv() => {
+                    tracing::info!("AuditorSender received shutdown signal");
+                    match self.sender.stop().await {
+                        Ok(_) => {},
+                        Err(e) => { tracing::error!("Stopping QueuedSender failed: {:?}", e); },
+                    };
+                    drop(self.hold_till_shutdown.take());
+                    None
+                },
+            } {
+                self.handle_record(record).await.unwrap();
+            }
+        });
         Ok(())
     }
 
@@ -87,10 +99,17 @@ impl QueuedSender {
         self.database.insert(record).await
     }
 
+    #[tracing::instrument(name = "Stopping QueuedSender", skip(self))]
     pub(crate) async fn stop(&mut self) -> Result<()> {
         if let Some(shutdown_tx) = self.shutdown_tx.take() {
             let (tx, rx) = oneshot::channel();
-            shutdown_tx.send(tx).unwrap();
+            // shutdown_tx.send(tx).unwrap();
+            match shutdown_tx.send(tx) {
+                Ok(_) => {}
+                Err(e) => {
+                    tracing::error!("error: {:?}", e)
+                }
+            }
             rx.await.context("Shutting down QueuedSender failed.")?;
         }
         self.database.close().await;
@@ -99,13 +118,16 @@ impl QueuedSender {
 
     pub(crate) async fn run(&mut self) {
         let mut interval = tokio::time::interval(self.frequency);
-        let shutdown_rx = self.shutdown_rx.take().expect("Bug.");
+        let mut shutdown_rx = self.shutdown_rx.take().expect("Bug.");
+
+        let database = self.database.clone();
 
         tokio::spawn(async move {
             loop {
                 interval.tick().await;
                 tokio::select! {
-                    res = shutdown_rx => {
+                    _ = process_queue(&database) => { },
+                    res = &mut shutdown_rx => {
                         tracing::info!("QueuedSender received shutdown signal. Shutting down.");
                         // shutdown properly
                         // Report back shutdown
@@ -113,10 +135,17 @@ impl QueuedSender {
                             Ok(tx) => { tx.send(()).unwrap() },
                             Err(e) => { tracing::error!("Error: {:?}", e) },
                         }
-                        break
+                        break;
                     },
                 }
             }
         });
     }
+}
+
+async fn process_queue(database: &Database) -> Result<()> {
+    let entries = database.get_records().await?;
+    println!("{:?}", entries);
+    tokio::time::sleep(std::time::Duration::from_secs(3)).await;
+    Ok(())
 }

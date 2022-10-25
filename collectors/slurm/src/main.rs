@@ -42,37 +42,43 @@ async fn main() -> Result<()> {
     );
     let _span_guard = span.enter();
 
+    // Configs
     let frequency = Duration::from_secs(10);
-    let sender_frequency = Duration::from_secs(5);
+    let sender_frequency = Duration::from_secs(1);
     let database_path = "sqlite://testdb.db";
 
+    // Channels
+    let (final_shutdown_tx, mut final_shutdown_rx) = mpsc::channel(1);
     let (record_send, record_recv) = mpsc::channel(1024);
     let (shutdown_send, mut shutdown_recv) = mpsc::unbounded_channel();
     let (notify_sacctcaller_send, notify_sacctcaller_recv) = broadcast::channel(12);
     let (notify_auditorsender_send, notify_auditorsender_recv) = broadcast::channel(12);
+
+    // Shutdown
     let shutdown_sender = ShutdownSender::new()
         .with_sender(notify_sacctcaller_send)
         .with_sender(notify_auditorsender_send);
 
-    let shutdown_sacctcaller = Shutdown::new(notify_sacctcaller_recv);
-    let sacctcaller = SacctCaller::new(
+    // SacctCaller
+    SacctCaller::run(
         frequency,
         record_send,
         shutdown_send.clone(),
-        shutdown_sacctcaller,
-    );
-    tokio::spawn(async move { sacctcaller.run().await });
+        Shutdown::new(notify_sacctcaller_recv),
+        final_shutdown_tx.clone(),
+    )
+    .await;
 
-    let shutdown_auditorsender = Shutdown::new(notify_auditorsender_recv);
-    let auditorsender = AuditorSender::new(
+    // AuditorSender
+    AuditorSender::run(
         database_path,
         record_recv,
         shutdown_send,
-        shutdown_auditorsender,
+        Shutdown::new(notify_auditorsender_recv),
         sender_frequency,
+        final_shutdown_tx.clone(),
     )
     .await?;
-    tokio::spawn(async move { auditorsender.run().await });
 
     tokio::select! {
         _ = signal::ctrl_c() => {
@@ -87,6 +93,10 @@ async fn main() -> Result<()> {
         tracing::error!("Could not send shutdown signal to tasks: {:?}", e);
     }
 
+    // Drop local tx first, otherwise program will hang indefinitely.
+    drop(final_shutdown_tx);
+    // Will only yield when all tx channels are closed, effectively waiting for all tasks to finish.
+    let _ = final_shutdown_rx.recv().await;
     Ok(())
 }
 
