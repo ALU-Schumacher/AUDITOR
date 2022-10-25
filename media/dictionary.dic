@@ -76,3 +76,7 @@ AsRef
 ShutdownSender
 notify_sacctcaller
 notify_auditorsender
+Configs
+AuditorSender
+tx
+shutdown_tx

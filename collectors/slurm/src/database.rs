@@ -42,6 +42,20 @@ impl Database {
         Ok(())
     }
 
+    pub(crate) async fn get_records(&self) -> Result<Vec<(String, Record)>> {
+        struct Row {
+            id: String,
+            record: Vec<u8>,
+        }
+        let records: Vec<Row> = sqlx::query_as!(Row, r#"SELECT id, record FROM records"#)
+            .fetch_all(&self.db_pool)
+            .await?;
+        Ok(records
+            .into_iter()
+            .map(|Row { id, record }| (id, bincode::deserialize::<Record>(&record).unwrap()))
+            .collect())
+    }
+
     #[tracing::instrument(name = "Closing database connection", level = "info", skip(self))]
     pub(crate) async fn close(&self) {
         self.db_pool.close().await

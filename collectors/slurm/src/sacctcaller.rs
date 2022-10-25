@@ -19,46 +19,57 @@ pub(crate) struct SacctCaller {
     tx: mpsc::Sender<Record>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     shutdown: Option<Shutdown>,
+    hold_till_shutdown: Option<mpsc::Sender<()>>,
 }
 
 impl SacctCaller {
-    pub fn new(
+    #[tracing::instrument(
+        name = "Starting SacctCaller",
+        skip(tx, shutdown_notifier, shutdown, channel)
+    )]
+    pub(crate) async fn run(
         frequency: Duration,
         tx: mpsc::Sender<Record>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
-    ) -> SacctCaller {
-        SacctCaller {
+        channel: mpsc::Sender<()>,
+    ) {
+        let sacctcaller = SacctCaller {
             frequency,
             tx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
-        }
+            hold_till_shutdown: Some(channel),
+        };
+        sacctcaller.run_internal().await;
     }
 
-    #[tracing::instrument(name = "Starting SacctCaller", skip(self))]
-    pub async fn run(mut self) {
+    async fn run_internal(mut self) {
         let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
-        let mut interval = tokio::time::interval(self.frequency);
-        loop {
-            interval.tick().await;
-            tokio::select! {
-                records = self.get_job_info() => {
-                    match records {
-                        Ok(records) => self.place_records_on_queue(records).await,
-                        Err(e) => {
-                            tracing::error!("something went wrong: {:?}", e);
-                            continue
-                        }
-                    };
-                },
-                _ = shutdown.recv() => {
-                    tracing::info!("SacctCaller received shutdown signal. Shutting down.");
-                    // shutdown properly
-                    break
-                },
+
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(self.frequency);
+            loop {
+                interval.tick().await;
+                tokio::select! {
+                    records = self.get_job_info() => {
+                        match records {
+                            Ok(records) => self.place_records_on_queue(records).await,
+                            Err(e) => {
+                                tracing::error!("something went wrong: {:?}", e);
+                                continue
+                            }
+                        };
+                    },
+                    _ = shutdown.recv() => {
+                        tracing::info!("SacctCaller received shutdown signal. Shutting down.");
+                        // shutdown properly
+                        drop(self.hold_till_shutdown.take());
+                        break
+                    },
+                }
             }
-        }
+        });
     }
 
     #[tracing::instrument(
