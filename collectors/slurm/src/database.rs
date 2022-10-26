@@ -7,7 +7,7 @@
 
 use std::str::FromStr;
 
-use auditor::domain::Record;
+use auditor::domain::RecordAdd;
 use color_eyre::eyre::Result;
 use sqlx::{sqlite::SqliteJournalMode, SqlitePool};
 
@@ -29,7 +29,7 @@ impl Database {
         Ok(Database { db_pool })
     }
 
-    pub(crate) async fn insert(&self, record: Record) -> Result<()> {
+    pub(crate) async fn insert(&self, record: RecordAdd) -> Result<()> {
         let record_id = record.record_id.clone();
         let record = bincode::serialize(&record)?;
         sqlx::query!(
@@ -42,7 +42,14 @@ impl Database {
         Ok(())
     }
 
-    pub(crate) async fn get_records(&self) -> Result<Vec<(String, Record)>> {
+    pub(crate) async fn delete(&self, record_id: String) -> Result<()> {
+        sqlx::query!(r#"DELETE FROM records WHERE id=$1"#, record_id)
+            .execute(&self.db_pool)
+            .await?;
+        Ok(())
+    }
+
+    pub(crate) async fn get_records(&self) -> Result<Vec<(String, RecordAdd)>> {
         struct Row {
             id: String,
             record: Vec<u8>,
@@ -52,7 +59,7 @@ impl Database {
             .await?;
         Ok(records
             .into_iter()
-            .map(|Row { id, record }| (id, bincode::deserialize::<Record>(&record).unwrap()))
+            .map(|Row { id, record }| (id, bincode::deserialize::<RecordAdd>(&record).unwrap()))
             .collect())
     }
 

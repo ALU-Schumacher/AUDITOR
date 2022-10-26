@@ -7,7 +7,7 @@
 
 use std::time::Duration;
 
-use auditor::domain::Record;
+use auditor::{client::AuditorClient, domain::RecordAdd};
 use color_eyre::eyre::{Result, WrapErr};
 use tokio::sync::{mpsc, oneshot};
 
@@ -15,7 +15,7 @@ use crate::{database::Database, shutdown::Shutdown};
 
 pub(crate) struct AuditorSender {
     sender: QueuedSender,
-    rx: mpsc::Receiver<Record>,
+    rx: mpsc::Receiver<RecordAdd>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     shutdown: Option<Shutdown>,
     hold_till_shutdown: Option<mpsc::Sender<()>>,
@@ -24,14 +24,15 @@ pub(crate) struct AuditorSender {
 impl<'a> AuditorSender {
     pub(crate) async fn run<S: AsRef<str>>(
         database_path: S,
-        rx: mpsc::Receiver<Record>,
+        rx: mpsc::Receiver<RecordAdd>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
         frequency: Duration,
         channel: mpsc::Sender<()>,
+        client: AuditorClient,
     ) -> Result<()> {
         let auditor_sender = AuditorSender {
-            sender: QueuedSender::new(database_path, frequency).await?,
+            sender: QueuedSender::new(database_path, frequency, client).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
@@ -66,7 +67,7 @@ impl<'a> AuditorSender {
     }
 
     #[tracing::instrument(name = "Handling new record", skip(self))]
-    async fn handle_record(&self, record: Record) -> Result<()> {
+    async fn handle_record(&self, record: RecordAdd) -> Result<()> {
         tracing::debug!("Handling record: {:?}", record);
         self.sender.add_record(record).await
     }
@@ -77,12 +78,14 @@ pub(crate) struct QueuedSender {
     shutdown_tx: Option<oneshot::Sender<oneshot::Sender<()>>>,
     shutdown_rx: Option<oneshot::Receiver<oneshot::Sender<()>>>,
     frequency: Duration,
+    client: Option<AuditorClient>,
 }
 
 impl QueuedSender {
     pub(crate) async fn new<S: AsRef<str>>(
         database_path: S,
         frequency: Duration,
+        client: AuditorClient,
     ) -> Result<QueuedSender> {
         let (shutdown_tx, shutdown_rx) = oneshot::channel();
         let mut sender = QueuedSender {
@@ -90,12 +93,13 @@ impl QueuedSender {
             shutdown_tx: Some(shutdown_tx),
             shutdown_rx: Some(shutdown_rx),
             frequency,
+            client: Some(client),
         };
         sender.run().await;
         Ok(sender)
     }
 
-    pub(crate) async fn add_record(&self, record: Record) -> Result<()> {
+    pub(crate) async fn add_record(&self, record: RecordAdd) -> Result<()> {
         self.database.insert(record).await
     }
 
@@ -116,9 +120,10 @@ impl QueuedSender {
         Ok(())
     }
 
-    pub(crate) async fn run(&mut self) {
+    async fn run(&mut self) {
         let mut interval = tokio::time::interval(self.frequency);
         let mut shutdown_rx = self.shutdown_rx.take().expect("Bug.");
+        let client = self.client.take().expect("Bug.");
 
         let database = self.database.clone();
 
@@ -126,7 +131,7 @@ impl QueuedSender {
             loop {
                 interval.tick().await;
                 tokio::select! {
-                    _ = process_queue(&database) => { },
+                    _ = process_queue(&database, &client) => { },
                     res = &mut shutdown_rx => {
                         tracing::info!("QueuedSender received shutdown signal. Shutting down.");
                         // shutdown properly
@@ -143,9 +148,24 @@ impl QueuedSender {
     }
 }
 
-async fn process_queue(database: &Database) -> Result<()> {
+async fn process_queue(database: &Database, client: &AuditorClient) -> Result<()> {
     let entries = database.get_records().await?;
-    println!("{:?}", entries);
+    for (id, record) in entries {
+        tracing::info!("Sending record {}", id);
+        match client.add(&record).await {
+            Ok(_) => {
+                tracing::info!("Successfully sent record {}", id);
+                database.delete(id).await?;
+            }
+            Err(e) => {
+                tracing::error!(
+                    "Failed sending record {} to Auditor instance. Requeuing. Error: {:?}",
+                    id,
+                    e
+                );
+            }
+        }
+    }
     tokio::time::sleep(std::time::Duration::from_secs(3)).await;
     Ok(())
 }

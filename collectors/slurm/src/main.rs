@@ -12,8 +12,11 @@ mod shutdown;
 
 use std::time::Duration;
 
-use auditor::telemetry::{get_subscriber, init_subscriber};
-use color_eyre::eyre::Result;
+use auditor::{
+    client::AuditorClientBuilder,
+    telemetry::{get_subscriber, init_subscriber},
+};
+use color_eyre::eyre::{eyre, Result};
 use sacctcaller::SacctCaller;
 use shutdown::{Shutdown, ShutdownSender};
 use tokio::{
@@ -37,7 +40,7 @@ async fn main() -> Result<()> {
 
     let run_id = Uuid::new_v4();
     let span = tracing::info_span!(
-        "Running slurm collector",
+        "Slurm collector",
         %run_id,
     );
     let _span_guard = span.enter();
@@ -46,6 +49,8 @@ async fn main() -> Result<()> {
     let frequency = Duration::from_secs(10);
     let sender_frequency = Duration::from_secs(1);
     let database_path = "sqlite://testdb.db";
+    let client_addr = "127.0.0.1";
+    let client_port = 8080;
 
     // Channels
     let (final_shutdown_tx, mut final_shutdown_rx) = mpsc::channel(1);
@@ -69,6 +74,12 @@ async fn main() -> Result<()> {
     )
     .await;
 
+    // AuditorClient
+    let client = AuditorClientBuilder::new()
+        .address(&client_addr, client_port)
+        .build()
+        .map_err(|e| eyre!("Error {:?}", e))?;
+
     // AuditorSender
     AuditorSender::run(
         database_path,
@@ -77,6 +88,7 @@ async fn main() -> Result<()> {
         Shutdown::new(notify_auditorsender_recv),
         sender_frequency,
         final_shutdown_tx.clone(),
+        client,
     )
     .await?;
 
@@ -99,37 +111,3 @@ async fn main() -> Result<()> {
     let _ = final_shutdown_rx.recv().await;
     Ok(())
 }
-
-// let cmd_out = Command::new("/usr/bin/sacct")
-//        .arg("-a")
-//        .arg("-j")
-//        .arg(job_id.to_string())
-//        .arg("--format")
-//        .arg(keys.iter().map(|k| k.0.clone()).join(","))
-//        .arg("--noconvert")
-//        .arg("--noheader")
-//        .arg("-P")
-//        .output()
-//        .await?
-//        .stdout;
-// #[tracing::instrument(name = "Getting Slurm job info via scontrol")]
-// fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
-//     Ok(std::str::from_utf8(
-//         &Command::new("/usr/bin/scontrol")
-//             .arg("show")
-//             .arg("job")
-//             .arg(job_id.to_string())
-//             .arg("--details")
-//             .output()?
-//             .stdout,
-//     )?
-//     .split_whitespace()
-//     .filter_map(|s| {
-//         if let Some((k, v)) = s.split_once('=') {
-//             Some((k.to_string(), v.to_string()))
-//         } else {
-//             None
-//         }
-//     })
-//     .collect())
-// }

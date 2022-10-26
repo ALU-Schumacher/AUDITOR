@@ -7,7 +7,7 @@
 
 use std::time::Duration;
 
-use auditor::domain::Record;
+use auditor::domain::RecordAdd;
 use color_eyre::eyre::Result;
 use fake::{Fake, Faker};
 use tokio::sync::mpsc;
@@ -16,7 +16,7 @@ use crate::shutdown::Shutdown;
 
 pub(crate) struct SacctCaller {
     frequency: Duration,
-    tx: mpsc::Sender<Record>,
+    tx: mpsc::Sender<RecordAdd>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     shutdown: Option<Shutdown>,
     hold_till_shutdown: Option<mpsc::Sender<()>>,
@@ -29,7 +29,7 @@ impl SacctCaller {
     )]
     pub(crate) async fn run(
         frequency: Duration,
-        tx: mpsc::Sender<Record>,
+        tx: mpsc::Sender<RecordAdd>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
         channel: mpsc::Sender<()>,
@@ -77,7 +77,7 @@ impl SacctCaller {
         level = "debug",
         skip(self, records)
     )]
-    async fn place_records_on_queue(&self, records: Vec<Record>) {
+    async fn place_records_on_queue(&self, records: Vec<RecordAdd>) {
         for record in records {
             let record_id = record.record_id.clone();
             if let Err(e) = self.tx.send(record).await {
@@ -86,9 +86,42 @@ impl SacctCaller {
         }
     }
 
-    async fn get_job_info(&self) -> Result<Vec<Record>> {
+    async fn get_job_info(&self) -> Result<Vec<RecordAdd>> {
         tokio::time::sleep(Duration::from_secs(5)).await;
         let record: auditor::domain::RecordTest = Faker.fake();
         Ok(vec![record.try_into().unwrap()])
     }
 }
+// let cmd_out = Command::new("/usr/bin/sacct")
+//        .arg("-a")
+//        .arg("-j")
+//        .arg(job_id.to_string())
+//        .arg("--format")
+//        .arg(keys.iter().map(|k| k.0.clone()).join(","))
+//        .arg("--noconvert")
+//        .arg("--noheader")
+//        .arg("-P")
+//        .output()
+//        .await?
+//        .stdout;
+// #[tracing::instrument(name = "Getting Slurm job info via scontrol")]
+// fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
+//     Ok(std::str::from_utf8(
+//         &Command::new("/usr/bin/scontrol")
+//             .arg("show")
+//             .arg("job")
+//             .arg(job_id.to_string())
+//             .arg("--details")
+//             .output()?
+//             .stdout,
+//     )?
+//     .split_whitespace()
+//     .filter_map(|s| {
+//         if let Some((k, v)) = s.split_once('=') {
+//             Some((k.to_string(), v.to_string()))
+//         } else {
+//             None
+//         }
+//     })
+//     .collect())
+// }
