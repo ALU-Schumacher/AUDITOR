@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 mod auditorsender;
+mod configuration;
 mod database;
 mod sacctcaller;
 mod shutdown;
@@ -44,6 +45,10 @@ async fn main() -> Result<()> {
         %run_id,
     );
     let _span_guard = span.enter();
+
+    let config = configuration::get_configuration()?;
+
+    tracing::debug!(?config, "Loaded config");
 
     // Configs
     let frequency = Duration::from_secs(10);
