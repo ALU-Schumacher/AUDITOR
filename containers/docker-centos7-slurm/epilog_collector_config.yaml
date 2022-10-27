@@ -1,0 +1,23 @@
+addr: "host.docker.internal"
+port: 8000
+record_prefix: "slurm"
+site_id: "site"
+components:
+  - name: "Cores"
+    key: "NumCPUs"
+    scores:
+      - name: "HEPSPECK"
+        factor: 1.1
+        only_if:
+          key: "Partition"
+          matches: "^part1$"
+  - name: "Cores"
+    key: "NumCPUs"
+    scores:
+      - name: "HEPSPECK"
+        factor: 1.2
+        only_if:
+          key: "Partition"
+          matches: "^part2$"
+  - name: "Memory"
+    key: "Mem"
