@@ -39,7 +39,7 @@ function start_container() {
 		cp ./containers/docker-centos7-slurm/batch.sh slurm:/batch.sh
 
 	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-collector
-	docker exec auditor-slurm-1 mkdir /collector_logs
+	docker exec auditor-slurm-1 mkdir -p /collector_logs
 	docker exec auditor-slurm-1 chown slurm:slurm /collector_logs
 
 	COUNTER=0
@@ -182,6 +182,7 @@ SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
 
 cleanup_exit() {
   setsid nohup bash -c "
+		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
     kill $AUDITOR_SERVER_PID
     rm -rf $ENV_DIR
   "
