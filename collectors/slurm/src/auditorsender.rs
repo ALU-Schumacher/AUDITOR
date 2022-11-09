@@ -22,6 +22,10 @@ pub(crate) struct AuditorSender {
 }
 
 impl<'a> AuditorSender {
+    #[tracing::instrument(
+        name = "Starting AuditorSender",
+        skip(database_path, rx, shutdown_notifier, shutdown, channel, client)
+    )]
     pub(crate) async fn run<S: AsRef<str>>(
         database_path: S,
         rx: mpsc::Receiver<RecordAdd>,
@@ -43,8 +47,7 @@ impl<'a> AuditorSender {
         Ok(())
     }
 
-    #[tracing::instrument(name = "Starting AuditorSender", skip(self))]
-    pub(crate) async fn run_internal(mut self) -> Result<()> {
+    async fn run_internal(mut self) -> Result<()> {
         tokio::spawn(async move {
             let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
 

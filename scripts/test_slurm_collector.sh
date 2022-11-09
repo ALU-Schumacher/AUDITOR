@@ -10,6 +10,14 @@ RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 DB_NAME=${DB_NAME:=$(uuidgen)}
 
+function stop_container () {
+	echo >&2 "Stopping container"
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		down
+}
+
 function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
@@ -25,7 +33,7 @@ function start_container() {
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
 		cp \
-		./target/x86_64-unknown-linux-musl/debug/auditor-slurm-collector \
+		./target/${TARGET_ARCH}/debug/auditor-slurm-collector \
 		slurm:/auditor-slurm-collector
 	# Copy config for collector
 	docker compose \
@@ -38,7 +46,7 @@ function start_container() {
 		--project-directory=$DOCKER_PROJECT_DIR \
 		cp ./containers/docker-centos7-slurm/batch.sh slurm:/batch.sh
 
-	docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-collector
+	# docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-collector /collector_config.yaml
 	docker exec auditor-slurm-1 mkdir -p /collector_logs
 	docker exec auditor-slurm-1 chown slurm:slurm /collector_logs
 
@@ -59,13 +67,6 @@ function start_container() {
 	done
 }
 
-function stop_container() {
-	echo >&2 "Stopping container"
-	docker compose \
-		--file $DOCKER_COMPOSE_FILE \
-		--project-directory=$DOCKER_PROJECT_DIR \
-		down
-}
 
 function compile_auditor() {
 	if [ "$RELEASE_MODE" = true ]; then
@@ -120,7 +121,7 @@ function start_slurm_collector() {
 	then
 		compile_collector
 	fi
-	docker exec auditor-slurm-1 /auditor-slurm-collector
+	docker exec auditor-slurm-1 /auditor-slurm-collector /collector_config.yaml &
 }
 
 function stop_auditor() {
@@ -184,7 +185,6 @@ cleanup_exit() {
   setsid nohup bash -c "
 		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
     kill $AUDITOR_SERVER_PID
-    rm -rf $ENV_DIR
   "
 }
 trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
@@ -197,7 +197,10 @@ start_container
 start_auditor
 start_slurm_collector
 
-test_collector
+sleep 10
+curl http://localhost:8000/get
+
+# test_collector
 
 stop_container
 stop_auditor
