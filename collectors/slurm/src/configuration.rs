@@ -84,7 +84,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let settings = match std::env::args().nth(1) {
         Some(file) => settings.add_source(
             config::File::from(file.as_ref())
-                .required(false)
+                .required(true)
                 .format(config::FileFormat::Yaml),
         ),
         None => settings,

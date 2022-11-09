@@ -54,8 +54,6 @@ async fn main() -> Result<()> {
     let frequency = Duration::from_secs(10);
     let sender_frequency = Duration::from_secs(1);
     let database_path = "sqlite://testdb.db";
-    let client_addr = "127.0.0.1";
-    let client_port = 8080;
 
     // Channels
     let (final_shutdown_tx, mut final_shutdown_rx) = mpsc::channel(1);
@@ -81,7 +79,7 @@ async fn main() -> Result<()> {
 
     // AuditorClient
     let client = AuditorClientBuilder::new()
-        .address(&client_addr, client_port)
+        .address(&config.addr, config.port)
         .build()
         .map_err(|e| eyre!("Error {:?}", e))?;
 
