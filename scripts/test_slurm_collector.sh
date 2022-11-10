@@ -197,10 +197,10 @@ start_container
 start_auditor
 start_slurm_collector
 
-sleep 10
-curl http://localhost:8000/get
+sleep 5
+# curl http://localhost:8000/get
 
-# test_collector
+test_collector
 
 stop_container
 stop_auditor

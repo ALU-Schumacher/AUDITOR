@@ -365,9 +365,13 @@ version = "0.0.6"
 dependencies = [
  "auditor",
  "bincode",
+ "chrono",
  "color-eyre",
  "config",
  "fake",
+ "itertools",
+ "lazy_static",
+ "regex",
  "serde",
  "serde-aux",
  "sqlx",
