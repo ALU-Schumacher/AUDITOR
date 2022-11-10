@@ -86,6 +86,7 @@ impl SacctCaller {
         }
     }
 
+    #[tracing::instrument(name = "Calling sacct and parsing output", skip(self))]
     async fn get_job_info(&self) -> Result<Vec<RecordAdd>> {
         tokio::time::sleep(Duration::from_secs(5)).await;
         let record: auditor::domain::RecordTest = Faker.fake();
