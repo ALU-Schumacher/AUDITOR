@@ -8,7 +8,7 @@
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use color_eyre::eyre::{eyre, Report, WrapErr};
 use itertools::Itertools;
-use lazy_static::lazy_static;
+use once_cell::unsync::Lazy;
 use regex::Regex;
 use serde_aux::field_attributes::deserialize_number_from_string;
 
@@ -54,51 +54,64 @@ impl ComponentConfig {
         keys
     }
 }
+
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct ScoreConfig {
     pub name: String,
     pub factor: f64,
     pub only_if: Option<OnlyIf>,
 }
+
 impl ScoreConfig {
     fn keys(&self) -> Vec<(String, ParsableType)> {
         self.only_if.iter().map(|oif| oif.key()).collect()
     }
 }
+
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct OnlyIf {
     pub key: String,
     pub matches: String,
 }
+
 impl OnlyIf {
     fn key(&self) -> (String, ParsableType) {
         (self.key.clone(), ParsableType::String)
     }
 }
+
 fn default_addr() -> String {
     "127.0.0.1".to_string()
 }
+
 fn default_collector_addr() -> String {
     "0.0.0.0".to_string()
 }
+
 fn default_port() -> u16 {
     8000
 }
+
 fn default_collector_port() -> u16 {
     4687
 }
+
 fn default_record_prefix() -> String {
     "slurm".to_string()
 }
+
 fn default_string() -> String {
     "none".to_string()
 }
+
 fn default_score() -> Vec<ScoreConfig> {
     vec![]
 }
+
 fn default_key_type() -> ParsableType {
     ParsableType::default()
 }
+
 fn default_components() -> Vec<ComponentConfig> {
     vec![ComponentConfig {
         name: "Cores".into(),
@@ -108,6 +121,7 @@ fn default_components() -> Vec<ComponentConfig> {
         only_if: None,
     }]
 }
+
 impl Settings {
     pub fn get_keys(&self) -> Vec<(String, ParsableType)> {
         self.components
@@ -117,12 +131,14 @@ impl Settings {
             .collect()
     }
 }
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum AllowedTypes {
     String(String),
     Integer(i64),
     DateTime(DateTime<Utc>),
 }
+
 impl AllowedTypes {
     pub fn extract_string(&self) -> Result<String, Report> {
         if let AllowedTypes::String(string) = self {
@@ -146,6 +162,7 @@ impl AllowedTypes {
         }
     }
 }
+
 #[derive(serde::Deserialize, Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum ParsableType {
     #[default]
@@ -156,6 +173,7 @@ pub enum ParsableType {
     DateTime,
     Id,
 }
+
 impl ParsableType {
     pub fn parse<T: AsRef<str>>(&self, input: T) -> Result<AllowedTypes, Report> {
         let input = input.as_ref();
@@ -185,11 +203,8 @@ impl ParsableType {
                 )
             }
             ParsableType::Time => {
-                // TODO: Replace with once_cell and remote lazy_static from Cargo.toml
-                lazy_static! {
-                    static ref RE: Regex = Regex::new(r"(\d{2}):(\d{2}).(\d+)").unwrap();
-                }
-                let cap = RE.captures(input).unwrap_or_else(|| {
+                let re = Lazy::new(|| Regex::new(r"(\d{2}):(\d{2}).(\d+)").unwrap());
+                let cap = re.captures(input).unwrap_or_else(|| {
                     panic!(
                         "Cannot parse duration {}. Duration must have the format MM:SS.MILLI.",
                         input

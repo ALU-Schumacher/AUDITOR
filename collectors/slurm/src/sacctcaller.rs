@@ -14,84 +14,58 @@ use tokio::sync::mpsc;
 
 use crate::shutdown::Shutdown;
 
-pub(crate) struct SacctCaller {
+#[tracing::instrument(
+    name = "Starting SacctCaller",
+    skip(tx, _shutdown_notifier, shutdown, hold_till_shutdown)
+)]
+pub(crate) async fn run_sacct_monitor(
     frequency: Duration,
     tx: mpsc::Sender<RecordAdd>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
-    shutdown: Option<Shutdown>,
-    hold_till_shutdown: Option<mpsc::Sender<()>>,
-}
-
-impl SacctCaller {
-    #[tracing::instrument(
-        name = "Starting SacctCaller",
-        skip(tx, shutdown_notifier, shutdown, channel)
-    )]
-    pub(crate) async fn run(
-        frequency: Duration,
-        tx: mpsc::Sender<RecordAdd>,
-        shutdown_notifier: mpsc::UnboundedSender<()>,
-        shutdown: Shutdown,
-        channel: mpsc::Sender<()>,
-    ) {
-        let sacctcaller = SacctCaller {
-            frequency,
-            tx,
-            _shutdown_notifier: shutdown_notifier,
-            shutdown: Some(shutdown),
-            hold_till_shutdown: Some(channel),
-        };
-        sacctcaller.run_internal().await;
-    }
-
-    async fn run_internal(mut self) {
-        let mut shutdown = self.shutdown.take().expect("Definitely a bug.");
-
-        tokio::spawn(async move {
-            let mut interval = tokio::time::interval(self.frequency);
-            loop {
-                interval.tick().await;
-                tokio::select! {
-                    records = self.get_job_info() => {
-                        match records {
-                            Ok(records) => self.place_records_on_queue(records).await,
-                            Err(e) => {
-                                tracing::error!("something went wrong: {:?}", e);
-                                continue
-                            }
-                        };
-                    },
-                    _ = shutdown.recv() => {
-                        tracing::info!("SacctCaller received shutdown signal. Shutting down.");
-                        // shutdown properly
-                        drop(self.hold_till_shutdown.take());
-                        break
-                    },
-                }
-            }
-        });
-    }
-
-    #[tracing::instrument(
-        name = "Placing records on queue",
-        level = "debug",
-        skip(self, records)
-    )]
-    async fn place_records_on_queue(&self, records: Vec<RecordAdd>) {
-        for record in records {
-            let record_id = record.record_id.clone();
-            if let Err(e) = self.tx.send(record).await {
-                tracing::error!("Could not send record {:?} to queue: {:?}", record_id, e);
+    mut shutdown: Shutdown,
+    hold_till_shutdown: mpsc::Sender<()>,
+) {
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(frequency);
+        loop {
+            interval.tick().await;
+            tokio::select! {
+                records = get_job_info() => {
+                    match records {
+                        Ok(records) => place_records_on_queue(records, &tx).await,
+                        Err(e) => {
+                            tracing::error!("something went wrong: {:?}", e);
+                            continue
+                        }
+                    };
+                },
+                _ = shutdown.recv() => {
+                    tracing::info!("SacctCaller received shutdown signal. Shutting down.");
+                    // shutdown properly
+                    drop(hold_till_shutdown);
+                    break
+                },
             }
         }
-    }
+    });
+}
 
-    #[tracing::instrument(name = "Calling sacct and parsing output", skip(self))]
-    async fn get_job_info(&self) -> Result<Vec<RecordAdd>> {
-        tokio::time::sleep(Duration::from_secs(5)).await;
-        let record: auditor::domain::RecordTest = Faker.fake();
-        Ok(vec![record.try_into().unwrap()])
+#[tracing::instrument(name = "Placing records on queue", level = "debug", skip(records, tx))]
+async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<RecordAdd>) {
+    for record in records {
+        let record_id = record.record_id.clone();
+        if let Err(e) = tx.send(record).await {
+            tracing::error!("Could not send record {:?} to queue: {:?}", record_id, e);
+        }
     }
+}
+
+#[tracing::instrument(name = "Calling sacct and parsing output")]
+async fn get_job_info() -> Result<Vec<RecordAdd>> {
+    tokio::time::sleep(Duration::from_secs(5)).await;
+    let record: auditor::domain::RecordTest = Faker.fake();
+
+    Ok(vec![record.try_into().unwrap()])
 }
 // let cmd_out = Command::new("/usr/bin/sacct")
 //        .arg("-a")

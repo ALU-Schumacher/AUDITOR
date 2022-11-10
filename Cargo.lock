@@ -370,7 +370,7 @@ dependencies = [
  "config",
  "fake",
  "itertools",
- "lazy_static",
+ "once_cell",
  "regex",
  "serde",
  "serde-aux",
