@@ -18,15 +18,17 @@ use auditor::{
     telemetry::{get_subscriber, init_subscriber},
 };
 use color_eyre::eyre::{eyre, Result};
-use sacctcaller::SacctCaller;
-use shutdown::{Shutdown, ShutdownSender};
 use tokio::{
     signal,
     sync::{broadcast, mpsc},
 };
 use uuid::Uuid;
 
-use crate::auditorsender::AuditorSender;
+use crate::{
+    auditorsender::AuditorSender,
+    sacctcaller::run_sacct_monitor,
+    shutdown::{Shutdown, ShutdownSender},
+};
 
 const NAME: &str = "AUDITOR-slurm-collector";
 
@@ -68,7 +70,7 @@ async fn main() -> Result<()> {
         .with_sender(notify_auditorsender_send);
 
     // SacctCaller
-    SacctCaller::run(
+    run_sacct_monitor(
         frequency,
         record_send,
         shutdown_send.clone(),
