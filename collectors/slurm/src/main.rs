@@ -18,6 +18,7 @@ use auditor::{
     telemetry::{get_subscriber, init_subscriber},
 };
 use color_eyre::eyre::{eyre, Result};
+use once_cell::sync::Lazy;
 use tokio::{
     signal,
     sync::{broadcast, mpsc},
@@ -26,11 +27,15 @@ use uuid::Uuid;
 
 use crate::{
     auditorsender::AuditorSender,
+    configuration::{get_configuration, ParsableType, Settings},
     sacctcaller::run_sacct_monitor,
     shutdown::{Shutdown, ShutdownSender},
 };
 
 const NAME: &str = "AUDITOR-slurm-collector";
+static CONFIG: Lazy<Settings> =
+    Lazy::new(|| get_configuration().expect("Failed loading configuration"));
+static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| CONFIG.get_keys());
 
 // # CONFIGURATION TODOS:
 //
@@ -48,9 +53,7 @@ async fn main() -> Result<()> {
     );
     let _span_guard = span.enter();
 
-    let config = configuration::get_configuration()?;
-
-    tracing::debug!(?config, "Loaded config");
+    tracing::debug!(?CONFIG, "Loaded config");
 
     // Configs
     let frequency = Duration::from_secs(10);
@@ -81,7 +84,7 @@ async fn main() -> Result<()> {
 
     // AuditorClient
     let client = AuditorClientBuilder::new()
-        .address(&config.addr, config.port)
+        .address(&CONFIG.addr, CONFIG.port)
         .build()
         .map_err(|e| eyre!("Error {:?}", e))?;
 
