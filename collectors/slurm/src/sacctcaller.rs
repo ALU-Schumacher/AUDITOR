@@ -5,14 +5,24 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::time::Duration;
+use std::{collections::HashMap, fmt, time::Duration};
 
-use auditor::domain::RecordAdd;
+use auditor::{
+    constants::FORBIDDEN_CHARACTERS,
+    domain::{Component, RecordAdd, Score},
+};
 use color_eyre::eyre::Result;
 use fake::{Fake, Faker};
+use regex::Regex;
 use tokio::sync::mpsc;
 
-use crate::shutdown::Shutdown;
+use crate::{
+    configuration::{AllowedTypes, Settings},
+    shutdown::Shutdown,
+    CONFIG,
+};
+
+type Job = HashMap<String, AllowedTypes>;
 
 #[tracing::instrument(
     name = "Starting SacctCaller",
@@ -62,10 +72,82 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 
 #[tracing::instrument(name = "Calling sacct and parsing output")]
 async fn get_job_info() -> Result<Vec<RecordAdd>> {
+    // let job_id = 123;
+    // let record = RecordAdd::new(
+    //     format!("{}-{}", make_string_valid(&CONFIG.record_prefix), job_id),
+    //     make_string_valid(&CONFIG.site_id),
+    //     make_string_valid(&job["User"].extract_string()?),
+    //     make_string_valid(&job["Group"].extract_string()?),
+    //     construct_components(&CONFIG, &job),
+    //     job["Start"].extract_datetime()?,
+    // )
+    // .expect("Could not construct record")
+    // .with_stop_time(job["End"].extract_datetime()?);
     tokio::time::sleep(Duration::from_secs(5)).await;
     let record: auditor::domain::RecordTest = Faker.fake();
 
     Ok(vec![record.try_into().unwrap()])
+}
+
+#[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
+fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
+    input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
+}
+
+#[tracing::instrument(
+    name = "Construct components from job info and configuration",
+    level = "debug"
+)]
+fn construct_components(config: &Settings, job: &Job) -> Vec<Component> {
+    config
+        .components
+        .iter()
+        .cloned()
+        .filter(|c| {
+            c.only_if.is_none() || {
+                let only_if = c.only_if.as_ref().unwrap();
+                let re = Regex::new(&only_if.matches)
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                re.is_match(&job[&only_if.key].extract_string().unwrap_or_else(|_| {
+                    panic!("Key is expectedto be a string: {:?}", job[&only_if.key])
+                }))
+            }
+        })
+        .map(|c| {
+            Component::new(
+                make_string_valid(c.name),
+                job[&c.key].extract_i64().unwrap_or_else(|_| {
+                    panic!(
+                        "Cannot parse key {} (value: {:?}) into i64.",
+                        c.key, job[&c.key]
+                    )
+                }),
+            )
+            .expect("Cannot construct component. Please check your configuration!")
+            .with_scores(
+                c.scores
+                    .iter()
+                    .filter(|s| {
+                        s.only_if.is_none() || {
+                            let only_if = s.only_if.as_ref().unwrap();
+                            let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
+                                panic!("Invalid regex expression: {}", &only_if.matches)
+                            });
+                            re.is_match(
+                                &job[&only_if.key]
+                                    .extract_string()
+                                    .unwrap_or_else(|_| panic!("Error extracting string.")),
+                            )
+                        }
+                    })
+                    .map(|s| {
+                        Score::new(s.name.clone(), s.factor)
+                            .unwrap_or_else(|_| panic!("Cannot construct score from {:?}", s))
+                    })
+                    .collect(),
+            )
+        })
+        .collect()
 }
 // let cmd_out = Command::new("/usr/bin/sacct")
 //        .arg("-a")
