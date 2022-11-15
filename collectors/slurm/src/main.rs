@@ -35,7 +35,15 @@ use crate::{
 const NAME: &str = "AUDITOR-slurm-collector";
 static CONFIG: Lazy<Settings> =
     Lazy::new(|| get_configuration().expect("Failed loading configuration"));
-static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| CONFIG.get_keys());
+static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
+    let mut keys = CONFIG.get_keys();
+    keys.push(("JobID".to_owned(), ParsableType::DateTime));
+    keys.push(("Start".to_owned(), ParsableType::DateTime));
+    keys.push(("End".to_owned(), ParsableType::DateTime));
+    keys.push(("Group".to_owned(), ParsableType::String));
+    keys.push(("User".to_owned(), ParsableType::String));
+    keys
+});
 
 // # CONFIGURATION TODOS:
 //

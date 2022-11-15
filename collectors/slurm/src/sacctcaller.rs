@@ -13,13 +13,14 @@ use auditor::{
 };
 use color_eyre::eyre::Result;
 use fake::{Fake, Faker};
+use itertools::Itertools;
 use regex::Regex;
-use tokio::sync::mpsc;
+use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, Settings},
+    configuration::{AllowedTypes, ParsableType, Settings},
     shutdown::Shutdown,
-    CONFIG,
+    CONFIG, KEYS,
 };
 
 type Job = HashMap<String, AllowedTypes>;
@@ -72,6 +73,57 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 
 #[tracing::instrument(name = "Calling sacct and parsing output")]
 async fn get_job_info() -> Result<Vec<RecordAdd>> {
+    let cmd_out = Command::new("/usr/bin/sacct")
+        .arg("-a")
+        .arg("--format")
+        .arg(KEYS.iter().map(|k| k.0.clone()).join(","))
+        .arg("--noconvert")
+        .arg("--noheader")
+        .arg("-S")
+        .arg("now-1hours")
+        .arg("-E")
+        .arg("now")
+        .arg("-s")
+        .arg("completed,failed,node_fail")
+        .arg("-P")
+        .output()
+        .await?
+        .stdout;
+
+    let lines = std::str::from_utf8(&cmd_out)?
+        .lines()
+        .map(|l| {
+            println!("line: {}", l);
+            // l.split('|').map(|s| s.to_owned()).collect::<Vec<String>>()
+            KEYS.iter()
+                .cloned()
+                .zip(l.split('|').map(|s| s.to_owned()))
+                // Occasionally fields are empty by design. filter those out to avoid
+                // problems later on when parsing.
+                .filter(|(_, v)| !v.is_empty())
+                .map(|((k, pt), v)| {
+                    let v = match pt.parse(&v) {
+                        Ok(v) => Some(v),
+                        Err(e) => {
+                            tracing::warn!(
+                                "Parsing '{}' (key: {}) as {:?} failed: {:?}. This may or may not be a problem. It probably is.",
+                                v,
+                                k,
+                                pt,
+                                e
+                            );
+                            None
+                        }
+                    };
+                    (k, v)
+                })
+                .collect::<HashMap<String, Option<AllowedTypes>>>()
+        })
+        .map(|hm| (hm["JobId"].as_ref().unwrap().extract_string().unwrap(), hm))
+        .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
+
+    // next: merge <job_id> and <job_id>.batch rows.
+
     // let job_id = 123;
     // let record = RecordAdd::new(
     //     format!("{}-{}", make_string_valid(&CONFIG.record_prefix), job_id),
