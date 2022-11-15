@@ -32,7 +32,7 @@ strip = true
 
 [dependencies]
 auditor = { path = "../../auditor", version = "0.0.6" }
-chrono = { version = "0.4.22", features = ["serde"] }
+chrono = { version = "0.4.23", features = ["serde"] }
 anyhow = "1"
 regex = "1"
 tracing = { version = "0.1", features = ["log"] }
