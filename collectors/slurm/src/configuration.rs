@@ -132,7 +132,7 @@ impl Settings {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum AllowedTypes {
     String(String),
     Integer(i64),
@@ -163,7 +163,7 @@ impl AllowedTypes {
     }
 }
 
-#[derive(serde::Deserialize, Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(serde::Deserialize, Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum ParsableType {
     #[default]
     Integer,
