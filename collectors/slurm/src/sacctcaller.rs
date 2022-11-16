@@ -11,14 +11,13 @@ use auditor::{
     constants::FORBIDDEN_CHARACTERS,
     domain::{Component, RecordAdd, Score},
 };
-use color_eyre::eyre::Result;
-use fake::{Fake, Faker};
+use color_eyre::eyre::{eyre, Result};
 use itertools::Itertools;
 use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, ParsableType, Settings},
+    configuration::{AllowedTypes, Settings},
     shutdown::Shutdown,
     CONFIG, KEYS,
 };
@@ -87,10 +86,12 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
         .arg("completed,failed,node_fail")
         .arg("-P")
         .output()
-        .await?
-        .stdout;
+        .await?;
+    // .stdout;
 
-    let lines = std::str::from_utf8(&cmd_out)?
+    println!("OUTPUT: {}", std::str::from_utf8(&cmd_out.stderr)?);
+
+    let sacct_rows = std::str::from_utf8(&cmd_out.stdout)?
         .lines()
         .map(|l| {
             println!("line: {}", l);
@@ -122,23 +123,50 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
         .map(|hm| (hm["JobId"].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
-    // next: merge <job_id> and <job_id>.batch rows.
+    let regex = Regex::new(r#"^[0-9]+\.batch$"#)?;
 
-    // let job_id = 123;
-    // let record = RecordAdd::new(
-    //     format!("{}-{}", make_string_valid(&CONFIG.record_prefix), job_id),
-    //     make_string_valid(&CONFIG.site_id),
-    //     make_string_valid(&job["User"].extract_string()?),
-    //     make_string_valid(&job["Group"].extract_string()?),
-    //     construct_components(&CONFIG, &job),
-    //     job["Start"].extract_datetime()?,
-    // )
-    // .expect("Could not construct record")
-    // .with_stop_time(job["End"].extract_datetime()?);
-    tokio::time::sleep(Duration::from_secs(5)).await;
-    let record: auditor::domain::RecordTest = Faker.fake();
+    println!("ROWs: {:?}", sacct_rows);
 
-    Ok(vec![record.try_into().unwrap()])
+    let slurm_ids = sacct_rows
+        .keys()
+        .into_iter()
+        .filter(|k| !regex.is_match(k))
+        .collect::<Vec<_>>();
+
+    println!("SLURM IDs: {:?}", slurm_ids);
+
+    slurm_ids.into_iter().map(|id| -> Result<HashMap<String, AllowedTypes>> {
+        let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
+        let map2 = sacct_rows.get(&format!("{}.batch", id)).expect("Cannot happen");
+        KEYS.iter()
+            .cloned()
+            .map(|(k, _)| {
+                let val =  match map1.get(&k) {
+                    Some(Some(v)) => Ok(v.clone()),
+                    _ => match map2.get(&k) {
+                        Some(Some(v)) => Ok(v.clone()),
+                        _ => {
+                            tracing::error!("Something went wrong during parsing");
+                            Err(eyre!("Something went wrong during parsing of sacct output. Can't recover."))
+                        },
+                    },
+                }?;
+                Ok((k, val))
+            }).collect::<Result<HashMap<String, AllowedTypes>>>()
+    }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
+    .iter()
+    .map(|map| -> Result<RecordAdd> {
+        Ok(RecordAdd::new(
+            format!("{}-{}", make_string_valid(&CONFIG.record_prefix), map["JobID"].extract_string()?),
+            make_string_valid(&CONFIG.site_id),
+            make_string_valid(&map["User"].extract_string()?),
+            make_string_valid(&map["Group"].extract_string()?),
+            construct_components(&CONFIG, map),
+            map["Start"].extract_datetime()?,
+        )
+        .expect("Could not construct record")
+        .with_stop_time(map["End"].extract_datetime()?))
+    }).collect::<Result<Vec<_>>>()
 }
 
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
