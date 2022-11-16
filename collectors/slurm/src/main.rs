@@ -37,7 +37,7 @@ static CONFIG: Lazy<Settings> =
     Lazy::new(|| get_configuration().expect("Failed loading configuration"));
 static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
     let mut keys = CONFIG.get_keys();
-    keys.push(("JobID".to_owned(), ParsableType::DateTime));
+    keys.push(("JobID".to_owned(), ParsableType::String));
     keys.push(("Start".to_owned(), ParsableType::DateTime));
     keys.push(("End".to_owned(), ParsableType::DateTime));
     keys.push(("Group".to_owned(), ParsableType::String));

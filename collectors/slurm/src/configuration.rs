@@ -214,7 +214,11 @@ impl ParsableType {
                     .iter()
                     .map(|c| {
                         c.unwrap().as_str().parse::<i64>().unwrap_or_else(|_| {
-                            tracing::error!("Cannot parse {} into Time, assuming 0.", input);
+                            tracing::error!(
+                                "Cannot parse {} (specifically: {}) into Time, assuming 0.",
+                                input,
+                                c.unwrap().as_str(),
+                            );
                             0
                         })
                     })
