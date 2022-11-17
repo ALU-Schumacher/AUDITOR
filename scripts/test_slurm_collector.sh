@@ -44,7 +44,7 @@ function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
-		cp ./containers/docker-centos7-slurm/batch.sh slurm:/batch.sh
+		cp ./containers/docker-centos7-slurm/batch5.sh slurm:/batch.sh
 
 	# docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-collector /collector_config.yaml
 	docker exec auditor-slurm-1 mkdir -p /collector_logs

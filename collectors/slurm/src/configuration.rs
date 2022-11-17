@@ -6,10 +6,10 @@
 // copied, modified, or distributed except according to those terms.
 
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
-use color_eyre::eyre::{eyre, Report, WrapErr};
+use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
-use regex::Regex;
+use regex::{Captures, Regex, RegexSet};
 use serde_aux::field_attributes::deserialize_number_from_string;
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -203,28 +203,71 @@ impl ParsableType {
                 )
             }
             ParsableType::Time => {
-                let re = Lazy::new(|| Regex::new(r"(\d{2}):(\d{2}).(\d+)").unwrap());
-                let cap = re.captures(input).unwrap_or_else(|| {
-                    panic!(
-                        "Cannot parse duration {}. Duration must have the format MM:SS.MILLI.",
-                        input
-                    )
+                let set = Lazy::new(|| {
+                    RegexSet::new([
+                        r"(?P<min>\d{2}):(?P<sec>\d{2})\.(?P<milli>\d+)",
+                        r"(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})",
+                    ])
+                    .unwrap()
                 });
-                let cap = cap
-                    .iter()
-                    .map(|c| {
-                        c.unwrap().as_str().parse::<i64>().unwrap_or_else(|_| {
-                            tracing::error!(
-                                "Cannot parse {} (specifically: {}) into Time, assuming 0.",
-                                input,
-                                c.unwrap().as_str(),
-                            );
-                            0
+                let regexes = Lazy::new(|| {
+                    set.patterns()
+                        .iter()
+                        .map(|pat| Regex::new(pat).unwrap())
+                        .collect::<Vec<_>>()
+                });
+                if !set.is_match(input) {
+                    return Err(eyre!("Cannot parse time string: {}", input));
+                }
+
+                let captures: Vec<Captures> = set
+                    .matches(input)
+                    .into_iter()
+                    .map(|match_idx| &regexes[match_idx])
+                    .map(|pat| -> Result<Captures> {
+                        pat.captures(input).ok_or_else(|| {
+                            eyre!(
+                                "Impossible error when parsing time string: {}. Tell Stefan!",
+                                input
+                            )
                         })
                     })
-                    .collect::<Vec<_>>();
-                let (min, sec, milli): (i64, i64, i64) = (cap[0], cap[1], cap[2]);
-                AllowedTypes::Integer(milli + sec * 1000 + min * 60_000)
+                    .collect::<Result<Vec<_>>>()?;
+
+                if captures.is_empty() {
+                    return Err(eyre!(
+                        "No regex pattern matched when parsing time {}. This is impossible.",
+                        input
+                    ));
+                }
+
+                if captures.len() > 1 {
+                    tracing::warn!("Multiple regex patterns matched when parsing time {}. This should not happen. Taking first one.", input);
+                }
+
+                // Unwrap is fine because we have ensured that there is exactly one element.
+                let cap = captures.into_iter().next().unwrap();
+
+                let pm = |name: &'static str, reg_match: &Captures| -> Result<i64> {
+                    Ok(if let Some(a) = reg_match.name(name) {
+                        a.as_str().parse::<i64>().wrap_err_with(|| {
+                            format!(
+                                "Failed parsing {} match group ({}) to i64",
+                                name,
+                                a.as_str()
+                            )
+                        })?
+                    } else {
+                        0
+                    })
+                };
+
+                AllowedTypes::Integer(
+                    pm("milli", &cap)?
+                        + pm("sec", &cap)? * 1000
+                        + pm("min", &cap)? * 60_000
+                        + pm("hour", &cap)? * 1_440_000,
+                )
             }
             ParsableType::String => AllowedTypes::String(input.to_owned()),
             ParsableType::DateTime => {
