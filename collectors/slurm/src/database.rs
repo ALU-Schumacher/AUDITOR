@@ -33,7 +33,7 @@ impl Database {
         let record_id = record.record_id.clone();
         let record = bincode::serialize(&record)?;
         sqlx::query!(
-            r#"INSERT INTO records (id, record) VALUES ($1, $2)"#,
+            r#"INSERT OR IGNORE INTO records (id, record) VALUES ($1, $2)"#,
             record_id,
             record
         )

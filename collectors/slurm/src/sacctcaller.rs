@@ -120,7 +120,7 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
                 })
                 .collect::<HashMap<String, Option<AllowedTypes>>>()
         })
-        .map(|hm| (hm["JobId"].as_ref().unwrap().extract_string().unwrap(), hm))
+        .map(|hm| (hm["JobID"].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
     let regex = Regex::new(r#"^[0-9]+\.batch$"#)?;
