@@ -28,6 +28,7 @@ use uuid::Uuid;
 use crate::{
     auditorsender::AuditorSender,
     configuration::{get_configuration, ParsableType, Settings},
+    database::Database,
     sacctcaller::run_sacct_monitor,
     shutdown::{Shutdown, ShutdownSender},
 };
@@ -75,6 +76,9 @@ async fn main() -> Result<()> {
     let (notify_sacctcaller_send, notify_sacctcaller_recv) = broadcast::channel(12);
     let (notify_auditorsender_send, notify_auditorsender_recv) = broadcast::channel(12);
 
+    // Database
+    let database = Database::new(database_path).await?;
+
     // Shutdown
     let shutdown_sender = ShutdownSender::new()
         .with_sender(notify_sacctcaller_send)
@@ -82,6 +86,7 @@ async fn main() -> Result<()> {
 
     // SacctCaller
     run_sacct_monitor(
+        database.clone(),
         frequency,
         record_send,
         shutdown_send.clone(),
@@ -98,7 +103,7 @@ async fn main() -> Result<()> {
 
     // AuditorSender
     AuditorSender::run(
-        database_path,
+        database,
         record_recv,
         shutdown_send,
         Shutdown::new(notify_auditorsender_recv),

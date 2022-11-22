@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
+use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, TimeZone, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
@@ -28,6 +28,8 @@ pub struct Settings {
     pub record_prefix: String,
     #[serde(default = "default_string")]
     pub site_id: String,
+    #[serde(default = "default_earliest_datetime")]
+    pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
     pub components: Vec<ComponentConfig>,
 }
@@ -112,6 +114,10 @@ fn default_key_type() -> ParsableType {
     ParsableType::default()
 }
 
+fn default_earliest_datetime() -> DateTime<Local> {
+    Local.with_ymd_and_hms(2000, 1, 1, 0, 0, 0).unwrap()
+}
+
 fn default_components() -> Vec<ComponentConfig> {
     vec![ComponentConfig {
         name: "Cores".into(),
@@ -191,7 +197,6 @@ impl ParsableType {
                 let mut chars = input.chars();
                 chars.next_back();
                 let input = chars.as_str();
-                println!("INPUT M GONE: {}", input);
                 AllowedTypes::Integer(
                     input
                         .parse()
@@ -274,7 +279,7 @@ impl ParsableType {
                 let local_offset = Local::now().offset().local_minus_utc();
                 AllowedTypes::DateTime(DateTime::<Utc>::from(DateTime::<Local>::from_local(
                     NaiveDateTime::parse_from_str(input, "%Y-%m-%dT%H:%M:%S")?,
-                    FixedOffset::east(local_offset),
+                    FixedOffset::east_opt(local_offset).unwrap(),
                 )))
             }
             ParsableType::Id => {

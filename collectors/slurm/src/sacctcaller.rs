@@ -11,24 +11,31 @@ use auditor::{
     constants::FORBIDDEN_CHARACTERS,
     domain::{Component, RecordAdd, Score},
 };
+use chrono::{DateTime, FixedOffset, Local, Utc};
 use color_eyre::eyre::{eyre, Result};
 use itertools::Itertools;
+use once_cell::sync::Lazy;
 use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
     configuration::{AllowedTypes, Settings},
+    database::Database,
     shutdown::Shutdown,
     CONFIG, KEYS,
 };
 
 type Job = HashMap<String, AllowedTypes>;
 
+static BATCH_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"^[0-9]+\.batch$"#).expect("Could not construct essential Regex"));
+
 #[tracing::instrument(
-    name = "Starting SacctCaller",
-    skip(tx, _shutdown_notifier, shutdown, hold_till_shutdown)
+    name = "Starting sacct monitor",
+    skip(database, tx, _shutdown_notifier, shutdown, hold_till_shutdown)
 )]
 pub(crate) async fn run_sacct_monitor(
+    database: Database,
     frequency: Duration,
     tx: mpsc::Sender<RecordAdd>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
@@ -40,7 +47,7 @@ pub(crate) async fn run_sacct_monitor(
         loop {
             interval.tick().await;
             tokio::select! {
-                records = get_job_info() => {
+                records = get_job_info(&database) => {
                     match records {
                         Ok(records) => place_records_on_queue(records, &tx).await,
                         Err(e) => {
@@ -50,7 +57,7 @@ pub(crate) async fn run_sacct_monitor(
                     };
                 },
                 _ = shutdown.recv() => {
-                    tracing::info!("SacctCaller received shutdown signal. Shutting down.");
+                    tracing::info!("Sacct monitor received shutdown signal. Shutting down.");
                     // shutdown properly
                     drop(hold_till_shutdown);
                     break
@@ -70,8 +77,12 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
     }
 }
 
-#[tracing::instrument(name = "Calling sacct and parsing output")]
-async fn get_job_info() -> Result<Vec<RecordAdd>> {
+#[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
+async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
+    let lastcheck = database.get_lastcheck().await?;
+
+    println!("Lastcheck: {}", lastcheck);
+
     let cmd_out = Command::new("/usr/bin/sacct")
         .arg("-a")
         .arg("--format")
@@ -79,7 +90,12 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
         .arg("--noconvert")
         .arg("--noheader")
         .arg("-S")
-        .arg("now-1hours")
+        .arg(format!(
+            "{}",
+            // todo: subtract a couple of seconds
+            database.get_lastcheck().await?.format("%Y-%m-%dT%H:%M:%S")
+        ))
+        // .arg("now-1hours")
         .arg("-E")
         .arg("now")
         .arg("-s")
@@ -89,13 +105,13 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
         .await?;
     // .stdout;
 
-    println!("OUTPUT: {}", std::str::from_utf8(&cmd_out.stderr)?);
+    println!("stderr: {}", std::str::from_utf8(&cmd_out.stderr)?);
+    println!("stdout: {}", std::str::from_utf8(&cmd_out.stdout)?);
 
     let sacct_rows = std::str::from_utf8(&cmd_out.stdout)?
         .lines()
         .map(|l| {
             println!("line: {}", l);
-            // l.split('|').map(|s| s.to_owned()).collect::<Vec<String>>()
             KEYS.iter()
                 .cloned()
                 .zip(l.split('|').map(|s| s.to_owned()))
@@ -123,19 +139,17 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
         .map(|hm| (hm["JobID"].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
-    let regex = Regex::new(r#"^[0-9]+\.batch$"#)?;
-
     println!("ROWs: {:?}", sacct_rows);
 
     let slurm_ids = sacct_rows
         .keys()
         .into_iter()
-        .filter(|k| !regex.is_match(k))
+        .filter(|k| !BATCH_REGEX.is_match(k))
         .collect::<Vec<_>>();
 
     println!("SLURM IDs: {:?}", slurm_ids);
 
-    slurm_ids.into_iter().map(|id| -> Result<HashMap<String, AllowedTypes>> {
+    let records = slurm_ids.into_iter().map(|id| -> Result<HashMap<String, AllowedTypes>> {
         let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
         let map2 = sacct_rows.get(&format!("{}.batch", id)).expect("Cannot happen");
         KEYS.iter()
@@ -156,17 +170,40 @@ async fn get_job_info() -> Result<Vec<RecordAdd>> {
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
     .map(|map| -> Result<RecordAdd> {
-        Ok(RecordAdd::new(
-            format!("{}-{}", make_string_valid(&CONFIG.record_prefix), map["JobID"].extract_string()?),
-            make_string_valid(&CONFIG.site_id),
-            make_string_valid(&map["User"].extract_string()?),
-            make_string_valid(&map["Group"].extract_string()?),
-            construct_components(&CONFIG, map),
-            map["Start"].extract_datetime()?,
+        Ok(
+            RecordAdd::new(
+                format!("{}-{}", make_string_valid(&CONFIG.record_prefix),
+                map["JobID"].extract_string()?),
+                make_string_valid(&CONFIG.site_id),
+                make_string_valid(&map["User"].extract_string()?),
+                make_string_valid(&map["Group"].extract_string()?),
+                construct_components(&CONFIG, map),
+                map["Start"].extract_datetime()?
+            )
+            .expect("Could not construct record")
+            .with_stop_time(map["End"].extract_datetime()?)
         )
-        .expect("Could not construct record")
-        .with_stop_time(map["End"].extract_datetime()?))
-    }).collect::<Result<Vec<_>>>()
+    }).collect::<Result<Vec<_>>>()?;
+
+    let nextcheck = if records.is_empty() {
+        lastcheck
+    } else {
+        let local_offset = Local::now().offset().utc_minus_local();
+        println!("local_offset: {}", local_offset);
+        let ts = records
+            .iter()
+            .fold(chrono::DateTime::<Utc>::MIN_UTC, |acc, r| {
+                println!("timestamp: {}", r.stop_time.unwrap());
+                acc.max(r.stop_time.unwrap())
+            });
+        DateTime::<Local>::from_utc(ts.naive_utc(), FixedOffset::east_opt(local_offset).unwrap())
+    };
+
+    println!("nextcheck: {}", nextcheck);
+
+    database.set_lastcheck(nextcheck).await?;
+
+    Ok(records)
 }
 
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
@@ -229,36 +266,3 @@ fn construct_components(config: &Settings, job: &Job) -> Vec<Component> {
         })
         .collect()
 }
-// let cmd_out = Command::new("/usr/bin/sacct")
-//        .arg("-a")
-//        .arg("-j")
-//        .arg(job_id.to_string())
-//        .arg("--format")
-//        .arg(keys.iter().map(|k| k.0.clone()).join(","))
-//        .arg("--noconvert")
-//        .arg("--noheader")
-//        .arg("-P")
-//        .output()
-//        .await?
-//        .stdout;
-// #[tracing::instrument(name = "Getting Slurm job info via scontrol")]
-// fn get_slurm_job_info(job_id: u64) -> Result<Job, Error> {
-//     Ok(std::str::from_utf8(
-//         &Command::new("/usr/bin/scontrol")
-//             .arg("show")
-//             .arg("job")
-//             .arg(job_id.to_string())
-//             .arg("--details")
-//             .output()?
-//             .stdout,
-//     )?
-//     .split_whitespace()
-//     .filter_map(|s| {
-//         if let Some((k, v)) = s.split_once('=') {
-//             Some((k.to_string(), v.to_string()))
-//         } else {
-//             None
-//         }
-//     })
-//     .collect())
-// }

@@ -24,10 +24,10 @@ pub(crate) struct AuditorSender {
 impl<'a> AuditorSender {
     #[tracing::instrument(
         name = "Starting AuditorSender",
-        skip(database_path, rx, shutdown_notifier, shutdown, channel, client)
+        skip(database, rx, shutdown_notifier, shutdown, channel, client)
     )]
-    pub(crate) async fn run<S: AsRef<str>>(
-        database_path: S,
+    pub(crate) async fn run(
+        database: Database,
         rx: mpsc::Receiver<RecordAdd>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
@@ -36,7 +36,7 @@ impl<'a> AuditorSender {
         client: AuditorClient,
     ) -> Result<()> {
         let auditor_sender = AuditorSender {
-            sender: QueuedSender::new(database_path, frequency, client).await?,
+            sender: QueuedSender::new(database, frequency, client).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
@@ -85,14 +85,14 @@ pub(crate) struct QueuedSender {
 }
 
 impl QueuedSender {
-    pub(crate) async fn new<S: AsRef<str>>(
-        database_path: S,
+    pub(crate) async fn new(
+        database: Database,
         frequency: Duration,
         client: AuditorClient,
     ) -> Result<QueuedSender> {
         let (shutdown_tx, shutdown_rx) = oneshot::channel();
         let mut sender = QueuedSender {
-            database: Database::new(database_path).await?,
+            database,
             shutdown_tx: Some(shutdown_tx),
             shutdown_rx: Some(shutdown_rx),
             frequency,
