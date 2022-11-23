@@ -11,7 +11,7 @@ use auditor::{client::AuditorClient, domain::RecordAdd};
 use color_eyre::eyre::{Result, WrapErr};
 use tokio::sync::{mpsc, oneshot};
 
-use crate::{database::Database, shutdown::Shutdown};
+use crate::{database::Database, shutdown::Shutdown, CONFIG};
 
 pub(crate) struct AuditorSender {
     sender: QueuedSender,
@@ -31,12 +31,11 @@ impl<'a> AuditorSender {
         rx: mpsc::Receiver<RecordAdd>,
         shutdown_notifier: mpsc::UnboundedSender<()>,
         shutdown: Shutdown,
-        frequency: Duration,
         channel: mpsc::Sender<()>,
         client: AuditorClient,
     ) -> Result<()> {
         let auditor_sender = AuditorSender {
-            sender: QueuedSender::new(database, frequency, client).await?,
+            sender: QueuedSender::new(database, CONFIG.sender_frequency, client).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),

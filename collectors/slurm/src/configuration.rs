@@ -5,6 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use std::time::Duration;
+
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, TimeZone, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
@@ -32,6 +34,12 @@ pub struct Settings {
     pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
     pub components: Vec<ComponentConfig>,
+    #[serde(default = "default_sacct_frequency")]
+    pub sacct_frequency: Duration,
+    #[serde(default = "default_sender_frequency")]
+    pub sender_frequency: Duration,
+    #[serde(default = "default_database_path")]
+    pub database_path: String,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -116,6 +124,18 @@ fn default_key_type() -> ParsableType {
 
 fn default_earliest_datetime() -> DateTime<Local> {
     Local.with_ymd_and_hms(2000, 1, 1, 0, 0, 0).unwrap()
+}
+
+fn default_sacct_frequency() -> Duration {
+    Duration::from_secs(10)
+}
+
+fn default_sender_frequency() -> Duration {
+    Duration::from_secs(1)
+}
+
+fn default_database_path() -> String {
+    "sqlite://testdb.db".into()
 }
 
 fn default_components() -> Vec<ComponentConfig> {

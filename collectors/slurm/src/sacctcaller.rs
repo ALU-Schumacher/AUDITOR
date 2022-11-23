@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::{collections::HashMap, fmt, time::Duration};
+use std::{collections::HashMap, fmt};
 
 use auditor::{
     constants::FORBIDDEN_CHARACTERS,
@@ -36,14 +36,13 @@ static BATCH_REGEX: Lazy<Regex> =
 )]
 pub(crate) async fn run_sacct_monitor(
     database: Database,
-    frequency: Duration,
     tx: mpsc::Sender<RecordAdd>,
     _shutdown_notifier: mpsc::UnboundedSender<()>,
     mut shutdown: Shutdown,
     hold_till_shutdown: mpsc::Sender<()>,
 ) {
     tokio::spawn(async move {
-        let mut interval = tokio::time::interval(frequency);
+        let mut interval = tokio::time::interval(CONFIG.sacct_frequency);
         loop {
             interval.tick().await;
             tokio::select! {
