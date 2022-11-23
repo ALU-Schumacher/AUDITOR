@@ -253,7 +253,7 @@ async fn get_started_since_returns_a_list_of_records() {
     }
 
     let mut received_records = client
-        .get_started_since(&Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
+        .get_started_since(&Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap())
         .await
         .unwrap();
 
@@ -334,7 +334,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
     }
 
     let mut received_records = client
-        .get_stopped_since(&Utc.ymd(2022, 3, 15).and_hms_milli(0, 0, 0, 0))
+        .get_stopped_since(&Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap())
         .await
         .unwrap();
 
