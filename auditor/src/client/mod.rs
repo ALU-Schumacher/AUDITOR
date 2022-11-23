@@ -372,7 +372,7 @@ mod tests {
             .await;
 
         let response = client
-            .get_started_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+            .get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
             .await
             .unwrap();
 
@@ -396,7 +396,7 @@ mod tests {
 
         assert_err!(
             client
-                .get_started_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+                .get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
                 .await
         );
     }
@@ -416,7 +416,7 @@ mod tests {
             .await;
 
         let response = client
-            .get_stopped_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+            .get_stopped_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
             .await
             .unwrap();
 
@@ -440,7 +440,7 @@ mod tests {
 
         assert_err!(
             client
-                .get_stopped_since(&Utc.ymd(2022, 8, 3).and_hms_milli(9, 47, 0, 0))
+                .get_stopped_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
                 .await
         );
     }

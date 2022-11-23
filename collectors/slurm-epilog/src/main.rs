@@ -57,7 +57,7 @@ fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
     let local_offset = Local::now().offset().local_minus_utc();
     Ok(DateTime::<Utc>::from(DateTime::<Local>::from_local(
         NaiveDateTime::parse_from_str(timestamp.as_ref(), "%Y-%m-%dT%H:%M:%S")?,
-        FixedOffset::east(local_offset),
+        FixedOffset::east_opt(local_offset).unwrap(),
     )))
 }
 
