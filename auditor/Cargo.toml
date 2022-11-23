@@ -77,7 +77,8 @@ features = [
 
 [dev-dependencies]
 once_cell = "1"
-claim = "0.5"
+# claim = "0.5"
+claim = { package = "claims", version = "0.7" }
 quickcheck = "1"
 quickcheck_macros = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
