@@ -11,10 +11,10 @@ env:
 jobs:
   test:
     name: Priority plugin
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
-        image: postgres:12
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
@@ -85,20 +85,20 @@ jobs:
         run: |
           sudo apt-get install musl musl-tools
 
-      - name: Install Docker Compose
-        run: sudo apt-get install docker-compose
-
       - name: Build auditor
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --bin auditor
 
-      - name: Build Slurm epilog collector
+      - name: Build priority plugin
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --bin auditor-priority-plugin --target x86_64-unknown-linux-musl
+
+      # - name: Install Docker Compose
+      #   run: sudo apt-get install docker-compose
 
       - name: Test priority plugin
         run: SKIP_COMPILATION=true ./scripts/test_priority_plugin.sh

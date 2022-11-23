@@ -11,11 +11,12 @@ env:
 jobs:
   test:
     name: Slurm epilog collector
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
-        image: postgres:12
+        image: postgres:14
         env:
+          POSTGRES_HOST: 0.0.0.0
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
           POSTGRES_DB: postgres
@@ -80,12 +81,6 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
-      - name: Install musl
-        run: |
-          sudo apt-get install musl musl-tools
-
-      - name: Install Docker Compose
-        run: sudo apt-get install docker-compose
 
       - name: Build auditor
         uses: actions-rs/cargo@v1
@@ -93,11 +88,19 @@ jobs:
           command: build
           args: --bin auditor
 
+      - name: Install musl
+        run: |
+          sudo apt-get install musl musl-tools
+
       - name: Build Slurm epilog collector
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
 
+      # - name: Install Docker Compose
+      #   run: sudo apt-get install docker-compose
+
       - name: Test Slurm epilog collector
+        # run: ./scripts/test_slurm_epilog_collector.sh
         run: SKIP_COMPILATION=true ./scripts/test_slurm_epilog_collector.sh
