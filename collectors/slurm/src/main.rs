@@ -64,11 +64,6 @@ async fn main() -> Result<()> {
 
     tracing::debug!(?CONFIG, "Loaded config");
 
-    // Configs
-    let frequency = Duration::from_secs(10);
-    let sender_frequency = Duration::from_secs(1);
-    let database_path = "sqlite://testdb.db";
-
     // Channels
     let (final_shutdown_tx, mut final_shutdown_rx) = mpsc::channel(1);
     let (record_send, record_recv) = mpsc::channel(1024);
@@ -77,7 +72,7 @@ async fn main() -> Result<()> {
     let (notify_auditorsender_send, notify_auditorsender_recv) = broadcast::channel(12);
 
     // Database
-    let database = Database::new(database_path).await?;
+    let database = Database::new(&CONFIG.database_path).await?;
 
     // Shutdown
     let shutdown_sender = ShutdownSender::new()
@@ -87,7 +82,6 @@ async fn main() -> Result<()> {
     // SacctCaller
     run_sacct_monitor(
         database.clone(),
-        frequency,
         record_send,
         shutdown_send.clone(),
         Shutdown::new(notify_sacctcaller_recv),
@@ -107,7 +101,6 @@ async fn main() -> Result<()> {
         record_recv,
         shutdown_send,
         Shutdown::new(notify_auditorsender_recv),
-        sender_frequency,
         final_shutdown_tx.clone(),
         client,
     )

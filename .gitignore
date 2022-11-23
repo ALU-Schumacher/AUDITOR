@@ -3,3 +3,4 @@
 nohup.out
 dist/
 **/testdb.db
+**/target/
