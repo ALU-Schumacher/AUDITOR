@@ -11,8 +11,6 @@ mod database;
 mod sacctcaller;
 mod shutdown;
 
-use std::time::Duration;
-
 use auditor::{
     client::AuditorClientBuilder,
     telemetry::{get_subscriber, init_subscriber},
