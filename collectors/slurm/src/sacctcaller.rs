@@ -174,8 +174,8 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                 format!("{}-{}", make_string_valid(&CONFIG.record_prefix),
                 map["JobID"].extract_string()?),
                 make_string_valid(&CONFIG.site_id),
-                make_string_valid(&map["User"].extract_string()?),
-                make_string_valid(&map["Group"].extract_string()?),
+                make_string_valid(map["User"].extract_string()?),
+                make_string_valid(map["Group"].extract_string()?),
                 construct_components(&CONFIG, map),
                 map["Start"].extract_datetime()?
             )
