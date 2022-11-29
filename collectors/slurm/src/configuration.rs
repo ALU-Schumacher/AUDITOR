@@ -28,8 +28,6 @@ pub struct Settings {
     pub port: u16,
     #[serde(default = "default_record_prefix")]
     pub record_prefix: String,
-    // #[serde(default = "default_string")]
-    // pub site_id: String,
     pub sites: Vec<SiteConfig>,
     #[serde(default = "default_earliest_datetime")]
     pub earliest_datetime: DateTime<Local>,
@@ -115,10 +113,6 @@ fn default_collector_port() -> u16 {
 
 fn default_record_prefix() -> String {
     "slurm".to_string()
-}
-
-fn default_string() -> String {
-    "none".to_string()
 }
 
 fn default_score() -> Vec<ScoreConfig> {
