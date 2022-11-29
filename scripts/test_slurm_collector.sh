@@ -132,6 +132,9 @@ function stop_auditor() {
 function test_collector() {
 	# Run on partition1
 	docker exec auditor-slurm-1 sbatch --job-name="test_part1" --partition=part1 /batch.sh 
+	sleep 2
+	docker exec auditor-slurm-1 scontrol show job 1
+	docker exec auditor-slurm-1 cat /slurm-1.out
 	sleep 20
 
 	TEST1=$(curl http://localhost:8000/get | jq)

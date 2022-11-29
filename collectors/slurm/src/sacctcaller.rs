@@ -78,9 +78,9 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 
 #[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
-    let (lastcheck, last_jid) = database.get_lastcheck().await?;
+    let (lastcheck, last_record_id) = database.get_lastcheck().await?;
 
-    println!("Lastcheck: {}, last_jid: {}", lastcheck, last_jid);
+    println!("Lastcheck: {}, last_jid: {}", lastcheck, last_record_id);
 
     let cmd_out = Command::new("/usr/bin/sacct")
         .arg("-a")
@@ -174,9 +174,14 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             );
             return Ok(None);
         };
+        let record_id = make_string_valid(format!("{}-{}", &CONFIG.record_prefix, job_id));
+        // We don't want this record, we have already seen it in a previous run.
+        if record_id == last_record_id {
+            return Ok(None);
+        }
         Ok(Some(
            RecordAdd::new(
-               make_string_valid(format!("{}-{}", &CONFIG.record_prefix, job_id)),
+               record_id,
                make_string_valid(site),
                make_string_valid(map[USER].extract_string()?),
                make_string_valid(map[GROUP].extract_string()?),
@@ -192,14 +197,14 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     .flatten()
     .collect::<Vec<_>>();
 
-    let (nextcheck, jid) = if records.is_empty() {
-        (lastcheck, last_jid)
+    let (nextcheck, rid) = if records.is_empty() {
+        (lastcheck, last_record_id)
     } else {
         let local_offset = Local::now().offset().utc_minus_local();
         println!("local_offset: {}", local_offset);
-        let (ts, jid) = records.iter().fold(
+        let (ts, rid) = records.iter().fold(
             (chrono::DateTime::<Utc>::MIN_UTC, String::new()),
-            |(acc, _acc_job_id), r| {
+            |(acc, _acc_record_id), r| {
                 println!("timestamp: {}", r.stop_time.unwrap());
                 (
                     acc.max(r.stop_time.unwrap()),
@@ -212,13 +217,13 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                 ts.naive_utc(),
                 FixedOffset::east_opt(local_offset).unwrap(),
             ),
-            jid,
+            rid,
         )
     };
 
-    println!("nextcheck: {}, {}", nextcheck, jid);
+    println!("nextcheck: {}, {}", nextcheck, rid);
 
-    database.set_lastcheck(jid, nextcheck).await?;
+    database.set_lastcheck(rid, nextcheck).await?;
 
     Ok(records)
 }

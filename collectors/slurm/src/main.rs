@@ -37,6 +37,7 @@ const USER: &str = "User";
 const GROUP: &str = "Group";
 const START: &str = "Start";
 const END: &str = "End";
+const STATE: &str = "State";
 static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
     let mut keys = CONFIG.get_keys();
     keys.push((JOBID.to_owned(), ParsableType::String));
@@ -44,6 +45,7 @@ static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
     keys.push((END.to_owned(), ParsableType::DateTime));
     keys.push((GROUP.to_owned(), ParsableType::String));
     keys.push((USER.to_owned(), ParsableType::String));
+    keys.push((STATE.to_owned(), ParsableType::String));
     keys
 });
 static CONFIG: Lazy<Settings> =
