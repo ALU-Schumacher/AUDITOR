@@ -39,7 +39,7 @@ pub struct Settings {
     pub sender_frequency: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
-    /// Potentially interessing: completed, failed, node_fail
+    /// Potentially interesting: completed, failed, node_fail
     #[serde(default = "default_job_status")]
     pub job_status: Vec<String>,
 }
