@@ -39,6 +39,9 @@ pub struct Settings {
     pub sender_frequency: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
+    /// Potentially interessing: completed, failed, node_fail
+    #[serde(default = "default_job_status")]
+    pub job_status: Vec<String>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -137,6 +140,10 @@ fn default_sender_frequency() -> Duration {
 
 fn default_database_path() -> String {
     "sqlite://testdb.db".into()
+}
+
+fn default_job_status() -> Vec<String> {
+    vec!["completed".into()]
 }
 
 fn default_components() -> Vec<ComponentConfig> {

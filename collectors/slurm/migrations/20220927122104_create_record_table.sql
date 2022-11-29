@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS records (
 );
 
 CREATE TABLE IF NOT EXISTS lastcheck (
-    lastcheck   DATETIME NOT NULL PRIMARY KEY
+    lastcheck   DATETIME NOT NULL PRIMARY KEY,
+	jobid       TEXT NOT NULL
 );
