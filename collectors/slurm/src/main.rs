@@ -32,22 +32,23 @@ use crate::{
 };
 
 const NAME: &str = "AUDITOR-slurm-collector";
-static CONFIG: Lazy<Settings> =
-    Lazy::new(|| get_configuration().expect("Failed loading configuration"));
+const JOBID: &str = "JobID";
+const USER: &str = "User";
+const GROUP: &str = "Group";
+const START: &str = "Start";
+const END: &str = "End";
 static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
     let mut keys = CONFIG.get_keys();
-    keys.push(("JobID".to_owned(), ParsableType::String));
-    keys.push(("Start".to_owned(), ParsableType::DateTime));
-    keys.push(("End".to_owned(), ParsableType::DateTime));
-    keys.push(("Group".to_owned(), ParsableType::String));
-    keys.push(("User".to_owned(), ParsableType::String));
+    keys.push((JOBID.to_owned(), ParsableType::String));
+    keys.push((START.to_owned(), ParsableType::DateTime));
+    keys.push((END.to_owned(), ParsableType::DateTime));
+    keys.push((GROUP.to_owned(), ParsableType::String));
+    keys.push((USER.to_owned(), ParsableType::String));
     keys
 });
+static CONFIG: Lazy<Settings> =
+    Lazy::new(|| get_configuration().expect("Failed loading configuration"));
 
-// # CONFIGURATION TODOS:
-//
-// * SacctCaller frequency (std::time::Duration)
-// * database_path (AsRef<Path>)
 #[tokio::main]
 async fn main() -> Result<()> {
     let subscriber = get_subscriber(NAME.into(), "info".into(), std::io::stdout);
