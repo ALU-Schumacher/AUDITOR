@@ -28,8 +28,9 @@ pub struct Settings {
     pub port: u16,
     #[serde(default = "default_record_prefix")]
     pub record_prefix: String,
-    #[serde(default = "default_string")]
-    pub site_id: String,
+    // #[serde(default = "default_string")]
+    // pub site_id: String,
+    pub sites: Vec<SiteConfig>,
     #[serde(default = "default_earliest_datetime")]
     pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
@@ -40,6 +41,12 @@ pub struct Settings {
     pub sender_frequency: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct SiteConfig {
+    pub name: String,
+    pub only_if: Option<OnlyIf>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -356,70 +363,3 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
     settings.build()?.try_deserialize()
 }
-// use serde_aux::field_attributes::deserialize_number_from_string;
-
-// #[derive(serde::Deserialize, Debug, Clone)]
-// pub struct Settings {
-//     #[serde(default = "default_addr")]
-//     pub addr: String,
-//     #[serde(deserialize_with = "deserialize_number_from_string")]
-//     #[serde(default = "default_port")]
-//     pub port: u16,
-//     #[serde(default = "default_record_prefix")]
-//     pub record_prefix: String,
-//     #[serde(default = "default_string")]
-//     pub site_id: String,
-//     #[serde(default = "default_components")]
-//     pub components: Vec<ComponentConfig>,
-// }
-
-// #[derive(serde::Deserialize, Debug, Clone)]
-// pub struct ComponentConfig {
-//     pub name: String,
-//     pub key: String,
-//     #[serde(default = "default_score")]
-//     pub scores: Vec<ScoreConfig>,
-//     pub only_if: Option<OnlyIf>,
-// }
-
-// #[derive(serde::Deserialize, Debug, Clone)]
-// pub struct ScoreConfig {
-//     pub name: String,
-//     pub factor: f64,
-//     pub only_if: Option<OnlyIf>,
-// }
-
-// #[derive(serde::Deserialize, Debug, Clone)]
-// pub struct OnlyIf {
-//     pub key: String,
-//     pub matches: String,
-// }
-
-// fn default_addr() -> String {
-//     "127.0.0.1".to_string()
-// }
-
-// fn default_port() -> u16 {
-//     8000
-// }
-
-// fn default_record_prefix() -> String {
-//     "slurm".to_string()
-// }
-
-// fn default_string() -> String {
-//     "none".to_string()
-// }
-
-// fn default_score() -> Vec<ScoreConfig> {
-//     vec![]
-// }
-
-// fn default_components() -> Vec<ComponentConfig> {
-//     vec![ComponentConfig {
-//         name: "Cores".into(),
-//         key: "NumCPUs".into(),
-//         scores: vec![],
-//         only_if: None,
-//     }]
-// }

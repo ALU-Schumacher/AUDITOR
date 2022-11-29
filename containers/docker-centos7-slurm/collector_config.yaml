@@ -2,6 +2,15 @@ addr: "host.docker.internal"
 port: 8000
 record_prefix: "slurm"
 site_id: "site"
+sites:
+  - name: "SiteA"
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
+  - name: "SiteB"
+    only_if:
+      key: "Partition"
+      matches: "^part2$"
 components:
   - name: "Cores"
     key: "NCPUS"
@@ -11,9 +20,6 @@ components:
         only_if:
           key: "Partition"
           matches: "^part1$"
-  - name: "Cores"
-    key: "NCPUS"
-    scores:
       - name: "HEPSPECK"
         factor: 1.2
         only_if:

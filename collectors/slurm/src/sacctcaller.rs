@@ -19,7 +19,7 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, Settings},
+    configuration::AllowedTypes,
     database::Database,
     shutdown::Shutdown,
     CONFIG, KEYS,
@@ -168,21 +168,34 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             }).collect::<Result<HashMap<String, AllowedTypes>>>()
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
-    .map(|map| -> Result<RecordAdd> {
-        Ok(
-            RecordAdd::new(
-                format!("{}-{}", make_string_valid(&CONFIG.record_prefix),
-                map["JobID"].extract_string()?),
-                make_string_valid(&CONFIG.site_id),
-                make_string_valid(map["User"].extract_string()?),
-                make_string_valid(map["Group"].extract_string()?),
-                construct_components(&CONFIG, map),
-                map["Start"].extract_datetime()?
-            )
-            .expect("Could not construct record")
-            .with_stop_time(map["End"].extract_datetime()?)
-        )
-    }).collect::<Result<Vec<_>>>()?;
+    .map(|map| -> Result<Option<RecordAdd>> {
+            let job_id = map["JobID"].extract_string()?;
+            let site = if let Some(site) = identify_site(map) {
+                site
+            } else { 
+                tracing::warn!(
+                    "No configured site matched for job {}! Ignoring job. Consider adding a match-all at the end of the sites configuration.",
+                    job_id
+                );
+                return Ok(None);
+            };
+            Ok(Some(
+               RecordAdd::new(
+                   make_string_valid(format!("{}-{}", &CONFIG.record_prefix, job_id)),
+                   make_string_valid(site),
+                   make_string_valid(map["User"].extract_string()?),
+                   make_string_valid(map["Group"].extract_string()?),
+                   construct_components(map),
+                   map["Start"].extract_datetime()?
+               )
+               .expect("Could not construct record")
+               .with_stop_time(map["End"].extract_datetime()?)
+            ))
+    })
+    .collect::<Result<Vec<Option<RecordAdd>>>>()?
+    .into_iter()
+    .flatten()
+    .collect::<Vec<_>>();
 
     let nextcheck = if records.is_empty() {
         lastcheck
@@ -210,12 +223,34 @@ fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
     input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
 }
 
+#[tracing::instrument(name = "Obtain site from job info and configuration", level = "debug")]
+fn identify_site(job: &Job) -> Option<String> {
+    CONFIG
+        .sites
+        .iter()
+        .filter(|s| {
+            s.only_if.is_none() || {
+                let only_if = s.only_if.as_ref().unwrap();
+                let re = Regex::new(&only_if.matches)
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                re.is_match(&job[&only_if.key].extract_string().unwrap_or_else(|_| {
+                    panic!("Key is expected to be a string: {:?}", job[&only_if.key])
+                }))
+            }
+        })
+        .cloned()
+        .map(|s| make_string_valid(s.name))
+        .collect::<Vec<_>>()
+        .get(0)
+        .cloned()
+}
+
 #[tracing::instrument(
     name = "Construct components from job info and configuration",
     level = "debug"
 )]
-fn construct_components(config: &Settings, job: &Job) -> Vec<Component> {
-    config
+fn construct_components(job: &Job) -> Vec<Component> {
+    CONFIG
         .components
         .iter()
         .cloned()
@@ -225,7 +260,7 @@ fn construct_components(config: &Settings, job: &Job) -> Vec<Component> {
                 let re = Regex::new(&only_if.matches)
                     .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
                 re.is_match(&job[&only_if.key].extract_string().unwrap_or_else(|_| {
-                    panic!("Key is expectedto be a string: {:?}", job[&only_if.key])
+                    panic!("Key is expected to be a string: {:?}", job[&only_if.key])
                 }))
             }
         })
