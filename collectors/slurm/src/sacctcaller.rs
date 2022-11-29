@@ -18,7 +18,10 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
-use crate::{configuration::AllowedTypes, database::Database, shutdown::Shutdown, CONFIG, KEYS};
+use crate::{
+    configuration::AllowedTypes, database::Database, shutdown::Shutdown, CONFIG, END, GROUP, JOBID,
+    KEYS, START, USER,
+};
 
 type Job = HashMap<String, AllowedTypes>;
 
@@ -130,7 +133,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                 })
                 .collect::<HashMap<String, Option<AllowedTypes>>>()
         })
-        .map(|hm| (hm["JobID"].as_ref().unwrap().extract_string().unwrap(), hm))
+        .map(|hm| (hm[JOBID].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
     println!("ROWs: {:?}", sacct_rows);
@@ -164,7 +167,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
     .map(|map| -> Result<Option<RecordAdd>> {
-        let job_id = map["JobID"].extract_string()?;
+        let job_id = map[JOBID].extract_string()?;
         let site = if let Some(site) = identify_site(map) {
             site
         } else {
@@ -178,13 +181,13 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
            RecordAdd::new(
                make_string_valid(format!("{}-{}", &CONFIG.record_prefix, job_id)),
                make_string_valid(site),
-               make_string_valid(map["User"].extract_string()?),
-               make_string_valid(map["Group"].extract_string()?),
+               make_string_valid(map[USER].extract_string()?),
+               make_string_valid(map[GROUP].extract_string()?),
                construct_components(map),
-               map["Start"].extract_datetime()?
+               map[START].extract_datetime()?
            )
            .expect("Could not construct record")
-           .with_stop_time(map["End"].extract_datetime()?)
+           .with_stop_time(map[END].extract_datetime()?)
         ))
     })
     .collect::<Result<Vec<Option<RecordAdd>>>>()?
