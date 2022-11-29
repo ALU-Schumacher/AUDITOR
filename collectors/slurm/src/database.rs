@@ -80,22 +80,25 @@ impl Database {
         level = "debug",
         skip(self)
     )]
-    pub(crate) async fn get_lastcheck(&self) -> Result<DateTime<Local>> {
+    pub(crate) async fn get_lastcheck(&self) -> Result<(DateTime<Local>, String)> {
         struct Row {
             lastcheck: NaiveDateTime,
+            jobid: String,
         }
-        match sqlx::query_as!(Row, r#"SELECT lastcheck FROM lastcheck"#)
+        match sqlx::query_as!(Row, r#"SELECT lastcheck, jobid FROM lastcheck"#)
             .fetch_optional(&self.db_pool)
             .await?
         {
-            Some(Row { lastcheck }) => Ok(Local.from_local_datetime(&lastcheck).unwrap()),
+            Some(Row { lastcheck, jobid }) => {
+                Ok((Local.from_local_datetime(&lastcheck).unwrap(), jobid))
+            }
             None => {
                 let datetime = CONFIG.earliest_datetime;
                 tracing::info!(
                     "No last check date found in database. Assuming {}",
                     datetime.format("%FT%T")
                 );
-                Ok(datetime)
+                Ok((datetime, String::new()))
             }
         }
     }
@@ -105,7 +108,11 @@ impl Database {
         level = "debug",
         skip(self)
     )]
-    pub(crate) async fn set_lastcheck(&self, timestamp: DateTime<Local>) -> Result<()> {
+    pub(crate) async fn set_lastcheck(
+        &self,
+        job_id: String,
+        timestamp: DateTime<Local>,
+    ) -> Result<()> {
         let mut transaction = match self.db_pool.begin().await {
             Ok(transaction) => transaction,
             Err(e) => return Err(eyre!("Error initializing transaction: {:?}", e)),
@@ -114,8 +121,9 @@ impl Database {
             .execute(&mut transaction)
             .await?;
         sqlx::query!(
-            r#"INSERT INTO lastcheck (lastcheck) VALUES ($1)"#,
-            timestamp
+            r#"INSERT INTO lastcheck (lastcheck, jobid) VALUES ($1, $2)"#,
+            timestamp,
+            job_id
         )
         .execute(&mut transaction)
         .await?;

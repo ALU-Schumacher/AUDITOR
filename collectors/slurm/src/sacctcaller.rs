@@ -25,8 +25,10 @@ use crate::{
 
 type Job = HashMap<String, AllowedTypes>;
 
-static BATCH_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r#"^[0-9]+\.batch$"#).expect("Could not construct essential Regex"));
+static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"^[0-9]+\.batch$"#)
+        .expect("Could not construct essential Regex for matching job ids.")
+});
 
 #[tracing::instrument(
     name = "Starting sacct monitor",
@@ -76,9 +78,9 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 
 #[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
-    let lastcheck = database.get_lastcheck().await?;
+    let (lastcheck, last_jid) = database.get_lastcheck().await?;
 
-    println!("Lastcheck: {}", lastcheck);
+    println!("Lastcheck: {}, last_jid: {}", lastcheck, last_jid);
 
     let cmd_out = Command::new("/usr/bin/sacct")
         .arg("-a")
@@ -87,16 +89,11 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .arg("--noconvert")
         .arg("--noheader")
         .arg("-S")
-        .arg(format!(
-            "{}",
-            // todo: subtract a couple of seconds
-            database.get_lastcheck().await?.format("%Y-%m-%dT%H:%M:%S")
-        ))
-        // .arg("now-1hours")
+        .arg(format!("{}", lastcheck.format("%Y-%m-%dT%H:%M:%S")))
         .arg("-E")
         .arg("now")
         .arg("-s")
-        .arg("completed,failed,node_fail")
+        .arg(CONFIG.job_status.join(","))
         .arg("-P")
         .output()
         .await?;
@@ -195,23 +192,33 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     .flatten()
     .collect::<Vec<_>>();
 
-    let nextcheck = if records.is_empty() {
-        lastcheck
+    let (nextcheck, jid) = if records.is_empty() {
+        (lastcheck, last_jid)
     } else {
         let local_offset = Local::now().offset().utc_minus_local();
         println!("local_offset: {}", local_offset);
-        let ts = records
-            .iter()
-            .fold(chrono::DateTime::<Utc>::MIN_UTC, |acc, r| {
+        let (ts, jid) = records.iter().fold(
+            (chrono::DateTime::<Utc>::MIN_UTC, String::new()),
+            |(acc, _acc_job_id), r| {
                 println!("timestamp: {}", r.stop_time.unwrap());
-                acc.max(r.stop_time.unwrap())
-            });
-        DateTime::<Local>::from_utc(ts.naive_utc(), FixedOffset::east_opt(local_offset).unwrap())
+                (
+                    acc.max(r.stop_time.unwrap()),
+                    r.record_id.as_ref().to_string(),
+                )
+            },
+        );
+        (
+            DateTime::<Local>::from_utc(
+                ts.naive_utc(),
+                FixedOffset::east_opt(local_offset).unwrap(),
+            ),
+            jid,
+        )
     };
 
-    println!("nextcheck: {}", nextcheck);
+    println!("nextcheck: {}, {}", nextcheck, jid);
 
-    database.set_lastcheck(nextcheck).await?;
+    database.set_lastcheck(jid, nextcheck).await?;
 
     Ok(records)
 }
