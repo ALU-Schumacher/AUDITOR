@@ -1,4 +1,4 @@
-#!/usr/bin/env/ bash
+#!/usr/bin/env bash
 
 sha1sum /dev/zero &
 sleep 5
