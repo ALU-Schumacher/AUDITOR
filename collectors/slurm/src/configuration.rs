@@ -5,15 +5,16 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::time::Duration;
+// use std::time::Duration;
 
-use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, TimeZone, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
 use regex::{Captures, Regex, RegexSet};
 use serde_aux::field_attributes::deserialize_number_from_string;
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
     #[serde(default = "default_collector_addr")]
@@ -28,14 +29,17 @@ pub struct Settings {
     pub port: u16,
     #[serde(default = "default_record_prefix")]
     pub record_prefix: String,
+    #[serde(default = "default_sites")]
     pub sites: Vec<SiteConfig>,
     #[serde(default = "default_earliest_datetime")]
     pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
     pub components: Vec<ComponentConfig>,
     #[serde(default = "default_sacct_frequency")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
     pub sacct_frequency: Duration,
     #[serde(default = "default_sender_frequency")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
     pub sender_frequency: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
@@ -122,6 +126,13 @@ fn default_score() -> Vec<ScoreConfig> {
     vec![]
 }
 
+fn default_sites() -> Vec<SiteConfig> {
+    vec![SiteConfig {
+        name: "NOT_CONFIGURED".to_string(),
+        only_if: None,
+    }]
+}
+
 fn default_key_type() -> ParsableType {
     ParsableType::default()
 }
@@ -131,11 +142,11 @@ fn default_earliest_datetime() -> DateTime<Local> {
 }
 
 fn default_sacct_frequency() -> Duration {
-    Duration::from_secs(10)
+    Duration::seconds(10)
 }
 
 fn default_sender_frequency() -> Duration {
-    Duration::from_secs(1)
+    Duration::seconds(1)
 }
 
 fn default_database_path() -> String {
