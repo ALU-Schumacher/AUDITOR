@@ -126,30 +126,28 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .map(|hm| (hm[JOBID].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
-    let slurm_ids = sacct_rows
+    let records = sacct_rows
         .keys()
         .into_iter()
         .filter(|k| !BATCH_REGEX.is_match(k))
-        .collect::<Vec<_>>();
-
-    let records = slurm_ids.into_iter().map(|id| -> Result<HashMap<String, AllowedTypes>> {
-        let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
-        let map2 = sacct_rows.get(&format!("{}.batch", id)).expect("Cannot happen");
-        KEYS.iter()
-            .cloned()
-            .map(|(k, _)| {
-                let val =  match map1.get(&k) {
-                    Some(Some(v)) => Ok(v.clone()),
-                    _ => match map2.get(&k) {
+        .map(|id| -> Result<HashMap<String, AllowedTypes>> {
+            let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
+            let map2 = sacct_rows.get(&format!("{}.batch", id)).expect("Cannot happen");
+            KEYS.iter()
+                .cloned()
+                .map(|(k, _)| {
+                    let val =  match map1.get(&k) {
                         Some(Some(v)) => Ok(v.clone()),
-                        _ => {
-                            tracing::error!("Something went wrong during parsing");
-                            Err(eyre!("Something went wrong during parsing of sacct output. Can't recover."))
+                        _ => match map2.get(&k) {
+                            Some(Some(v)) => Ok(v.clone()),
+                            _ => {
+                                tracing::error!("Something went wrong during parsing");
+                                Err(eyre!("Something went wrong during parsing of sacct output. Can't recover."))
+                            },
                         },
-                    },
-                }?;
-                Ok((k, val))
-            }).collect::<Result<HashMap<String, AllowedTypes>>>()
+                    }?;
+                    Ok((k, val))
+                }).collect::<Result<HashMap<String, AllowedTypes>>>()
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
     .map(|map| -> Result<Option<RecordAdd>> {
