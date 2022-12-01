@@ -42,7 +42,7 @@ pub(crate) async fn run_sacct_monitor(
     hold_till_shutdown: mpsc::Sender<()>,
 ) {
     tokio::spawn(async move {
-        let mut interval = tokio::time::interval(CONFIG.sacct_frequency);
+        let mut interval = tokio::time::interval(CONFIG.sacct_frequency.to_std().unwrap());
         loop {
             interval.tick().await;
             tokio::select! {
@@ -80,8 +80,6 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let (lastcheck, last_record_id) = database.get_lastcheck().await?;
 
-    println!("Lastcheck: {}, last_jid: {}", lastcheck, last_record_id);
-
     let cmd_out = Command::new("/usr/bin/sacct")
         .arg("-a")
         .arg("--format")
@@ -97,15 +95,10 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .arg("-P")
         .output()
         .await?;
-    // .stdout;
-
-    println!("stderr: {}", std::str::from_utf8(&cmd_out.stderr)?);
-    println!("stdout: {}", std::str::from_utf8(&cmd_out.stdout)?);
 
     let sacct_rows = std::str::from_utf8(&cmd_out.stdout)?
         .lines()
         .map(|l| {
-            println!("line: {}", l);
             KEYS.iter()
                 .cloned()
                 .zip(l.split('|').map(|s| s.to_owned()))
@@ -133,15 +126,11 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .map(|hm| (hm[JOBID].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String,Option<AllowedTypes>>>>();
 
-    println!("ROWs: {:?}", sacct_rows);
-
     let slurm_ids = sacct_rows
         .keys()
         .into_iter()
         .filter(|k| !BATCH_REGEX.is_match(k))
         .collect::<Vec<_>>();
-
-    println!("SLURM IDs: {:?}", slurm_ids);
 
     let records = slurm_ids.into_iter().map(|id| -> Result<HashMap<String, AllowedTypes>> {
         let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
@@ -201,11 +190,9 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         (lastcheck, last_record_id)
     } else {
         let local_offset = Local::now().offset().utc_minus_local();
-        println!("local_offset: {}", local_offset);
         let (ts, rid) = records.iter().fold(
             (chrono::DateTime::<Utc>::MIN_UTC, String::new()),
             |(acc, _acc_record_id), r| {
-                println!("timestamp: {}", r.stop_time.unwrap());
                 (
                     acc.max(r.stop_time.unwrap()),
                     r.record_id.as_ref().to_string(),
@@ -220,8 +207,6 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             rid,
         )
     };
-
-    println!("nextcheck: {}, {}", nextcheck, rid);
 
     database.set_lastcheck(rid, nextcheck).await?;
 

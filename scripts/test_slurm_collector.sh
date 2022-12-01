@@ -132,9 +132,6 @@ function stop_auditor() {
 function test_collector() {
 	# Run on partition1
 	docker exec auditor-slurm-1 sbatch --job-name="test_part1" --partition=part1 /batch.sh 
-	sleep 2
-	docker exec auditor-slurm-1 scontrol show job 1
-	docker exec auditor-slurm-1 cat /slurm-1.out
 	sleep 20
 
 	TEST1=$(curl http://localhost:8000/get | jq)
@@ -147,39 +144,55 @@ function test_collector() {
 		exit 1
 	fi
 
-	# if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .components | .[] | .scores | .[] | .factor')" != 1.1 ]
-	# then
-	# 	echo >&2 "Incorrect score of record in accounting database. Returned record:"
-	# 	echo >&2 $TEST1
-	# 	stop_container
-	# 	stop_auditor
-	# 	exit 1
-	# fi
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .components | .[] | .scores | .[] | .factor')" != 1.1 ]
+	then
+		echo >&2 "Incorrect score of record in accounting database. Returned record:"
+		echo >&2 $TEST1
+		stop_container
+		stop_auditor
+		exit 1
+	fi
 
-	# # Run on partition2
-	# docker exec auditor-slurm-1 sbatch --job-name="test_part2" --partition=part2 /batch.sh 
-	# sleep 5
+	if [ $(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .site_id') != '"SiteA"' ]
+	then
+		echo >&2 "Incorrect site_id of record in accounting database. Returned record:"
+		echo >&2 $TEST1
+		stop_container
+		stop_auditor
+		exit 1
+	fi
 
-	# TEST2=$(curl http://localhost:8000/get | jq)
+	# Run on partition2
+	docker exec auditor-slurm-1 sbatch --job-name="test_part2" --partition=part2 /batch.sh 
+	sleep 20
 
-	# if [ "$(echo $TEST2 | jq '. | length')" != 2 ]
-	# then
-	# 	echo >&2 "Incorrect number of records in accounting database."
-	# 	stop_container
-	# 	stop_auditor
-	# 	exit 1
-	# fi
+	TEST2=$(curl http://localhost:8000/get | jq)
 
-	# if [ "$(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .components | .[] | .scores | .[] | .factor')" != 1.2 ]
-	# then
-	# 	echo >&2 "Incorrect score of record in accounting database. Returned record:"
-	# 	echo >&2 $TEST2
-	# 	stop_container
-	# 	stop_auditor
-	# 	exit 1
-	# fi
+	if [ "$(echo $TEST2 | jq '. | length')" != 2 ]
+	then
+		echo >&2 "Incorrect number of records in accounting database."
+		stop_container
+		stop_auditor
+		exit 1
+	fi
 
-	# sleep 2
+	if [ "$(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .components | .[] | .scores | .[] | .factor')" != 1.2 ]
+	then
+		echo >&2 "Incorrect score of record in accounting database. Returned record:"
+		echo >&2 $TEST2
+		stop_container
+		stop_auditor
+		exit 1
+	fi
+
+	if [ $(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .site_id') != '"SiteB"' ]
+	then
+		echo >&2 "Incorrect site_id of record in accounting database. Returned record:"
+		echo >&2 $TEST1
+		stop_container
+		stop_auditor
+		exit 1
+	fi
 }
 
 SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
@@ -199,9 +212,6 @@ fi
 start_container
 start_auditor
 start_slurm_collector
-
-sleep 5
-# curl http://localhost:8000/get
 
 test_collector
 

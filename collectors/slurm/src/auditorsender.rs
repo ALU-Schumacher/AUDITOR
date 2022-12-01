@@ -35,7 +35,7 @@ impl<'a> AuditorSender {
         client: AuditorClient,
     ) -> Result<()> {
         let auditor_sender = AuditorSender {
-            sender: QueuedSender::new(database, CONFIG.sender_frequency, client).await?,
+            sender: QueuedSender::new(database, CONFIG.sender_frequency.to_std()?, client).await?,
             rx,
             _shutdown_notifier: shutdown_notifier,
             shutdown: Some(shutdown),
