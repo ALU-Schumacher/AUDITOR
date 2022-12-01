@@ -80,6 +80,7 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+          SKIP_DOCKER=true ./scripts/init_slurm_collector_sqlite.sh
 
 
       - name: Build auditor
