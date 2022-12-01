@@ -1,0 +1,105 @@
+name: slurm-collector
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  test:
+    name: Slurm  collector
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_HOST: 0.0.0.0
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    env:
+      SQLX_VERSION: 0.6.2
+      SQLX_FEATURES: postgres,rustls,sqlite
+      RUSTFLAGS: -C link-arg=-s
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('!(volumes)**/Cargo.lock') }}
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: x86_64-unknown-linux-musl
+
+      - name: Massage sqlx features env variable...
+        run: |
+          TMP=${{ env.SQLX_FEATURES }}
+          SQLX_FEATURES_CACHE="${TMP//,/_}"
+          echo "SQLX_FEATURES_CACHE=${SQLX_FEATURES_CACHE}" >> $GITHUB_ENV
+
+      - name: Cache sqlx-cli
+        uses: actions/cache@v2
+        id: cache-sqlx
+        with:
+          path: |
+            ~/.cargo/bin/sqlx
+            ~/.cargo/bin/cargo-sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES_CACHE }}
+
+      - name: Install sqlx-cli 
+        uses: actions-rs/cargo@v1
+        if: steps.cache-sqlx.outputs.cache-hit == false
+        with:
+          command: install 
+          args: >
+            sqlx-cli
+            --force
+            --version=${{ env.SQLX_VERSION }}
+            --features=${{ env.SQLX_FEATURES }}
+            --no-default-features
+            --locked
+
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          SKIP_DOCKER=true ./scripts/init_db.sh
+
+
+      - name: Build auditor
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --bin auditor
+
+      - name: Install musl
+        run: |
+          sudo apt-get install musl musl-tools
+
+      - name: Build Slurm collector
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --bin auditor-slurm-collector --target x86_64-unknown-linux-musl
+
+      # - name: Install Docker Compose
+      #   run: sudo apt-get install docker-compose
+
+      - name: Test Slurm collector
+        run: SKIP_COMPILATION=true ./scripts/test_slurm_collector.sh
