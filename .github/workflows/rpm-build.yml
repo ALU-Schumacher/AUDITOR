@@ -18,6 +18,7 @@ jobs:
         binary:
           - auditor
           - auditor-slurm-epilog-collector
+          - auditor-slurm-collector
           - auditor-priority-plugin
 
     env:
