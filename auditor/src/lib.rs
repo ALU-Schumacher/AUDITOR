@@ -9,14 +9,19 @@
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
+#[cfg(feature = "client")]
 pub mod client;
+#[cfg(feature = "server")]
 pub mod configuration;
 pub mod constants;
 pub mod domain;
 pub mod error;
+#[cfg(feature = "server")]
 pub mod metrics;
 #[macro_use]
 mod macros;
+#[cfg(feature = "server")]
 pub mod routes;
+#[cfg(feature = "server")]
 pub mod startup;
 pub mod telemetry;
