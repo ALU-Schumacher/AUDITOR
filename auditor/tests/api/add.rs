@@ -130,3 +130,17 @@ async fn add_returns_a_400_when_data_is_missing() {
         );
     }
 }
+
+#[tokio::test]
+async fn add_returns_a_500_for_duplicate_records() {
+    // Arrange
+    let app = spawn_app().await;
+
+    let record: RecordTest = Faker.fake();
+
+    let response = app.add_record(&record).await;
+    assert_eq!(200, response.status().as_u16());
+
+    let response = app.add_record(&record).await;
+    assert_eq!(500, response.status().as_u16());
+}

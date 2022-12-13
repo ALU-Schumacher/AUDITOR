@@ -7,7 +7,10 @@
 
 use std::time::Duration;
 
-use auditor::{client::AuditorClient, domain::RecordAdd};
+use auditor::{
+    client::{AuditorClient, ClientError},
+    domain::RecordAdd,
+};
 use color_eyre::eyre::{Result, WrapErr};
 use tokio::sync::{mpsc, oneshot};
 
@@ -158,6 +161,20 @@ async fn process_queue(database: &Database, client: &AuditorClient) -> Result<()
             Ok(_) => {
                 tracing::info!("Successfully sent record {}", id);
                 database.delete(id).await?;
+            }
+            Err(ClientError::RecordExists) => {
+                tracing::warn!(
+                    "Failed sending record {} to Auditor instance. Record already exists.",
+                    id
+                );
+                database.delete(id).await?;
+            }
+            Err(ClientError::ReqwestError(e)) => {
+                tracing::error!(
+                    "Failed sending record {} to Auditor instance. Requeuing. Error: {:?}",
+                    id,
+                    e
+                );
             }
             Err(e) => {
                 tracing::error!(

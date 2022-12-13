@@ -5,14 +5,35 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//! TODO: Handle failures.
-
-use crate::domain::{Record, RecordAdd, RecordUpdate};
+use crate::{
+    constants::ERR_RECORD_EXISTS,
+    domain::{Record, RecordAdd, RecordUpdate},
+};
 use anyhow::Error;
 use chrono::{DateTime, Duration, Utc};
 use reqwest;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
+
+#[derive(Debug)]
+#[non_exhaustive]
+pub enum ClientError {
+    RecordExists,
+    ReqwestError(reqwest::Error),
+}
+
+impl std::fmt::Display for ClientError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                ClientError::RecordExists => ERR_RECORD_EXISTS.to_string(),
+                ClientError::ReqwestError(e) => format!("Reqwest Error: {}", e),
+            }
+        )
+    }
+}
 
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
@@ -108,15 +129,21 @@ impl AuditorClient {
         skip(self, record),
         fields(record_id = %record.record_id)
     )]
-    pub async fn add(&self, record: &RecordAdd) -> Result<(), reqwest::Error> {
-        self.client
+    pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
+        let response = self
+            .client
             .post(&format!("{}/add", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await?
-            .error_for_status()?;
-        Ok(())
+            .await
+            .map_err(ClientError::ReqwestError)?;
+
+        if response.text().await.map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+            Err(ClientError::RecordExists)
+        } else {
+            Ok(())
+        }
     }
 
     #[tracing::instrument(
@@ -307,14 +334,14 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn add_fails_on_500() {
+    async fn add_fails_on_existing_record() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
 
         let record: RecordAdd = record();
 
         Mock::given(any())
-            .respond_with(ResponseTemplate::new(500))
+            .respond_with(ResponseTemplate::new(500).set_body_string(ERR_RECORD_EXISTS))
             .expect(1)
             .mount(&mock_server)
             .await;
