@@ -35,20 +35,9 @@ impl Shutdown {
 
 pub(crate) struct ShutdownSender {
     notify: Vec<broadcast::Sender<()>>,
-    // notify_sacctcaller: broadcast::Sender<()>,
-    // notify_auditorsender: broadcast::Sender<()>,
 }
 
 impl ShutdownSender {
-    // pub(crate) fn new(
-    //     notify_sacctcaller: broadcast::Sender<()>,
-    //     notify_auditorsender: broadcast::Sender<()>,
-    // ) -> ShutdownSender {
-    //     ShutdownSender {
-    //         notify_sacctcaller,
-    //         notify_auditorsender,
-    //     }
-    // }
     pub(crate) fn new() -> ShutdownSender {
         ShutdownSender { notify: vec![] }
     }
@@ -66,8 +55,6 @@ impl ShutdownSender {
         for notify in self.notify {
             notify.send(())?;
         }
-        // self.notify_sacctcaller.send(())?;
-        // self.notify_auditorsender.send(())?;
         Ok(())
     }
 }
