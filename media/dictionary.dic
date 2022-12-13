@@ -120,3 +120,7 @@ get_configuration
 __
 ComponentConfig
 node_fail
+UnexpectedError
+responseerror_for_error
+AddError
+INTERNAL_SERVER_ERROR
