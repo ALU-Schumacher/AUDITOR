@@ -111,10 +111,11 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .expect("Failed to parse AUDITOR_ENVIRONMENT.");
 
     let settings = config::Config::builder()
-        .add_source(config::File::from(configuration_directory.join("base")).required(true))
+        .add_source(config::File::from(configuration_directory.join("base")).required(false))
         .add_source(
-            config::File::from(configuration_directory.join(environment.as_str())).required(true),
+            config::File::from(configuration_directory.join(environment.as_str())).required(false),
         );
+
     let settings = match std::env::args().nth(1) {
         Some(file) => settings.add_source(
             config::File::from(file.as_ref())
@@ -123,6 +124,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         ),
         None => settings,
     };
+
     let settings = settings.add_source(
         config::Environment::with_prefix("AUDITOR")
             .separator("__")
