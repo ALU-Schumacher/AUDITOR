@@ -5,20 +5,54 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::constants::{ERR_RECORD_EXISTS, ERR_UNEXPECTED_ERROR};
 use crate::domain::RecordAdd;
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpResponse, ResponseError};
 use chrono::Utc;
 use sqlx;
 use sqlx::PgPool;
 
 #[derive(thiserror::Error)]
 pub enum AddError {
+    RecordExists,
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
+    // UnexpectedError,
 }
 
 debug_for_error!(AddError);
-responseerror_for_error!(AddError, UnexpectedError => INTERNAL_SERVER_ERROR;);
+// responseerror_for_error!(AddError, UnexpectedError => INTERNAL_SERVER_ERROR;);
+
+impl std::fmt::Display for AddError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                AddError::RecordExists => ERR_RECORD_EXISTS,
+                AddError::UnexpectedError(_) => ERR_UNEXPECTED_ERROR,
+            }
+        )
+    }
+}
+
+impl ResponseError for AddError {
+    fn status_code(&self) -> actix_web::http::StatusCode {
+        match self {
+            AddError::UnexpectedError(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+            AddError::RecordExists => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+
+    fn error_response(&self) -> HttpResponse {
+        let message = match self {
+            AddError::UnexpectedError(_) => ERR_UNEXPECTED_ERROR,
+            AddError::RecordExists => ERR_RECORD_EXISTS,
+        };
+
+        HttpResponse::build(self.status_code()).body(message)
+    }
+}
 
 #[tracing::instrument(
     name = "Adding a record to the database",
@@ -29,14 +63,24 @@ pub async fn add(
     record: web::Json<RecordAdd>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, AddError> {
-    add_record(&record, &pool)
-        .await
-        .map_err(AddError::UnexpectedError)?;
+    add_record(&record, &pool).await.map_err(|e| {
+        // AddError::UnexpectedError(e.into())
+        match e.0.as_database_error() {
+            Some(db_err) => match db_err.code().as_ref() {
+                Some(code) => match code.as_ref() {
+                    "23505" => AddError::RecordExists,
+                    _ => AddError::UnexpectedError(e.into()),
+                },
+                _ => AddError::UnexpectedError(e.into()),
+            },
+            _ => AddError::UnexpectedError(e.into()),
+        }
+    })?;
     Ok(HttpResponse::Ok().finish())
 }
 
 #[tracing::instrument(name = "Inserting record into database", skip(record, pool))]
-pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), anyhow::Error> {
+pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddRecordError> {
     let runtime = match record.stop_time.as_ref() {
         Some(&stop) => Some((stop - record.start_time).num_seconds()),
         _ => None,
