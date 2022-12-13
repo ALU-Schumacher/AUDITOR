@@ -17,7 +17,7 @@ async def main():
     health = await client.health_check()
     assert health
 
-    print("get should not return anything because there are not records in Auditor yet")
+    print("get should not return anything because there are no records in Auditor yet")
     empty_array = await client.get()
     assert len(empty_array) == 0
 
@@ -35,6 +35,7 @@ async def main():
 
     await client.add(record)
 
+    print("Asserting that record in auditor db is correct")
     records = await client.get()
     assert len(records) == 1
     record = records[0]
@@ -50,6 +51,7 @@ async def main():
     record = record.with_stop_time(stop)
     await client.update(record)
 
+    print("Asserting that record in auditor db is correct")
     records = await client.get()
     assert len(records) == 1
     record = records[0]
@@ -59,6 +61,8 @@ async def main():
     assert record.group_id == group_id
     assert record.start_time.replace(tzinfo=pytz.utc) == start
     assert record.stop_time.replace(tzinfo=pytz.utc) == stop
+
+    print("Script test_add_update.py finished.")
 
 
 if __name__ == "__main__":
