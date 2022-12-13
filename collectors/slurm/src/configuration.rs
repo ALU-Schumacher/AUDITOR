@@ -332,26 +332,6 @@ impl ParsableType {
     }
 }
 
-// /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
-// #[tracing::instrument(name = "Loading configuration")]
-// pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-//     let settings = config::Config::builder();
-//     let settings = match std::env::args().nth(1) {
-//         Some(file) => settings.add_source(
-//             config::File::from(file.as_ref())
-//                 .required(false)
-//                 .format(config::FileFormat::Yaml),
-//         ),
-//         None => settings,
-//     };
-//     let settings = settings.add_source(
-//         config::Environment::with_prefix("AUDITOR_SLURM_COLLECTOR")
-//             .separator("__")
-//             .prefix_separator("_"),
-//     );
-//     settings.build()?.try_deserialize()
-// }
-
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
 #[tracing::instrument(name = "Loading configuration")]
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
