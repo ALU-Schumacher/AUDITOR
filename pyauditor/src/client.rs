@@ -40,7 +40,7 @@ impl AuditorClient {
             Ok(inner
                 .get()
                 .await
-                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
                 .into_iter()
                 .map(Record::from)
                 .collect::<Vec<_>>())
@@ -83,7 +83,7 @@ impl AuditorClient {
             Ok(inner
                 .get_started_since(&timestamp)
                 .await
-                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
                 .into_iter()
                 .map(Record::from)
                 .collect::<Vec<_>>())
@@ -126,7 +126,7 @@ impl AuditorClient {
             Ok(inner
                 .get_stopped_since(&timestamp)
                 .await
-                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))?
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
                 .into_iter()
                 .map(Record::from)
                 .collect::<Vec<_>>())
@@ -141,7 +141,7 @@ impl AuditorClient {
             inner
                 .add(&auditor::domain::RecordAdd::try_from(record.inner)?)
                 .await
-                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
         })
     }
 
@@ -153,7 +153,7 @@ impl AuditorClient {
             inner
                 .update(&auditor::domain::RecordUpdate::try_from(record.inner)?)
                 .await
-                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{}", e)))
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
         })
     }
 }

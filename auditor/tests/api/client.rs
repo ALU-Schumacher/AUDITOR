@@ -50,8 +50,7 @@ async fn add_records() {
         assert_eq!(
             record,
             saved,
-            "Check {}: Record {} and {} did not match.",
-            i,
+            "Check {i}: Record {} and {} did not match.",
             record.record_id.as_ref().unwrap(),
             saved.record_id
         );
@@ -214,8 +213,8 @@ async fn get_started_since_returns_a_list_of_records() {
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
-                .with_record_id(format!("r{:0>2}", i))
-                .with_start_time(format!("2022-03-{:0>2}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i:0>2}"))
+                .with_start_time(format!("2022-03-{i:0>2}T12:00:00-00:00"))
         })
         .collect();
 
@@ -295,8 +294,8 @@ async fn get_stopped_since_returns_a_list_of_records() {
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
-                .with_record_id(format!("r{:0>2}", i))
-                .with_stop_time(format!("2022-03-{:0>2}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i:0>2}"))
+                .with_stop_time(format!("2022-03-{i:0>2}T12:00:00-00:00"))
         })
         .collect();
 

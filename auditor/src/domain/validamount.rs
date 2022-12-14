@@ -21,7 +21,7 @@ impl ValidAmount {
     /// Returns `ValidAmount` only if input satisfies validation criteria, otherwise panics.
     pub fn parse(s: i64) -> Result<ValidAmount, ValidationError> {
         if s < 0 {
-            Err(ValidationError(format!("Invalid amount: {}", s)))
+            Err(ValidationError(format!("Invalid amount: {s}")))
         } else {
             Ok(Self(s))
         }
@@ -60,7 +60,7 @@ impl<'de> serde::Deserialize<'de> for ValidAmount {
     {
         let buf = i64::deserialize(deserializer)?;
         ValidAmount::parse(buf)
-            .with_context(|| format!("Parsing '{}' failed.", buf))
+            .with_context(|| format!("Parsing '{buf}' failed."))
             .map_err(serde::de::Error::custom)
     }
 }

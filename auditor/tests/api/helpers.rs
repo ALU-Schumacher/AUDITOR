@@ -86,7 +86,7 @@ pub async fn spawn_app() -> TestApp {
 
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let address = format!("http://127.0.0.1:{}", port);
+    let address = format!("http://127.0.0.1:{port}");
 
     let mut configuration = get_configuration().expect("Failed to read configuration.");
     configuration.database.database_name = Uuid::new_v4().to_string();
@@ -94,7 +94,7 @@ pub async fn spawn_app() -> TestApp {
     let db_watcher = DatabaseMetricsWatcher::new(connection_pool.clone(), &configuration).unwrap();
     let server = auditor::startup::run(listener, connection_pool.clone(), db_watcher)
         .expect("Failed to bind address");
-    let _ = tokio::spawn(server);
+    tokio::spawn(server);
     TestApp {
         address,
         db_pool: connection_pool,
