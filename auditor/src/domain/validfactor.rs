@@ -21,7 +21,7 @@ impl ValidFactor {
     /// Returns `ValidFactor` only if input satisfies validation criteria, otherwise panics.
     pub fn parse(s: f64) -> Result<ValidFactor, ValidationError> {
         if s < 0.0 {
-            Err(ValidationError(format!("Invalid factor: {}", s)))
+            Err(ValidationError(format!("Invalid factor: {s}")))
         } else {
             Ok(Self(s))
         }
@@ -60,7 +60,7 @@ impl<'de> serde::Deserialize<'de> for ValidFactor {
     {
         let buf = f64::deserialize(deserializer)?;
         ValidFactor::parse(buf)
-            .with_context(|| format!("Parsing '{}' failed.", buf))
+            .with_context(|| format!("Parsing '{buf}' failed."))
             .map_err(serde::de::Error::custom)
     }
 }

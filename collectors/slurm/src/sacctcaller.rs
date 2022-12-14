@@ -132,7 +132,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .filter(|k| !BATCH_REGEX.is_match(k))
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
-            let map2 = sacct_rows.get(&format!("{}.batch", id)).expect("Cannot happen");
+            let map2 = sacct_rows.get(&format!("{id}.batch")).expect("Cannot happen");
             KEYS.iter()
                 .cloned()
                 .map(|(k, _)| {
@@ -141,8 +141,8 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                         _ => match map2.get(&k) {
                             Some(Some(v)) => Ok(v.clone()),
                             _ => {
-                                tracing::error!("Something went wrong during parsing (id: {})", id);
-                                Err(eyre!("Something went wrong during parsing of sacct output (id: {}). Can't recover.", id))
+                                tracing::error!("Something went wrong during parsing (id: {id})");
+                                Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
                             },
                         },
                     }?;
@@ -161,7 +161,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             );
             return Ok(None);
         };
-        let record_id = make_string_valid(format!("{}-{}", &CONFIG.record_prefix, job_id));
+        let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
         // We don't want this record, we have already seen it in a previous run.
         if record_id == last_record_id {
             return Ok(None);
@@ -286,7 +286,7 @@ fn construct_components(job: &Job) -> Vec<Component> {
                     })
                     .map(|s| {
                         Score::new(s.name.clone(), s.factor)
-                            .unwrap_or_else(|_| panic!("Cannot construct score from {:?}", s))
+                            .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
                     })
                     .collect(),
             )

@@ -172,8 +172,8 @@ fn construct_command(
     params: &[String],
 ) -> Vec<String> {
     cmd.iter()
-        .map(|c| c.replace("{priority}", &format!("{}", priority)))
-        .map(|c| c.replace("{resource}", &format!("{}", resource)))
+        .map(|c| c.replace("{priority}", &format!("{priority}")))
+        .map(|c| c.replace("{resource}", &format!("{resource}")))
         .map(|c| c.replace("{group}", group))
         .map(|c| {
             let mut cc = c;

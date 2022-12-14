@@ -29,7 +29,7 @@ impl ValidName {
         // check for forbidden characters
         let contains_forbidden_characters = s.chars().any(|g| FORBIDDEN_CHARACTERS.contains(&g));
         if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(ValidationError(format!("Invalid Name: {}", s)))
+            Err(ValidationError(format!("Invalid Name: {s}")))
         } else {
             Ok(Self(s))
         }
@@ -61,7 +61,7 @@ impl<'de> serde::Deserialize<'de> for ValidName {
         // I could remove the context, but it's nice to inform the user what's wrong. On the other
         // hand, if users use our clients, this parsing can't fail.
         ValidName::parse(buf.clone())
-            .with_context(|| format!("Parsing '{}' failed", buf))
+            .with_context(|| format!("Parsing '{buf}' failed"))
             .map_err(serde::de::Error::custom)
     }
 }

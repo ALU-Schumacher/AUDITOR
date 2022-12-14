@@ -14,8 +14,8 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
             Faker
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
-                .with_record_id(format!("r{}", i))
-                .with_start_time(format!("2022-03-0{}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i}"))
+                .with_start_time(format!("2022-03-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -28,7 +28,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
     // Try different start dates and receive records
     for i in 1..10 {
         let response = app
-            .get_started_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
             .await;
 
         assert_eq!(200, response.status().as_u16());
@@ -47,9 +47,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
             assert_eq!(
                 record,
                 received,
-                "Check {}|{}: Record {} and {} did not match.",
-                i,
-                j,
+                "Check {i}|{j}: Record {} and {} did not match.",
                 record.record_id.as_ref().unwrap(),
                 received.record_id
             );
@@ -69,8 +67,8 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
             Faker
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
-                .with_record_id(format!("r{}", i))
-                .with_start_time(format!("2022-03-0{}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i}"))
+                .with_start_time(format!("2022-03-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -83,7 +81,7 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
     // Try different start dates and receive records
     for i in 1..10 {
         let response = app
-            .get_started_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
             .await;
 
         assert_eq!(200, response.status().as_u16());
@@ -139,8 +137,8 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
             Faker
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
-                .with_record_id(format!("r{}", i))
-                .with_stop_time(format!("2022-03-0{}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i}"))
+                .with_stop_time(format!("2022-03-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -153,7 +151,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
     // Try different start dates and receive records
     for i in 1..10 {
         let response = app
-            .get_stopped_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
             .await;
         assert_eq!(200, response.status().as_u16());
 
@@ -193,8 +191,8 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
             Faker
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
-                .with_record_id(format!("r{}", i))
-                .with_stop_time(format!("2022-03-0{}T12:00:00-00:00", i))
+                .with_record_id(format!("r{i}"))
+                .with_stop_time(format!("2022-03-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -207,7 +205,7 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
     // Try different start dates and receive records
     for i in 1..10 {
         let response = app
-            .get_stopped_since_records(format!("2022-03-0{}T00:00:00-00:00", i))
+            .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
             .await;
         assert_eq!(200, response.status().as_u16());
 

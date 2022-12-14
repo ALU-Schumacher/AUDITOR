@@ -29,7 +29,7 @@ impl std::fmt::Display for ClientError {
             "{}",
             match self {
                 ClientError::RecordExists => ERR_RECORD_EXISTS.to_string(),
-                ClientError::ReqwestError(e) => format!("Reqwest Error: {}", e),
+                ClientError::ReqwestError(e) => format!("Reqwest Error: {e}"),
             }
         )
     }

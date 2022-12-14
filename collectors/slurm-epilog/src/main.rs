@@ -108,7 +108,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                     })
                     .map(|s| {
                         Score::new(s.name.clone(), s.factor)
-                            .unwrap_or_else(|_| panic!("Cannot construct score from {:?}", s))
+                            .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
                     })
                     .collect(),
             )
@@ -148,7 +148,7 @@ async fn main() -> Result<(), Error> {
     debug!(?job, "Acquired SLURM job info");
 
     let record = RecordAdd::new(
-        format!("{}-{}", make_string_valid(&config.record_prefix), job_id),
+        format!("{}-{job_id}", make_string_valid(&config.record_prefix)),
         make_string_valid(&config.site_id),
         make_string_valid(job["UserId"].split('(').take(1).collect::<Vec<_>>()[0]),
         make_string_valid(job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0]),

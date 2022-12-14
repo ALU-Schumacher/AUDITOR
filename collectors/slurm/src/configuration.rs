@@ -231,10 +231,10 @@ impl ParsableType {
                 input
                     .parse()
                     .map_err(|e| {
-                        tracing::error!("Cannot parse {} into i64.", input);
+                        tracing::error!("Cannot parse {input} into i64.");
                         e
                     })
-                    .context(format!("Parsing of {} into i64 failed.", input))?,
+                    .context(format!("Parsing of {input} into i64 failed."))?,
             ),
             ParsableType::IntegerMega => {
                 let mut chars = input.chars();
@@ -244,10 +244,10 @@ impl ParsableType {
                     input
                         .parse()
                         .map_err(|e| {
-                            tracing::error!("Cannot parse {} into i64.", input);
+                            tracing::error!("Cannot parse {input} into i64.");
                             e
                         })
-                        .context(format!("Parsing of {} into i64 failed.", input))?,
+                        .context(format!("Parsing of {input} into i64 failed."))?,
                 )
             }
             ParsableType::Time => {
