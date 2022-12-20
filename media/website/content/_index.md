@@ -335,7 +335,7 @@ components:
     key: "NumCPUs"
     scores:
       - name: "HEPSPEC"
-        factor: 1.0
+        value: 1.0
   - name: "Memory"
     key: "Mem"
 ```
@@ -355,13 +355,13 @@ components:
     scores:
       # If it the job is running on partition `part1`, then use HEPSPEC value 1.1
       - name: "HEPSPEC"
-        factor: 1.1
+        value: 1.1
         only_if:
           key: "Partition"
           matches: "^part1$"
       # If it the job is running on partition `part2`, then use HEPSPEC value 1.2
       - name: "HEPSPEC"
-        factor: 1.2
+        value: 1.2
         only_if:
           key: "Partition"
           matches: "^part2$"

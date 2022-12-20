@@ -8,19 +8,19 @@
 use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
 
-/// Score(name: str, factor: float)
-/// An individual score which consists of a ``name`` (str) and a ``factor`` (float).
+/// Score(name: str, value: float)
+/// An individual score which consists of a ``name`` (str) and a ``value`` (float).
 /// Scores are attached to a ``Component`` and are used to relate different components of the same
 /// kind to each other in some kind of performance characteristic. For instance, in case of CPUs, a
 /// score could be the corresponding HEPSPEC06 values.
 ///
-/// The factor must be ``>= 0.0`` and the name must not include the characters. ``/``, ``(``, ``)``,
+/// The value must be ``>= 0.0`` and the name must not include the characters. ``/``, ``(``, ``)``,
 /// ``"``, ``<``, ``>``, ``\``, ``{``, ``}``.
 ///
 /// :param name: Name of the score
 /// :type name: str
-/// :param factor: Factor
-/// :type factor: float
+/// :param value: Value
+/// :type value: float
 #[pyclass]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Score {
@@ -36,9 +36,9 @@ impl From<auditor::domain::Score> for Score {
 #[pymethods]
 impl Score {
     #[new]
-    pub fn new(name: String, factor: f64) -> Result<Self, anyhow::Error> {
+    pub fn new(name: String, value: f64) -> Result<Self, anyhow::Error> {
         Ok(Score {
-            inner: auditor::domain::Score::new(name, factor)?,
+            inner: auditor::domain::Score::new(name, value)?,
         })
     }
 
@@ -48,10 +48,10 @@ impl Score {
         self.inner.name.as_ref().to_string()
     }
 
-    /// Returns the factor
+    /// Returns the value
     #[getter]
-    fn factor(&self) -> f64 {
-        *self.inner.factor.as_ref()
+    fn value(&self) -> f64 {
+        *self.inner.value.as_ref()
     }
 }
 

@@ -293,7 +293,7 @@ fn construct_components(job: &Job) -> Vec<Component> {
                         }
                     })
                     .map(|s| {
-                        Score::new(s.name.clone(), s.factor)
+                        Score::new(s.name.clone(), s.value)
                             .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
                     })
                     .collect(),

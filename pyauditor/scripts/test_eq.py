@@ -15,7 +15,7 @@ def main():
     user_id = "user-1"
     group_id = "group-1"
     score = "score-1"
-    factor = 12.0
+    value = 12.0
     component = "component-1"
     amount = 21
 
@@ -24,8 +24,8 @@ def main():
         2021, 12, 6, 16, 29, 43, 79043, tzinfo=local_tz
     ).astimezone(pytz.utc)
 
-    score1 = Score(score, factor)
-    score2 = Score(score, factor)
+    score1 = Score(score, value)
+    score2 = Score(score, value)
     assert score1 == score2
 
     comp1 = Component(component, amount)

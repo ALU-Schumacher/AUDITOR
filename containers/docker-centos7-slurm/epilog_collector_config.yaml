@@ -7,7 +7,7 @@ components:
     key: "NumCPUs"
     scores:
       - name: "HEPSPECK"
-        factor: 1.1
+        value: 1.1
         only_if:
           key: "Partition"
           matches: "^part1$"
@@ -15,7 +15,7 @@ components:
     key: "NumCPUs"
     scores:
       - name: "HEPSPECK"
-        factor: 1.2
+        value: 1.2
         only_if:
           key: "Partition"
           matches: "^part2$"

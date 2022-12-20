@@ -19,12 +19,12 @@ components:
     key: "NCPUS"
     scores:
       - name: "HEPSPEC06"
-        factor: 1.1
+        value: 1.1
         only_if:
           key: "Partition"
           matches: "^part1$"
       - name: "HEPSPEC06"
-        factor: 1.2
+        value: 1.2
         only_if:
           key: "Partition"
           matches: "^part2$"

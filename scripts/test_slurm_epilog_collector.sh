@@ -143,7 +143,7 @@ function test_epilog_collector() {
 		exit 1
 	fi
 
-	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .components | .[] | .scores | .[] | .factor')" != 1.1 ]
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .components | .[] | .scores | .[] | .value')" != 1.1 ]
 	then
 		echo >&2 "Incorrect score of record in accounting database. Returned record:"
 		echo >&2 $TEST1
@@ -166,7 +166,7 @@ function test_epilog_collector() {
 		exit 1
 	fi
 
-	if [ "$(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .components | .[] | .scores | .[] | .factor')" != 1.2 ]
+	if [ "$(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .components | .[] | .scores | .[] | .value')" != 1.2 ]
 	then
 		echo >&2 "Incorrect score of record in accounting database. Returned record:"
 		echo >&2 $TEST2

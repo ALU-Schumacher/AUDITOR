@@ -107,7 +107,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                         }
                     })
                     .map(|s| {
-                        Score::new(s.name.clone(), s.factor)
+                        Score::new(s.name.clone(), s.value)
                             .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
                     })
                     .collect(),
