@@ -134,9 +134,8 @@ impl QueuedSender {
 
         tokio::spawn(async move {
             loop {
-                interval.tick().await;
                 tokio::select! {
-                    _ = process_queue(&database, &client) => { },
+                    _ = interval.tick() => {},
                     res = &mut shutdown_rx => {
                         tracing::info!("QueuedSender received shutdown signal. Shutting down.");
                         // shutdown properly
@@ -148,6 +147,9 @@ impl QueuedSender {
                         break;
                     },
                 }
+                if let Err(e) = process_queue(&database, &client).await {
+                    tracing::error!("Processing queue failed with error: {e}");
+                };
             }
         });
     }
