@@ -34,7 +34,7 @@ pub struct ComponentConfig {
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct ScoreConfig {
     pub name: String,
-    pub factor: f64,
+    pub value: f64,
     pub only_if: Option<OnlyIf>,
 }
 

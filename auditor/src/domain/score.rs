@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use super::{ValidFactor, ValidName};
+use super::{ValidName, ValidValue};
 use anyhow::{Context, Error};
 use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
@@ -17,15 +17,15 @@ use std::cmp::Ordering;
 #[sqlx(type_name = "score")]
 pub struct Score {
     pub name: ValidName,
-    pub factor: ValidFactor,
+    pub value: ValidValue,
 }
 
 impl Score {
-    pub fn new<T: AsRef<str>>(name: T, factor: f64) -> Result<Self, Error> {
+    pub fn new<T: AsRef<str>>(name: T, value: f64) -> Result<Self, Error> {
         Ok(Score {
             name: ValidName::parse(name.as_ref().to_string())
                 .context("Failed to parse score name.")?,
-            factor: ValidFactor::parse(factor).context("Failed to parse score factor.")?,
+            value: ValidValue::parse(value).context("Failed to parse score value.")?,
         })
     }
 }
@@ -42,10 +42,10 @@ impl TryFrom<ScoreTest> for Score {
     fn try_from(value: ScoreTest) -> Result<Self, Self::Error> {
         Ok(Score {
             name: ValidName::parse(value.name.ok_or_else(|| anyhow::anyhow!("name is None"))?)?,
-            factor: ValidFactor::parse(
+            value: ValidValue::parse(
                 value
-                    .factor
-                    .ok_or_else(|| anyhow::anyhow!("factor is None"))?,
+                    .value
+                    .ok_or_else(|| anyhow::anyhow!("value is None"))?,
             )?,
         })
     }
@@ -55,15 +55,15 @@ impl PartialEq<Score> for Score {
     fn eq(&self, other: &Self) -> bool {
         let Score {
             name: s_name,
-            factor: s_factor,
+            value: s_value,
         } = self;
         let Score {
             name: o_name,
-            factor: o_factor,
+            value: o_value,
         } = other;
 
-        let s_fac = f64::abs(*s_factor.as_ref());
-        let o_fac = f64::abs(*o_factor.as_ref());
+        let s_fac = f64::abs(*s_value.as_ref());
+        let o_fac = f64::abs(*o_value.as_ref());
 
         let (diff, biggest) = if s_fac > o_fac {
             (s_fac - o_fac, s_fac)
@@ -93,14 +93,14 @@ impl Ord for Score {
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct ScoreTest {
     pub name: Option<String>,
-    pub factor: Option<f64>,
+    pub value: Option<f64>,
 }
 
 impl ScoreTest {
     pub fn new() -> Self {
         ScoreTest {
             name: None,
-            factor: None,
+            value: None,
         }
     }
 
@@ -109,8 +109,8 @@ impl ScoreTest {
         self
     }
 
-    pub fn with_factor(mut self, factor: f64) -> Self {
-        self.factor = Some(factor);
+    pub fn with_value(mut self, value: f64) -> Self {
+        self.value = Some(value);
         self
     }
 }
@@ -139,15 +139,15 @@ impl PartialEq<ScoreTest> for ScoreTest {
     fn eq(&self, other: &Self) -> bool {
         let ScoreTest {
             name: s_name,
-            factor: s_factor,
+            value: s_value,
         } = self;
         let ScoreTest {
             name: o_name,
-            factor: o_factor,
+            value: o_value,
         } = other;
 
-        let s_fac = f64::abs(*s_factor.as_ref().unwrap());
-        let o_fac = f64::abs(*o_factor.as_ref().unwrap());
+        let s_fac = f64::abs(*s_value.as_ref().unwrap());
+        let o_fac = f64::abs(*o_value.as_ref().unwrap());
 
         let (diff, biggest) = if s_fac > o_fac {
             (s_fac - o_fac, s_fac)
@@ -166,20 +166,20 @@ impl PartialEq<Score> for ScoreTest {
     fn eq(&self, other: &Score) -> bool {
         let ScoreTest {
             name: s_name,
-            factor: s_factor,
+            value: s_value,
         } = self;
         let Score {
             name: o_name,
-            factor: o_factor,
+            value: o_value,
         } = other;
 
         // Can't be equal if any field in ScoreTest is None
-        if s_name.is_none() || s_factor.is_none() {
+        if s_name.is_none() || s_value.is_none() {
             return false;
         }
 
-        let s_fac = f64::abs(*s_factor.as_ref().unwrap());
-        let o_fac = f64::abs(*o_factor.as_ref());
+        let s_fac = f64::abs(*s_value.as_ref().unwrap());
+        let o_fac = f64::abs(*o_value.as_ref());
 
         let (diff, biggest) = if s_fac > o_fac {
             (s_fac - o_fac, s_fac)
@@ -208,7 +208,7 @@ impl Dummy<Faker> for ScoreTest {
         .fake_with_rng(rng);
         ScoreTest {
             name: Some(name),
-            factor: Some((0.0..f64::MAX).fake_with_rng(rng)),
+            value: Some((0.0..f64::MAX).fake_with_rng(rng)),
         }
     }
 }

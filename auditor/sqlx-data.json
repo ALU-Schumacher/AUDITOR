@@ -99,7 +99,7 @@
                                           "Text"
                                         ],
                                         [
-                                          "factor",
+                                          "value",
                                           "Float8"
                                         ]
                                       ]
@@ -219,7 +219,7 @@
                                           "Text"
                                         ],
                                         [
-                                          "factor",
+                                          "value",
                                           "Float8"
                                         ]
                                       ]
@@ -329,7 +329,7 @@
                                           "Text"
                                         ],
                                         [
-                                          "factor",
+                                          "value",
                                           "Float8"
                                         ]
                                       ]
@@ -459,7 +459,7 @@
                                           "Text"
                                         ],
                                         [
-                                          "factor",
+                                          "value",
                                           "Float8"
                                         ]
                                       ]
@@ -553,7 +553,7 @@
                                           "Text"
                                         ],
                                         [
-                                          "factor",
+                                          "value",
                                           "Float8"
                                         ]
                                       ]

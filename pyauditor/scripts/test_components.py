@@ -55,14 +55,14 @@ async def main():
     assert record.components[0].name == "comp-1"
     assert record.components[0].amount == 10
     assert record.components[0].scores[0].name == "HEPSPEC"
-    assert record.components[0].scores[0].factor == 1.0
+    assert record.components[0].scores[0].value == 1.0
 
     assert record.components[1].name == "comp-2"
     assert record.components[1].amount == 100
     assert record.components[1].scores[0].name == "HEPSPEC"
-    assert record.components[1].scores[0].factor == 1.0
+    assert record.components[1].scores[0].value == 1.0
     assert record.components[1].scores[1].name == "OTHERSPEC"
-    assert record.components[1].scores[1].factor == 4.0
+    assert record.components[1].scores[1].value == 4.0
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 -- Create accounting table
 CREATE TYPE score AS (
     name        TEXT,
-    factor      double precision
+    value       double precision
 );
 
 CREATE TYPE component AS (

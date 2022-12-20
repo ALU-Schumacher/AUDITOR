@@ -67,7 +67,7 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<ResourceName, Res
                                                         .get(c.name.as_ref())
                                                         .unwrap()
                                                 {
-                                                    (*s.factor.as_ref(), true)
+                                                    (*s.value.as_ref(), true)
                                                 } else {
                                                     (acc, found)
                                                 }
