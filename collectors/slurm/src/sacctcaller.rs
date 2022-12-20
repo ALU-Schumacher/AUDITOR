@@ -44,7 +44,15 @@ pub(crate) async fn run_sacct_monitor(
     tokio::spawn(async move {
         let mut interval = tokio::time::interval(CONFIG.sacct_frequency.to_std().unwrap());
         loop {
-            interval.tick().await;
+            tokio::select! {
+                _ = interval.tick() => {},
+                _ = shutdown.recv() => {
+                    tracing::info!("Sacct monitor received shutdown signal. Shutting down.");
+                    // shutdown properly
+                    drop(hold_till_shutdown);
+                    break
+                },
+            }
             tokio::select! {
                 records = get_job_info(&database) => {
                     match records {
