@@ -7,7 +7,9 @@
 
 //! Record related types used for deserializing HTTP requests and serializing HTTP responses.
 
-use super::{Component, ComponentTest, ScoreTest, ValidName};
+use std::collections::HashMap;
+
+use super::{Component, ComponentTest, Meta, ScoreTest, UnitMeta, ValidName};
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
@@ -19,6 +21,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordAdd {
     pub record_id: ValidName,
+    pub meta: Meta,
     pub site_id: ValidName,
     pub user_id: ValidName,
     pub group_id: ValidName,
@@ -30,6 +33,7 @@ pub struct RecordAdd {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordUpdate {
     pub record_id: ValidName,
+    // pub meta: Meta,
     pub site_id: ValidName,
     pub user_id: ValidName,
     pub group_id: ValidName,
@@ -38,9 +42,10 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Record {
     pub record_id: String,
+    pub meta: Option<Vec<UnitMeta>>,
     pub site_id: Option<String>,
     pub user_id: Option<String>,
     pub group_id: Option<String>,
@@ -53,6 +58,7 @@ pub struct Record {
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct RecordTest {
     pub record_id: Option<String>,
+    pub meta: Option<HashMap<String, Vec<String>>>,
     pub site_id: Option<String>,
     pub user_id: Option<String>,
     pub group_id: Option<String>,
@@ -64,6 +70,7 @@ pub struct RecordTest {
 impl RecordAdd {
     pub fn new<T: AsRef<str>>(
         record_id: T,
+        meta: HashMap<T, Vec<T>>,
         site_id: T,
         user_id: T,
         group_id: T,
@@ -73,6 +80,7 @@ impl RecordAdd {
         Ok(RecordAdd {
             record_id: ValidName::parse(record_id.as_ref().to_string())
                 .context("Failed to parse record_id.")?,
+            meta: meta.try_into().context("Failed to parse meta field.")?,
             site_id: ValidName::parse(site_id.as_ref().to_string())
                 .context("Failed to parse site_id.")?,
             user_id: ValidName::parse(user_id.as_ref().to_string())
@@ -99,6 +107,22 @@ impl RecordTest {
 
     pub fn with_record_id<T: AsRef<str>>(mut self, record_id: T) -> Self {
         self.record_id = Some(record_id.as_ref().to_string());
+        self
+    }
+
+    pub fn with_meta<T: AsRef<str>>(mut self, meta: HashMap<T, Vec<T>>) -> Self {
+        self.meta = Some(
+            meta.into_iter()
+                .map(|(k, v)| {
+                    (
+                        k.as_ref().to_string(),
+                        v.into_iter()
+                            .map(|v| v.as_ref().to_string())
+                            .collect::<Vec<_>>(),
+                    )
+                })
+                .collect(),
+        );
         self
     }
 
@@ -188,6 +212,7 @@ impl PartialEq<Record> for RecordTest {
     fn eq(&self, other: &Record) -> bool {
         let RecordTest {
             record_id: s_rid,
+            meta: s_meta,
             site_id: s_sid,
             user_id: s_uid,
             group_id: s_gid,
@@ -197,6 +222,7 @@ impl PartialEq<Record> for RecordTest {
         } = self;
         let Record {
             record_id: o_rid,
+            meta: o_meta,
             site_id: o_sid,
             user_id: o_uid,
             group_id: o_gid,
@@ -243,6 +269,9 @@ impl PartialEq<Record> for RecordTest {
                         .iter()
                         .zip(o_comp.as_ref().unwrap().iter())
                         .fold(true, |acc, (a, b)| acc && (a == b))))
+            && (s_meta.is_none() && o_meta.is_none())
+            || (s_meta.as_ref().unwrap().len() == o_meta.as_ref().unwrap().len()
+                && s_meta.as_ref().unwrap() == s_meta.as_ref().unwrap())
     }
 }
 
@@ -269,6 +298,7 @@ impl TryFrom<RecordTest> for RecordAdd {
                     .record_id
                     .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
+            meta: value.meta.unwrap_or_default().try_into()?,
             site_id: ValidName::parse(value.site_id.unwrap_or_default())?,
             user_id: ValidName::parse(value.user_id.unwrap_or_default())?,
             group_id: ValidName::parse(value.group_id.unwrap_or_default())?,
@@ -290,6 +320,7 @@ impl TryFrom<Record> for RecordAdd {
     fn try_from(value: Record) -> Result<Self, Self::Error> {
         Ok(RecordAdd {
             record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
+            meta: value.meta.unwrap_or_default().try_into()?,
             site_id: ValidName::parse(value.site_id.unwrap_or_default())
                 .context("Failed to parse site_id.")?,
             user_id: ValidName::parse(value.user_id.unwrap_or_default())
@@ -363,6 +394,7 @@ impl TryFrom<RecordTest> for Record {
     type Error = Error;
 
     fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
+        let meta: Meta = value.meta.unwrap_or_default().try_into()?;
         Ok(Record {
             record_id: ValidName::parse(
                 value
@@ -371,6 +403,7 @@ impl TryFrom<RecordTest> for Record {
             )?
             .as_ref()
             .to_string(),
+            meta: Some(meta.to_vec_unit()),
             site_id: if let Some(site_id) = value.site_id {
                 Some(ValidName::parse(site_id)?.as_ref().to_string())
             } else {

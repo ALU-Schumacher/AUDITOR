@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 mod component;
+mod meta;
 mod record;
 mod score;
 mod validamount;
@@ -14,6 +15,7 @@ mod validvalue;
 
 use actix_web::{http::StatusCode, ResponseError};
 pub use component::{Component, ComponentTest};
+pub use meta::{Meta, UnitMeta};
 pub use record::{Record, RecordAdd, RecordTest, RecordUpdate};
 pub use score::{Score, ScoreTest};
 pub use validamount::ValidAmount;
