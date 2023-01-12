@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::domain::{Component, Record};
+use crate::domain::{Component, Record, UnitMeta};
 use actix_web::{web, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
@@ -32,7 +32,7 @@ pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
     Ok(sqlx::query_as!(
         Record,
         r#"SELECT
-           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
+           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
            FROM accounting
            ORDER BY stop_time

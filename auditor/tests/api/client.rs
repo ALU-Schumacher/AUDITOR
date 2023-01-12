@@ -1,6 +1,6 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
-use auditor::domain::{Component, Record, RecordAdd, RecordTest, RecordUpdate};
+use auditor::domain::{Component, Meta, Record, RecordAdd, RecordTest, RecordUpdate, UnitMeta};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 
@@ -28,7 +28,7 @@ async fn add_records() {
     let mut saved_records = sqlx::query_as!(
         Record,
         r#"SELECT
-           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
+           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
            FROM accounting
         "#
@@ -94,7 +94,7 @@ async fn update_records() {
     let mut saved_records = sqlx::query_as!(
         Record,
         r#"SELECT
-           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
+           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
            FROM accounting
         "#
@@ -150,12 +150,15 @@ async fn get_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
+                record_id, meta, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
+            Meta::try_from(record.meta.clone().unwrap())
+                .unwrap()
+                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),
@@ -223,12 +226,15 @@ async fn get_started_since_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
+                record_id, meta, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
+            Meta::try_from(record.meta.clone().unwrap())
+                .unwrap()
+                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),
@@ -304,12 +310,15 @@ async fn get_stopped_since_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
+                record_id, meta, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
+            Meta::try_from(record.meta.clone().unwrap())
+                .unwrap()
+                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),

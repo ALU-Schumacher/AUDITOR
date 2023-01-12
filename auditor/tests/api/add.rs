@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, Record, RecordTest};
+use auditor::domain::{Component, Record, RecordTest, UnitMeta};
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -18,11 +18,11 @@ async fn add_returns_a_200_for_valid_json_data() {
         let saved = sqlx::query_as!(
             Record,
             r#"SELECT
-           record_id, site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time as "start_time?", stop_time, runtime
-           FROM accounting
-           WHERE record_id = $1
-        "#,
+            record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
+            start_time as "start_time?", stop_time, runtime
+            FROM accounting
+            WHERE record_id = $1
+            "#,
             body.record_id.as_ref().unwrap(),
         )
         .fetch_one(&app.db_pool)
