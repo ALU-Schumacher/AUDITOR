@@ -42,7 +42,7 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
     pub record_id: String,
     pub meta: Option<Vec<UnitMeta>>,
