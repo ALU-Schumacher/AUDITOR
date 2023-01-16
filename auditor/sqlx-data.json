@@ -44,33 +44,14 @@
     },
     "query": "\n        SELECT start_time\n        FROM accounting \n        WHERE record_id = $1\n        "
   },
-  "78a22fcd4869bf74d296eba51470d354a821d6ea8561433ea16fe7de5f9f507a": {
+  "2e79201cc1781ad5b639c724b920117f656bdc364e4d6d2b9f590f6b1618e22e": {
     "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "site_id",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "group_id",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 4,
-          "type_info": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          {
             "Custom": {
               "kind": {
                 "Array": {
@@ -78,115 +59,22 @@
                     "kind": {
                       "Composite": [
                         [
-                          "name",
+                          "key",
                           "Text"
                         ],
                         [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
+                          "value",
+                          "TextArray"
                         ]
                       ]
                     },
-                    "name": "component"
+                    "name": "unit_meta"
                   }
                 }
               },
-              "name": "_component"
+              "name": "_unit_meta"
             }
-          }
-        },
-        {
-          "name": "start_time?",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 6,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 7,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Timestamptz"
-        ]
-      }
-    },
-    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE start_time > $1 and runtime IS NOT NULL\n                ORDER BY stop_time\n                "
-  },
-  "7ebe9b100144b4c7b0ba7bd9ca5ecc4c7e80e77f5dfacbeaa95e94f7e5d22baf": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name!",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "num!",
-          "ordinal": 1,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        true,
-        null
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT site_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE site_id IS NOT NULL\n               GROUP BY site_id;"
-  },
-  "a02e5c8ddc8434592c872057b8ff806a59aae1bfdc749fe574a3ac03c6a072a7": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
+          },
           "Text",
           "Text",
           "Text",
@@ -248,7 +136,452 @@
         ]
       }
     },
-    "query": "\n        INSERT INTO accounting (\n            record_id, site_id, user_id, group_id,\n            components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n        "
+    "query": "\n        INSERT INTO accounting (\n            record_id, meta, site_id, user_id, group_id,\n            components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n        "
+  },
+  "6057177321018f315f4e5a65758f5eb8cd9ced0c9c64e3288c8495bb756bcf1b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta: Vec<UnitMeta>",
+          "ordinal": 1,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "key",
+                          "Text"
+                        ],
+                        [
+                          "value",
+                          "TextArray"
+                        ]
+                      ]
+                    },
+                    "name": "unit_meta"
+                  }
+                }
+              },
+              "name": "_unit_meta"
+            }
+          }
+        },
+        {
+          "name": "site_id",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "group_id",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 5,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "value",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 6,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 7,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 8,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "SELECT\n                record_id, meta as \"meta: Vec<UnitMeta>\", site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE stop_time > $1 and runtime IS NOT NULL\n                ORDER BY stop_time\n                "
+  },
+  "7e56a803d2ab21fe0a23ba2454fd5ebd0d6286bc084d6b27e69e9b92853a0e5a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta: Vec<UnitMeta>",
+          "ordinal": 1,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "key",
+                          "Text"
+                        ],
+                        [
+                          "value",
+                          "TextArray"
+                        ]
+                      ]
+                    },
+                    "name": "unit_meta"
+                  }
+                }
+              },
+              "name": "_unit_meta"
+            }
+          }
+        },
+        {
+          "name": "site_id",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "group_id",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 5,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "value",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 6,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 7,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 8,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "SELECT\n                record_id, meta as \"meta: Vec<UnitMeta>\", site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE start_time > $1 and runtime IS NOT NULL\n                ORDER BY stop_time\n                "
+  },
+  "7ebe9b100144b4c7b0ba7bd9ca5ecc4c7e80e77f5dfacbeaa95e94f7e5d22baf": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT site_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE site_id IS NOT NULL\n               GROUP BY site_id;"
+  },
+  "80e787488747cd5417692bed8a6ecfb141f4e2b6c2dcf1a3a81f1904d7d8b75d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta: Vec<UnitMeta>",
+          "ordinal": 1,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "key",
+                          "Text"
+                        ],
+                        [
+                          "value",
+                          "TextArray"
+                        ]
+                      ]
+                    },
+                    "name": "unit_meta"
+                  }
+                }
+              },
+              "name": "_unit_meta"
+            }
+          }
+        },
+        {
+          "name": "site_id",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "group_id",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 5,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "value",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 6,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 7,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 8,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT\n           record_id, meta as \"meta: Vec<UnitMeta>\", site_id, user_id, group_id, components as \"components: Vec<Component>\",\n           start_time as \"start_time?\", stop_time, runtime\n           FROM accounting\n           ORDER BY stop_time\n        "
   },
   "a0efb85a024e1f2e9b1775b41cd0beb860517f14645ac3f32b1cd94639d411a9": {
     "describe": {
@@ -274,118 +607,6 @@
     },
     "query": "SELECT group_id as \"name!\", count(*) as \"num!\"\n               FROM accounting\n               WHERE group_id IS NOT NULL\n               GROUP BY group_id;"
   },
-  "ab15f2bcb566e1bd3fb4cc1d0872140c9c042bf546250a9312b62ab8b4af86f9": {
-    "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "site_id",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "group_id",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 4,
-          "type_info": {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          }
-        },
-        {
-          "name": "start_time?",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 6,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 7,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Timestamptz"
-        ]
-      }
-    },
-    "query": "SELECT\n                record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n                start_time as \"start_time?\", stop_time, runtime\n                FROM accounting\n                WHERE stop_time > $1 and runtime IS NOT NULL\n                ORDER BY stop_time\n                "
-  },
   "b205b9e460541ad09dcd6de4d75df490a88f4b31b3ef45a9ec68047c39081eb5": {
     "describe": {
       "columns": [
@@ -403,116 +624,6 @@
       }
     },
     "query": "SELECT count(*) as \"count!\" FROM accounting;"
-  },
-  "c725a216e9e37f0ca9c6fa6d12fd586cbf7b359380f57526a2c0d5f16d10b33c": {
-    "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "site_id",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "group_id",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 4,
-          "type_info": {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          }
-        },
-        {
-          "name": "start_time?",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 6,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 7,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT\n           record_id, site_id, user_id, group_id, components as \"components: Vec<Component>\",\n           start_time as \"start_time?\", stop_time, runtime\n           FROM accounting\n           ORDER BY stop_time\n        "
   },
   "fedad59ceb43fb163bae765fdd12949cddb641d68677177e5e6483a358ced32a": {
     "describe": {
