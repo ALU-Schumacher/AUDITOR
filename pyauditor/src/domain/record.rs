@@ -76,6 +76,7 @@ impl Record {
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
+                meta: Some(vec![]),
                 site_id: Some(ValidName::parse(site_id)?.as_ref().to_owned()),
                 user_id: Some(ValidName::parse(user_id)?.as_ref().to_owned()),
                 group_id: Some(ValidName::parse(group_id)?.as_ref().to_owned()),
@@ -85,6 +86,29 @@ impl Record {
                 runtime: None,
             },
         })
+    }
+
+    /// with_meta(name: String, values: [String])
+    /// Adds an element to the meta field of the record.
+    /// Use this method multiple times to attach multiple
+    /// meta entries.
+    ///
+    /// :param name: Name of the entry
+    /// :type name: String
+    /// :param values: Values associated with the name
+    /// :type values: [String]
+    fn with_meta(
+        mut self_: PyRefMut<Self>,
+        name: String,
+        values: Vec<String>,
+    ) -> Result<PyRefMut<Self>, Error> {
+        self_
+            .inner
+            .meta
+            .as_mut()
+            .unwrap()
+            .push((name, values).into());
+        Ok(self_)
     }
 
     /// with_component(component: Component)

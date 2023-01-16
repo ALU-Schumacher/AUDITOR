@@ -18,13 +18,6 @@ use super::ValidName;
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct Meta(pub HashMap<ValidName, Vec<ValidName>>);
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, sqlx::Encode)]
-#[sqlx(type_name = "unit_meta")]
-pub struct UnitMeta {
-    key: String,
-    value: Vec<String>,
-}
-
 impl Meta {
     pub fn len(&self) -> usize {
         self.0.len()
@@ -95,6 +88,24 @@ impl TryFrom<Vec<UnitMeta>> for Meta {
                 })
                 .collect::<Result<_, Self::Error>>()?,
         ))
+    }
+}
+
+#[derive(
+    Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, sqlx::Encode, PartialOrd, Ord,
+)]
+#[sqlx(type_name = "unit_meta")]
+pub struct UnitMeta {
+    key: String,
+    value: Vec<String>,
+}
+
+impl<T: AsRef<str>> From<(T, Vec<T>)> for UnitMeta {
+    fn from(m: (T, Vec<T>)) -> Self {
+        Self {
+            key: m.0.as_ref().to_string(),
+            value: m.1.iter().map(|v| v.as_ref().to_string()).collect(),
+        }
     }
 }
 
