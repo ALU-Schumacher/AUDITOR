@@ -63,9 +63,9 @@ pub async fn add(
     record: web::Json<RecordAdd>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, AddError> {
-    add_record(&record, &pool).await.map_err(|e| {
-        // AddError::UnexpectedError(e.into())
-        match e.0.as_database_error() {
+    add_record(&record, &pool)
+        .await
+        .map_err(|e| match e.0.as_database_error() {
             Some(db_err) => match db_err.code().as_ref() {
                 Some(code) => match code.as_ref() {
                     "23505" => AddError::RecordExists,
@@ -74,8 +74,7 @@ pub async fn add(
                 _ => AddError::UnexpectedError(e.into()),
             },
             _ => AddError::UnexpectedError(e.into()),
-        }
-    })?;
+        })?;
     Ok(HttpResponse::Ok().finish())
 }
 

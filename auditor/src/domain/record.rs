@@ -193,9 +193,20 @@ impl Dummy<Faker> for RecordTest {
                 .collect::<Vec<_>>()
         };
         let fakedate = || -> DateTime<Utc> { Faker.fake() };
+        let fakemeta = || -> HashMap<String, Vec<String>> {
+            (0..(0..3u64).fake())
+                .map(|_| {
+                    (
+                        fakename(),
+                        (0..(0..3u64).fake()).map(|_| fakename()).collect(),
+                    )
+                })
+                .collect()
+        };
 
         let mut out = RecordTest::new()
             .with_record_id(fakename())
+            .with_meta(fakemeta())
             .with_site_id(fakename())
             .with_user_id(fakename())
             .with_group_id(fakename())
