@@ -149,6 +149,7 @@ async fn main() -> Result<(), Error> {
 
     let record = RecordAdd::new(
         format!("{}-{job_id}", make_string_valid(&config.record_prefix)),
+        HashMap::new(),
         make_string_valid(&config.site_id),
         make_string_valid(job["UserId"].split('(').take(1).collect::<Vec<_>>()[0]),
         make_string_valid(job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0]),
