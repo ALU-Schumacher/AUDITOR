@@ -30,6 +30,10 @@ impl Meta {
         self.0.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
         self.0
             .iter()
