@@ -9,7 +9,7 @@
 
 use crate::domain::Component;
 use anyhow::Error;
-use auditor::domain::ValidName;
+use auditor::domain::{Meta, ValidName};
 use chrono::{offset::TimeZone, Utc};
 use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
@@ -76,7 +76,7 @@ impl Record {
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
-                meta: Some(vec![]),
+                meta: Some(Meta::new()),
                 site_id: Some(ValidName::parse(site_id)?.as_ref().to_owned()),
                 user_id: Some(ValidName::parse(user_id)?.as_ref().to_owned()),
                 group_id: Some(ValidName::parse(group_id)?.as_ref().to_owned()),
@@ -102,12 +102,13 @@ impl Record {
         name: String,
         values: Vec<String>,
     ) -> Result<PyRefMut<Self>, Error> {
-        self_
-            .inner
-            .meta
-            .as_mut()
-            .unwrap()
-            .push((name, values).into());
+        self_.inner.meta.as_mut().unwrap().insert(
+            ValidName::parse(name)?.as_ref().to_owned(),
+            values
+                .into_iter()
+                .map(|v| -> Result<_, Error> { Ok(ValidName::parse(v)?.as_ref().to_owned()) })
+                .collect::<Result<_, _>>()?,
+        );
         Ok(self_)
     }
 

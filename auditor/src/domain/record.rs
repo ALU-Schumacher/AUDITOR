@@ -9,7 +9,7 @@
 
 use std::collections::HashMap;
 
-use super::{Component, ComponentTest, Meta, ScoreTest, UnitMeta, ValidName};
+use super::{Component, ComponentTest, Meta, ScoreTest, UnitMeta, ValidMeta, ValidName};
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordAdd {
     pub record_id: ValidName,
-    pub meta: Meta,
+    pub meta: ValidMeta,
     pub site_id: ValidName,
     pub user_id: ValidName,
     pub group_id: ValidName,
@@ -42,7 +42,7 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
     pub record_id: String,
     pub meta: Option<Meta>,
@@ -418,7 +418,7 @@ impl TryFrom<RecordTest> for Record {
     type Error = Error;
 
     fn try_from(value: RecordTest) -> Result<Self, Self::Error> {
-        let meta: Meta = value.meta.unwrap_or_default().try_into()?;
+        let meta: ValidMeta = value.meta.unwrap_or_default().try_into()?;
         Ok(Record {
             record_id: ValidName::parse(
                 value
@@ -427,7 +427,7 @@ impl TryFrom<RecordTest> for Record {
             )?
             .as_ref()
             .to_string(),
-            meta: Some(meta),
+            meta: Some(meta.into()),
             site_id: if let Some(site_id) = value.site_id {
                 Some(ValidName::parse(site_id)?.as_ref().to_string())
             } else {
