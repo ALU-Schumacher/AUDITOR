@@ -43,8 +43,8 @@ impl ValidMeta {
         self.0
             .iter()
             .map(|(k, v)| UnitMeta {
-                key: k.to_string(),
-                value: v.iter().map(|s| s.to_string()).collect(),
+                key: k.as_ref().to_string(),
+                value: v.iter().map(|s| s.as_ref().to_string()).collect(),
             })
             .collect::<Vec<_>>()
     }
@@ -182,14 +182,18 @@ impl Meta {
         self.0
             .iter()
             .map(|(k, v)| UnitMeta {
-                key: k.to_string(),
-                value: v.iter().map(|s| s.to_string()).collect(),
+                key: k.clone(),
+                value: v.clone(),
             })
             .collect::<Vec<_>>()
     }
 
     pub fn insert(&mut self, name: String, values: Vec<String>) {
         self.0.insert(name, values);
+    }
+
+    pub fn get<T: AsRef<str>>(&self, key: T) -> Option<&Vec<String>> {
+        self.0.get(key.as_ref())
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
 use auditor::domain::{
-    Component, Meta, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta,
+    Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta, ValidMeta,
 };
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
@@ -158,7 +158,7 @@ async fn get_returns_a_list_of_records() {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
-            Meta::try_from(record.meta.clone().unwrap())
+            ValidMeta::try_from(record.meta.clone().unwrap())
                 .unwrap()
                 .to_vec_unit(),
             record.site_id.as_ref(),
@@ -234,7 +234,7 @@ async fn get_started_since_returns_a_list_of_records() {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
-            Meta::try_from(record.meta.clone().unwrap())
+            ValidMeta::try_from(record.meta.clone().unwrap())
                 .unwrap()
                 .to_vec_unit(),
             record.site_id.as_ref(),
@@ -318,7 +318,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             record.record_id.as_ref(),
-            Meta::try_from(record.meta.clone().unwrap())
+            ValidMeta::try_from(record.meta.clone().unwrap())
                 .unwrap()
                 .to_vec_unit(),
             record.site_id.as_ref(),
