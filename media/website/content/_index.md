@@ -46,7 +46,7 @@ cd AUDITOR
 To migrate the database, run the following from the root directory of the repo:
 
 ```bash
-# Adapt these variables to your setup
+# Adapt thesee variables to your setup
 DB_USER="postgres"
 DB_PASSWORD="password"
 DB_NAME="auditor"
@@ -128,7 +128,7 @@ Database metrics export can be configured in the configuration:
 ```yaml
 metrics:
   database:
-    # How often thes values are computed (default: every 30 seconds)
+    # How often these values are computed (default: every 30 seconds)
     frequency: 30
     # Type of metrics to export (default: None)
     metrics:
@@ -147,7 +147,7 @@ The frequency setting should be somewhat in accordance with the Prometheus scrap
 # Compiling Auditor
 
 Alternatively, Auditor can be compiled and run directly.
-This section descibes how to set up the required development environment.
+This section describes how to set up the required development environment.
 It also covers cross compiling and static linking against `musl` instead of `glibc` in order to obtain a maximally portable binary.
 
 ## Prerequisites
@@ -196,7 +196,7 @@ cargo run
 ```
 
 Calling `./scripts/db_init.sh` will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
-If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling `db_init.sh` pass the correct settings to auditor via the configuration environement variables mentioned above.
+If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling `db_init.sh` pass the correct settings to auditor via the configuration environment variables mentioned above.
 Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:
 
 ```bash
@@ -246,7 +246,7 @@ The binary will only link to the system `glibc`.
 Fully statically linked binaries can be obtained by statically linking against `musl` instead auf `glibc`.
 This can be beneficial when cross compiling, in particular for older targets (e.g. CentOS7).
 This requires the `musl` dev tools to be installed on the system where Auditor is compiled.
-The exact packages needed depends on your Linux distribtion.
+The exact packages needed depends on your Linux distribution.
 Furthermore, the `x86_64-unknown-linux-musl` target for Rust must be installed (once):
 
 ```bash

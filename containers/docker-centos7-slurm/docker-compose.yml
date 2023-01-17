@@ -7,7 +7,7 @@ services:
     extra_hosts:
       # "host.docker.internal" will resolve to the hosts IP
       - "host.docker.internal:host-gateway"
-    # Persistance not wanted.
+    # Persistence not wanted.
     # volumes:
     #   - ./volumes/lib:/var/lib/slurmd
     #   - ./volumes/spool:/var/spool/slurm

@@ -17,7 +17,7 @@ Records are created and pushed to Auditor, which stores them in a database.
 These records can then be requested again from Auditor to take an action based on the information stored in the records.
 
 A record consists of a unique identifier and meta information which provides some context (associated site, group, user).
-It also contains an arbitraty number of `components` that are to be accounted for (CPU, RAM, Disk, ...) and the amount of each of these components.
+It also contains an arbitrary number of `components` that are to be accounted for (CPU, RAM, Disk, ...) and the amount of each of these components.
 The components can optionally be enhanced with `scores`  which are are floating point values which put components of the same kind, but different performance in relation to each other.
 For instance, in case of CPUs these could be HEPSPEC06 benchmark values.
 

@@ -109,7 +109,7 @@ async fn main() -> Result<()> {
 
     tokio::select! {
         _ = signal::ctrl_c() => {
-            tracing::info!("CTRL-C recieved");
+            tracing::info!("CTRL-C received");
         },
         _ = shutdown_recv.recv() => {
             tracing::info!("Shutdown signal from inside application received.");

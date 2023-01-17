@@ -33,7 +33,7 @@
 **AUDITOR** is short for 
 <b>A</b>cco<b>U</b>nting <b>D</b>ata handl<b>I</b>ng <b>T</b>oolbox for <b>O</b>pportunistic <b>R</b>esources.
 It allows one to flexibly build accounting pipelines for various use cases and environments.
-AUDITOR sits at the core of the pipline as the provider of the storage for the accounting records.
+AUDITOR sits at the core of the pipeline as the provider of the storage for the accounting records.
 Via a REST interface, records can be pushed into or pulled from AUDITOR.
 *Collectors* are used to collect accounting data form a source and push it to AUDITOR, while *plugins* pull data from AUDITOR for further processing.
 Plugins and collectors are problem- and environment-specific and can be combined as needed. 
