@@ -10,6 +10,14 @@ RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 DB_NAME=${DB_NAME:=$(uuidgen)}
 
+function stop_container() {
+	echo >&2 "Stopping container"
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		down
+}
+
 function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
@@ -58,13 +66,6 @@ function start_container() {
 	done
 }
 
-function stop_container() {
-	echo >&2 "Stopping container"
-	docker compose \
-		--file $DOCKER_COMPOSE_FILE \
-		--project-directory=$DOCKER_PROJECT_DIR \
-		down
-}
 
 function compile_auditor() {
 	if [ "$RELEASE_MODE" = true ]; then
@@ -88,6 +89,12 @@ function compile_plugin() {
 			--bin auditor-priority-plugin
 	fi
 }
+
+function stop_auditor() {
+	echo >&2 "Stopping Auditor"
+	kill $AUDITOR_SERVER_PID
+}
+
 
 function start_auditor() {
 	if [[ -z "${SKIP_COMPILATION}" ]]
@@ -114,41 +121,36 @@ function start_auditor() {
 	done
 }
 
-function stop_auditor() {
-	echo >&2 "Stopping Auditor"
-	kill $AUDITOR_SERVER_PID
-}
-
 function fill_auditor() {
 	# Group1 (40 * 1.2 * 60 + 40 * 1.5 * 4*60 = 17280)
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "1", "site_id": "test", "user_id": "stefan", "group_id": "group1", "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.2 }] }], "start_time": "2022-06-27T15:00:00Z", "stop_time": "2022-06-27T15:01:00Z" }' \
+                --data '{ "record_id": "1", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group1"], "site_id": "test", "user_id": "stefan", "group_id": "group1", "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.2 }] }], "start_time": "2022-06-27T15:00:00Z", "stop_time": "2022-06-27T15:01:00Z" }' \
                 http://localhost:8000/add
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "2", "site_id": "test", "user_id": "stefan", "group_id": "group1", "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.5 }] }], "start_time": "2022-06-27T16:00:00Z", "stop_time": "2022-06-27T16:04:00Z" }' \
+                --data '{ "record_id": "2", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group1"], "site_id": "test", "user_id": "stefan", "group_id": "group1", "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.5 }] }], "start_time": "2022-06-27T16:00:00Z", "stop_time": "2022-06-27T16:04:00Z" }' \
                 http://localhost:8000/add
 
 	# Group2 (20 * 1.8 * 8*60 + 10 * 0.8 * 60 = 17760)
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "3", "site_id": "test", "user_id": "stefan", "group_id": "group2", "components": [{ "name": "NumCPUs", "amount": 20, "scores": [{ "name": "HEPSPEC", "value": 1.8 }] }], "start_time": "2022-06-27T14:00:00Z", "stop_time": "2022-06-27T14:08:00Z" }' \
+                --data '{ "record_id": "3", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group2"], "site_id": "test", "user_id": "stefan", "group_id": "group2", "components": [{ "name": "NumCPUs", "amount": 20, "scores": [{ "name": "HEPSPEC", "value": 1.8 }] }], "start_time": "2022-06-27T14:00:00Z", "stop_time": "2022-06-27T14:08:00Z" }' \
                 http://localhost:8000/add
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "4", "site_id": "test", "user_id": "stefan", "group_id": "group2", "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "value": 0.8 }] }], "start_time": "2022-06-27T13:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
+                --data '{ "record_id": "4", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group2"], "site_id": "test", "user_id": "stefan", "group_id": "group2", "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "value": 0.8 }] }], "start_time": "2022-06-27T13:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
                 http://localhost:8000/add
 
 	# Group3 (80 * 1.0 * 5 * 60 = 24000)
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "5", "site_id": "test", "user_id": "stefan", "group_id": "group3", "components": [{ "name": "NumCPUs", "amount": 80, "scores": [{ "name": "HEPSPEC", "value": 1.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T12:05:00Z" }' \
+                --data '{ "record_id": "5", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group3"], "site_id": "test", "user_id": "stefan", "group_id": "group3", "components": [{ "name": "NumCPUs", "amount": 80, "scores": [{ "name": "HEPSPEC", "value": 1.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T12:05:00Z" }' \
                 http://localhost:8000/add
 
 	# Group4 (10 * 1.0 * 60 = 600)
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "6", "site_id": "test", "user_id": "stefan", "group_id": "group4", "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "value": 1.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T12:01:00Z" }' \
+                --data '{ "record_id": "6", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group4"], "site_id": "test", "user_id": "stefan", "group_id": "group4", "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "value": 1.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T12:01:00Z" }' \
                 http://localhost:8000/add
 
   # Group5 (Is not configured and therefore is not allowed to affect the calculation)
 	curl --header "Content-Type: application/json" \
-                --data '{ "record_id": "7", "site_id": "test", "user_id": "stefan", "group_id": "group5", "components": [{ "name": "NumCPUs", "amount": 10000, "scores": [{ "name": "HEPSPEC", "value": 100.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
+                --data '{ "record_id": "7", "meta": ["site_id": "test", "user_id": "stefan", "group_id": "group5"], "site_id": "test", "user_id": "stefan", "group_id": "group5", "components": [{ "name": "NumCPUs", "amount": 10000, "scores": [{ "name": "HEPSPEC", "value": 100.0 }] }], "start_time": "2022-06-27T12:00:00Z", "stop_time": "2022-06-27T13:01:00Z" }' \
                 http://localhost:8000/add
 }
 
@@ -181,6 +183,14 @@ function test_priority_plugin_scaledbysum() {
 }
 
 SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
+
+cleanup_exit() {
+  setsid nohup bash -c "
+		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
+    kill $AUDITOR_SERVER_PID
+  "
+}
+trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
 
 if [[ -z "${SKIP_COMPILATION}" ]]
 then
