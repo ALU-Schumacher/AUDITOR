@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap};
 
 use serde::{Deserialize, Serialize};
 use sqlx::{
@@ -18,37 +18,37 @@ use super::ValidName;
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct ValidMeta(pub HashMap<ValidName, Vec<ValidName>>);
 
-// impl ValidMeta {
-//     pub fn len(&self) -> usize {
-//         self.0.len()
-//     }
+impl ValidMeta {
+    // pub fn len(&self) -> usize {
+    //     self.0.len()
+    // }
 
-//     pub fn is_empty(&self) -> bool {
-//         self.len() == 0
-//     }
+    // pub fn is_empty(&self) -> bool {
+    //     self.len() == 0
+    // }
 
-//     pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
-//         self.0
-//             .iter()
-//             .map(|(k, v)| {
-//                 (
-//                     k.as_ref().to_string(),
-//                     v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
-//                 )
-//             })
-//             .collect::<Vec<_>>()
-//     }
+    // pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
+    //     self.0
+    //         .iter()
+    //         .map(|(k, v)| {
+    //             (
+    //                 k.as_ref().to_string(),
+    //                 v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
+    //             )
+    //         })
+    //         .collect::<Vec<_>>()
+    // }
 
-//     pub fn to_vec_unit(&self) -> Vec<UnitMeta> {
-//         self.0
-//             .iter()
-//             .map(|(k, v)| UnitMeta {
-//                 key: k.to_string(),
-//                 value: v.iter().map(|s| s.to_string()).collect(),
-//             })
-//             .collect::<Vec<_>>()
-//     }
-// }
+    pub fn to_vec_unit(&self) -> Vec<UnitMeta> {
+        self.0
+            .iter()
+            .map(|(k, v)| UnitMeta {
+                key: k.to_string(),
+                value: v.iter().map(|s| s.to_string()).collect(),
+            })
+            .collect::<Vec<_>>()
+    }
+}
 
 impl<T: AsRef<str>> TryFrom<HashMap<T, Vec<T>>> for ValidMeta {
     type Error = anyhow::Error;
@@ -81,6 +81,26 @@ impl TryFrom<Vec<UnitMeta>> for ValidMeta {
                     Ok((
                         ValidName::parse(um.key)?,
                         um.value
+                            .into_iter()
+                            .map(|v| -> Result<_, Self::Error> { Ok(ValidName::parse(v)?) })
+                            .collect::<Result<Vec<ValidName>, Self::Error>>()?,
+                    ))
+                })
+                .collect::<Result<_, Self::Error>>()?,
+        ))
+    }
+}
+
+impl TryFrom<Meta> for ValidMeta {
+    type Error = anyhow::Error;
+
+    fn try_from(m: Meta) -> Result<Self, Self::Error> {
+        Ok(Self(
+            m.0.into_iter()
+                .map(|(key, value)| -> Result<_, Self::Error> {
+                    Ok((
+                        ValidName::parse(key)?,
+                        value
                             .into_iter()
                             .map(|v| -> Result<_, Self::Error> { Ok(ValidName::parse(v)?) })
                             .collect::<Result<Vec<ValidName>, Self::Error>>()?,
@@ -139,6 +159,10 @@ impl PgHasArrayType for UnitMeta {
 pub struct Meta(pub HashMap<String, Vec<String>>);
 
 impl Meta {
+    pub fn new() -> Self {
+        Self(HashMap::new())
+    }
+
     pub fn len(&self) -> usize {
         self.0.len()
     }
@@ -162,6 +186,27 @@ impl Meta {
                 value: v.iter().map(|s| s.to_string()).collect(),
             })
             .collect::<Vec<_>>()
+    }
+
+    pub fn insert(&mut self, name: String, values: Vec<String>) {
+        self.0.insert(name, values);
+    }
+}
+
+impl From<ValidMeta> for Meta {
+    fn from(m: ValidMeta) -> Self {
+        Self(
+            m.0.into_iter()
+                .map(|(k, v)| {
+                    (
+                        k.as_ref().to_string(),
+                        v.into_iter()
+                            .map(|v| v.as_ref().to_string())
+                            .collect::<Vec<String>>(),
+                    )
+                })
+                .collect(),
+        )
     }
 }
 
@@ -193,5 +238,17 @@ impl TryFrom<Vec<UnitMeta>> for Meta {
                 .map(|um| -> Result<_, Self::Error> { Ok((um.key.clone(), um.value)) })
                 .collect::<Result<_, Self::Error>>()?,
         ))
+    }
+}
+
+impl PartialOrd for Meta {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Meta {
+    fn cmp(&self, _other: &Self) -> Ordering {
+        Ordering::Equal
     }
 }
