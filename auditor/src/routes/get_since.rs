@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::domain::{Component, Record, UnitMeta};
+use crate::domain::{Component, Record, RecordDatabase, UnitMeta};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx;
@@ -57,10 +57,10 @@ pub async fn get_records_since(
     info: &(StartedStopped, DateTime<Utc>),
     pool: &PgPool,
 ) -> Result<Vec<Record>, anyhow::Error> {
-    Ok(match info.0 {
+    match info.0 {
         StartedStopped::Started => {
             sqlx::query_as!(
-                Record,
+                RecordDatabase,
                 r#"SELECT
                 record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
                 start_time as "start_time?", stop_time, runtime
@@ -75,7 +75,7 @@ pub async fn get_records_since(
         }
         StartedStopped::Stopped => {
             sqlx::query_as!(
-                Record,
+                RecordDatabase,
                 r#"SELECT
                 record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
                 start_time as "start_time?", stop_time, runtime
@@ -89,7 +89,10 @@ pub async fn get_records_since(
             .await
         }
     }
-    .map_err(GetRecordSinceError)?)
+    .map_err(GetRecordSinceError)?
+    .into_iter()
+    .map(Record::try_from)
+    .collect::<Result<Vec<Record>, anyhow::Error>>()
 }
 
 pub struct GetRecordSinceError(sqlx::Error);

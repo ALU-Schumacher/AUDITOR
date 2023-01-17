@@ -42,8 +42,21 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Record {
+    pub record_id: String,
+    pub meta: Option<Meta>,
+    pub site_id: Option<String>,
+    pub user_id: Option<String>,
+    pub group_id: Option<String>,
+    pub components: Option<Vec<Component>>,
+    pub start_time: Option<DateTime<Utc>>,
+    pub stop_time: Option<DateTime<Utc>>,
+    pub runtime: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct RecordDatabase {
     pub record_id: String,
     pub meta: Option<Vec<UnitMeta>>,
     pub site_id: Option<String>,
@@ -414,7 +427,7 @@ impl TryFrom<RecordTest> for Record {
             )?
             .as_ref()
             .to_string(),
-            meta: Some(meta.to_vec_unit()),
+            meta: Some(meta),
             site_id: if let Some(site_id) = value.site_id {
                 Some(ValidName::parse(site_id)?.as_ref().to_string())
             } else {
@@ -447,6 +460,40 @@ impl TryFrom<RecordTest> for Record {
             } else {
                 None
             },
+        })
+    }
+}
+
+impl TryFrom<RecordDatabase> for Record {
+    type Error = Error;
+
+    fn try_from(other: RecordDatabase) -> Result<Self, Self::Error> {
+        let RecordDatabase {
+            record_id,
+            meta,
+            site_id,
+            user_id,
+            group_id,
+            components,
+            start_time,
+            stop_time,
+            runtime,
+        } = other;
+        let meta = if let Some(meta) = meta {
+            Some(meta.try_into()?)
+        } else {
+            None
+        };
+        Ok(Self {
+            record_id,
+            meta,
+            site_id,
+            user_id,
+            group_id,
+            components,
+            start_time,
+            stop_time,
+            runtime,
         })
     }
 }

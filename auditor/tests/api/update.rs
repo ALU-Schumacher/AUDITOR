@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, Record, RecordTest, UnitMeta};
+use auditor::domain::{Component, Record, RecordDatabase, RecordTest, UnitMeta};
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -57,8 +57,8 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     assert_eq!(200, response.status().as_u16());
 
-    let saved = sqlx::query_as!(
-        Record,
+    let saved: Record = sqlx::query_as!(
+        RecordDatabase,
         r#"SELECT
            record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
@@ -69,7 +69,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     )
     .fetch_one(&app.db_pool)
     .await
-    .expect("Failed to fetch data.");
+    .expect("Failed to fetch data.").try_into().expect("Failed to convert RecordDatabase to Record.");
 
     assert_eq!(saved, body);
 }

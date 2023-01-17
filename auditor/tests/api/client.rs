@@ -1,6 +1,8 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
-use auditor::domain::{Component, Meta, Record, RecordAdd, RecordTest, RecordUpdate, UnitMeta};
+use auditor::domain::{
+    Component, Meta, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta,
+};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 
@@ -26,7 +28,7 @@ async fn add_records() {
     }
 
     let mut saved_records = sqlx::query_as!(
-        Record,
+        RecordDatabase,
         r#"SELECT
            record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
@@ -35,7 +37,7 @@ async fn add_records() {
     )
     .fetch_all(&app.db_pool)
     .await
-    .expect("Failed to fetch data.");
+    .expect("Failed to fetch data.").into_iter().map(Record::try_from).collect::<Result<Vec<Record>, _>>().expect("Failed to convert from RecordDatabase to Record.");
 
     // make sure they are both sorted
     test_cases_comp.sort_by(|a, b| {
@@ -92,7 +94,7 @@ async fn update_records() {
     }
 
     let mut saved_records = sqlx::query_as!(
-        Record,
+        RecordDatabase,
         r#"SELECT
            record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
            start_time as "start_time?", stop_time, runtime
@@ -101,7 +103,7 @@ async fn update_records() {
     )
     .fetch_all(&app.db_pool)
     .await
-    .expect("Failed to fetch data.");
+    .expect("Failed to fetch data.").into_iter().map(Record::try_from).collect::<Result<Vec<Record>, _>>().expect("Failed to convert from RecordDatabase to Record.");
 
     // make sure they are both sorted
     test_cases_comp.sort_by(|a, b| {
