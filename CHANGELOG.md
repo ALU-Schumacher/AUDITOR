@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced workspaces (as preparation for the python client written in Rust) ([@stefan-k](https://github.com/stefan-k)).
 - Better error handling in Auditor client code ([@stefan-k](https://github.com/stefan-k)).
 - Improved API of `Component` type ([@stefan-k](https://github.com/stefan-k)).
-- CI: Moved clippy pipline to beta channel ([@stefan-k](https://github.com/stefan-k)).
+- CI: Moved clippy pipeline to beta channel ([@stefan-k](https://github.com/stefan-k)).
 - Changed some of the interfaces in `domain` module to better fit pyauditor ([@stefan-k](https://github.com/stefan-k)).
 
 ### Fixed

@@ -128,7 +128,7 @@ impl Database {
         .execute(&mut transaction)
         .await?;
         if let Err(e) = transaction.commit().await {
-            Err(eyre!("Error commiting transaction: {:?}", e))
+            Err(eyre!("Error committing transaction: {:?}", e))
         } else {
             Ok(())
         }
