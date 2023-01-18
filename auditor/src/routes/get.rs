@@ -29,7 +29,7 @@ pub async fn get(pool: web::Data<PgPool>) -> Result<HttpResponse, GetError> {
 
 #[tracing::instrument(name = "Retrieving records from database", skip(pool))]
 pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
-    Ok(sqlx::query_as!(
+    sqlx::query_as!(
         RecordDatabase,
         r#"SELECT
            record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
@@ -43,7 +43,7 @@ pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
     .map_err(GetRecordError)?
     .into_iter()
     .map(Record::try_from)
-    .collect::<Result<Vec<Record>, anyhow::Error>>()?)
+    .collect::<Result<Vec<Record>, anyhow::Error>>()
 }
 
 pub struct GetRecordError(sqlx::Error);

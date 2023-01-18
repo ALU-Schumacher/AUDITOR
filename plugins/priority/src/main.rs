@@ -114,7 +114,7 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<ResourceName, Res
                     if config.group_mapping.contains_key(group_id) {
                         // we know that the key exists (we filled it beforehand), therefore we can unwrap
                         *resources.get_mut(group_id).unwrap() += val;
-                        println!("Resources: {:?}", resources);
+                        println!("Resources: {resources:?}");
                     }
                 }
             }
