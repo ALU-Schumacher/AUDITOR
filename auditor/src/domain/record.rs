@@ -33,7 +33,7 @@ pub struct RecordAdd {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordUpdate {
     pub record_id: ValidName,
-    // pub meta: Meta,
+    pub meta: ValidMeta,
     pub site_id: ValidName,
     pub user_id: ValidName,
     pub group_id: ValidName,
@@ -375,6 +375,7 @@ impl TryFrom<RecordTest> for RecordUpdate {
                     .record_id
                     .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
+            meta: value.meta.unwrap_or_default().try_into()?,
             site_id: ValidName::parse(value.site_id.unwrap_or_default())?,
             user_id: ValidName::parse(value.user_id.unwrap_or_default())?,
             group_id: ValidName::parse(value.group_id.unwrap_or_default())?,
@@ -396,6 +397,7 @@ impl TryFrom<Record> for RecordUpdate {
     fn try_from(value: Record) -> Result<Self, Self::Error> {
         Ok(RecordUpdate {
             record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
+            meta: value.meta.unwrap_or_default().try_into()?,
             site_id: ValidName::parse(value.site_id.unwrap_or_default())
                 .context("Failed to parse site_id.")?,
             user_id: ValidName::parse(value.user_id.unwrap_or_default())
