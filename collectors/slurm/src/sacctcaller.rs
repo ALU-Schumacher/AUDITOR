@@ -174,9 +174,15 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         if record_id == last_record_id {
             return Ok(None);
         }
+        let meta = HashMap::from([
+            ("site_id".to_string(), vec![make_string_valid(site.clone())]),
+            ("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]),
+            ("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]),
+        ]);
         Ok(Some(
            RecordAdd::new(
                record_id,
+               meta,
                make_string_valid(site),
                make_string_valid(map[USER].extract_string()?),
                make_string_valid(map[GROUP].extract_string()?),
