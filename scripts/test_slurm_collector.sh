@@ -153,7 +153,7 @@ function test_collector() {
 		exit 1
 	fi
 
-	if [ $(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .site_id') != '"SiteA"' ]
+	if [ $(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .site_id | .[0]') != '"SiteA"' ]
 	then
 		echo >&2 "Incorrect site_id of record in accounting database. Returned record:"
 		echo >&2 $TEST1
@@ -185,7 +185,7 @@ function test_collector() {
 		exit 1
 	fi
 
-	if [ $(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .site_id') != '"SiteB"' ]
+	if [ $(echo $TEST2 | jq '.[] | select(.record_id=="slurm-2") | .meta | .site_id | .[0]') != '"SiteB"' ]
 	then
 		echo >&2 "Incorrect site_id of record in accounting database. Returned record:"
 		echo >&2 $TEST1
