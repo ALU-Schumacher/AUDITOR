@@ -9,8 +9,11 @@ use crate::constants::{ERR_RECORD_EXISTS, ERR_UNEXPECTED_ERROR};
 use crate::domain::RecordAdd;
 use actix_web::{web, HttpResponse, ResponseError};
 use chrono::Utc;
-use sqlx;
+use itertools::Itertools;
 use sqlx::PgPool;
+use sqlx::{self, QueryBuilder};
+
+const BIND_LIMIT: usize = 65535;
 
 #[derive(thiserror::Error)]
 pub enum AddError {
@@ -85,16 +88,20 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
         _ => None,
     };
 
+    let mut transaction = match pool.begin().await {
+        Ok(transaction) => transaction,
+        Err(e) => return Err(AddRecordError(e)),
+    };
+
     sqlx::query_unchecked!(
         r#"
         INSERT INTO accounting (
-            record_id, meta, site_id, user_id, group_id,
+            record_id, site_id, user_id, group_id,
             components, start_time, stop_time, runtime, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         "#,
         record.record_id.as_ref(),
-        record.meta.to_vec_unit(),
         record.site_id.as_ref(),
         record.user_id.as_ref(),
         record.group_id.as_ref(),
@@ -104,11 +111,37 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
         runtime,
         Utc::now()
     )
-    .execute(pool)
+    .execute(&mut transaction)
     .await
     .map_err(AddRecordError)?;
 
-    Ok(())
+    let mut query_builder: QueryBuilder<sqlx::Postgres> =
+        QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+
+    if let Some(data) = record.meta.as_ref() {
+        let data = data.to_vec_unit();
+
+        for chunk in &data.into_iter().chunks(BIND_LIMIT / 4) {
+            query_builder.push_values(
+                chunk.map(|m| (record.record_id.as_ref().to_string(), m.clone())),
+                |mut b, m| {
+                    b.push_bind(m.0).push_bind(m.1);
+                },
+            );
+
+            query_builder
+                .build()
+                .execute(&mut transaction)
+                .await
+                .map_err(AddRecordError)?;
+        }
+    }
+
+    if let Err(e) = transaction.commit().await {
+        Err(AddRecordError(e))
+    } else {
+        Ok(())
+    }
 }
 
 pub struct AddRecordError(sqlx::Error);

@@ -1,10 +1,14 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
 use auditor::domain::{
-    Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta, ValidMeta,
+    Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta,
 };
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
+use itertools::Itertools;
+use sqlx::QueryBuilder;
+
+const BIND_LIMIT: usize = 65535;
 
 #[tokio::test]
 async fn add_records() {
@@ -29,15 +33,31 @@ async fn add_records() {
 
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT
-           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time as "start_time?", stop_time, runtime
-           FROM accounting
-        "#
+        r#"SELECT a.record_id,
+                  m.meta as "meta: Vec<UnitMeta>",
+                  a.site_id,
+                  a.user_id,
+                  a.group_id,
+                  a.components as "components: Vec<Component>",
+                  a.start_time as "start_time?",
+                  a.stop_time,
+                  a.runtime
+           FROM accounting a
+           LEFT JOIN (
+               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               FROM meta as m
+               GROUP BY m.record_id
+               ) m ON m.record_id = a.record_id
+           ORDER BY a.stop_time;
+            "#,
     )
     .fetch_all(&app.db_pool)
     .await
-    .expect("Failed to fetch data.").into_iter().map(Record::try_from).collect::<Result<Vec<Record>, _>>().expect("Failed to convert from RecordDatabase to Record.");
+    .expect("Failed to fetch data")
+    .into_iter()
+    .map(Record::try_from)
+    .collect::<Result<Vec<Record>, _>>()
+    .expect("Failed to convert from RecordDatabase to Record");
 
     // make sure they are both sorted
     test_cases_comp.sort_by(|a, b| {
@@ -95,15 +115,31 @@ async fn update_records() {
 
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT
-           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time as "start_time?", stop_time, runtime
-           FROM accounting
-        "#
+        r#"SELECT a.record_id,
+                  m.meta as "meta: Vec<UnitMeta>",
+                  a.site_id,
+                  a.user_id,
+                  a.group_id,
+                  a.components as "components: Vec<Component>",
+                  a.start_time as "start_time?",
+                  a.stop_time,
+                  a.runtime
+           FROM accounting a
+           LEFT JOIN (
+               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               FROM meta as m
+               GROUP BY m.record_id
+               ) m ON m.record_id = a.record_id
+           ORDER BY a.stop_time;
+            "#,
     )
     .fetch_all(&app.db_pool)
     .await
-    .expect("Failed to fetch data.").into_iter().map(Record::try_from).collect::<Result<Vec<Record>, _>>().expect("Failed to convert from RecordDatabase to Record.");
+    .expect("Failed to fetch data")
+    .into_iter()
+    .map(Record::try_from)
+    .collect::<Result<Vec<Record>, _>>()
+    .expect("Failed to convert from RecordDatabase to Record");
 
     // make sure they are both sorted
     test_cases_comp.sort_by(|a, b| {
@@ -149,18 +185,17 @@ async fn get_returns_a_list_of_records() {
 
     for record in test_cases.iter() {
         let runtime = (record.stop_time.unwrap() - record.start_time.unwrap()).num_seconds();
+        let mut transaction = app.db_pool.begin().await.unwrap();
+
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, meta, site_id, user_id, group_id,
+                record_id, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             "#,
             record.record_id.as_ref(),
-            ValidMeta::try_from(record.meta.clone().unwrap())
-                .unwrap()
-                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),
@@ -178,9 +213,36 @@ async fn get_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .execute(&app.db_pool)
+        .execute(&mut transaction)
         .await
         .unwrap();
+
+        let mut query_builder: QueryBuilder<sqlx::Postgres> =
+            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+
+        if let Some(data) = record.meta.as_ref() {
+            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
+                query_builder.push_values(
+                    chunk.map(|m| {
+                        (
+                            record.record_id.as_ref().unwrap().clone(),
+                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                        )
+                    }),
+                    |mut b, m| {
+                        b.push_bind(m.0).push_bind(m.1);
+                    },
+                );
+
+                query_builder
+                    .build()
+                    .execute(&mut transaction)
+                    .await
+                    .unwrap();
+            }
+        }
+
+        transaction.commit().await.unwrap();
     }
 
     let mut received_records = client.get().await.unwrap();
@@ -225,18 +287,18 @@ async fn get_started_since_returns_a_list_of_records() {
 
     for record in test_cases.iter() {
         let runtime = (record.stop_time.unwrap() - record.start_time.unwrap()).num_seconds();
+
+        let mut transaction = app.db_pool.begin().await.unwrap();
+
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, meta, site_id, user_id, group_id,
+                record_id, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             "#,
             record.record_id.as_ref(),
-            ValidMeta::try_from(record.meta.clone().unwrap())
-                .unwrap()
-                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),
@@ -254,9 +316,36 @@ async fn get_started_since_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .execute(&app.db_pool)
+        .execute(&mut transaction)
         .await
         .unwrap();
+
+        let mut query_builder: QueryBuilder<sqlx::Postgres> =
+            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+
+        if let Some(data) = record.meta.as_ref() {
+            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
+                query_builder.push_values(
+                    chunk.map(|m| {
+                        (
+                            record.record_id.as_ref().unwrap().clone(),
+                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                        )
+                    }),
+                    |mut b, m| {
+                        b.push_bind(m.0).push_bind(m.1);
+                    },
+                );
+
+                query_builder
+                    .build()
+                    .execute(&mut transaction)
+                    .await
+                    .unwrap();
+            }
+        }
+
+        transaction.commit().await.unwrap();
     }
 
     let mut received_records = client
@@ -309,18 +398,18 @@ async fn get_stopped_since_returns_a_list_of_records() {
 
     for record in test_cases.iter() {
         let runtime = (record.stop_time.unwrap() - record.start_time.unwrap()).num_seconds();
+
+        let mut transaction = app.db_pool.begin().await.unwrap();
+
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, meta, site_id, user_id, group_id,
+                record_id, site_id, user_id, group_id,
                 components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             "#,
             record.record_id.as_ref(),
-            ValidMeta::try_from(record.meta.clone().unwrap())
-                .unwrap()
-                .to_vec_unit(),
             record.site_id.as_ref(),
             record.user_id.as_ref(),
             record.group_id.as_ref(),
@@ -338,9 +427,36 @@ async fn get_stopped_since_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .execute(&app.db_pool)
+        .execute(&mut transaction)
         .await
         .unwrap();
+
+        let mut query_builder: QueryBuilder<sqlx::Postgres> =
+            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+
+        if let Some(data) = record.meta.as_ref() {
+            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
+                query_builder.push_values(
+                    chunk.map(|m| {
+                        (
+                            record.record_id.as_ref().unwrap().clone(),
+                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                        )
+                    }),
+                    |mut b, m| {
+                        b.push_bind(m.0).push_bind(m.1);
+                    },
+                );
+
+                query_builder
+                    .build()
+                    .execute(&mut transaction)
+                    .await
+                    .unwrap();
+            }
+        }
+
+        transaction.commit().await.unwrap();
     }
 
     let mut received_records = client

@@ -89,6 +89,7 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
     .execute(&mut transaction)
     .await
     .map_err(UpdateRecordError::OtherError)?;
+
     if let Err(e) = transaction.commit().await {
         Err(UpdateRecordError::OtherError(e))
     } else {

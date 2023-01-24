@@ -8,10 +8,6 @@
 use std::{cmp::Ordering, collections::HashMap};
 
 use serde::{Deserialize, Serialize};
-use sqlx::{
-    postgres::{PgHasArrayType, PgTypeInfo},
-    Postgres, Type,
-};
 
 use super::ValidName;
 
@@ -27,17 +23,17 @@ impl ValidMeta {
     //     self.len() == 0
     // }
 
-    // pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
-    //     self.0
-    //         .iter()
-    //         .map(|(k, v)| {
-    //             (
-    //                 k.as_ref().to_string(),
-    //                 v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
-    //             )
-    //         })
-    //         .collect::<Vec<_>>()
-    // }
+    pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
+        self.0
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.as_ref().to_string(),
+                    v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
+                )
+            })
+            .collect::<Vec<_>>()
+    }
 
     pub fn to_vec_unit(&self) -> Vec<UnitMeta> {
         self.0
@@ -112,7 +108,7 @@ impl TryFrom<Meta> for ValidMeta {
 }
 
 #[derive(
-    Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, sqlx::Encode, PartialOrd, Ord,
+    Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, PartialOrd, Ord, sqlx::Type,
 )]
 #[sqlx(type_name = "unit_meta")]
 pub struct UnitMeta {
@@ -126,32 +122,6 @@ impl<T: AsRef<str>> From<(T, Vec<T>)> for UnitMeta {
             key: m.0.as_ref().to_string(),
             value: m.1.iter().map(|v| v.as_ref().to_string()).collect(),
         }
-    }
-}
-
-// manual impl of decode because of a compiler bug. See:
-// https://github.com/launchbadge/sqlx/issues/1031
-// https://github.com/rust-lang/rust/issues/82219
-impl sqlx::decode::Decode<'_, sqlx::Postgres> for UnitMeta {
-    fn decode(
-        value: sqlx::postgres::PgValueRef<'_>,
-    ) -> Result<Self, std::boxed::Box<dyn std::error::Error + 'static + Send + Sync>> {
-        let mut decoder = sqlx::postgres::types::PgRecordDecoder::new(value)?;
-        let key = decoder.try_decode::<String>()?;
-        let value = decoder.try_decode::<Vec<String>>()?;
-        Ok(UnitMeta { key, value })
-    }
-}
-
-impl Type<Postgres> for UnitMeta {
-    fn type_info() -> PgTypeInfo {
-        PgTypeInfo::with_name("_unit_meta")
-    }
-}
-
-impl PgHasArrayType for UnitMeta {
-    fn array_type_info() -> PgTypeInfo {
-        PgTypeInfo::with_name("_unit_meta")
     }
 }
 
