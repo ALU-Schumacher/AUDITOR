@@ -123,7 +123,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
 
         for chunk in &data.into_iter().chunks(BIND_LIMIT / 4) {
             query_builder.push_values(
-                chunk.map(|m| (record.record_id.as_ref().to_string(), m.clone())),
+                chunk.map(|m| (record.record_id.as_ref().to_string(), m)),
                 |mut b, m| {
                     b.push_bind(m.0).push_bind(m.1);
                 },
