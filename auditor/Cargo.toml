@@ -61,6 +61,7 @@ opentelemetry = "0.17"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
 thiserror = "1"
 prometheus = "0.13"
+itertools = "0.10.5"
 
 [dependencies.sqlx]
 version = "0.6.2"

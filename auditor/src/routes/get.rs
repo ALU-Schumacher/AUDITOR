@@ -31,12 +31,23 @@ pub async fn get(pool: web::Data<PgPool>) -> Result<HttpResponse, GetError> {
 pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
     sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT
-           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time as "start_time?", stop_time, runtime
-           FROM accounting
-           ORDER BY stop_time
-        "#,
+        r#"SELECT a.record_id,
+                  m.meta as "meta: Vec<UnitMeta>",
+                  a.site_id,
+                  a.user_id,
+                  a.group_id,
+                  a.components as "components: Vec<Component>",
+                  a.start_time as "start_time?",
+                  a.stop_time,
+                  a.runtime
+           FROM accounting a
+           LEFT JOIN (
+               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               FROM meta as m
+               GROUP BY m.record_id
+               ) m ON m.record_id = a.record_id
+           ORDER BY a.stop_time;
+            "#,
     )
     .fetch_all(pool)
     .await

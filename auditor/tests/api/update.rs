@@ -59,17 +59,31 @@ async fn update_returns_a_200_for_valid_form_data() {
 
     let saved: Record = sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT
-           record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-           start_time as "start_time?", stop_time, runtime
-           FROM accounting
-           WHERE record_id = $1
+        r#"SELECT a.record_id,
+                  m.meta as "meta: Vec<UnitMeta>",
+                  a.site_id,
+                  a.user_id,
+                  a.group_id,
+                  a.components as "components: Vec<Component>",
+                  a.start_time as "start_time?",
+                  a.stop_time,
+                  a.runtime
+           FROM accounting a
+           LEFT JOIN (
+               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               FROM meta as m
+               GROUP BY m.record_id
+               ) m ON m.record_id = a.record_id
+           WHERE a.record_id = $1
+           ORDER BY a.stop_time;
         "#,
         body.record_id.as_ref().unwrap()
     )
     .fetch_one(&app.db_pool)
     .await
-    .expect("Failed to fetch data.").try_into().expect("Failed to convert RecordDatabase to Record.");
+    .expect("Failed to fetch data.")
+    .try_into()
+    .expect("Failed to convert from RecordDatabase to Record.");
 
     assert_eq!(saved, body);
 }

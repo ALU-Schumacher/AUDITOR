@@ -61,12 +61,23 @@ pub async fn get_records_since(
         StartedStopped::Started => {
             sqlx::query_as!(
                 RecordDatabase,
-                r#"SELECT
-                record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-                start_time as "start_time?", stop_time, runtime
-                FROM accounting
-                WHERE start_time > $1 and runtime IS NOT NULL
-                ORDER BY stop_time
+                r#"SELECT a.record_id,
+                          m.meta as "meta: Vec<UnitMeta>",
+                          a.site_id,
+                          a.user_id,
+                          a.group_id,
+                          a.components as "components: Vec<Component>",
+                          a.start_time as "start_time?",
+                          a.stop_time,
+                          a.runtime
+                   FROM accounting a
+                   LEFT JOIN (
+                       SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                       FROM meta as m
+                       GROUP BY m.record_id
+                       ) m ON m.record_id = a.record_id
+                   WHERE a.start_time > $1 and a.runtime IS NOT NULL
+                   ORDER BY a.stop_time;
                 "#,
                 info.1,
             )
@@ -76,12 +87,23 @@ pub async fn get_records_since(
         StartedStopped::Stopped => {
             sqlx::query_as!(
                 RecordDatabase,
-                r#"SELECT
-                record_id, meta as "meta: Vec<UnitMeta>", site_id, user_id, group_id, components as "components: Vec<Component>",
-                start_time as "start_time?", stop_time, runtime
-                FROM accounting
-                WHERE stop_time > $1 and runtime IS NOT NULL
-                ORDER BY stop_time
+                r#"SELECT a.record_id,
+                          m.meta as "meta: Vec<UnitMeta>",
+                          a.site_id,
+                          a.user_id,
+                          a.group_id,
+                          a.components as "components: Vec<Component>",
+                          a.start_time as "start_time?",
+                          a.stop_time,
+                          a.runtime
+                   FROM accounting a
+                   LEFT JOIN (
+                       SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                       FROM meta as m
+                       GROUP BY m.record_id
+                       ) m ON m.record_id = a.record_id
+                   WHERE a.stop_time > $1 and a.runtime IS NOT NULL
+                   ORDER BY a.stop_time;
                 "#,
                 info.1,
             )
@@ -101,5 +123,5 @@ error_for_error!(GetRecordSinceError);
 debug_for_error!(GetRecordSinceError);
 display_for_error!(
     GetRecordSinceError,
-    "A database error was encountered while trying to get a record from the database."
+    "A database error was encountered while trying to get a record from the database"
 );
