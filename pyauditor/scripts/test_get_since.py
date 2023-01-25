@@ -25,14 +25,11 @@ async def main():
 
     for i in range(0, 24):
         record_id = f"record-{i:02d}"
-        site_id = f"site-{i}"
-        user_id = f"user-{i}"
-        group_id = f"group-{i}"
 
         # datetimes sent to auditor MUST BE in UTC.
         start = datetime.datetime(2022, 8, 8, i, 0, 0, 0, tzinfo=pytz.utc)
         stop = datetime.datetime(2022, 8, 9, i, 0, 0, 0, tzinfo=pytz.utc)
-        record = Record(record_id, site_id, user_id, group_id, start).with_stop_time(
+        record = Record(record_id, start).with_stop_time(
             stop
         )
 

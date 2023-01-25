@@ -11,9 +11,6 @@ def main():
     print("LOCAL TIMEZONE: " + str(local_tz))
 
     record_id = "record-1"
-    site_id = "site-1"
-    user_id = "user-1"
-    group_id = "group-1"
     score = "score-1"
     value = 12.0
     component = "component-1"
@@ -36,12 +33,12 @@ def main():
     comp2 = Component(component, amount).with_score(score2)
     assert comp1 == comp2
 
-    record1 = Record(record_id, site_id, user_id, group_id, start)
-    record2 = Record(record_id, site_id, user_id, group_id, start)
+    record1 = Record(record_id, start)
+    record2 = Record(record_id, start)
     assert record1 == record2
 
-    record1 = Record(record_id, site_id, user_id, group_id, start).with_component(comp1)
-    record2 = Record(record_id, site_id, user_id, group_id, start).with_component(comp1)
+    record1 = Record(record_id, start).with_component(comp1)
+    record2 = Record(record_id, start).with_component(comp1)
     assert record1 == record2
 
 

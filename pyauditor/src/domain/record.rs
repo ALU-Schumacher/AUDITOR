@@ -16,13 +16,10 @@ use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use pyo3_chrono::NaiveDateTime;
 
-/// Record(record_id: str, site_id: str, user_id: str, group_id: str, start_time: datetime.datetime)
+/// Record(record_id: str, start_time: datetime.datetime)
 /// A Record represents a single accountable unit. It consists of meta information such as
 ///
 /// * ``record_id``: Uniquely identifies the record
-/// * ``site_id``: Site identifier
-/// * ``user_id``: User identifier
-/// * ``group_id``: Group identifier
 /// * ``start_time``: Timestamp from when the resource was available.
 ///
 /// .. note::
@@ -47,12 +44,6 @@ use pyo3_chrono::NaiveDateTime;
 ///
 /// :param record_id: Unique record identifier
 /// :type record_id: str
-/// :param site_id: Site identifier
-/// :type site_id: str
-/// :param user_id: User identifier
-/// :type user_id: str
-/// :param group_id: Group identifier
-/// :type group_id: str
 /// :param start_time: Timestamp from which the resource became available
 /// :type group_id: datetime.datetime
 #[pyclass]
@@ -64,22 +55,13 @@ pub struct Record {
 #[pymethods]
 impl Record {
     #[new]
-    fn new(
-        record_id: String,
-        site_id: String,
-        user_id: String,
-        group_id: String,
-        start_time: &PyDateTime,
-    ) -> Result<Self, Error> {
+    fn new(record_id: String, start_time: &PyDateTime) -> Result<Self, Error> {
         let start_time: NaiveDateTime = start_time.extract()?;
         let start_time = Utc.from_utc_datetime(&start_time.into());
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
                 meta: Some(Meta::new()),
-                site_id: Some(ValidName::parse(site_id)?.as_ref().to_owned()),
-                user_id: Some(ValidName::parse(user_id)?.as_ref().to_owned()),
-                group_id: Some(ValidName::parse(group_id)?.as_ref().to_owned()),
                 components: Some(vec![]),
                 start_time: Some(start_time),
                 stop_time: None,
@@ -150,24 +132,6 @@ impl Record {
     #[getter]
     fn record_id(&self) -> String {
         self.inner.record_id.clone()
-    }
-
-    /// Returns the site_id
-    #[getter]
-    fn site_id(&self) -> Option<String> {
-        self.inner.site_id.clone()
-    }
-
-    /// Returns the user_id
-    #[getter]
-    fn user_id(&self) -> Option<String> {
-        self.inner.user_id.clone()
-    }
-
-    /// Returns the group_id
-    #[getter]
-    fn group_id(&self) -> Option<String> {
-        self.inner.group_id.clone()
     }
 
     /// Returns the components
