@@ -108,10 +108,12 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_site(&self) -> Result<(), anyhow::Error> {
         let per_site: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT site_id as "name!", count(*) as "num!"
-               FROM accounting
-               WHERE site_id IS NOT NULL
-               GROUP BY site_id;"#
+            r#"SELECT value[0] as "name!", count(*) as "num!"
+               FROM meta
+               WHERE key = $1
+               GROUP BY value[0];
+            "#,
+            "site_id"
         )
         .fetch_all(&self.db_pool)
         .await?
@@ -131,10 +133,12 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_group(&self) -> Result<(), anyhow::Error> {
         let per_group: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT group_id as "name!", count(*) as "num!"
-               FROM accounting
-               WHERE group_id IS NOT NULL
-               GROUP BY group_id;"#
+            r#"SELECT value[0] as "name!", count(*) as "num!"
+               FROM meta
+               WHERE key = $1
+               GROUP BY value[0];
+            "#,
+            "group_id"
         )
         .fetch_all(&self.db_pool)
         .await?
@@ -151,10 +155,12 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_user(&self) -> Result<(), anyhow::Error> {
         let per_user: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT user_id as "name!", count(*) as "num!"
-               FROM accounting
-               WHERE user_id IS NOT NULL
-               GROUP BY user_id;"#
+            r#"SELECT value[0] as "name!", count(*) as "num!"
+               FROM meta
+               WHERE key = $1
+               GROUP BY value[0];
+            "#,
+            "user_id"
         )
         .fetch_all(&self.db_pool)
         .await?

@@ -33,9 +33,6 @@ async fn add_records() {
         RecordDatabase,
         r#"SELECT a.record_id,
                   m.meta as "meta: Vec<(String, Vec<String>)>",
-                  a.site_id,
-                  a.user_id,
-                  a.group_id,
                   a.components as "components: Vec<Component>",
                   a.start_time as "start_time?",
                   a.stop_time,
@@ -115,9 +112,6 @@ async fn update_records() {
         RecordDatabase,
         r#"SELECT a.record_id,
                   m.meta as "meta: Vec<(String, Vec<String>)>",
-                  a.site_id,
-                  a.user_id,
-                  a.group_id,
                   a.components as "components: Vec<Component>",
                   a.start_time as "start_time?",
                   a.stop_time,
@@ -188,15 +182,11 @@ async fn get_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
-                components, start_time, stop_time, runtime, updated_at
+                record_id, components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6)
             "#,
             record.record_id.as_ref(),
-            record.site_id.as_ref(),
-            record.user_id.as_ref(),
-            record.group_id.as_ref(),
             record
                 .components
                 .as_ref()
@@ -292,15 +282,11 @@ async fn get_started_since_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
-                components, start_time, stop_time, runtime, updated_at
+                record_id, components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6)
             "#,
             record.record_id.as_ref(),
-            record.site_id.as_ref(),
-            record.user_id.as_ref(),
-            record.group_id.as_ref(),
             record
                 .components
                 .as_ref()
@@ -404,15 +390,11 @@ async fn get_stopped_since_returns_a_list_of_records() {
         sqlx::query_unchecked!(
             r#"
             INSERT INTO accounting (
-                record_id, site_id, user_id, group_id,
-                components, start_time, stop_time, runtime, updated_at
+                record_id, components, start_time, stop_time, runtime, updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            VALUES ($1, $2, $3, $4, $5, $6)
             "#,
             record.record_id.as_ref(),
-            record.site_id.as_ref(),
-            record.user_id.as_ref(),
-            record.group_id.as_ref(),
             record
                 .components
                 .as_ref()

@@ -19,9 +19,6 @@ async fn add_returns_a_200_for_valid_json_data() {
             RecordDatabase,
             r#"SELECT a.record_id,
                       m.meta as "meta: Vec<(String, Vec<String>)>",
-                      a.site_id,
-                      a.user_id,
-                      a.group_id,
                       a.components as "components: Vec<Component>",
                       a.start_time as "start_time?",
                       a.stop_time,
@@ -56,15 +53,12 @@ async fn add_returns_a_400_for_invalid_json_data() {
         .map(|s| format!("test{s}test"))
         .collect();
 
-    for field in ["record_id", "site_id", "group_id", "user_id"] {
+    for field in ["record_id"] {
         for fs in forbidden_strings.iter() {
             // Act
             let mut body: RecordTest = Faker.fake();
             match field {
                 "record_id" => body.record_id = Some(fs.clone()),
-                "site_id" => body.site_id = Some(fs.clone()),
-                "group_id" => body.group_id = Some(fs.clone()),
-                "user_id" => body.user_id = Some(fs.clone()),
                 _ => (),
             }
 
@@ -76,9 +70,6 @@ async fn add_returns_a_400_for_invalid_json_data() {
                 RecordDatabase,
                 r#"SELECT a.record_id,
                       m.meta as "meta: Vec<(String, Vec<String>)>",
-                      a.site_id,
-                      a.user_id,
-                      a.group_id,
                       a.components as "components: Vec<Component>",
                       a.start_time as "start_time?",
                       a.stop_time,
@@ -113,21 +104,6 @@ async fn add_returns_a_400_when_data_is_missing() {
         ("record_id is missing", {
             let mut r = record.clone();
             r.record_id = None;
-            r
-        }),
-        ("site_id is missing", {
-            let mut r = record.clone();
-            r.site_id = None;
-            r
-        }),
-        ("user_id is missing", {
-            let mut r = record.clone();
-            r.user_id = None;
-            r
-        }),
-        ("group_id is missing", {
-            let mut r = record.clone();
-            r.group_id = None;
             r
         }),
         ("components is missing", {
