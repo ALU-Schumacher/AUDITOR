@@ -10,6 +10,15 @@ RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 DB_NAME=${DB_NAME:=$(uuidgen)}
 
+function stop_container() {
+	echo >&2 "Stopping container"
+	docker compose \
+		--file $DOCKER_COMPOSE_FILE \
+		--project-directory=$DOCKER_PROJECT_DIR \
+		down
+}
+
+
 function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
@@ -65,14 +74,6 @@ function start_container() {
 	done
 }
 
-function stop_container() {
-	echo >&2 "Stopping container"
-	docker compose \
-		--file $DOCKER_COMPOSE_FILE \
-		--project-directory=$DOCKER_PROJECT_DIR \
-		down
-}
-
 function compile_auditor() {
 	if [ "$RELEASE_MODE" = true ]; then
 		cargo build --bin auditor --release
@@ -94,6 +95,11 @@ function compile_collector() {
 			--target $TARGET_ARCH \
 			--bin auditor-slurm-epilog-collector
 	fi
+}
+
+function stop_auditor() {
+	echo >&2 "Stopping Auditor"
+	kill $AUDITOR_SERVER_PID
 }
 
 function start_auditor() {
@@ -121,10 +127,6 @@ function start_auditor() {
 	done
 }
 
-function stop_auditor() {
-	echo >&2 "Stopping Auditor"
-	kill $AUDITOR_SERVER_PID
-}
 
 function test_epilog_collector() {
 	# Run on partition1
