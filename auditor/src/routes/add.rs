@@ -116,16 +116,16 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
     .map_err(AddRecordError)?;
 
     let mut query_builder: QueryBuilder<sqlx::Postgres> =
-        QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+        QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
 
     if let Some(data) = record.meta.as_ref() {
-        let data = data.to_vec_unit();
+        let data = data.to_vec();
 
         for chunk in &data.into_iter().chunks(BIND_LIMIT / 4) {
             query_builder.push_values(
-                chunk.map(|m| (record.record_id.as_ref().to_string(), m)),
+                chunk.map(|m| (record.record_id.as_ref().to_string(), m.0, m.1)),
                 |mut b, m| {
-                    b.push_bind(m.0).push_bind(m.1);
+                    b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
                 },
             );
 
