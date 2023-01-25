@@ -53,14 +53,15 @@ async fn add_returns_a_400_for_invalid_json_data() {
         .map(|s| format!("test{s}test"))
         .collect();
 
-    for field in ["record_id"] {
+    for _field in ["record_id"] {
         for fs in forbidden_strings.iter() {
             // Act
             let mut body: RecordTest = Faker.fake();
-            match field {
-                "record_id" => body.record_id = Some(fs.clone()),
-                _ => (),
-            }
+            // match field {
+            //     "record_id" => body.record_id = Some(fs.clone()),
+            //     _ => (),
+            // }
+            body.record_id = Some(fs.clone());
 
             let response = app.add_record(&body).await;
 

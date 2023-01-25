@@ -175,7 +175,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             return Ok(None);
         }
         let meta = HashMap::from([
-            ("site_id".to_string(), vec![make_string_valid(site.clone())]),
+            ("site_id".to_string(), vec![make_string_valid(site)]),
             ("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]),
             ("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]),
         ]);
