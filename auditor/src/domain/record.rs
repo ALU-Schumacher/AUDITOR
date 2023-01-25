@@ -9,7 +9,7 @@
 
 use std::collections::HashMap;
 
-use super::{Component, ComponentTest, Meta, ScoreTest, UnitMeta, ValidMeta, ValidName};
+use super::{Component, ComponentTest, Meta, ScoreTest, ValidMeta, ValidName};
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
@@ -58,7 +58,7 @@ pub struct Record {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RecordDatabase {
     pub record_id: String,
-    pub meta: Option<Vec<UnitMeta>>,
+    pub meta: Option<Vec<(String, Vec<String>)>>,
     pub site_id: Option<String>,
     pub user_id: Option<String>,
     pub group_id: Option<String>,

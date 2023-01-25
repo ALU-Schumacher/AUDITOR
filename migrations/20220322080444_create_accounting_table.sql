@@ -10,11 +10,6 @@ CREATE TYPE component AS (
     scores      score[]
 );
 
-CREATE TYPE unit_meta AS (
-    key        TEXT,
-    value      TEXT[]
-);
-
 CREATE TABLE accounting (
 	record_id   TEXT NOT NULL UNIQUE,
     PRIMARY KEY (record_id),
@@ -30,7 +25,6 @@ CREATE TABLE accounting (
 
 CREATE TABLE meta (
     record_id  TEXT NOT NULL,
-    meta       unit_meta
-    -- key        TEXT,
-    -- value      TEXT[]
+    key        TEXT,
+    value      TEXT[]
 );

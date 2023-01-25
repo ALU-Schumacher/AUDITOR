@@ -15,14 +15,6 @@ use super::ValidName;
 pub struct ValidMeta(pub HashMap<ValidName, Vec<ValidName>>);
 
 impl ValidMeta {
-    // pub fn len(&self) -> usize {
-    //     self.0.len()
-    // }
-
-    // pub fn is_empty(&self) -> bool {
-    //     self.len() == 0
-    // }
-
     pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
         self.0
             .iter()
@@ -31,16 +23,6 @@ impl ValidMeta {
                     k.as_ref().to_string(),
                     v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
                 )
-            })
-            .collect::<Vec<_>>()
-    }
-
-    pub fn to_vec_unit(&self) -> Vec<UnitMeta> {
-        self.0
-            .iter()
-            .map(|(k, v)| UnitMeta {
-                key: k.as_ref().to_string(),
-                value: v.iter().map(|s| s.as_ref().to_string()).collect(),
             })
             .collect::<Vec<_>>()
     }
@@ -67,17 +49,16 @@ impl<T: AsRef<str>> TryFrom<HashMap<T, Vec<T>>> for ValidMeta {
     }
 }
 
-impl TryFrom<Vec<UnitMeta>> for ValidMeta {
+impl TryFrom<Vec<(String, Vec<String>)>> for ValidMeta {
     type Error = anyhow::Error;
 
-    fn try_from(m: Vec<UnitMeta>) -> Result<Self, Self::Error> {
+    fn try_from(m: Vec<(String, Vec<String>)>) -> Result<Self, Self::Error> {
         Ok(Self(
             m.into_iter()
                 .map(|um| -> Result<_, Self::Error> {
                     Ok((
-                        ValidName::parse(um.key)?,
-                        um.value
-                            .into_iter()
+                        ValidName::parse(um.0)?,
+                        um.1.into_iter()
                             .map(|v| -> Result<_, Self::Error> { Ok(ValidName::parse(v)?) })
                             .collect::<Result<Vec<ValidName>, Self::Error>>()?,
                     ))
@@ -107,24 +88,6 @@ impl TryFrom<Meta> for ValidMeta {
     }
 }
 
-#[derive(
-    Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, PartialOrd, Ord, sqlx::Type,
-)]
-#[sqlx(type_name = "unit_meta")]
-pub struct UnitMeta {
-    key: String,
-    value: Vec<String>,
-}
-
-impl<T: AsRef<str>> From<(T, Vec<T>)> for UnitMeta {
-    fn from(m: (T, Vec<T>)) -> Self {
-        Self {
-            key: m.0.as_ref().to_string(),
-            value: m.1.iter().map(|v| v.as_ref().to_string()).collect(),
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct Meta(pub HashMap<String, Vec<String>>);
 
@@ -145,16 +108,6 @@ impl Meta {
         self.0
             .iter()
             .map(|(k, v)| (k.clone(), v.clone()))
-            .collect::<Vec<_>>()
-    }
-
-    pub fn to_vec_unit(&self) -> Vec<UnitMeta> {
-        self.0
-            .iter()
-            .map(|(k, v)| UnitMeta {
-                key: k.clone(),
-                value: v.clone(),
-            })
             .collect::<Vec<_>>()
     }
 
@@ -203,13 +156,13 @@ impl<T: AsRef<str>> TryFrom<HashMap<T, Vec<T>>> for Meta {
     }
 }
 
-impl TryFrom<Vec<UnitMeta>> for Meta {
+impl TryFrom<Vec<(String, Vec<String>)>> for Meta {
     type Error = anyhow::Error;
 
-    fn try_from(m: Vec<UnitMeta>) -> Result<Self, Self::Error> {
+    fn try_from(m: Vec<(String, Vec<String>)>) -> Result<Self, Self::Error> {
         Ok(Self(
             m.into_iter()
-                .map(|um| -> Result<_, Self::Error> { Ok((um.key.clone(), um.value)) })
+                .map(|um| -> Result<_, Self::Error> { Ok((um.0.clone(), um.1)) })
                 .collect::<Result<_, Self::Error>>()?,
         ))
     }

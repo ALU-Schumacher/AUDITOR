@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::domain::{Component, Record, RecordDatabase, UnitMeta};
+use crate::domain::{Component, Record, RecordDatabase};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx;
@@ -62,7 +62,7 @@ pub async fn get_records_since(
             sqlx::query_as!(
                 RecordDatabase,
                 r#"SELECT a.record_id,
-                          m.meta as "meta: Vec<UnitMeta>",
+                          m.meta as "meta: Vec<(String, Vec<String>)>",
                           a.site_id,
                           a.user_id,
                           a.group_id,
@@ -72,7 +72,7 @@ pub async fn get_records_since(
                           a.runtime
                    FROM accounting a
                    LEFT JOIN (
-                       SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                        FROM meta as m
                        GROUP BY m.record_id
                        ) m ON m.record_id = a.record_id
@@ -88,7 +88,7 @@ pub async fn get_records_since(
             sqlx::query_as!(
                 RecordDatabase,
                 r#"SELECT a.record_id,
-                          m.meta as "meta: Vec<UnitMeta>",
+                          m.meta as "meta: Vec<(String, Vec<String>)>",
                           a.site_id,
                           a.user_id,
                           a.group_id,
@@ -98,7 +98,7 @@ pub async fn get_records_since(
                           a.runtime
                    FROM accounting a
                    LEFT JOIN (
-                       SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                        FROM meta as m
                        GROUP BY m.record_id
                        ) m ON m.record_id = a.record_id

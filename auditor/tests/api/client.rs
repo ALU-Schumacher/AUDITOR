@@ -1,8 +1,6 @@
 use crate::helpers::spawn_app;
 use auditor::client::AuditorClient;
-use auditor::domain::{
-    Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate, UnitMeta,
-};
+use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 use itertools::Itertools;
@@ -34,7 +32,7 @@ async fn add_records() {
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<UnitMeta>",
+                  m.meta as "meta: Vec<(String, Vec<String>)>",
                   a.site_id,
                   a.user_id,
                   a.group_id,
@@ -44,7 +42,7 @@ async fn add_records() {
                   a.runtime
            FROM accounting a
            LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                FROM meta as m
                GROUP BY m.record_id
                ) m ON m.record_id = a.record_id
@@ -116,7 +114,7 @@ async fn update_records() {
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<UnitMeta>",
+                  m.meta as "meta: Vec<(String, Vec<String>)>",
                   a.site_id,
                   a.user_id,
                   a.group_id,
@@ -126,7 +124,7 @@ async fn update_records() {
                   a.runtime
            FROM accounting a
            LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                FROM meta as m
                GROUP BY m.record_id
                ) m ON m.record_id = a.record_id
@@ -218,7 +216,7 @@ async fn get_returns_a_list_of_records() {
         .unwrap();
 
         let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
 
         if let Some(data) = record.meta.as_ref() {
             for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
@@ -226,11 +224,12 @@ async fn get_returns_a_list_of_records() {
                     chunk.map(|m| {
                         (
                             record.record_id.as_ref().unwrap().clone(),
-                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                            m.0.clone(),
+                            m.1.clone(),
                         )
                     }),
                     |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1);
+                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
                     },
                 );
 
@@ -321,7 +320,7 @@ async fn get_started_since_returns_a_list_of_records() {
         .unwrap();
 
         let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
 
         if let Some(data) = record.meta.as_ref() {
             for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
@@ -329,11 +328,12 @@ async fn get_started_since_returns_a_list_of_records() {
                     chunk.map(|m| {
                         (
                             record.record_id.as_ref().unwrap().clone(),
-                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                            m.0.clone(),
+                            m.1.clone(),
                         )
                     }),
                     |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1);
+                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
                     },
                 );
 
@@ -432,7 +432,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
         .unwrap();
 
         let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, meta) ");
+            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
 
         if let Some(data) = record.meta.as_ref() {
             for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
@@ -440,11 +440,12 @@ async fn get_stopped_since_returns_a_list_of_records() {
                     chunk.map(|m| {
                         (
                             record.record_id.as_ref().unwrap().clone(),
-                            UnitMeta::from((m.0.clone(), m.1.clone())),
+                            m.0.clone(),
+                            m.1.clone(),
                         )
                     }),
                     |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1);
+                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
                     },
                 );
 

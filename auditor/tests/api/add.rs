@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, RecordDatabase, RecordTest, UnitMeta};
+use auditor::domain::{Component, RecordDatabase, RecordTest};
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -18,7 +18,7 @@ async fn add_returns_a_200_for_valid_json_data() {
         let saved = sqlx::query_as!(
             RecordDatabase,
             r#"SELECT a.record_id,
-                      m.meta as "meta: Vec<UnitMeta>",
+                      m.meta as "meta: Vec<(String, Vec<String>)>",
                       a.site_id,
                       a.user_id,
                       a.group_id,
@@ -28,7 +28,7 @@ async fn add_returns_a_200_for_valid_json_data() {
                       a.runtime
                FROM accounting a
                LEFT JOIN (
-                   SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                   SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                    FROM meta as m
                    GROUP BY m.record_id
                    ) m ON m.record_id = a.record_id
@@ -75,7 +75,7 @@ async fn add_returns_a_400_for_invalid_json_data() {
             let saved: Vec<_> = sqlx::query_as!(
                 RecordDatabase,
                 r#"SELECT a.record_id,
-                      m.meta as "meta: Vec<UnitMeta>",
+                      m.meta as "meta: Vec<(String, Vec<String>)>",
                       a.site_id,
                       a.user_id,
                       a.group_id,
@@ -85,7 +85,7 @@ async fn add_returns_a_400_for_invalid_json_data() {
                       a.runtime
                FROM accounting a
                LEFT JOIN (
-                   SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+                   SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                    FROM meta as m
                    GROUP BY m.record_id
                    ) m ON m.record_id = a.record_id

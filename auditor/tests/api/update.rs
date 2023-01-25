@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, Record, RecordDatabase, RecordTest, UnitMeta};
+use auditor::domain::{Component, Record, RecordDatabase, RecordTest};
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -60,7 +60,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     let saved: Record = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<UnitMeta>",
+                  m.meta as "meta: Vec<(String, Vec<String>)>",
                   a.site_id,
                   a.user_id,
                   a.group_id,
@@ -70,7 +70,7 @@ async fn update_returns_a_200_for_valid_form_data() {
                   a.runtime
            FROM accounting a
            LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(m.meta) as meta 
+               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
                FROM meta as m
                GROUP BY m.record_id
                ) m ON m.record_id = a.record_id

@@ -15,7 +15,7 @@ mod validvalue;
 
 use actix_web::{http::StatusCode, ResponseError};
 pub use component::{Component, ComponentTest};
-pub use meta::{Meta, UnitMeta, ValidMeta};
+pub use meta::{Meta, ValidMeta};
 pub use record::{Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 pub use score::{Score, ScoreTest};
 pub use validamount::ValidAmount;
