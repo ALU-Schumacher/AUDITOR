@@ -22,9 +22,6 @@ use serde::{Deserialize, Serialize};
 pub struct RecordAdd {
     pub record_id: ValidName,
     pub meta: Option<ValidMeta>,
-    pub site_id: ValidName,
-    pub user_id: ValidName,
-    pub group_id: ValidName,
     pub components: Vec<Component>,
     pub start_time: DateTime<Utc>,
     pub stop_time: Option<DateTime<Utc>>,
@@ -34,9 +31,6 @@ pub struct RecordAdd {
 pub struct RecordUpdate {
     pub record_id: ValidName,
     pub meta: Option<ValidMeta>,
-    pub site_id: ValidName,
-    pub user_id: ValidName,
-    pub group_id: ValidName,
     pub components: Vec<Component>,
     pub start_time: Option<DateTime<Utc>>,
     pub stop_time: DateTime<Utc>,
@@ -46,9 +40,6 @@ pub struct RecordUpdate {
 pub struct Record {
     pub record_id: String,
     pub meta: Option<Meta>,
-    pub site_id: Option<String>,
-    pub user_id: Option<String>,
-    pub group_id: Option<String>,
     pub components: Option<Vec<Component>>,
     pub start_time: Option<DateTime<Utc>>,
     pub stop_time: Option<DateTime<Utc>>,
@@ -59,9 +50,6 @@ pub struct Record {
 pub struct RecordDatabase {
     pub record_id: String,
     pub meta: Option<Vec<(String, Vec<String>)>>,
-    pub site_id: Option<String>,
-    pub user_id: Option<String>,
-    pub group_id: Option<String>,
     pub components: Option<Vec<Component>>,
     pub start_time: Option<DateTime<Utc>>,
     pub stop_time: Option<DateTime<Utc>>,
@@ -72,9 +60,6 @@ pub struct RecordDatabase {
 pub struct RecordTest {
     pub record_id: Option<String>,
     pub meta: Option<HashMap<String, Vec<String>>>,
-    pub site_id: Option<String>,
-    pub user_id: Option<String>,
-    pub group_id: Option<String>,
     pub components: Option<Vec<ComponentTest>>,
     pub start_time: Option<DateTime<Utc>>,
     pub stop_time: Option<DateTime<Utc>>,
@@ -84,9 +69,6 @@ impl RecordAdd {
     pub fn new<T: AsRef<str>>(
         record_id: T,
         meta: HashMap<T, Vec<T>>,
-        site_id: T,
-        user_id: T,
-        group_id: T,
         components: Vec<Component>,
         start_time: DateTime<Utc>,
     ) -> Result<Self, Error> {
@@ -100,12 +82,6 @@ impl RecordAdd {
                     Some(meta.try_into()?)
                 }
             },
-            site_id: ValidName::parse(site_id.as_ref().to_string())
-                .context("Failed to parse site_id.")?,
-            user_id: ValidName::parse(user_id.as_ref().to_string())
-                .context("Failed to parse user_id.")?,
-            group_id: ValidName::parse(group_id.as_ref().to_string())
-                .context("Failed to parse group_id.")?,
             components,
             start_time,
             stop_time: None,
@@ -147,21 +123,6 @@ impl RecordTest {
             )
         };
 
-        self
-    }
-
-    pub fn with_site_id<T: AsRef<str>>(mut self, site_id: T) -> Self {
-        self.site_id = Some(site_id.as_ref().to_string());
-        self
-    }
-
-    pub fn with_user_id<T: AsRef<str>>(mut self, user_id: T) -> Self {
-        self.user_id = Some(user_id.as_ref().to_string());
-        self
-    }
-
-    pub fn with_group_id<T: AsRef<str>>(mut self, group_id: T) -> Self {
-        self.group_id = Some(group_id.as_ref().to_string());
         self
     }
 
@@ -231,9 +192,6 @@ impl Dummy<Faker> for RecordTest {
         let mut out = RecordTest::new()
             .with_record_id(fakename())
             .with_meta(fakemeta())
-            .with_site_id(fakename())
-            .with_user_id(fakename())
-            .with_group_id(fakename())
             .with_start_time(fakedate().to_rfc3339())
             .with_stop_time(fakedate().to_rfc3339());
         for _ in 0..(1..10).fake_with_rng(rng) {
@@ -248,9 +206,6 @@ impl PartialEq<Record> for RecordTest {
         let RecordTest {
             record_id: s_rid,
             meta: s_meta,
-            site_id: s_sid,
-            user_id: s_uid,
-            group_id: s_gid,
             components: s_comp,
             start_time: s_start,
             stop_time: s_stop,
@@ -258,9 +213,6 @@ impl PartialEq<Record> for RecordTest {
         let Record {
             record_id: o_rid,
             meta: o_meta,
-            site_id: o_sid,
-            user_id: o_uid,
-            group_id: o_gid,
             components: o_comp,
             start_time: o_start,
             stop_time: o_stop,
@@ -291,9 +243,6 @@ impl PartialEq<Record> for RecordTest {
         };
 
         s_rid.as_ref().unwrap() == o_rid
-            && s_sid == o_sid
-            && s_uid == o_uid
-            && s_gid == o_gid
             && start_diff < chrono::Duration::milliseconds(1)
             && stop
             && ((s_comp.is_none() && o_comp.is_none())
@@ -334,9 +283,6 @@ impl TryFrom<RecordTest> for RecordAdd {
                     .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
             meta: value.meta.map(ValidMeta::try_from).transpose()?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_default())?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_default())?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_default())?,
             components: value
                 .components
                 .unwrap_or_default()
@@ -356,12 +302,6 @@ impl TryFrom<Record> for RecordAdd {
         Ok(RecordAdd {
             record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
             meta: value.meta.map(ValidMeta::try_from).transpose()?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_default())
-                .context("Failed to parse site_id.")?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_default())
-                .context("Failed to parse user_id.")?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_default())
-                .context("Failed to parse group_id.")?,
             components: value
                 .components
                 .unwrap_or_default()
@@ -387,9 +327,6 @@ impl TryFrom<RecordTest> for RecordUpdate {
                     .ok_or_else(|| anyhow::anyhow!("name is None"))?,
             )?,
             meta: value.meta.map(ValidMeta::try_from).transpose()?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_default())?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_default())?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_default())?,
             components: value
                 .components
                 .unwrap_or_default()
@@ -409,12 +346,6 @@ impl TryFrom<Record> for RecordUpdate {
         Ok(RecordUpdate {
             record_id: ValidName::parse(value.record_id).context("Failed to parse record_id.")?,
             meta: value.meta.map(ValidMeta::try_from).transpose()?,
-            site_id: ValidName::parse(value.site_id.unwrap_or_default())
-                .context("Failed to parse site_id.")?,
-            user_id: ValidName::parse(value.user_id.unwrap_or_default())
-                .context("Failed to parse user_id.")?,
-            group_id: ValidName::parse(value.group_id.unwrap_or_default())
-                .context("Failed to parse group_id.")?,
             components: value
                 .components
                 .unwrap_or_default()
@@ -441,21 +372,6 @@ impl TryFrom<RecordTest> for Record {
             .as_ref()
             .to_string(),
             meta: Some(meta.into()),
-            site_id: if let Some(site_id) = value.site_id {
-                Some(ValidName::parse(site_id)?.as_ref().to_string())
-            } else {
-                None
-            },
-            user_id: if let Some(user_id) = value.user_id {
-                Some(ValidName::parse(user_id)?.as_ref().to_string())
-            } else {
-                None
-            },
-            group_id: if let Some(group_id) = value.group_id {
-                Some(ValidName::parse(group_id)?.as_ref().to_string())
-            } else {
-                None
-            },
             components: if let Some(components) = value.components {
                 Some(
                     components
@@ -484,9 +400,6 @@ impl TryFrom<RecordDatabase> for Record {
         let RecordDatabase {
             record_id,
             meta,
-            site_id,
-            user_id,
-            group_id,
             components,
             start_time,
             stop_time,
@@ -500,9 +413,6 @@ impl TryFrom<RecordDatabase> for Record {
         Ok(Self {
             record_id,
             meta,
-            site_id,
-            user_id,
-            group_id,
             components,
             start_time,
             stop_time,

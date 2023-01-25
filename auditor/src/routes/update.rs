@@ -71,17 +71,13 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
     sqlx::query_unchecked!(
         r#"
         UPDATE accounting
-        SET stop_time = $6,
-            runtime = $7,
-            updated_at = $8
+        SET stop_time = $2,
+            runtime = $3,
+            updated_at = $4
         WHERE
-            record_id = $1 and site_id = $2 and user_id = $3 and group_id = $4 and components = $5
+            record_id = $1
         "#,
         record.record_id.as_ref(),
-        record.site_id.as_ref(),
-        record.user_id.as_ref(),
-        record.group_id.as_ref(),
-        record.components,
         record.stop_time,
         (record.stop_time - start_time).num_seconds(),
         Utc::now()

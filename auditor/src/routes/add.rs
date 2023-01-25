@@ -96,15 +96,11 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
     sqlx::query_unchecked!(
         r#"
         INSERT INTO accounting (
-            record_id, site_id, user_id, group_id,
-            components, start_time, stop_time, runtime, updated_at
+            record_id, components, start_time, stop_time, runtime, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6)
         "#,
         record.record_id.as_ref(),
-        record.site_id.as_ref(),
-        record.user_id.as_ref(),
-        record.group_id.as_ref(),
         record.components,
         record.start_time,
         record.stop_time,
