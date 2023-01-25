@@ -110,7 +110,8 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"SELECT value[0] as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1
+               WHERE key = $1 and
+                     array_length(value, 1) > 1
                GROUP BY value[0];
             "#,
             "site_id"
@@ -135,7 +136,8 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"SELECT value[0] as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1
+               WHERE key = $1 and
+                     array_length(value, 1) > 1
                GROUP BY value[0];
             "#,
             "group_id"
@@ -157,7 +159,8 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"SELECT value[0] as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1
+               WHERE key = $1 and
+                     array_length(value, 1) > 1
                GROUP BY value[0];
             "#,
             "user_id"
