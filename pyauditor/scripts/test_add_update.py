@@ -23,15 +23,12 @@ async def main():
 
     print("Adding a record to Auditor")
     record_id = "record-1"
-    site_id = "site-1"
-    user_id = "user-1"
-    group_id = "group-1"
 
     # datetimes sent to auditor MUST BE in UTC.
     start = datetime.datetime(
         2021, 12, 6, 16, 29, 43, 79043, tzinfo=local_tz
     ).astimezone(pytz.utc)
-    record = Record(record_id, site_id, user_id, group_id, start)
+    record = Record(record_id, start)
 
     await client.add(record)
 
@@ -40,9 +37,6 @@ async def main():
     assert len(records) == 1
     record = records[0]
     assert record.record_id == record_id
-    assert record.site_id == site_id
-    assert record.user_id == user_id
-    assert record.group_id == group_id
     assert record.start_time.replace(tzinfo=pytz.utc) == start
 
     print("Updating record: Adding stop time")
@@ -56,9 +50,6 @@ async def main():
     assert len(records) == 1
     record = records[0]
     assert record.record_id == record_id
-    assert record.site_id == site_id
-    assert record.user_id == user_id
-    assert record.group_id == group_id
     assert record.start_time.replace(tzinfo=pytz.utc) == start
     assert record.stop_time.replace(tzinfo=pytz.utc) == stop
 

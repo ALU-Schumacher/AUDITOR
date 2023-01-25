@@ -33,15 +33,12 @@ Creating a Record
 
    # Define meta information
    record_id = "record-1" # Must be unique for all records in Auditor!
-   site_id = "site-1"
-   user_id = "user-1"
-   group_id = "group-1"
 
    # Time when the resource became available
    start = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043) # in UTC
 
    # Create record
-   record = Record(record_id, site_id, user_id, group_id, start)
+   record = Record(record_id, start)
 
    # Create a component (10 CPU cores)
    component = Component("CPU", 10)

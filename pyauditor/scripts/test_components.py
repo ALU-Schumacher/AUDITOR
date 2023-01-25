@@ -23,21 +23,18 @@ async def main():
 
     print("Adding a record to Auditor")
     record_id = "record-1"
-    site_id = "site-1"
-    user_id = "user-1"
-    group_id = "group-1"
 
     # datetimes sent to auditor MUST BE in UTC.
     start = datetime.datetime(
         2021, 12, 6, 16, 29, 43, 79043, tzinfo=local_tz
     ).astimezone(pytz.utc)
-    stop = datetime.datetime(2022, 8, 9, 3, 0, 0, 0, tzinfo=pytz.utc)
+    # stop = datetime.datetime(2022, 8, 9, 3, 0, 0, 0, tzinfo=pytz.utc)
     score1 = Score("HEPSPEC", 1.0)
     score2 = Score("OTHERSPEC", 4.0)
     component1 = Component("comp-1", 10).with_score(score1)
     component2 = Component("comp-2", 100).with_score(score1).with_score(score2)
     record = (
-        Record(record_id, site_id, user_id, group_id, start)
+        Record(record_id, start)
         .with_component(component1)
         .with_component(component2)
     )
@@ -48,9 +45,6 @@ async def main():
     assert len(records) == 1
     record = records[0]
     assert record.record_id == record_id
-    assert record.site_id == site_id
-    assert record.user_id == user_id
-    assert record.group_id == group_id
     assert record.start_time.replace(tzinfo=pytz.utc) == start
     assert record.components[0].name == "comp-1"
     assert record.components[0].amount == 10
