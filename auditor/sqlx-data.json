@@ -67,6 +67,32 @@
     },
     "query": "\n        INSERT INTO accounting (\n            record_id, components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6)\n        "
   },
+  "0ab72643834735fb97249ceafbd31569aec61ecbf8a550efd0ddc712b3c054e2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT value[0] as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1 and\n                     array_length(value, 1) > 1\n               GROUP BY value[0];\n            "
+  },
   "0de2b3aa2731428f5c749d7c166ab8be945eb01c6515fb3db329e45e39fd7d12": {
     "describe": {
       "columns": [
@@ -417,31 +443,5 @@
       }
     },
     "query": "SELECT a.record_id,\n                          m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                          a.components as \"components: Vec<Component>\",\n                          a.start_time as \"start_time?\",\n                          a.stop_time,\n                          a.runtime\n                   FROM accounting a\n                   LEFT JOIN (\n                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta \n                       FROM meta as m\n                       GROUP BY m.record_id\n                       ) m ON m.record_id = a.record_id\n                   WHERE a.start_time > $1 and a.runtime IS NOT NULL\n                   ORDER BY a.stop_time;\n                "
-  },
-  "f06969841ad2e7a622282370aaaa6d3d590494325abddfb8a3479d41b6c5bc26": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name!",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "num!",
-          "ordinal": 1,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        null,
-        null
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "SELECT value[0] as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1\n               GROUP BY value[0];\n            "
   }
 }
