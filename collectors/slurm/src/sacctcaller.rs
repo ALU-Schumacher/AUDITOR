@@ -183,9 +183,6 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
            RecordAdd::new(
                record_id,
                meta,
-               make_string_valid(site),
-               make_string_valid(map[USER].extract_string()?),
-               make_string_valid(map[GROUP].extract_string()?),
                construct_components(map),
                map[START].extract_datetime()?
            )
