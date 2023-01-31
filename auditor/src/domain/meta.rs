@@ -21,7 +21,7 @@ impl ValidMeta {
             .map(|(k, v)| {
                 (
                     k.as_ref().to_string(),
-                    v.iter().map(|v| v.as_ref().to_string()).collect::<Vec<_>>(),
+                    v.iter().map(|v| v.to_string()).collect(),
                 )
             })
             .collect::<Vec<_>>()
@@ -37,7 +37,7 @@ impl<T: AsRef<str>> TryFrom<HashMap<T, Vec<T>>> for ValidMeta {
                 .map(|(k, v)| -> Result<_, Self::Error> {
                     Ok((
                         ValidName::parse(k.as_ref().to_string())?,
-                        v.into_iter()
+                        v.iter()
                             .map(|v| -> Result<_, Self::Error> {
                                 Ok(ValidName::parse(v.as_ref().to_string())?)
                             })
@@ -127,9 +127,7 @@ impl From<ValidMeta> for Meta {
                 .map(|(k, v)| {
                     (
                         k.as_ref().to_string(),
-                        v.into_iter()
-                            .map(|v| v.as_ref().to_string())
-                            .collect::<Vec<String>>(),
+                        v.into_iter().map(|v| v.as_ref().to_string()).collect(),
                     )
                 })
                 .collect(),

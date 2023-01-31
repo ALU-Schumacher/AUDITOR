@@ -183,7 +183,7 @@ impl Dummy<Faker> for RecordTest {
                 .map(|_| {
                     (
                         fakename(),
-                        (0..(0..3u64).fake()).map(|_| fakename()).collect(),
+                        (0..(1..3u64).fake()).map(|_| fakename()).collect(),
                     )
                 })
                 .collect()

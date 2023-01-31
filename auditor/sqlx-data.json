@@ -67,32 +67,6 @@
     },
     "query": "\n        INSERT INTO accounting (\n            record_id, components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6)\n        "
   },
-  "0ab72643834735fb97249ceafbd31569aec61ecbf8a550efd0ddc712b3c054e2": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name!",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "num!",
-          "ordinal": 1,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        null,
-        null
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "SELECT value[0] as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1 and\n                     array_length(value, 1) > 1\n               GROUP BY value[0];\n            "
-  },
   "0de2b3aa2731428f5c749d7c166ab8be945eb01c6515fb3db329e45e39fd7d12": {
     "describe": {
       "columns": [
@@ -113,7 +87,7 @@
     },
     "query": "\n        SELECT start_time\n        FROM accounting \n        WHERE record_id = $1\n        "
   },
-  "461381384ff33a48e88e6bd7debe21e88bae6970f56cf5a8e30442869a8c6e90": {
+  "5035e5bdcf4d75119aa2f60ca65e37bb67dcbfd61c5d5514fa236955a8f5f77a": {
     "describe": {
       "columns": [
         {
@@ -211,7 +185,59 @@
         ]
       }
     },
-    "query": "SELECT a.record_id,\n                          m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                          a.components as \"components: Vec<Component>\",\n                          a.start_time as \"start_time?\",\n                          a.stop_time,\n                          a.runtime\n                   FROM accounting a\n                   LEFT JOIN (\n                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta \n                       FROM meta as m\n                       GROUP BY m.record_id\n                       ) m ON m.record_id = a.record_id\n                   WHERE a.stop_time > $1 and a.runtime IS NOT NULL\n                   ORDER BY a.stop_time;\n                "
+    "query": "SELECT a.record_id,\n                      m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                      a.components as \"components: Vec<Component>\",\n                      a.start_time as \"start_time?\",\n                      a.stop_time,\n                      a.runtime\n               FROM accounting a\n               LEFT JOIN (\n                   WITH subquery AS (\n                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                       FROM meta as m\n                       GROUP BY m.record_id, m.key\n                   )\n                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                   FROM subquery as s\n                   GROUP BY s.record_id\n                   ) m ON m.record_id = a.record_id\n                WHERE a.stop_time > $1 and a.runtime IS NOT NULL\n                ORDER BY a.stop_time\n                "
+  },
+  "622a95c18c6d5bb7d69e5f557e4742a07db9389fb810005f9e8bc142686c7846": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT value as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1 \n               GROUP BY value;\n            "
+  },
+  "6c7c9b840bd8bf36dd80484f6c82787423b2304ccff83a98a57ec398c1b46ddb": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "num!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT value as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1\n               GROUP BY value;\n            "
   },
   "80a4ffc9c5af2cf8570c4543df24cc9fc9604f98bc4716ae4f99479af245774e": {
     "describe": {
@@ -227,104 +253,6 @@
       }
     },
     "query": "\n        UPDATE accounting\n        SET stop_time = $2,\n            runtime = $3,\n            updated_at = $4\n        WHERE\n            record_id = $1\n        "
-  },
-  "913f2d574a22f4bc769d8bc2213646ea6c024e8d5dc187d4d0fd553a9ce95e53": {
-    "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "meta: Vec<(String, Vec<String>)>",
-          "ordinal": 1,
-          "type_info": "RecordArray"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 2,
-          "type_info": {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          }
-        },
-        {
-          "name": "start_time?",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 5,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
-        null,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT a.record_id,\n                  m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                  a.components as \"components: Vec<Component>\",\n                  a.start_time as \"start_time?\",\n                  a.stop_time,\n                  a.runtime\n           FROM accounting a\n           LEFT JOIN (\n               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta \n               FROM meta as m\n               GROUP BY m.record_id\n               ) m ON m.record_id = a.record_id\n           ORDER BY a.stop_time;\n            "
   },
   "b205b9e460541ad09dcd6de4d75df490a88f4b31b3ef45a9ec68047c39081eb5": {
     "describe": {
@@ -344,7 +272,105 @@
     },
     "query": "SELECT count(*) as \"count!\" FROM accounting;"
   },
-  "c4d20cb65d1d242b4585a84c552ffc0589af497841f0e26f04c45fd35da6e666": {
+  "b505df9b99ae12aac88ec10114e117bb0d7663bfe093467da35a49ccd6cad637": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta: Vec<(String, Vec<String>)>",
+          "ordinal": 1,
+          "type_info": "RecordArray"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 2,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "value",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 5,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        null,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT a.record_id,\n              m.meta as \"meta: Vec<(String, Vec<String>)>\",\n              a.components as \"components: Vec<Component>\",\n              a.start_time as \"start_time?\",\n              a.stop_time,\n              a.runtime\n       FROM accounting a\n       LEFT JOIN (\n           WITH subquery AS (\n               SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n               FROM meta as m\n               GROUP BY m.record_id, m.key\n           )\n           SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n           FROM subquery as s\n           GROUP BY s.record_id\n           ) m ON m.record_id = a.record_id\n        ORDER BY a.stop_time\n        "
+  },
+  "bfc69a13ef5b6b6abfa3dfbb25fab16f3f4617385b26529bd678c900b36246e5": {
     "describe": {
       "columns": [
         {
@@ -442,6 +468,20 @@
         ]
       }
     },
-    "query": "SELECT a.record_id,\n                          m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                          a.components as \"components: Vec<Component>\",\n                          a.start_time as \"start_time?\",\n                          a.stop_time,\n                          a.runtime\n                   FROM accounting a\n                   LEFT JOIN (\n                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta \n                       FROM meta as m\n                       GROUP BY m.record_id\n                       ) m ON m.record_id = a.record_id\n                   WHERE a.start_time > $1 and a.runtime IS NOT NULL\n                   ORDER BY a.stop_time;\n                "
+    "query": "SELECT a.record_id,\n                      m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                      a.components as \"components: Vec<Component>\",\n                      a.start_time as \"start_time?\",\n                      a.stop_time,\n                      a.runtime\n               FROM accounting a\n               LEFT JOIN (\n                   WITH subquery AS (\n                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                       FROM meta as m\n                       GROUP BY m.record_id, m.key\n                   )\n                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                   FROM subquery as s\n                   GROUP BY s.record_id\n                   ) m ON m.record_id = a.record_id\n                WHERE a.start_time > $1 and a.runtime IS NOT NULL\n                ORDER BY a.stop_time\n                "
+  },
+  "f9013f697e7b81594947530172248a0400cfbf7e316d0224b4692475a12a7d7f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "TextArray",
+          "TextArray",
+          "TextArray"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO meta (record_id, key, value)\n            SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])\n            "
   }
 }

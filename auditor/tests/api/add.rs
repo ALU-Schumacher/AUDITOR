@@ -25,9 +25,15 @@ async fn add_returns_a_200_for_valid_json_data() {
                       a.runtime
                FROM accounting a
                LEFT JOIN (
-                   SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
-                   FROM meta as m
-                   GROUP BY m.record_id
+                   WITH subquery AS (
+                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
+                       FROM meta as m
+                       WHERE m.record_id = $1
+                       GROUP BY m.record_id, m.key
+                   )
+                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+                   FROM subquery as s
+                   GROUP BY s.record_id
                    ) m ON m.record_id = a.record_id
                WHERE a.record_id = $1
             "#,
@@ -77,12 +83,18 @@ async fn add_returns_a_400_for_invalid_json_data() {
                       a.runtime
                FROM accounting a
                LEFT JOIN (
-                   SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
-                   FROM meta as m
-                   GROUP BY m.record_id
+                   WITH subquery AS (
+                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
+                       FROM meta as m
+                       WHERE m.record_id = $1
+                       GROUP BY m.record_id, m.key
+                   )
+                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+                   FROM subquery as s
+                   GROUP BY s.record_id
                    ) m ON m.record_id = a.record_id
                WHERE a.record_id = $1
-            "#,
+               "#,
                 body.record_id.as_ref().unwrap(),
             )
             .fetch_all(&app.db_pool)
@@ -128,6 +140,36 @@ async fn add_returns_a_400_when_data_is_missing() {
             response.status().as_u16(),
             "The API did not fail with 400 Bad Request when the payload was {error_message}."
         );
+
+        let saved: Vec<_> = sqlx::query_as!(
+            RecordDatabase,
+            r#"SELECT a.record_id,
+                  m.meta as "meta: Vec<(String, Vec<String>)>",
+                  a.components as "components: Vec<Component>",
+                  a.start_time as "start_time?",
+                  a.stop_time,
+                  a.runtime
+           FROM accounting a
+           LEFT JOIN (
+               WITH subquery AS (
+                   SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
+                   FROM meta as m
+                   WHERE m.record_id = $1
+                   GROUP BY m.record_id, m.key
+               )
+               SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+               FROM subquery as s
+               GROUP BY s.record_id
+               ) m ON m.record_id = a.record_id
+           WHERE a.record_id = $1
+           "#,
+            record.record_id.as_ref().unwrap(),
+        )
+        .fetch_all(&app.db_pool)
+        .await
+        .expect("Failed to fetch data");
+
+        assert_eq!(saved.len(), 0);
     }
 }
 

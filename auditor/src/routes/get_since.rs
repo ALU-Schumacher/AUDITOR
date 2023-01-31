@@ -62,19 +62,24 @@ pub async fn get_records_since(
             sqlx::query_as!(
                 RecordDatabase,
                 r#"SELECT a.record_id,
-                          m.meta as "meta: Vec<(String, Vec<String>)>",
-                          a.components as "components: Vec<Component>",
-                          a.start_time as "start_time?",
-                          a.stop_time,
-                          a.runtime
-                   FROM accounting a
-                   LEFT JOIN (
-                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
+                      m.meta as "meta: Vec<(String, Vec<String>)>",
+                      a.components as "components: Vec<Component>",
+                      a.start_time as "start_time?",
+                      a.stop_time,
+                      a.runtime
+               FROM accounting a
+               LEFT JOIN (
+                   WITH subquery AS (
+                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
                        FROM meta as m
-                       GROUP BY m.record_id
-                       ) m ON m.record_id = a.record_id
-                   WHERE a.start_time > $1 and a.runtime IS NOT NULL
-                   ORDER BY a.stop_time;
+                       GROUP BY m.record_id, m.key
+                   )
+                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+                   FROM subquery as s
+                   GROUP BY s.record_id
+                   ) m ON m.record_id = a.record_id
+                WHERE a.start_time > $1 and a.runtime IS NOT NULL
+                ORDER BY a.stop_time
                 "#,
                 info.1,
             )
@@ -85,19 +90,24 @@ pub async fn get_records_since(
             sqlx::query_as!(
                 RecordDatabase,
                 r#"SELECT a.record_id,
-                          m.meta as "meta: Vec<(String, Vec<String>)>",
-                          a.components as "components: Vec<Component>",
-                          a.start_time as "start_time?",
-                          a.stop_time,
-                          a.runtime
-                   FROM accounting a
-                   LEFT JOIN (
-                       SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
+                      m.meta as "meta: Vec<(String, Vec<String>)>",
+                      a.components as "components: Vec<Component>",
+                      a.start_time as "start_time?",
+                      a.stop_time,
+                      a.runtime
+               FROM accounting a
+               LEFT JOIN (
+                   WITH subquery AS (
+                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
                        FROM meta as m
-                       GROUP BY m.record_id
-                       ) m ON m.record_id = a.record_id
-                   WHERE a.stop_time > $1 and a.runtime IS NOT NULL
-                   ORDER BY a.stop_time;
+                       GROUP BY m.record_id, m.key
+                   )
+                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+                   FROM subquery as s
+                   GROUP BY s.record_id
+                   ) m ON m.record_id = a.record_id
+                WHERE a.stop_time > $1 and a.runtime IS NOT NULL
+                ORDER BY a.stop_time
                 "#,
                 info.1,
             )
