@@ -9,11 +9,7 @@ use crate::constants::{ERR_RECORD_EXISTS, ERR_UNEXPECTED_ERROR};
 use crate::domain::RecordAdd;
 use actix_web::{web, HttpResponse, ResponseError};
 use chrono::Utc;
-use itertools::Itertools;
 use sqlx::PgPool;
-use sqlx::{self, QueryBuilder};
-
-const BIND_LIMIT: usize = 65535;
 
 #[derive(thiserror::Error)]
 pub enum AddError {
@@ -111,26 +107,28 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
     .await
     .map_err(AddRecordError)?;
 
-    let mut query_builder: QueryBuilder<sqlx::Postgres> =
-        QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
-
     if let Some(data) = record.meta.as_ref() {
         let data = data.to_vec();
 
-        for chunk in &data.into_iter().chunks(BIND_LIMIT / 4) {
-            query_builder.push_values(
-                chunk.map(|m| (record.record_id.as_ref().to_string(), m.0, m.1)),
-                |mut b, m| {
-                    b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
-                },
-            );
+        let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
+            itertools::multiunzip(data.into_iter().flat_map(|(k, v)| {
+                v.into_iter()
+                    .map(|v| (record.record_id.as_ref().to_string(), k.clone(), v))
+                    .collect::<Vec<_>>()
+            }));
 
-            query_builder
-                .build()
-                .execute(&mut transaction)
-                .await
-                .map_err(AddRecordError)?;
-        }
+        sqlx::query!(
+            r#"
+            INSERT INTO meta (record_id, key, value)
+            SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
+            "#,
+            &rid[..],
+            &names[..],
+            &values[..],
+        )
+        .execute(&mut transaction)
+        .await
+        .map_err(AddRecordError)?;
     }
 
     if let Err(e) = transaction.commit().await {

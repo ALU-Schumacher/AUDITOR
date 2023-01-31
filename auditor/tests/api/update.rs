@@ -60,20 +60,26 @@ async fn update_returns_a_200_for_valid_form_data() {
     let saved: Record = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<(String, Vec<String>)>",
-                  a.components as "components: Vec<Component>",
-                  a.start_time as "start_time?",
-                  a.stop_time,
-                  a.runtime
-           FROM accounting a
-           LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
+              m.meta as "meta: Vec<(String, Vec<String>)>",
+              a.components as "components: Vec<Component>",
+              a.start_time as "start_time?",
+              a.stop_time,
+              a.runtime
+       FROM accounting a
+       LEFT JOIN (
+           WITH subquery AS (
+               SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
                FROM meta as m
-               GROUP BY m.record_id
-               ) m ON m.record_id = a.record_id
-           WHERE a.record_id = $1
-           ORDER BY a.stop_time;
-        "#,
+               WHERE m.record_id = $1
+               GROUP BY m.record_id, m.key
+           )
+           SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+           FROM subquery as s
+           GROUP BY s.record_id
+           ) m ON m.record_id = a.record_id
+       WHERE a.record_id = $1
+       ORDER BY a.stop_time
+       "#,
         body.record_id.as_ref().unwrap()
     )
     .fetch_one(&app.db_pool)

@@ -108,11 +108,10 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_site(&self) -> Result<(), anyhow::Error> {
         let per_site: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value[0] as "name!", count(*) as "num!"
+            r#"SELECT value as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1 and
-                     array_length(value, 1) > 1
-               GROUP BY value[0];
+               WHERE key = $1 
+               GROUP BY value;
             "#,
             "site_id"
         )
@@ -134,11 +133,10 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_group(&self) -> Result<(), anyhow::Error> {
         let per_group: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value[0] as "name!", count(*) as "num!"
+            r#"SELECT value as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1 and
-                     array_length(value, 1) > 1
-               GROUP BY value[0];
+               WHERE key = $1
+               GROUP BY value;
             "#,
             "group_id"
         )
@@ -157,11 +155,10 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_user(&self) -> Result<(), anyhow::Error> {
         let per_user: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value[0] as "name!", count(*) as "num!"
+            r#"SELECT value as "name!", count(*) as "num!"
                FROM meta
-               WHERE key = $1 and
-                     array_length(value, 1) > 1
-               GROUP BY value[0];
+               WHERE key = $1
+               GROUP BY value;
             "#,
             "user_id"
         )

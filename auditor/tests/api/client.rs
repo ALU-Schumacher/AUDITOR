@@ -3,10 +3,6 @@ use auditor::client::AuditorClient;
 use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
-use itertools::Itertools;
-use sqlx::QueryBuilder;
-
-const BIND_LIMIT: usize = 65535;
 
 #[tokio::test]
 async fn add_records() {
@@ -32,19 +28,24 @@ async fn add_records() {
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<(String, Vec<String>)>",
-                  a.components as "components: Vec<Component>",
-                  a.start_time as "start_time?",
-                  a.stop_time,
-                  a.runtime
-           FROM accounting a
-           LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
+              m.meta as "meta: Vec<(String, Vec<String>)>",
+              a.components as "components: Vec<Component>",
+              a.start_time as "start_time?",
+              a.stop_time,
+              a.runtime
+       FROM accounting a
+       LEFT JOIN (
+           WITH subquery AS (
+               SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
                FROM meta as m
-               GROUP BY m.record_id
-               ) m ON m.record_id = a.record_id
-           ORDER BY a.stop_time;
-            "#,
+               GROUP BY m.record_id, m.key
+           )
+           SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+           FROM subquery as s
+           GROUP BY s.record_id
+           ) m ON m.record_id = a.record_id
+        ORDER BY a.stop_time
+       "#,
     )
     .fetch_all(&app.db_pool)
     .await
@@ -111,19 +112,24 @@ async fn update_records() {
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
         r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<(String, Vec<String>)>",
-                  a.components as "components: Vec<Component>",
-                  a.start_time as "start_time?",
-                  a.stop_time,
-                  a.runtime
-           FROM accounting a
-           LEFT JOIN (
-               SELECT m.record_id as record_id, array_agg(row(m.key, m.value)) as meta 
+              m.meta as "meta: Vec<(String, Vec<String>)>",
+              a.components as "components: Vec<Component>",
+              a.start_time as "start_time?",
+              a.stop_time,
+              a.runtime
+       FROM accounting a
+       LEFT JOIN (
+           WITH subquery AS (
+               SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
                FROM meta as m
-               GROUP BY m.record_id
-               ) m ON m.record_id = a.record_id
-           ORDER BY a.stop_time;
-            "#,
+               GROUP BY m.record_id, m.key
+           )
+           SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
+           FROM subquery as s
+           GROUP BY s.record_id
+           ) m ON m.record_id = a.record_id
+        ORDER BY a.stop_time
+       "#,
     )
     .fetch_all(&app.db_pool)
     .await
@@ -205,30 +211,32 @@ async fn get_returns_a_list_of_records() {
         .await
         .unwrap();
 
-        let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
-
         if let Some(data) = record.meta.as_ref() {
-            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
-                query_builder.push_values(
-                    chunk.map(|m| {
-                        (
-                            record.record_id.as_ref().unwrap().clone(),
-                            m.0.clone(),
-                            m.1.clone(),
-                        )
-                    }),
-                    |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
-                    },
-                );
+            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
+                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
+                    v.iter()
+                        .map(|v| {
+                            (
+                                record.record_id.as_ref().unwrap().clone(),
+                                k.clone(),
+                                v.clone(),
+                            )
+                        })
+                        .collect::<Vec<_>>()
+                }));
 
-                query_builder
-                    .build()
-                    .execute(&mut transaction)
-                    .await
-                    .unwrap();
-            }
+            sqlx::query!(
+                r#"
+                INSERT INTO meta (record_id, key, value)
+                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
+                "#,
+                &rid[..],
+                &names[..],
+                &values[..],
+            )
+            .execute(&mut transaction)
+            .await
+            .unwrap();
         }
 
         transaction.commit().await.unwrap();
@@ -305,30 +313,32 @@ async fn get_started_since_returns_a_list_of_records() {
         .await
         .unwrap();
 
-        let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
-
         if let Some(data) = record.meta.as_ref() {
-            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
-                query_builder.push_values(
-                    chunk.map(|m| {
-                        (
-                            record.record_id.as_ref().unwrap().clone(),
-                            m.0.clone(),
-                            m.1.clone(),
-                        )
-                    }),
-                    |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
-                    },
-                );
+            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
+                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
+                    v.iter()
+                        .map(|v| {
+                            (
+                                record.record_id.as_ref().unwrap().clone(),
+                                k.clone(),
+                                v.clone(),
+                            )
+                        })
+                        .collect::<Vec<_>>()
+                }));
 
-                query_builder
-                    .build()
-                    .execute(&mut transaction)
-                    .await
-                    .unwrap();
-            }
+            sqlx::query!(
+                r#"
+                INSERT INTO meta (record_id, key, value)
+                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
+                "#,
+                &rid[..],
+                &names[..],
+                &values[..],
+            )
+            .execute(&mut transaction)
+            .await
+            .unwrap();
         }
 
         transaction.commit().await.unwrap();
@@ -413,30 +423,32 @@ async fn get_stopped_since_returns_a_list_of_records() {
         .await
         .unwrap();
 
-        let mut query_builder: QueryBuilder<sqlx::Postgres> =
-            QueryBuilder::new("INSERT INTO meta(record_id, key, value) ");
-
         if let Some(data) = record.meta.as_ref() {
-            for chunk in &data.iter().chunks(BIND_LIMIT / 4) {
-                query_builder.push_values(
-                    chunk.map(|m| {
-                        (
-                            record.record_id.as_ref().unwrap().clone(),
-                            m.0.clone(),
-                            m.1.clone(),
-                        )
-                    }),
-                    |mut b, m| {
-                        b.push_bind(m.0).push_bind(m.1).push_bind(m.2);
-                    },
-                );
+            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
+                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
+                    v.iter()
+                        .map(|v| {
+                            (
+                                record.record_id.as_ref().unwrap().clone(),
+                                k.clone(),
+                                v.clone(),
+                            )
+                        })
+                        .collect::<Vec<_>>()
+                }));
 
-                query_builder
-                    .build()
-                    .execute(&mut transaction)
-                    .await
-                    .unwrap();
-            }
+            sqlx::query!(
+                r#"
+                INSERT INTO meta (record_id, key, value)
+                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
+                "#,
+                &rid[..],
+                &names[..],
+                &values[..],
+            )
+            .execute(&mut transaction)
+            .await
+            .unwrap();
         }
 
         transaction.commit().await.unwrap();
