@@ -9,7 +9,6 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 
     // First send a couple of records
     let test_cases = (1..10)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
@@ -62,7 +61,6 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 
     // First send a couple of records
     let test_cases = (1..10)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
@@ -132,7 +130,6 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
     // First send a couple of records
     let test_cases = (1..10)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
@@ -186,7 +183,6 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 
     // First send a couple of records
     let test_cases = (1..10)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()

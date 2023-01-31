@@ -8,10 +8,7 @@ async fn get_returns_a_200_and_list_of_records() {
     let app = spawn_app().await;
 
     // First send a couple of records
-    let mut test_cases: Vec<RecordTest> = (0..100)
-        .into_iter()
-        .map(|_| Faker.fake::<RecordTest>())
-        .collect();
+    let mut test_cases: Vec<RecordTest> = (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
 
     for case in test_cases.iter() {
         let response = app.add_record(&case).await;
@@ -52,10 +49,7 @@ async fn get_returns_a_list_of_sorted_records() {
     let app = spawn_app().await;
 
     // First send a couple of records
-    let mut test_cases: Vec<RecordTest> = (0..100)
-        .into_iter()
-        .map(|_| Faker.fake::<RecordTest>())
-        .collect();
+    let mut test_cases: Vec<RecordTest> = (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
 
     for case in test_cases.iter() {
         let response = app.add_record(&case).await;
