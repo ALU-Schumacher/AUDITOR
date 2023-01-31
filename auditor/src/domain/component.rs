@@ -154,7 +154,6 @@ impl Dummy<Faker> for ComponentTest {
             name: Some(name),
             amount: Some((0..i64::MAX).fake_with_rng(rng)),
             scores: (0..(0..10u64).fake_with_rng(rng))
-                .into_iter()
                 .map(|_| Faker.fake_with_rng::<ScoreTest, _>(rng))
                 .collect(),
         }

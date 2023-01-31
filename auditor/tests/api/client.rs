@@ -10,10 +10,8 @@ async fn add_records() {
     let app = spawn_app().await;
     let client = AuditorClient::from_connection_string(&app.address).unwrap();
 
-    let mut test_cases_comp: Vec<RecordTest> = (0..100)
-        .into_iter()
-        .map(|_| Faker.fake::<RecordTest>())
-        .collect();
+    let mut test_cases_comp: Vec<RecordTest> =
+        (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
     let test_cases: Vec<RecordAdd> = test_cases_comp
         .iter()
         .cloned()
@@ -81,10 +79,8 @@ async fn update_records() {
     let app = spawn_app().await;
     let client = AuditorClient::from_connection_string(&app.address).unwrap();
 
-    let mut test_cases_comp: Vec<RecordTest> = (0..100)
-        .into_iter()
-        .map(|_| Faker.fake::<RecordTest>())
-        .collect();
+    let mut test_cases_comp: Vec<RecordTest> =
+        (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
 
     let test_cases: Vec<RecordAdd> = test_cases_comp
         .iter()
@@ -176,10 +172,7 @@ async fn get_returns_a_list_of_records() {
     let app = spawn_app().await;
     let client = AuditorClient::from_connection_string(&app.address).unwrap();
 
-    let mut test_cases: Vec<RecordTest> = (0..100)
-        .into_iter()
-        .map(|_| Faker.fake::<RecordTest>())
-        .collect();
+    let mut test_cases: Vec<RecordTest> = (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
 
     for record in test_cases.iter() {
         let runtime = (record.stop_time.unwrap() - record.start_time.unwrap()).num_seconds();
@@ -273,7 +266,6 @@ async fn get_started_since_returns_a_list_of_records() {
     let client = AuditorClient::from_connection_string(&app.address).unwrap();
 
     let mut test_cases: Vec<RecordTest> = (1..=31)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
@@ -383,7 +375,6 @@ async fn get_stopped_since_returns_a_list_of_records() {
     let client = AuditorClient::from_connection_string(&app.address).unwrap();
 
     let mut test_cases: Vec<RecordTest> = (1..=31)
-        .into_iter()
         .map(|i| {
             Faker
                 .fake::<RecordTest>()
