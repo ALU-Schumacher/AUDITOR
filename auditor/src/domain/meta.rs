@@ -21,7 +21,7 @@ impl ValidMeta {
             .map(|(k, v)| {
                 (
                     k.as_ref().to_string(),
-                    v.iter().map(|v| v.to_string()).collect(),
+                    v.iter().map(|v| v.as_ref().to_string()).collect(),
                 )
             })
             .collect::<Vec<_>>()
