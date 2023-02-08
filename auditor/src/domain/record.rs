@@ -246,13 +246,18 @@ impl PartialEq<Record> for RecordTest {
             && start_diff < chrono::Duration::milliseconds(1)
             && stop
             && ((s_comp.is_none() && o_comp.is_none())
-                || (s_comp.as_ref().unwrap().len() == o_comp.as_ref().unwrap().len()
-                    && s_comp
-                        .as_ref()
-                        .unwrap()
-                        .iter()
-                        .zip(o_comp.as_ref().unwrap().iter())
-                        .fold(true, |acc, (a, b)| acc && (a == b))))
+                || (
+                    // s_comp.is_some()
+                    //     && o_comp.is_some()
+                    //     &&
+                    s_comp.as_ref().unwrap().len() == o_comp.as_ref().unwrap().len()
+                        && s_comp
+                            .as_ref()
+                            .unwrap()
+                            .iter()
+                            .zip(o_comp.as_ref().unwrap().iter())
+                            .fold(true, |acc, (a, b)| acc && (a == b))
+                ))
             && ((s_meta.is_none() && o_meta.is_none())
                 || (s_meta.as_ref().unwrap().len() == o_meta.as_ref().unwrap().len()
                     && s_meta.as_ref().unwrap() == s_meta.as_ref().unwrap()))
