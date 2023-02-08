@@ -19,6 +19,7 @@ fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<crate::builder::AuditorClientBuilder>()?;
     m.add_class::<crate::client::AuditorClient>()?;
     m.add_class::<crate::domain::Record>()?;
+    m.add_class::<crate::domain::Meta>()?;
     m.add_class::<crate::domain::Component>()?;
     m.add_class::<crate::domain::Score>()?;
     Ok(())
