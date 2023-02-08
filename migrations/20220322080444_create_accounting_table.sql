@@ -13,11 +13,10 @@ CREATE TYPE component AS (
 CREATE TABLE accounting (
     id         INT GENERATED ALWAYS AS IDENTITY,
     PRIMARY KEY (id),
-	record_id   TEXT NOT NULL UNIQUE,
-	components  component[],
-	start_time  TIMESTAMPTZ NOT NULL,
-	stop_time   TIMESTAMPTZ,
-	runtime     BIGINT,
+    record_id   TEXT NOT NULL UNIQUE,
+    start_time  TIMESTAMPTZ NOT NULL,
+    stop_time   TIMESTAMPTZ,
+    runtime     BIGINT,
     updated_at  TIMESTAMPTZ NOT NULL
 );
 
@@ -40,7 +39,8 @@ CREATE TABLE scores (
     id         INT GENERATED ALWAYS AS IDENTITY,
     PRIMARY KEY (id),
     name       TEXT NOT NULL,
-    value      double precision NOT NULL
+    value      double precision NOT NULL,
+    UNIQUE (name, value)
 );
 
 CREATE TABLE components_scores (

@@ -1,72 +1,5 @@
 {
   "db": "PostgreSQL",
-  "007acb848c1be6533b5ef2ab89da95a9396e980b280b278d268d315724f8556a": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          },
-          "Timestamptz",
-          "Timestamptz",
-          "Int8",
-          "Timestamptz"
-        ]
-      }
-    },
-    "query": "\n        INSERT INTO accounting (\n            record_id, components, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6)\n        "
-  },
   "0de2b3aa2731428f5c749d7c166ab8be945eb01c6515fb3db329e45e39fd7d12": {
     "describe": {
       "columns": [
@@ -87,7 +20,7 @@
     },
     "query": "\n        SELECT start_time\n        FROM accounting \n        WHERE record_id = $1\n        "
   },
-  "5035e5bdcf4d75119aa2f60ca65e37bb67dcbfd61c5d5514fa236955a8f5f77a": {
+  "17f4686d8430a057a076f44db1d54859c3fb4f569d162d7095f8734b87ab73b7": {
     "describe": {
       "columns": [
         {
@@ -174,7 +107,129 @@
       "nullable": [
         false,
         null,
+        null,
+        false,
         true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT a.record_id,\n                  m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                  css.components as \"components: Vec<Component>\",\n                  a.start_time as \"start_time?\",\n                  a.stop_time,\n                  a.runtime\n           FROM accounting a\n           LEFT JOIN (\n               WITH subquery AS (\n                   SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                   FROM meta as m\n                   GROUP BY m.record_id, m.key\n               )\n               SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n               FROM subquery as s\n               GROUP BY s.record_id\n               ) m ON m.record_id = a.record_id\n           LEFT JOIN (\n               WITH subquery AS (\n                  SELECT \n                      c.id as cid,\n                      COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores\n                  FROM components as c\n                  LEFT JOIN components_scores as cs\n                  ON c.id = cs.component_id\n                  LEFT JOIN scores as s\n                  ON cs.score_id = s.id\n                  GROUP BY c.id\n               )\n               SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components\n               FROM records_components AS rc\n               LEFT JOIN components as c\n               ON rc.component_id = c.id\n               LEFT JOIN subquery AS sq\n               ON sq.cid = rc.component_id\n               GROUP BY rc.record_id\n           ) css ON css.id = a.id\n           ORDER BY a.stop_time\n        "
+  },
+  "36fad28130fa066e2182edb3019f5d7e77a635c6116aa9c8a5b358114fb8c57c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Timestamptz",
+          "Timestamptz",
+          "Int8",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO accounting (\n            record_id, start_time, stop_time, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5)\n        RETURNING id;\n        "
+  },
+  "4e72ae54be447c525721306d208b926c647e3f8149bbd428a97ecbc9f8bceca5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "record_id",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta: Vec<(String, Vec<String>)>",
+          "ordinal": 1,
+          "type_info": "RecordArray"
+        },
+        {
+          "name": "components: Vec<Component>",
+          "ordinal": 2,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Array": {
+                  "Custom": {
+                    "kind": {
+                      "Composite": [
+                        [
+                          "name",
+                          "Text"
+                        ],
+                        [
+                          "amount",
+                          "Int8"
+                        ],
+                        [
+                          "scores",
+                          {
+                            "Custom": {
+                              "kind": {
+                                "Array": {
+                                  "Custom": {
+                                    "kind": {
+                                      "Composite": [
+                                        [
+                                          "name",
+                                          "Text"
+                                        ],
+                                        [
+                                          "value",
+                                          "Float8"
+                                        ]
+                                      ]
+                                    },
+                                    "name": "score"
+                                  }
+                                }
+                              },
+                              "name": "_score"
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "name": "component"
+                  }
+                }
+              },
+              "name": "_component"
+            }
+          }
+        },
+        {
+          "name": "start_time?",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "stop_time",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "runtime",
+          "ordinal": 5,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        null,
+        null,
         false,
         true,
         true
@@ -185,7 +240,7 @@
         ]
       }
     },
-    "query": "SELECT a.record_id,\n                      m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                      a.components as \"components: Vec<Component>\",\n                      a.start_time as \"start_time?\",\n                      a.stop_time,\n                      a.runtime\n               FROM accounting a\n               LEFT JOIN (\n                   WITH subquery AS (\n                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                       FROM meta as m\n                       GROUP BY m.record_id, m.key\n                   )\n                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                   FROM subquery as s\n                   GROUP BY s.record_id\n                   ) m ON m.record_id = a.record_id\n                WHERE a.stop_time > $1 and a.runtime IS NOT NULL\n                ORDER BY a.stop_time\n                "
+    "query": "SELECT a.record_id,\n                          m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                          css.components as \"components: Vec<Component>\",\n                          a.start_time as \"start_time?\",\n                          a.stop_time,\n                          a.runtime\n                   FROM accounting a\n                   LEFT JOIN (\n                       WITH subquery AS (\n                           SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                           FROM meta as m\n                           GROUP BY m.record_id, m.key\n                       )\n                       SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                       FROM subquery as s\n                       GROUP BY s.record_id\n                       ) m ON m.record_id = a.record_id\n                   LEFT JOIN (\n                       WITH subquery AS (\n                          SELECT \n                              c.id as cid,\n                              COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores\n                          FROM components as c\n                          LEFT JOIN components_scores as cs\n                          ON c.id = cs.component_id\n                          LEFT JOIN scores as s\n                          ON cs.score_id = s.id\n                          GROUP BY c.id\n                       )\n                       SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components\n                       FROM records_components AS rc\n                       LEFT JOIN components as c\n                       ON rc.component_id = c.id\n                       LEFT JOIN subquery AS sq\n                       ON sq.cid = rc.component_id\n                       GROUP BY rc.record_id\n                   ) css ON css.id = a.id\n                WHERE a.stop_time > $1 and a.runtime IS NOT NULL\n                ORDER BY a.stop_time\n                "
   },
   "622a95c18c6d5bb7d69e5f557e4742a07db9389fb810005f9e8bc142686c7846": {
     "describe": {
@@ -254,6 +309,22 @@
     },
     "query": "\n        UPDATE accounting\n        SET stop_time = $2,\n            runtime = $3,\n            updated_at = $4\n        WHERE\n            record_id = $1\n        "
   },
+  "909d8a192fb7cbf882d2e2b759df5c3d09455c45e2c68d64f10e40ac9229a1b5": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8",
+          "TextArray",
+          "Float8Array",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            WITH insert_components AS (\n                INSERT INTO components (name, amount)\n                VALUES ($1, $2)\n                RETURNING id\n            ),\n            insert_scores AS (\n                INSERT INTO scores (name, value)\n                SELECT * FROM UNNEST($3::text[], $4::double precision[])\n                -- Update if already in table. This isn't great, but \n                -- otherwise RETURNING won't return anything.\n                ON CONFLICT (name, value) DO UPDATE\n                SET value = EXCLUDED.value, name = EXCLUDED.name\n                RETURNING id\n            ),\n            insert_components_scores AS (\n                INSERT INTO components_scores (component_id, score_id)\n                SELECT (SELECT id FROM insert_components), id\n                FROM insert_scores\n            )\n            INSERT INTO records_components (record_id, component_id)\n            SELECT $5, (SELECT id from insert_components) \n            -- FROM accounting WHERE id = $5\n            "
+  },
   "b205b9e460541ad09dcd6de4d75df490a88f4b31b3ef45a9ec68047c39081eb5": {
     "describe": {
       "columns": [
@@ -272,7 +343,7 @@
     },
     "query": "SELECT count(*) as \"count!\" FROM accounting;"
   },
-  "b505df9b99ae12aac88ec10114e117bb0d7663bfe093467da35a49ccd6cad637": {
+  "b4e6b925764d8bdabd3aa358f357fc59f0e71b39e06c82e332185cc9ab0b04ed": {
     "describe": {
       "columns": [
         {
@@ -359,105 +430,7 @@
       "nullable": [
         false,
         null,
-        true,
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT a.record_id,\n              m.meta as \"meta: Vec<(String, Vec<String>)>\",\n              a.components as \"components: Vec<Component>\",\n              a.start_time as \"start_time?\",\n              a.stop_time,\n              a.runtime\n       FROM accounting a\n       LEFT JOIN (\n           WITH subquery AS (\n               SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n               FROM meta as m\n               GROUP BY m.record_id, m.key\n           )\n           SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n           FROM subquery as s\n           GROUP BY s.record_id\n           ) m ON m.record_id = a.record_id\n        ORDER BY a.stop_time\n        "
-  },
-  "bfc69a13ef5b6b6abfa3dfbb25fab16f3f4617385b26529bd678c900b36246e5": {
-    "describe": {
-      "columns": [
-        {
-          "name": "record_id",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "meta: Vec<(String, Vec<String>)>",
-          "ordinal": 1,
-          "type_info": "RecordArray"
-        },
-        {
-          "name": "components: Vec<Component>",
-          "ordinal": 2,
-          "type_info": {
-            "Custom": {
-              "kind": {
-                "Array": {
-                  "Custom": {
-                    "kind": {
-                      "Composite": [
-                        [
-                          "name",
-                          "Text"
-                        ],
-                        [
-                          "amount",
-                          "Int8"
-                        ],
-                        [
-                          "scores",
-                          {
-                            "Custom": {
-                              "kind": {
-                                "Array": {
-                                  "Custom": {
-                                    "kind": {
-                                      "Composite": [
-                                        [
-                                          "name",
-                                          "Text"
-                                        ],
-                                        [
-                                          "value",
-                                          "Float8"
-                                        ]
-                                      ]
-                                    },
-                                    "name": "score"
-                                  }
-                                }
-                              },
-                              "name": "_score"
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "name": "component"
-                  }
-                }
-              },
-              "name": "_component"
-            }
-          }
-        },
-        {
-          "name": "start_time?",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "stop_time",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "runtime",
-          "ordinal": 5,
-          "type_info": "Int8"
-        }
-      ],
-      "nullable": [
-        false,
         null,
-        true,
         false,
         true,
         true
@@ -468,7 +441,7 @@
         ]
       }
     },
-    "query": "SELECT a.record_id,\n                      m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                      a.components as \"components: Vec<Component>\",\n                      a.start_time as \"start_time?\",\n                      a.stop_time,\n                      a.runtime\n               FROM accounting a\n               LEFT JOIN (\n                   WITH subquery AS (\n                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                       FROM meta as m\n                       GROUP BY m.record_id, m.key\n                   )\n                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                   FROM subquery as s\n                   GROUP BY s.record_id\n                   ) m ON m.record_id = a.record_id\n                WHERE a.start_time > $1 and a.runtime IS NOT NULL\n                ORDER BY a.stop_time\n                "
+    "query": "SELECT a.record_id,\n                          m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                          css.components as \"components: Vec<Component>\",\n                          a.start_time as \"start_time?\",\n                          a.stop_time,\n                          a.runtime\n                   FROM accounting a\n                   LEFT JOIN (\n                       WITH subquery AS (\n                           SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                           FROM meta as m\n                           GROUP BY m.record_id, m.key\n                       )\n                       SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n                       FROM subquery as s\n                       GROUP BY s.record_id\n                       ) m ON m.record_id = a.record_id\n                   LEFT JOIN (\n                       WITH subquery AS (\n                          SELECT \n                              c.id as cid,\n                              COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores\n                          FROM components as c\n                          LEFT JOIN components_scores as cs\n                          ON c.id = cs.component_id\n                          LEFT JOIN scores as s\n                          ON cs.score_id = s.id\n                          GROUP BY c.id\n                       )\n                       SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components\n                       FROM records_components AS rc\n                       LEFT JOIN components as c\n                       ON rc.component_id = c.id\n                       LEFT JOIN subquery AS sq\n                       ON sq.cid = rc.component_id\n                       GROUP BY rc.record_id\n                   ) css ON css.id = a.id\n                   WHERE a.start_time > $1 and a.runtime IS NOT NULL\n                   ORDER BY a.stop_time\n               "
   },
   "f9013f697e7b81594947530172248a0400cfbf7e316d0224b4692475a12a7d7f": {
     "describe": {

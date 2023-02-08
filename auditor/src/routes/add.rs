@@ -89,23 +89,68 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
         Err(e) => return Err(AddRecordError(e)),
     };
 
-    sqlx::query_unchecked!(
+    let id = sqlx::query_unchecked!(
         r#"
         INSERT INTO accounting (
-            record_id, components, start_time, stop_time, runtime, updated_at
+            record_id, start_time, stop_time, runtime, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id;
         "#,
         record.record_id.as_ref(),
-        record.components,
         record.start_time,
         record.stop_time,
         runtime,
         Utc::now()
     )
-    .execute(&mut transaction)
+    .fetch_optional(&mut transaction)
     .await
-    .map_err(AddRecordError)?;
+    .map_err(AddRecordError)?
+    .ok_or_else(|| AddRecordError(sqlx::Error::RowNotFound))?
+    .id;
+
+    for component in record.components.iter() {
+        let (names, scores): (Vec<String>, Vec<f64>) = component
+            .scores
+            .iter()
+            .map(|s| (s.name.as_ref().to_string(), s.value.as_ref()))
+            .unzip();
+
+        sqlx::query_unchecked!(
+            r#"
+            WITH insert_components AS (
+                INSERT INTO components (name, amount)
+                VALUES ($1, $2)
+                RETURNING id
+            ),
+            insert_scores AS (
+                INSERT INTO scores (name, value)
+                SELECT * FROM UNNEST($3::text[], $4::double precision[])
+                -- Update if already in table. This isn't great, but 
+                -- otherwise RETURNING won't return anything.
+                ON CONFLICT (name, value) DO UPDATE
+                SET value = EXCLUDED.value, name = EXCLUDED.name
+                RETURNING id
+            ),
+            insert_components_scores AS (
+                INSERT INTO components_scores (component_id, score_id)
+                SELECT (SELECT id FROM insert_components), id
+                FROM insert_scores
+            )
+            INSERT INTO records_components (record_id, component_id)
+            SELECT $5, (SELECT id from insert_components) 
+            -- FROM accounting WHERE id = $5
+            "#,
+            component.name.as_ref(),
+            component.amount,
+            &names[..],
+            &scores[..],
+            id,
+        )
+        .execute(&mut transaction)
+        .await
+        .map_err(AddRecordError)?;
+    }
 
     if let Some(data) = record.meta.as_ref() {
         let data = data.to_vec();
