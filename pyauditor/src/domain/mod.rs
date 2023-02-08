@@ -6,9 +6,11 @@
 // copied, modified, or distributed except according to those terms.
 
 mod component;
+mod meta;
 mod record;
 mod score;
 
 pub use component::*;
+pub use meta::*;
 pub use record::*;
 pub use score::*;

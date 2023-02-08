@@ -7,9 +7,9 @@
 
 #![allow(clippy::borrow_deref_ref)]
 
-use crate::domain::Component;
+use crate::domain::{Component, Meta};
 use anyhow::Error;
-use auditor::domain::{Meta, ValidName};
+use auditor::domain::ValidName;
 use chrono::{offset::TimeZone, Utc};
 use pyo3::class::basic::{CompareOp, PyObjectProtocol};
 use pyo3::prelude::*;
@@ -40,6 +40,8 @@ use pyo3_chrono::NaiveDateTime;
 /// Components are added via ``with_component``. Call this method multiple times for adding
 /// multiple components.
 ///
+/// Meta information is added via `with_meta`.
+///
 /// The individual fields of the record can be accessed using the getter methods described below.
 ///
 /// :param record_id: Unique record identifier
@@ -61,7 +63,7 @@ impl Record {
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
-                meta: Some(Meta::new()),
+                meta: None,
                 components: Some(vec![]),
                 start_time: Some(start_time),
                 stop_time: None,
@@ -70,27 +72,13 @@ impl Record {
         })
     }
 
-    /// with_meta(name: String, values: [String])
-    /// Adds an element to the meta field of the record.
-    /// Use this method multiple times to attach multiple
-    /// meta entries.
+    /// with_meta(meta: Meta)
+    /// Adds Meta to the record.
     ///
-    /// :param name: Name of the entry
-    /// :type name: String
-    /// :param values: Values associated with the name
-    /// :type values: [String]
-    fn with_meta(
-        mut self_: PyRefMut<Self>,
-        name: String,
-        values: Vec<String>,
-    ) -> Result<PyRefMut<Self>, Error> {
-        self_.inner.meta.as_mut().unwrap().insert(
-            ValidName::parse(name)?.as_ref().to_owned(),
-            values
-                .into_iter()
-                .map(|v| -> Result<_, Error> { Ok(ValidName::parse(v)?.as_ref().to_owned()) })
-                .collect::<Result<_, _>>()?,
-        );
+    /// :param meta: Meta datastructure
+    /// :type meta: Meta
+    fn with_meta(mut self_: PyRefMut<Self>, meta: Meta) -> Result<PyRefMut<Self>, Error> {
+        self_.inner.meta = Some(meta.inner);
         Ok(self_)
     }
 
@@ -143,6 +131,14 @@ impl Record {
             .components
             .as_ref()
             .map(|components| components.iter().cloned().map(Component::from).collect())
+    }
+
+    /// Returns the meta dict
+    ///
+    /// Returns None if no meta is vailable, otherwise returns a dict of meta information.
+    #[getter]
+    fn meta(&self) -> Option<Meta> {
+        self.inner.meta.clone().map(Meta::from)
     }
 
     /// Returns the start_time
