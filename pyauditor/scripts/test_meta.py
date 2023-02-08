@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
-from pyauditor import AuditorClientBuilder, Record, Component, Score, Meta
+from pyauditor import AuditorClientBuilder, Record, Component, Meta
 import datetime
 import pytz
 from tzlocal import get_localzone
