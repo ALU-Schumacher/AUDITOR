@@ -135,7 +135,7 @@ impl Record {
 
     /// Returns the meta dict
     ///
-    /// Returns None if no meta is vailable, otherwise returns a dict of meta information.
+    /// Returns None if no meta is available, otherwise returns a dict of meta information.
     #[getter]
     fn meta(&self) -> Option<Meta> {
         self.inner.meta.clone().map(Meta::from)
