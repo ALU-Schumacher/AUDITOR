@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorial &mdash; pyauditor  documentation</title>
@@ -29,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pyauditor
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyauditor
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -74,7 +78,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Tutorial</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
@@ -99,25 +103,22 @@ At the end of this section there is a short tutorial on how to get correct times
 Records are created and pushed to Auditor, which stores them in a database.
 These records can then be requested again from Auditor to take an action based on the information stored in the records.</p>
 <p>A record consists of a unique identifier and meta information which provides some context (associated site, group, user).
-It also contains an arbitraty number of <cite>components</cite> that are to be accounted for (CPU, RAM, Disk, …) and the amount of each of these components.
+It also contains an arbitrary number of <cite>components</cite> that are to be accounted for (CPU, RAM, Disk, …) and the amount of each of these components.
 The components can optionally be enhanced with <cite>scores</cite>  which are are floating point values which put components of the same kind, but different performance in relation to each other.
 For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <p>pyauditor is an async library and as such requires an event loop.</p>
 <section id="creating-a-record">
 <h2>Creating a Record<a class="headerlink" href="#creating-a-record" title="Permalink to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Score</span>
 
 <span class="c1"># Define meta information</span>
 <span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span> <span class="c1"># Must be unique for all records in Auditor!</span>
-<span class="n">site_id</span> <span class="o">=</span> <span class="s2">&quot;site-1&quot;</span>
-<span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;user-1&quot;</span>
-<span class="n">group_id</span> <span class="o">=</span> <span class="s2">&quot;group-1&quot;</span>
 
 <span class="c1"># Time when the resource became available</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">79043</span><span class="p">)</span> <span class="c1"># in UTC</span>
 
 <span class="c1"># Create record</span>
-<span class="n">record</span> <span class="o">=</span> <span class="n">Record</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+<span class="n">record</span> <span class="o">=</span> <span class="n">Record</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
 
 <span class="c1"># Create a component (10 CPU cores)</span>
 <span class="n">component</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
@@ -130,6 +131,15 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 
 <span class="c1"># Attach the component to the record</span>
 <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">with_component</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+<span class="c1"># Create meta</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">Meta</span><span class="p">()</span>
+
+<span class="c1"># Add information to meta</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;site1&quot;</span><span class="p">])</span>
+
+<span class="c1"># Attach meta to record</span>
+<span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">with_meta</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 
 <span class="c1"># Resource stopped being available</span>
 <span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">79043</span><span class="p">)</span> <span class="c1"># in UTC</span>
@@ -248,7 +258,7 @@ Only the actual numbers for hours, minutes, and so on matter.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Stefan Kroboth.</p>
+    <p>&#169; Copyright 2023, Stefan Kroboth.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

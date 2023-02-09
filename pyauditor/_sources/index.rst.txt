@@ -14,7 +14,7 @@ It provides functionality to create records and send records to and receive reco
 Installation
 ============
 
-pyauditor requires a Python version >= 3.7.
+pyauditor requires a Python version >= 3.6.
 
 .. code-block::
 

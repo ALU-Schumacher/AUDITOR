@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API Documentation &mdash; pyauditor  documentation</title>
@@ -29,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pyauditor
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyauditor
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -62,15 +66,19 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.Record"><code class="docutils literal notranslate"><span class="pre">Record</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.components"><code class="docutils literal notranslate"><span class="pre">Record.components</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.group_id"><code class="docutils literal notranslate"><span class="pre">Record.group_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.meta"><code class="docutils literal notranslate"><span class="pre">Record.meta</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.record_id"><code class="docutils literal notranslate"><span class="pre">Record.record_id</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.runtime"><code class="docutils literal notranslate"><span class="pre">Record.runtime</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.site_id"><code class="docutils literal notranslate"><span class="pre">Record.site_id</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.start_time"><code class="docutils literal notranslate"><span class="pre">Record.start_time</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.stop_time"><code class="docutils literal notranslate"><span class="pre">Record.stop_time</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.user_id"><code class="docutils literal notranslate"><span class="pre">Record.user_id</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_component"><code class="docutils literal notranslate"><span class="pre">Record.with_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_meta"><code class="docutils literal notranslate"><span class="pre">Record.with_meta()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_stop_time"><code class="docutils literal notranslate"><span class="pre">Record.with_stop_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Meta"><code class="docutils literal notranslate"><span class="pre">Meta</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Meta.get"><code class="docutils literal notranslate"><span class="pre">Meta.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Meta.insert"><code class="docutils literal notranslate"><span class="pre">Meta.insert()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul>
@@ -81,8 +89,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.factor"><code class="docutils literal notranslate"><span class="pre">Score.factor</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.name"><code class="docutils literal notranslate"><span class="pre">Score.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.value"><code class="docutils literal notranslate"><span class="pre">Score.value</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -103,7 +111,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">API Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
@@ -142,7 +150,7 @@
 <span class="sig-name descname"><span class="pre">address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.address" title="Permalink to this definition"></a></dt>
 <dd><p>Set the address of the Auditor server</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>address</strong> (<em>str</em>) – Host name / IP address of the Auditor instance</p></li>
 <li><p><strong>port</strong> (<em>int</em>) – Port of the Auditor instance</p></li>
@@ -162,7 +170,7 @@
 <span class="sig-name descname"><span class="pre">connection_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.connection_string" title="Permalink to this definition"></a></dt>
 <dd><p>Set a connection string of the form <code class="docutils literal notranslate"><span class="pre">http://&lt;auditor_address&gt;:&lt;auditor_port&gt;</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection_string</strong> (<em>str</em>) – Connection string</p>
 </dd>
 </dl>
@@ -173,7 +181,7 @@
 <span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.timeout" title="Permalink to this definition"></a></dt>
 <dd><p>Set a timeout in seconds for HTTP requests</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timeout</strong> (<em>int</em>) – Timeout in sections</p>
 </dd>
 </dl>
@@ -208,7 +216,7 @@ database.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
 </dd>
 </dl>
@@ -236,7 +244,7 @@ database.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
 </dd>
 </dl>
@@ -271,13 +279,10 @@ database.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyauditor.Record">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record" title="Permalink to this definition"></a></dt>
 <dd><p>A Record represents a single accountable unit. It consists of meta information such as</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">record_id</span></code>: Uniquely identifies the record</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">site_id</span></code>: Site identifier</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: User identifier</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">group_id</span></code>: Group identifier</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code>: Timestamp from when the resource was available.</p></li>
 </ul>
 <div class="admonition note">
@@ -296,14 +301,12 @@ of all checks that Auditor performs when receiving it.</p>
 <p>The optional <code class="docutils literal notranslate"><span class="pre">stop_time</span></code> can be added via the <code class="docutils literal notranslate"><span class="pre">with_stop_time</span></code> method.</p>
 <p>Components are added via <code class="docutils literal notranslate"><span class="pre">with_component</span></code>. Call this method multiple times for adding
 multiple components.</p>
+<p>Meta information is added via <cite>with_meta</cite>.</p>
 <p>The individual fields of the record can be accessed using the getter methods described below.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>record_id</strong> (<em>str</em>) – Unique record identifier</p></li>
-<li><p><strong>site_id</strong> (<em>str</em>) – Site identifier</p></li>
-<li><p><strong>user_id</strong> (<em>str</em>) – User identifier</p></li>
-<li><p><strong>group_id</strong> (<em>datetime.datetime</em>) – Group identifier</p></li>
 <li><p><strong>start_time</strong> – Timestamp from which the resource became available</p></li>
 </ul>
 </dd>
@@ -316,9 +319,10 @@ multiple components.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pyauditor.Record.group_id">
-<span class="sig-name descname"><span class="pre">group_id</span></span><a class="headerlink" href="#pyauditor.Record.group_id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the group_id</p>
+<dt class="sig sig-object py" id="pyauditor.Record.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#pyauditor.Record.meta" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the meta dict</p>
+<p>Returns None if no meta is available, otherwise returns a dict of meta information.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -334,12 +338,6 @@ multiple components.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pyauditor.Record.site_id">
-<span class="sig-name descname"><span class="pre">site_id</span></span><a class="headerlink" href="#pyauditor.Record.site_id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the site_id</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="pyauditor.Record.start_time">
 <span class="sig-name descname"><span class="pre">start_time</span></span><a class="headerlink" href="#pyauditor.Record.start_time" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the start_time</p>
@@ -351,20 +349,25 @@ multiple components.</p>
 <dd><p>Returns the stop_time</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyauditor.Record.user_id">
-<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#pyauditor.Record.user_id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the user_id</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.Record.with_component">
 <span class="sig-name descname"><span class="pre">with_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Component" title="pyauditor.Component"><span class="pre">Component</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_component" title="Permalink to this definition"></a></dt>
 <dd><p>Adds a component to the record. Use this method multiple times to attach multiple
 components.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>component</strong> (<a class="reference internal" href="#pyauditor.Component" title="pyauditor.Component"><em>Component</em></a>) – Component which is to be added</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Record.with_meta">
+<span class="sig-name descname"><span class="pre">with_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Meta" title="pyauditor.Meta"><span class="pre">Meta</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_meta" title="Permalink to this definition"></a></dt>
+<dd><p>Adds Meta to the record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>meta</strong> (<a class="reference internal" href="#pyauditor.Meta" title="pyauditor.Meta"><em>Meta</em></a>) – Meta datastructure</p>
 </dd>
 </dl>
 </dd></dl>
@@ -374,10 +377,30 @@ components.</p>
 <span class="sig-name descname"><span class="pre">with_stop_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_stop_time" title="Permalink to this definition"></a></dt>
 <dd><p>Adds a stop_time to the record. This is the time when the resource stopped being available.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>stop_time</strong> (<em>datetime.datetime</em>) – Timestamp when resource stopped being available</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Meta</span></span><a class="headerlink" href="#pyauditor.Meta" title="Permalink to this definition"></a></dt>
+<dd><p>Meta stores a list of key value pairs of the form <cite>String -&gt; [String]</cite>.</p>
+<p>The strings must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Meta.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.get" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of string values matching the given key</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Meta.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.insert" title="Permalink to this definition"></a></dt>
+<dd><p>Insert a key-value pair into Meta</p>
 </dd></dl>
 
 </dd></dl>
@@ -392,7 +415,7 @@ Multiple scores can be attached to a single <code class="docutils literal notran
 <p>The amount must be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0</span></code> and the name must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – Name of the component</p></li>
 <li><p><strong>amount</strong> (<em>int</em>) – Amount</p></li>
@@ -427,31 +450,31 @@ Multiple scores can be attached to a single <code class="docutils literal notran
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyauditor.Score">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Score" title="Permalink to this definition"></a></dt>
-<dd><p>An individual score which consists of a <code class="docutils literal notranslate"><span class="pre">name</span></code> (str) and a <code class="docutils literal notranslate"><span class="pre">factor</span></code> (float).
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Score" title="Permalink to this definition"></a></dt>
+<dd><p>An individual score which consists of a <code class="docutils literal notranslate"><span class="pre">name</span></code> (str) and a <code class="docutils literal notranslate"><span class="pre">value</span></code> (float).
 Scores are attached to a <code class="docutils literal notranslate"><span class="pre">Component</span></code> and are used to relate different components of the same
 kind to each other in some kind of performance characteristic. For instance, in case of CPUs, a
 score could be the corresponding HEPSPEC06 values.</p>
-<p>The factor must be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0.0</span></code> and the name must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+<p>The value must be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0.0</span></code> and the name must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – Name of the score</p></li>
-<li><p><strong>factor</strong> (<em>float</em>) – Factor</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – Value</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pyauditor.Score.factor">
-<span class="sig-name descname"><span class="pre">factor</span></span><a class="headerlink" href="#pyauditor.Score.factor" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the factor</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="pyauditor.Score.name">
 <span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyauditor.Score.name" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Score.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#pyauditor.Score.value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the value</p>
 </dd></dl>
 
 </dd></dl>
@@ -469,7 +492,7 @@ score could be the corresponding HEPSPEC06 values.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Stefan Kroboth.</p>
+    <p>&#169; Copyright 2023, Stefan Kroboth.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

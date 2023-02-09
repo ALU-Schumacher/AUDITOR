@@ -17,7 +17,7 @@ Records are created and pushed to Auditor, which stores them in a database.
 These records can then be requested again from Auditor to take an action based on the information stored in the records.
 
 A record consists of a unique identifier and meta information which provides some context (associated site, group, user).
-It also contains an arbitraty number of `components` that are to be accounted for (CPU, RAM, Disk, ...) and the amount of each of these components.
+It also contains an arbitrary number of `components` that are to be accounted for (CPU, RAM, Disk, ...) and the amount of each of these components.
 The components can optionally be enhanced with `scores`  which are are floating point values which put components of the same kind, but different performance in relation to each other.
 For instance, in case of CPUs these could be HEPSPEC06 benchmark values.
 
@@ -29,19 +29,16 @@ Creating a Record
 
 .. code-block:: python
 
-   from pyauditor import Record, Component, Score
+   from pyauditor import Record, Meta, Component, Score
 
    # Define meta information
    record_id = "record-1" # Must be unique for all records in Auditor!
-   site_id = "site-1"
-   user_id = "user-1"
-   group_id = "group-1"
 
    # Time when the resource became available
    start = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043) # in UTC
 
    # Create record
-   record = Record(record_id, site_id, user_id, group_id, start)
+   record = Record(record_id, start)
 
    # Create a component (10 CPU cores)
    component = Component("CPU", 10)
@@ -54,6 +51,15 @@ Creating a Record
 
    # Attach the component to the record
    record = record.with_component(component)
+
+   # Create meta 
+   meta = Meta()
+
+   # Add information to meta
+   meta = meta.insert("site_id", ["site1"])
+
+   # Attach meta to record
+   record = record.with_meta(meta)
 
    # Resource stopped being available
    stop = datetime.datetime(2021, 12, 6, 18, 0, 0, 79043) # in UTC
