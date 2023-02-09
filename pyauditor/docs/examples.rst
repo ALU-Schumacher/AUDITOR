@@ -29,7 +29,7 @@ Creating a Record
 
 .. code-block:: python
 
-   from pyauditor import Record, Component, Score
+   from pyauditor import Record, Meta, Component, Score
 
    # Define meta information
    record_id = "record-1" # Must be unique for all records in Auditor!
@@ -51,6 +51,15 @@ Creating a Record
 
    # Attach the component to the record
    record = record.with_component(component)
+
+   # Create meta 
+   meta = Meta()
+
+   # Add information to meta
+   meta = meta.insert("site_id", ["site1"])
+
+   # Attach meta to record
+   record = record.with_meta(meta)
 
    # Resource stopped being available
    stop = datetime.datetime(2021, 12, 6, 18, 0, 0, 79043) # in UTC

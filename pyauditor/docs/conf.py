@@ -9,7 +9,7 @@ import sphinx_rtd_theme
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pyauditor'
-copyright = '2022, Stefan Kroboth'
+copyright = '2023, Stefan Kroboth'
 author = 'Stefan Kroboth'
 
 # -- General configuration ---------------------------------------------------
