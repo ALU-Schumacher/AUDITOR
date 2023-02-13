@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.7] - 2023-02-13
+### Added
+- Added Slurm collector ([@stefan-k](https://github.com/stefan-k))
+- Added code coverage to CI ([@stefan-k](https://github.com/stefan-k))
+
+### Changed
+- All collectors and plugins are now dedicated crates ([@stefan-k](https://github.com/stefan-k))
+- Renamed Score "factor" to "value" ([@stefan-k](https://github.com/stefan-k))
+- Added meta field which stores key-value pairs of the form `String -> Vec<string>` ([@stefan-k](https://github.com/stefan-k))
+- Auditor crate now has server and client features. This allows one to avoid pulling in server code when only client code is needed. Server code requires a live database to compile (because of sqlx). ([@stefan-k](https://github.com/stefan-k))
+- Support for building python 3.11 pyauditor modules ([@stefan-k](https://github.com/stefan-k))
+- Improvements in CI ([@stefan-k](https://github.com/stefan-k))
+- Replaced `cargo-spellcheck` with `typos` ([@stefan-k](https://github.com/stefan-k))
+- Updated Postgres instances in CI to version 15 ([@stefan-k](https://github.com/stefan-k))
+- Use claims instead of unmaintained claim ([@stefan-k](https://github.com/stefan-k))
+- Removed dependency on time 0.1 as much as possible. Potential vulnerability does not affect us though. ([@stefan-k](https://github.com/stefan-k))
+- Updated tokio from 1.22.0 to 1.25.0 ([@stefan-k](https://github.com/stefan-k))
+- Updated prometheus from 0.13.1 to 0.13.3 ([@stefan-k](https://github.com/stefan-k))
+- Updated serde_with from 2.0.0 to 2.2.0 ([@stefan-k](https://github.com/stefan-k))
+- Updated actix-web from 4.1.0 to 4.3.0 ([@stefan-k](https://github.com/stefan-k))
+- Updated anyhow from 1.0.64 to 1.0.69 ([@stefan-k](https://github.com/stefan-k))
+- Updated thiserror from 1.0.34 to 1.0.37 ([@stefan-k](https://github.com/stefan-k))
+- Updated unicode-segmentation from 1.9.0 to 1.10.1 ([@stefan-k](https://github.com/stefan-k))
+- Updated reqwest from 0.11.11 to 0.11.14 ([@stefan-k](https://github.com/stefan-k))
+- Updated tracing-actix-web from 0.6.0 to 0.7.1 ([@stefan-k](https://github.com/stefan-k))
+- Updated once_cell from 1.14.0 to 1.17.0 ([@stefan-k](https://github.com/stefan-k))
+- Updated sqlx from 0.6.1 to 0.6.2 ([@stefan-k](https://github.com/stefan-k))
+- Updated serde from 1.0.144 to 1.0.152 ([@stefan-k](https://github.com/stefan-k))
+- Updated tracing-subscriber from 0.3.15 to 0.3.16 ([@stefan-k](https://github.com/stefan-k))
+- Updated tracing-bunyan-formatter from 0.3.3 to 0.3.6 ([@stefan-k](https://github.com/stefan-k))
+- Updated uuid from 1.1.2 to 1.3.0 ([@stefan-k](https://github.com/stefan-k))
+- Updated wiremock from 0.5.14 to 0.5.17 ([@stefan-k](https://github.com/stefan-k))
+- Updated config from 0.13.2 to 0.13.3 ([@stefan-k](https://github.com/stefan-k))
+- Updated regex from 1.7.0 to 1.7.1 ([@stefan-k](https://github.com/stefan-k))
+
+### Removed
+- Removed old python client ([@stefan-k](https://github.com/stefan-k))
+- Removed `user_id`, `site_id` and `group_id` from `Record` ([@stefan-k](https://github.com/stefan-k))
+
 ## [0.0.6] - 2022-09-06
 ### Added
 - Spellcheck in CI ([@stefan-k](https://github.com/stefan-k)).
@@ -116,3 +155,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.0.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4
 [0.0.5]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5
 [0.0.6]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.6
+[0.0.7]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.7
