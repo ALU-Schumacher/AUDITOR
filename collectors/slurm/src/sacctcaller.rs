@@ -139,18 +139,25 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .filter(|k| !BATCH_REGEX.is_match(k))
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
-            let map2 = sacct_rows.get(&format!("{id}.batch")).expect("Cannot happen");
+            let map2 = sacct_rows.get(&format!("{id}.batch"));
             KEYS.iter()
                 .cloned()
                 .map(|(k, _)| {
                     let val =  match map1.get(&k) {
                         Some(Some(v)) => Ok(v.clone()),
-                        _ => match map2.get(&k) {
-                            Some(Some(v)) => Ok(v.clone()),
-                            _ => {
+                        _ => {
+                            if let Some(map2) = map2 {
+                                match map2.get(&k) {
+                                    Some(Some(v)) => Ok(v.clone()),
+                                    _ => {
+                                        tracing::error!("Something went wrong during parsing (id: {id})");
+                                        Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
+                                    },
+                                }
+                            } else {
                                 tracing::error!("Something went wrong during parsing (id: {id})");
                                 Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
-                            },
+                            }
                         },
                     }?;
                     Ok((k, val))
