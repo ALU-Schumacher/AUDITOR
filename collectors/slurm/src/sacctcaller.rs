@@ -30,6 +30,11 @@ static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
         .expect("Could not construct essential Regex for matching job ids.")
 });
 
+static SUB_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"^[0-9]+\.[0-9]*$"#)
+        .expect("Could not construct essential Regex for matching job ids.")
+});
+
 #[tracing::instrument(
     name = "Starting sacct monitor",
     skip(database, tx, _shutdown_notifier, shutdown, hold_till_shutdown)
@@ -137,6 +142,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let records = sacct_rows
         .keys()
         .filter(|k| !BATCH_REGEX.is_match(k))
+        .filter(|k| !SUB_REGEX.is_match(k))
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
             let map2 = sacct_rows.get(&format!("{id}.batch"));
