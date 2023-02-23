@@ -161,8 +161,17 @@ impl Record {
 
     /// Returns the runtime of a record.
     #[getter]
-    fn runtime(&self) -> Option<i64> {
+    fn get_runtime(&self) -> Option<i64> {
         self.inner.runtime
+    }
+
+    /// Set runtime of a record.
+    ///
+    /// Note: Should only be used for mocking records received from an Auditor instance.
+    #[setter]
+    fn set_runtime(&mut self, value: i64) -> PyResult<()> {
+        self.inner.runtime = Some(value);
+        Ok(())
     }
 
     /// Output content of Record as JSON-encoded string
