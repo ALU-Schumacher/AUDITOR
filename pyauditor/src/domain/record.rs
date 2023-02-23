@@ -164,6 +164,11 @@ impl Record {
     fn runtime(&self) -> Option<i64> {
         self.inner.runtime
     }
+
+    /// Output content of Record as JSON-encoded string
+    fn to_json(&self) -> Result<String, Error> {
+        Ok(format!("{}", serde_json::to_value(&self.inner)?))
+    }
 }
 
 #[pyproto]
