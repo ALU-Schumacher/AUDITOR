@@ -57,7 +57,7 @@ anyhow = "1"
 regex = "1"
 num-traits = "^0.2"
 opentelemetry-prometheus = "0.10"
-opentelemetry = "0.17"
+opentelemetry = "0.18"
 actix-web-opentelemetry = { version = "0.12", features = ["metrics"] }
 thiserror = "1"
 prometheus = "0.13"
