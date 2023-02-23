@@ -133,9 +133,9 @@ impl Record {
             .map(|components| components.iter().cloned().map(Component::from).collect())
     }
 
-    /// Returns the meta dict
+    /// Returns the meta object
     ///
-    /// Returns None if no meta is available, otherwise returns a dict of meta information.
+    /// Returns None if no meta is available, otherwise returns a meta object.
     #[getter]
     fn meta(&self) -> Option<Meta> {
         self.inner.meta.clone().map(Meta::from)

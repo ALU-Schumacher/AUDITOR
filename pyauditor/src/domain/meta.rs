@@ -29,13 +29,23 @@ impl Meta {
         }
     }
 
+    /// insert(key: str, value: [str])
     /// Insert a key-value pair into Meta
+    ///
+    /// :param key: Key
+    /// :type key: str
+    /// :param value: Value
+    /// :type value: [str]
     fn insert(mut self_: PyRefMut<Self>, key: String, value: Vec<String>) -> PyRefMut<Self> {
         self_.inner.insert(key, value);
         self_
     }
 
+    /// get(key: str)
     /// Returns a list of string values matching the given key
+    ///
+    /// :param key: Key to get
+    /// :type key: str
     fn get(&self, key: String) -> Option<Vec<String>> {
         self.inner.get(&key).cloned()
     }
