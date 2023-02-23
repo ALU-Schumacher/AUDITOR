@@ -321,8 +321,8 @@ multiple components.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyauditor.Record.meta">
 <span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#pyauditor.Record.meta" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the meta dict</p>
-<p>Returns None if no meta is available, otherwise returns a dict of meta information.</p>
+<dd><p>Returns the meta object</p>
+<p>Returns None if no meta is available, otherwise returns a meta object.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -393,14 +393,27 @@ components.</p>
 <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.Meta.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.get" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.get" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a list of string values matching the given key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – Key to get</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.Meta.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.insert" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.insert" title="Permalink to this definition"></a></dt>
 <dd><p>Insert a key-value pair into Meta</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Key</p></li>
+<li><p><strong>value</strong> (<em>[</em><em>str</em><em>]</em>) – Value</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
