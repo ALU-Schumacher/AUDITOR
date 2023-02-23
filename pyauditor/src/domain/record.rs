@@ -113,6 +113,9 @@ impl Record {
         let stop_time: NaiveDateTime = stop_time.extract()?;
         let stop_time = Utc.from_utc_datetime(&stop_time.into());
         self_.inner.stop_time = Some(stop_time);
+        if let Some(start_time) = self_.inner.start_time.as_ref() {
+            self_.inner.runtime = Some((stop_time - *start_time).num_seconds())
+        }
         Ok(self_)
     }
 
@@ -161,17 +164,8 @@ impl Record {
 
     /// Returns the runtime of a record.
     #[getter]
-    fn get_runtime(&self) -> Option<i64> {
+    fn runtime(&self) -> Option<i64> {
         self.inner.runtime
-    }
-
-    /// Set runtime of a record.
-    ///
-    /// Note: Should only be used for mocking records received from an Auditor instance.
-    #[setter]
-    fn set_runtime(&mut self, value: i64) -> PyResult<()> {
-        self.inner.runtime = Some(value);
-        Ok(())
     }
 
     /// Output content of Record as JSON-encoded string
