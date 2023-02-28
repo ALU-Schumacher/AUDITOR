@@ -26,7 +26,7 @@ use crate::{
 type Job = HashMap<String, AllowedTypes>;
 
 static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"^[0-9]+\.batch$"#)
+    Regex::new(r#"^[0-9_]+\.batch$"#)
         .expect("Could not construct essential Regex for matching job ids.")
 });
 
@@ -315,4 +315,15 @@ fn construct_components(job: &Job) -> Vec<Component> {
             )
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn match_job_ids() {
+        assert!(BATCH_REGEX.is_match("1234.batch"));
+        assert!(BATCH_REGEX.is_match("1234_10.batch"));
+    }
 }
