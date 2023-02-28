@@ -7,6 +7,8 @@
 
 // use std::time::Duration;
 
+use std::collections::HashMap;
+
 use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
@@ -32,6 +34,7 @@ pub struct Settings {
     pub record_prefix: String,
     #[serde(default = "default_sites")]
     pub sites: Vec<SiteConfig>,
+    pub meta: Vec<MetaConfig>,
     #[serde(default = "default_earliest_datetime")]
     pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
@@ -58,6 +61,25 @@ pub struct SiteConfig {
 impl SiteConfig {
     fn keys(&self) -> Option<(String, ParsableType)> {
         self.only_if.as_ref().map(|oif| oif.key())
+    }
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct MetaConfig {
+    pub name: String,
+    pub key: String,
+    #[serde(default = "default_key_type")]
+    pub key_type: ParsableType,
+    pub only_if: Option<OnlyIf>,
+}
+
+impl MetaConfig {
+    fn keys(&self) -> Vec<(String, ParsableType)> {
+        let mut keys: Vec<(String, ParsableType)> = vec![(self.key.clone(), self.key_type)];
+        if let Some(ref oif) = self.only_if {
+            keys.push(oif.key());
+        }
+        keys
     }
 }
 
@@ -177,6 +199,7 @@ fn default_components() -> Vec<ComponentConfig> {
 impl Settings {
     pub fn get_keys(&self) -> Vec<(String, ParsableType)> {
         let mut keys = self.sites.iter().flat_map(|s| s.keys()).collect::<Vec<_>>();
+        keys.extend(self.meta.iter().flat_map(|m| m.keys()).collect::<Vec<_>>());
         keys.extend(self.components.iter().flat_map(|c| c.keys()));
         keys.into_iter().unique_by(|t| t.0.clone()).collect()
     }
@@ -187,6 +210,7 @@ pub enum AllowedTypes {
     String(String),
     Integer(i64),
     DateTime(DateTime<Utc>),
+    Map(Vec<(AllowedTypes, AllowedTypes)>),
 }
 
 impl AllowedTypes {
@@ -197,6 +221,7 @@ impl AllowedTypes {
             Err(eyre!("Cannot extract string!"))
         }
     }
+
     pub fn extract_i64(&self) -> Result<i64, Report> {
         if let AllowedTypes::Integer(integer) = *self {
             Ok(integer)
@@ -204,11 +229,29 @@ impl AllowedTypes {
             Err(eyre!("Cannot extract integer!"))
         }
     }
+
     pub fn extract_datetime(&self) -> Result<DateTime<Utc>, Report> {
         if let AllowedTypes::DateTime(datetime) = *self {
             Ok(datetime)
         } else {
             Err(eyre!("Cannot extract datetime!"))
+        }
+    }
+
+    pub fn extract_map(&self) -> Result<Vec<(AllowedTypes, AllowedTypes)>, Report> {
+        if let AllowedTypes::Map(ref map) = *self {
+            Ok(map.clone())
+        } else {
+            Err(eyre!("Cannot extract map!"))
+        }
+    }
+
+    pub fn extract_as_string(&self) -> Result<String, Report> {
+        match self {
+            AllowedTypes::String(x) => Ok(x.clone()),
+            AllowedTypes::Integer(x) => Ok(format!("{x}")),
+            AllowedTypes::DateTime(x) => Ok(format!("{x}")),
+            AllowedTypes::Map(_) => Err(eyre!("Cannot format map as string")),
         }
     }
 }
@@ -222,6 +265,7 @@ pub enum ParsableType {
     String,
     DateTime,
     Id,
+    Json,
 }
 
 impl ParsableType {
@@ -329,6 +373,22 @@ impl ParsableType {
             ParsableType::Id => {
                 AllowedTypes::String(input.split('(').take(1).collect::<Vec<_>>()[0].to_owned())
             }
+            ParsableType::Json => {
+                // Remove this as soon as json in comment is correct
+                let input = input.replace('\'', "\"");
+                let parsed: HashMap<String, String> = serde_json::from_str(&input)?;
+                AllowedTypes::Map(
+                    parsed
+                        .into_iter()
+                        .map(|(k, v)| {
+                            (
+                                AllowedTypes::String(k.replace('/', "%2F")),
+                                AllowedTypes::String(v.replace('/', "%2F")),
+                            )
+                        })
+                        .collect(),
+                )
+            }
         })
     }
 }
@@ -359,4 +419,16 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     );
 
     settings.build()?.try_deserialize()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_json_parsed() {
+        let parsed = ParsableType::Json.parse("{'voms': '/atlas/Role=production', 'subject': '/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=atlpilo1/CN=614260/CN=Robot: ATLAS Pilot1'}").unwrap();
+        // let parsed = ParsableType::Json.parse("{\"voms\": \"/atlas/Role=production\", \"subject\": \"/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=atlpilo1/CN=614260/CN=Robot: ATLAS Pilot1\"}");
+        println!("{parsed:#?}");
+    }
 }

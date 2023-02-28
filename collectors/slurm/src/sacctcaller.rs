@@ -19,8 +19,10 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::AllowedTypes, database::Database, shutdown::Shutdown, CONFIG, END, GROUP, JOBID,
-    KEYS, START, USER,
+    configuration::{AllowedTypes, ParsableType},
+    database::Database,
+    shutdown::Shutdown,
+    CONFIG, END, GROUP, JOBID, KEYS, START, USER,
 };
 
 type Job = HashMap<String, AllowedTypes>;
@@ -181,16 +183,42 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             );
             return Ok(None);
         };
+
         let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
         // We don't want this record, we have already seen it in a previous run.
         if record_id == last_record_id {
             return Ok(None);
         }
-        let meta = HashMap::from([
-            ("site_id".to_string(), vec![make_string_valid(site)]),
-            ("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]),
-            ("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]),
-        ]);
+
+        let mut meta = CONFIG.meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
+            let map = if m.key_type == ParsableType::Json {
+                map[&m.key]
+                    .extract_map()?
+                    .iter()
+                    .map(|(k, v)| -> Result<(String, Vec<String>)> {
+                            Ok(
+                                (
+                                    make_string_valid(k.extract_string()?),
+                                    vec![make_string_valid(v.extract_string()?)]
+                                )
+                            )
+                        }
+                    )
+                    .collect::<Result<Vec<(_, _)>>>()?
+            } else {
+                vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
+            };
+            Ok(map)
+        })
+        .collect::<Result<Vec<_>>>()?
+        .into_iter()
+        .flat_map(|m| m.into_iter())
+        .collect::<HashMap<_, _>>();
+
+        meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
+        meta.insert("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]);
+        meta.insert("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]);
+
         Ok(Some(
            RecordAdd::new(
                record_id,
