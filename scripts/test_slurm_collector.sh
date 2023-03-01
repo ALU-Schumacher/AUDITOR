@@ -9,6 +9,8 @@ DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR:="."}
 RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
 DB_NAME=${DB_NAME:=$(uuidgen)}
+COMMENT="{ 'voms': '/atlas/Role=production', 'subject': '/some/thing' }"
+
 
 function stop_container () {
 	echo >&2 "Stopping container"
@@ -131,8 +133,13 @@ function stop_auditor() {
 
 function test_collector() {
 	# Run on partition1
-	docker exec auditor-slurm-1 sbatch --job-name="test_part1" --partition=part1 /batch.sh 
+	docker exec auditor-slurm-1 sh -c "sbatch --job-name=test_part1 --partition=part1 --comment=\"$COMMENT\" /batch.sh" 
 	sleep 20
+
+	docker exec auditor-slurm-1 scontrol show job 1
+	docker exec auditor-slurm-1 sacct -j 1 -o JobID,Comment
+	docker exec auditor-slurm-1 sacct -e
+	docker exec auditor-slurm-1 slurmctl -V
 
 	TEST1=$(curl http://localhost:8000/get | jq)
 
@@ -153,6 +160,24 @@ function test_collector() {
 		exit 1
 	fi
 
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .voms | .[0]')" != '"%2Fatlas%2FRole=production"' ]
+	then
+		echo >&2 "Incorrect meta of record in accounting database. Returned record:"
+		echo >&2 $TEST1
+		stop_container
+		stop_auditor
+		exit 1
+	fi
+
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .subject | .[0]')" != '"%2Fsome%2Fthing"' ]
+	then
+		echo >&2 "Incorrect meta of record in accounting database. Returned record:"
+		echo >&2 $TEST1
+		stop_container
+		stop_auditor
+		exit 1
+	fi
+
 	if [ $(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .site_id | .[0]') != '"SiteA"' ]
 	then
 		echo >&2 "Incorrect site_id of record in accounting database. Returned record:"
@@ -163,7 +188,7 @@ function test_collector() {
 	fi
 
 	# Run on partition2
-	docker exec auditor-slurm-1 sbatch --job-name="test_part2" --partition=part2 /batch.sh 
+	docker exec auditor-slurm-1 sbatch --job-name="test_part2" /batch.sh 
 	sleep 20
 
 	TEST2=$(curl http://localhost:8000/get | jq)

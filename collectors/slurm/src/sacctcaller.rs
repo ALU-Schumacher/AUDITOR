@@ -114,12 +114,15 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let sacct_rows = std::str::from_utf8(&cmd_out.stdout)?
         .lines()
         .map(|l| {
+            println!("line: {l:?}");
             KEYS.iter()
                 .cloned()
                 .zip(l.split('|').map(|s| s.to_owned()))
+                .map(|k| { println!("KEY: {k:?}"); k })
                 // Occasionally fields are empty by design. filter those out to avoid
                 // problems later on when parsing.
                 .filter(|(_, v)| !v.is_empty())
+                .map(|k| { println!("KEY FILTERED: {k:?}"); k })
                 .map(|((k, pt), v)| {
                     let v = match pt.parse(&v) {
                         Ok(v) => Some(v),
@@ -148,6 +151,8 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
             let map2 = sacct_rows.get(&format!("{id}.batch"));
+            println!("MAP1: {map1:?}");
+            println!("MAP2: {map2:?}");
             Ok(KEYS.iter()
                 .cloned()
                 .filter_map(|(k, _)| {
