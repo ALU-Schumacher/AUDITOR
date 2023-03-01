@@ -190,30 +190,34 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             return Ok(None);
         }
 
-        let mut meta = CONFIG.meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
-            let map = if m.key_type == ParsableType::Json {
-                map[&m.key]
-                    .extract_map()?
-                    .iter()
-                    .map(|(k, v)| -> Result<(String, Vec<String>)> {
-                            Ok(
-                                (
-                                    make_string_valid(k.extract_string()?),
-                                    vec![make_string_valid(v.extract_string()?)]
+        let mut meta = if let Some(ref meta) = CONFIG.meta {
+            meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
+                let map = if m.key_type == ParsableType::Json {
+                    map[&m.key]
+                        .extract_map()?
+                        .iter()
+                        .map(|(k, v)| -> Result<(String, Vec<String>)> {
+                                Ok(
+                                    (
+                                        make_string_valid(k.extract_string()?),
+                                        vec![make_string_valid(v.extract_string()?)]
+                                    )
                                 )
-                            )
-                        }
-                    )
-                    .collect::<Result<Vec<(_, _)>>>()?
-            } else {
-                vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
-            };
-            Ok(map)
-        })
-        .collect::<Result<Vec<_>>>()?
-        .into_iter()
-        .flat_map(|m| m.into_iter())
-        .collect::<HashMap<_, _>>();
+                            }
+                        )
+                        .collect::<Result<Vec<(_, _)>>>()?
+                } else {
+                    vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
+                };
+                Ok(map)
+            })
+            .collect::<Result<Vec<_>>>()?
+            .into_iter()
+            .flat_map(|m| m.into_iter())
+            .collect::<HashMap<_, _>>()
+        } else { 
+            HashMap::new()
+        };
 
         meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
         meta.insert("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]);

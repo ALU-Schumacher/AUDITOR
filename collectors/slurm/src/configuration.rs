@@ -34,7 +34,7 @@ pub struct Settings {
     pub record_prefix: String,
     #[serde(default = "default_sites")]
     pub sites: Vec<SiteConfig>,
-    pub meta: Vec<MetaConfig>,
+    pub meta: Option<Vec<MetaConfig>>,
     #[serde(default = "default_earliest_datetime")]
     pub earliest_datetime: DateTime<Local>,
     #[serde(default = "default_components")]
@@ -199,7 +199,9 @@ fn default_components() -> Vec<ComponentConfig> {
 impl Settings {
     pub fn get_keys(&self) -> Vec<(String, ParsableType)> {
         let mut keys = self.sites.iter().flat_map(|s| s.keys()).collect::<Vec<_>>();
-        keys.extend(self.meta.iter().flat_map(|m| m.keys()).collect::<Vec<_>>());
+        if let Some(ref meta) = self.meta {
+            keys.extend(meta.iter().flat_map(|m| m.keys()).collect::<Vec<_>>());
+        }
         keys.extend(self.components.iter().flat_map(|c| c.keys()));
         keys.into_iter().unique_by(|t| t.0.clone()).collect()
     }
