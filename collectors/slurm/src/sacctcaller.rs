@@ -158,13 +158,13 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                                 match map2.get(&k) {
                                     Some(Some(v)) => Ok(v.clone()),
                                     _ => {
-                                        tracing::error!("Something went wrong during parsing (id: {id})");
-                                        Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
+                                        tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                        Err(eyre!("Something went wrong during parsing of sacct output (id: {id}, key: {k}). Can't recover."))
                                     },
                                 }
                             } else {
-                                tracing::error!("Something went wrong during parsing (id: {id})");
-                                Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
+                                tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                Err(eyre!("Something went wrong during parsing of sacct output (id: {id}, key: {k}). Can't recover."))
                             }
                         },
                     }?;
