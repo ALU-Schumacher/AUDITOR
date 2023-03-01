@@ -215,7 +215,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             .into_iter()
             .flat_map(|m| m.into_iter())
             .collect::<HashMap<_, _>>()
-        } else { 
+        } else {
             HashMap::new()
         };
 
