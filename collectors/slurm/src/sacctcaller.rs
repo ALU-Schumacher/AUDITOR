@@ -148,28 +148,29 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
             let map2 = sacct_rows.get(&format!("{id}.batch"));
-            KEYS.iter()
+            Ok(KEYS.iter()
                 .cloned()
-                .map(|(k, _)| {
-                    let val =  match map1.get(&k) {
-                        Some(Some(v)) => Ok(v.clone()),
+                .filter_map(|(k, _)| {
+                    let val = match map1.get(&k) {
+                        Some(Some(v)) => Some(v.clone()),
                         _ => {
                             if let Some(map2) = map2 {
                                 match map2.get(&k) {
-                                    Some(Some(v)) => Ok(v.clone()),
+                                    Some(Some(v)) => Some(v.clone()),
                                     _ => {
                                         tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
-                                        Err(eyre!("Something went wrong during parsing of sacct output (id: {id}, key: {k}). Can't recover."))
+                                        None
                                     },
                                 }
                             } else {
                                 tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
-                                Err(eyre!("Something went wrong during parsing of sacct output (id: {id}, key: {k}). Can't recover."))
+                                None
                             }
                         },
-                    }?;
-                    Ok((k, val))
-                }).collect::<Result<HashMap<String, AllowedTypes>>>()
+                    };
+                    val.map(|val| (k, val))
+                })
+                .collect::<HashMap<String, AllowedTypes>>())
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
     .map(|map| -> Result<Option<RecordAdd>> {
@@ -193,19 +194,23 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         let mut meta = if let Some(ref meta) = CONFIG.meta {
             meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
                 let map = if m.key_type == ParsableType::Json {
-                    map[&m.key]
-                        .extract_map()?
-                        .iter()
-                        .map(|(k, v)| -> Result<(String, Vec<String>)> {
-                                Ok(
-                                    (
-                                        make_string_valid(k.extract_string()?),
-                                        vec![make_string_valid(v.extract_string()?)]
+                    if let Some(val) = map.get(&m.key) {
+                        val
+                            .extract_map()?
+                            .iter()
+                            .map(|(k, v)| -> Result<(String, Vec<String>)> {
+                                    Ok(
+                                        (
+                                            make_string_valid(k.extract_string()?),
+                                            vec![make_string_valid(v.extract_string()?)]
+                                        )
                                     )
-                                )
-                            }
-                        )
-                        .collect::<Result<Vec<(_, _)>>>()?
+                                }
+                            )
+                            .collect::<Result<Vec<(_, _)>>>()?
+                    } else {
+                        vec![]
+                    }
                 } else {
                     vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
                 };
