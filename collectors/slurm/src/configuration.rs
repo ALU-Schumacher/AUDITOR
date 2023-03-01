@@ -376,9 +376,16 @@ impl ParsableType {
                 AllowedTypes::String(input.split('(').take(1).collect::<Vec<_>>()[0].to_owned())
             }
             ParsableType::Json => {
-                // Remove this as soon as json in comment is correct
-                let input = input.replace('\'', "\"");
-                let parsed: HashMap<String, String> = serde_json::from_str(&input)?;
+                let input = if !input.contains('\"') {
+                    input.replace('\'', "\"")
+                } else {
+                    input.to_string()
+                };
+                let mut parsed: Vec<(String, String)> =
+                    serde_json::from_str::<HashMap<String, String>>(&input)?
+                        .into_iter()
+                        .collect();
+                parsed.sort_by(|(a, _), (b, _)| a.partial_cmp(b).unwrap());
                 AllowedTypes::Map(
                     parsed
                         .into_iter()
@@ -429,8 +436,25 @@ mod tests {
 
     #[test]
     fn correct_json_parsed() {
-        let parsed = ParsableType::Json.parse("{'voms': '/atlas/Role=production', 'subject': '/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=atlpilo1/CN=614260/CN=Robot: ATLAS Pilot1'}").unwrap();
-        // let parsed = ParsableType::Json.parse("{\"voms\": \"/atlas/Role=production\", \"subject\": \"/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=atlpilo1/CN=614260/CN=Robot: ATLAS Pilot1\"}");
-        println!("{parsed:#?}");
+        let expected = AllowedTypes::Map(vec![
+            (
+                AllowedTypes::String("subject".to_string()),
+                AllowedTypes::String("%2Fsome%2Fthings%2F".to_string()),
+            ),
+            (
+                AllowedTypes::String("voms".to_string()),
+                AllowedTypes::String("%2Fatlas%2FRole=production".to_string()),
+            ),
+        ]);
+
+        let parsed = ParsableType::Json
+            .parse("{'voms': '/atlas/Role=production', 'subject': '/some/things/'}")
+            .unwrap();
+        assert_eq!(parsed, expected);
+
+        let parsed = ParsableType::Json
+            .parse("{\"voms\": \"/atlas/Role=production\", \"subject\": \"/some/things/\"}")
+            .unwrap();
+        assert_eq!(parsed, expected);
     }
 }
