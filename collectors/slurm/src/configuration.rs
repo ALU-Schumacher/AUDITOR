@@ -376,27 +376,33 @@ impl ParsableType {
                 AllowedTypes::String(input.split('(').take(1).collect::<Vec<_>>()[0].to_owned())
             }
             ParsableType::Json => {
-                let input = if !input.contains('\"') {
-                    input.replace('\'', "\"")
+                if !input.is_empty() {
+                    let input = if !input.contains('\"') {
+                        input.replace('\'', "\"")
+                    } else {
+                        input.to_string()
+                    };
+                    if let Ok(parsed) = serde_json::from_str::<HashMap<String, String>>(&input) {
+                        let mut parsed: Vec<(String, String)> = parsed.into_iter().collect();
+                        parsed.sort_by(|(a, _), (b, _)| a.partial_cmp(b).unwrap());
+                        AllowedTypes::Map(
+                            parsed
+                                .into_iter()
+                                .map(|(k, v)| {
+                                    (
+                                        AllowedTypes::String(k.replace('/', "%2F")),
+                                        AllowedTypes::String(v.replace('/', "%2F")),
+                                    )
+                                })
+                                .collect(),
+                        )
+                    } else {
+                        tracing::error!("Could not parse JSON");
+                        AllowedTypes::Map(vec![])
+                    }
                 } else {
-                    input.to_string()
-                };
-                let mut parsed: Vec<(String, String)> =
-                    serde_json::from_str::<HashMap<String, String>>(&input)?
-                        .into_iter()
-                        .collect();
-                parsed.sort_by(|(a, _), (b, _)| a.partial_cmp(b).unwrap());
-                AllowedTypes::Map(
-                    parsed
-                        .into_iter()
-                        .map(|(k, v)| {
-                            (
-                                AllowedTypes::String(k.replace('/', "%2F")),
-                                AllowedTypes::String(v.replace('/', "%2F")),
-                            )
-                        })
-                        .collect(),
-                )
+                    AllowedTypes::Map(vec![])
+                }
             }
         })
     }
@@ -455,6 +461,10 @@ mod tests {
         let parsed = ParsableType::Json
             .parse("{\"voms\": \"/atlas/Role=production\", \"subject\": \"/some/things/\"}")
             .unwrap();
+        assert_eq!(parsed, expected);
+
+        let expected = AllowedTypes::Map(vec![]);
+        let parsed = ParsableType::Json.parse("").unwrap();
         assert_eq!(parsed, expected);
     }
 }
