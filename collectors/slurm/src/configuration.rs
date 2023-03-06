@@ -7,7 +7,7 @@
 
 // use std::time::Duration;
 
-use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
@@ -16,6 +16,7 @@ use serde_aux::field_attributes::deserialize_number_from_string;
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Settings {
     #[serde(default = "default_collector_addr")]
     pub collector_addr: String,
@@ -144,7 +145,7 @@ fn default_key_type() -> ParsableType {
 }
 
 fn default_earliest_datetime() -> DateTime<Local> {
-    Local.with_ymd_and_hms(2000, 1, 1, 0, 0, 0).unwrap()
+    Local::now()
 }
 
 fn default_sacct_frequency() -> Duration {
