@@ -7,7 +7,7 @@
 
 // use std::time::Duration;
 
-use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
