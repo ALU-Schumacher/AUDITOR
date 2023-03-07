@@ -39,8 +39,11 @@ header {
 }
 
 .logo {
-  font-family: "Alfa Slab One", serif;
+  font-family: "Arial", sans-serif;
   font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 20px; 
+
   color: var(--primary-text-color);
   display: flex;
   align-items: center;
