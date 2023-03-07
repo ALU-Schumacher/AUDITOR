@@ -5,8 +5,6 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-// use std::time::Duration;
-
 use std::collections::HashMap;
 
 use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};

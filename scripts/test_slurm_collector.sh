@@ -136,11 +136,6 @@ function test_collector() {
 	docker exec auditor-slurm-1 sh -c "sbatch --job-name=test_part1 --partition=part1 --comment=\"$COMMENT\" /batch.sh" 
 	sleep 20
 
-	docker exec auditor-slurm-1 scontrol show job 1
-	docker exec auditor-slurm-1 sacct -j 1 -o JobID,Comment
-	docker exec auditor-slurm-1 sacct -e
-	docker exec auditor-slurm-1 slurmctl -V
-
 	TEST1=$(curl http://localhost:8000/get | jq)
 
 	if [ "$(echo $TEST1 | jq '. | length')" != 1 ]
@@ -188,7 +183,7 @@ function test_collector() {
 	fi
 
 	# Run on partition2
-	docker exec auditor-slurm-1 sbatch --job-name="test_part2" /batch.sh 
+	docker exec auditor-slurm-1 sh -c "sbatch --job-name=test_part2 --partition=part2 /batch.sh"
 	sleep 20
 
 	TEST2=$(curl http://localhost:8000/get | jq)
