@@ -21,8 +21,8 @@ highlight_code = true
 highlight_theme = "css"
 
 [extra]
-juice_logo_name = "Auditor"
-juice_logo_path = "auditor.svg"
+juice_logo_name = "AUDITOR"
+juice_logo_path = "auditorlogo_transparent.png"
 juice_extra_menu = [
     { title = "Github", link = "https://github.com/ALU-Schumacher/AUDITOR"}
 ]

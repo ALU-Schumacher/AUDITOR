@@ -10,6 +10,13 @@ Auditor ingests accounting data provided by so-called *collectors*, stores it an
 
 It comes with a well-defined REST API which allows for the implementation of application-specific collectors and plugins. This makes it well suited for a wide range of use cases.
 
+<p align="center">
+  <img
+    width="700"
+    src="auditor_overview.png"
+  />
+</p>
+
 TODO: Grafik, detaillierte Erklaerung.
 
 ## Features

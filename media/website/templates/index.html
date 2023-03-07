@@ -42,7 +42,8 @@
                    data-show-count="true" aria-label="Fork ALU-Schumacher/AUDITOR on GitHub">Fork</a>
             </div>
         </section>
-        <img class="hero-image" style="width: 20%" src="{{ get_url(path="auditor.svg") }}">
+        <img class="hero-image" style="width: 15%" src="{{ get_url(path="auditorlogo_transparent.png") }}">
+
 
         <div class="explore-more text"
             onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
@@ -96,7 +97,7 @@
 
         <div class="content text">
             {% block content %}
-            <div id="features" class="heading-text">Overview</div>
+            <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
             {{ section.content | safe }}
             {% endblock content %}
         </div>
