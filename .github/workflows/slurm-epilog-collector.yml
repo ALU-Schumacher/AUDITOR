@@ -30,23 +30,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('!(volumes)**/Cargo.lock') }}
+          targets: x86_64-unknown-linux-musl
 
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: x86_64-unknown-linux-musl
+          prefix-key: cache-dependencies
 
       - name: Massage sqlx features env variable...
         run: |
@@ -54,53 +45,34 @@ jobs:
           SQLX_FEATURES_CACHE="${TMP//,/_}"
           echo "SQLX_FEATURES_CACHE=${SQLX_FEATURES_CACHE}" >> $GITHUB_ENV
 
-      - name: Cache sqlx-cli
-        uses: actions/cache@v2
-        id: cache-sqlx
+      - name: Cache sqlx
+        id: cache_sqlx
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
+          prefix-key: cache-sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES_CACHE }}
+          cache-directories: |
             ~/.cargo/bin/sqlx
             ~/.cargo/bin/cargo-sqlx
-          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES_CACHE }}
 
       - name: Install sqlx-cli 
-        uses: actions-rs/cargo@v1
-        if: steps.cache-sqlx.outputs.cache-hit == false
-        with:
-          command: install 
-          args: >
-            sqlx-cli
-            --force
-            --version=${{ env.SQLX_VERSION }}
-            --features=${{ env.SQLX_FEATURES }}
-            --no-default-features
-            --locked
+        # if: ${{ steps.cache_sqlx.outputs.cache-hit }}
+        run: cargo install sqlx-cli --version=${{ env.SQLX_VERSION }} --features=${{ env.SQLX_FEATURES }} --no-default-features --locked
 
       - name: Migrate database
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
-
-      - name: Build auditor
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --bin auditor
-
       - name: Install musl
         run: |
           sudo apt-get install musl musl-tools
 
-      - name: Build Slurm epilog collector
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
+      - name: Build auditor
+        run: cargo build --bin auditor
 
-      # - name: Install Docker Compose
-      #   run: sudo apt-get install docker-compose
+      - name: Build Slurm epilog collector
+        run: cargo build --bin auditor-slurm-epilog-collector --target x86_64-unknown-linux-musl
 
       - name: Test Slurm epilog collector
-        # run: ./scripts/test_slurm_epilog_collector.sh
         run: SKIP_COMPILATION=true ./scripts/test_slurm_epilog_collector.sh

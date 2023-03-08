@@ -31,53 +31,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          targets: x86_64-unknown-linux-musl
 
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: x86_64-unknown-linux-musl
+          prefix-key: cache-dependencies
 
       - name: Cache cargo-get
-        uses: actions/cache@v2
-        id: cache-cargo-get
+        id: cache_cargo_get
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/bin/cargo-get
+          prefix-key: cache-cargo-get
           key: ${{ runner.os }}-cargo-get-${{ env.CARGO_GET_VERSION }}
-
+          cache-directories: |
+            ~/.cargo/bin/cargo-get
 
       - name: Install cargo-get
-        uses: actions-rs/cargo@v1
-        if: steps.cache-cargo-get.outputs.cache-hit == false
-        with:
-          command: install 
-          args: >
-            cargo-get
-            --force
-            --version=${{ env.CARGO_GET_VERSION }}
-            --locked
+        run: cargo install cargo-get --version=${{ env.CARGO_GET_VERSION }} --locked
 
       - name: Install musl and rpm
         run: |
           sudo apt-get install musl musl-tools rpm
 
       - name: Build binary
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --bin ${{ matrix.binary }} --target x86_64-unknown-linux-musl --release
+        run: cargo build --bin ${{ matrix.binary }} --target x86_64-unknown-linux-musl --release
 
       - name: Build RPM
         run: |
