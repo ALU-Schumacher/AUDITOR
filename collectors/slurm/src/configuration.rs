@@ -390,7 +390,7 @@ impl ParsableType {
                     let input = if !input.contains('\"') {
                         input.replace('\'', "\"")
                     } else {
-                        input.to_string()
+                        input
                     };
                     if let Ok(parsed) = serde_json::from_str::<HashMap<String, String>>(&input) {
                         let mut parsed: Vec<(String, String)> = parsed.into_iter().collect();
