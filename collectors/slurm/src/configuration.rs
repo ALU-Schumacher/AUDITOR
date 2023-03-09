@@ -375,6 +375,18 @@ impl ParsableType {
             }
             ParsableType::Json => {
                 if !input.is_empty() {
+                    let num_chars = input.chars().count();
+                    let input: String = input
+                        .chars()
+                        .enumerate()
+                        .filter_map(|(i, c)| {
+                            if (i == 0 || i == num_chars - 1) && c == '\"' {
+                                None
+                            } else {
+                                Some(c)
+                            }
+                        })
+                        .collect();
                     let input = if !input.contains('\"') {
                         input.replace('\'', "\"")
                     } else {
@@ -463,7 +475,17 @@ mod tests {
         assert_eq!(parsed, expected);
 
         let parsed = ParsableType::Json
+            .parse("\"{'voms': '/atlas/Role=production', 'headnode': 'gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs', 'subject': '/some/things/'}\"")
+            .unwrap();
+        assert_eq!(parsed, expected);
+
+        let parsed = ParsableType::Json
             .parse("{\"voms\": \"/atlas/Role=production\", \"headnode\": \"gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs\", \"subject\": \"/some/things/\"}")
+            .unwrap();
+        assert_eq!(parsed, expected);
+
+        let parsed = ParsableType::Json
+            .parse("\"{\"voms\": \"/atlas/Role=production\", \"headnode\": \"gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs\", \"subject\": \"/some/things/\"}\"")
             .unwrap();
         assert_eq!(parsed, expected);
 
