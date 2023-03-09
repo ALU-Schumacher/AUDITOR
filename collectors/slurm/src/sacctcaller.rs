@@ -19,8 +19,10 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::AllowedTypes, database::Database, shutdown::Shutdown, CONFIG, END, GROUP, JOBID,
-    KEYS, START, USER,
+    configuration::{AllowedTypes, ParsableType},
+    database::Database,
+    shutdown::Shutdown,
+    CONFIG, END, GROUP, JOBID, KEYS, START, USER,
 };
 
 type Job = HashMap<String, AllowedTypes>;
@@ -146,28 +148,29 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .map(|id| -> Result<HashMap<String, AllowedTypes>> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
             let map2 = sacct_rows.get(&format!("{id}.batch"));
-            KEYS.iter()
+            Ok(KEYS.iter()
                 .cloned()
-                .map(|(k, _)| {
-                    let val =  match map1.get(&k) {
-                        Some(Some(v)) => Ok(v.clone()),
+                .filter_map(|(k, _)| {
+                    let val = match map1.get(&k) {
+                        Some(Some(v)) => Some(v.clone()),
                         _ => {
                             if let Some(map2) = map2 {
                                 match map2.get(&k) {
-                                    Some(Some(v)) => Ok(v.clone()),
+                                    Some(Some(v)) => Some(v.clone()),
                                     _ => {
-                                        tracing::error!("Something went wrong during parsing (id: {id})");
-                                        Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
+                                        tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                        None
                                     },
                                 }
                             } else {
-                                tracing::error!("Something went wrong during parsing (id: {id})");
-                                Err(eyre!("Something went wrong during parsing of sacct output (id: {id}). Can't recover."))
+                                tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                None
                             }
                         },
-                    }?;
-                    Ok((k, val))
-                }).collect::<Result<HashMap<String, AllowedTypes>>>()
+                    };
+                    val.map(|val| (k, val))
+                })
+                .collect::<HashMap<String, AllowedTypes>>())
     }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
     .iter()
     .map(|map| -> Result<Option<RecordAdd>> {
@@ -181,16 +184,50 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             );
             return Ok(None);
         };
+
         let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
         // We don't want this record, we have already seen it in a previous run.
         if record_id == last_record_id {
             return Ok(None);
         }
-        let meta = HashMap::from([
-            ("site_id".to_string(), vec![make_string_valid(site)]),
-            ("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]),
-            ("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]),
-        ]);
+
+        let mut meta = if let Some(ref meta) = CONFIG.meta {
+            meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
+                let map = if m.key_type == ParsableType::Json {
+                    if let Some(val) = map.get(&m.key) {
+                        val
+                            .extract_map()?
+                            .iter()
+                            .map(|(k, v)| -> Result<(String, Vec<String>)> {
+                                    Ok(
+                                        (
+                                            make_string_valid(k.extract_string()?),
+                                            vec![make_string_valid(v.extract_string()?)]
+                                        )
+                                    )
+                                }
+                            )
+                            .collect::<Result<Vec<(_, _)>>>()?
+                    } else {
+                        vec![]
+                    }
+                } else {
+                    vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
+                };
+                Ok(map)
+            })
+            .collect::<Result<Vec<_>>>()?
+            .into_iter()
+            .flat_map(|m| m.into_iter())
+            .collect::<HashMap<_, _>>()
+        } else {
+            HashMap::new()
+        };
+
+        meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
+        meta.insert("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]);
+        meta.insert("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]);
+
         Ok(Some(
            RecordAdd::new(
                record_id,
