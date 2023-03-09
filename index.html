@@ -12,9 +12,9 @@
     :root {
         /* Primary theme color */
         /* --primary-color: #FED43F; */
-        --primary-color: #6fa8dcff;
+        --primary-color: #344A9A;
         /* Primary theme text color */
-        --primary-text-color: #543631;
+        --primary-text-color: #000000;
         /* Primary theme link color */
         --primary-link-color: #F9BB2D;
         /* Secondary color: the background body color */
@@ -41,8 +41,9 @@
 
 <a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;">
     <div class="logo">
-        <img src="https://alu-schumacher.github.io/AUDITOR/auditor.svg" alt="logo">
-        Auditor
+        <img src="https://alu-schumacher.github.io/AUDITOR/auditorlogo_transparent.png" alt="logo">
+        UDITOR
+<!--        AUDITOR -->
     </div>
 </a>
 
@@ -76,7 +77,8 @@
                    data-show-count="true" aria-label="Fork ALU-Schumacher/AUDITOR on GitHub">Fork</a>
             </div>
         </section>
-        <img class="hero-image" style="width: 20%" src="https://alu-schumacher.github.io/AUDITOR/auditor.svg">
+        <img class="hero-image" style="width: 15%" src="https://alu-schumacher.github.io/AUDITOR/auditorlogo_transparent.png">
+
 
         <div class="explore-more text"
             onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
@@ -225,11 +227,17 @@
 
         <div class="content text">
             
-            <div id="features" class="heading-text">Overview</div>
+            <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
             <h1 id="auditor">Auditor</h1>
 <p>Auditor stands for <strong>A</strong>cco<strong>u</strong>nting <strong>D</strong>ata Handl<strong>i</strong>ng <strong>T</strong>oolbox For <strong>O</strong>pportunistic <strong>R</strong>esources. 
 Auditor ingests accounting data provided by so-called <em>collectors</em>, stores it and provides it to the outside to so-called <em>plugins</em>.</p>
 <p>It comes with a well-defined REST API which allows for the implementation of application-specific collectors and plugins. This makes it well suited for a wide range of use cases.</p>
+<p align="center">
+  <img
+    width="700"
+    src="auditor_overview.png"
+  />
+</p>
 <p>TODO: Grafik, detaillierte Erklaerung.</p>
 <h2 id="features">Features</h2>
 <ul>
