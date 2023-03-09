@@ -395,7 +395,7 @@ impl ParsableType {
                                 .collect(),
                         )
                     } else {
-                        tracing::error!("Could not parse JSON");
+                        tracing::error!("Could not parse JSON: {input}");
                         AllowedTypes::Map(vec![])
                     }
                 } else {
@@ -442,6 +442,12 @@ mod tests {
     fn correct_json_parsed() {
         let expected = AllowedTypes::Map(vec![
             (
+                AllowedTypes::String("headnode".to_string()),
+                AllowedTypes::String(
+                    "gsiftp:%2F%2Farc1.bfg.uni-freiburg.de:2811%2Fjobs".to_string(),
+                ),
+            ),
+            (
                 AllowedTypes::String("subject".to_string()),
                 AllowedTypes::String("%2Fsome%2Fthings%2F".to_string()),
             ),
@@ -452,12 +458,12 @@ mod tests {
         ]);
 
         let parsed = ParsableType::Json
-            .parse("{'voms': '/atlas/Role=production', 'subject': '/some/things/'}")
+            .parse("{'voms': '/atlas/Role=production', 'headnode': 'gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs', 'subject': '/some/things/'}")
             .unwrap();
         assert_eq!(parsed, expected);
 
         let parsed = ParsableType::Json
-            .parse("{\"voms\": \"/atlas/Role=production\", \"subject\": \"/some/things/\"}")
+            .parse("{\"voms\": \"/atlas/Role=production\", \"headnode\": \"gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs\", \"subject\": \"/some/things/\"}")
             .unwrap();
         assert_eq!(parsed, expected);
 
