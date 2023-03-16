@@ -76,6 +76,16 @@ impl AuditorClientBuilder {
                 .build()?,
         })
     }
+
+    pub fn build_blocking(self) -> Result<AuditorClientBlocking, Error> {
+        Ok(AuditorClientBlocking {
+            address: self.address,
+            client: reqwest::blocking::ClientBuilder::new()
+                .user_agent(APP_USER_AGENT)
+                .timeout(self.timeout.to_std()?)
+                .build()?,
+        })
+    }
 }
 
 impl Default for AuditorClientBuilder {
@@ -219,6 +229,129 @@ impl AuditorClient {
     }
 }
 
+#[derive(Clone)]
+pub struct AuditorClientBlocking {
+    address: String,
+    client: reqwest::blocking::Client,
+}
+
+impl AuditorClientBlocking {
+    pub fn new<T: AsRef<str>>(
+        address: &T,
+        port: u16,
+    ) -> Result<AuditorClientBlocking, reqwest::Error> {
+        Ok(AuditorClientBlocking {
+            address: format!("http://{}:{}", address.as_ref(), port),
+            client: reqwest::blocking::ClientBuilder::new()
+                .user_agent(APP_USER_AGENT)
+                .build()?,
+        })
+    }
+
+    pub fn from_connection_string<T: AsRef<str>>(
+        connection_string: &T,
+    ) -> Result<AuditorClientBlocking, reqwest::Error> {
+        Ok(AuditorClientBlocking {
+            address: connection_string.as_ref().into(),
+            client: reqwest::blocking::ClientBuilder::new()
+                .user_agent(APP_USER_AGENT)
+                .build()?,
+        })
+    }
+
+    #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
+    pub fn health_check(&self) -> bool {
+        match self
+            .client
+            .get(format!("{}/health_check", &self.address))
+            .send()
+        {
+            Ok(s) => matches!(s.error_for_status(), Ok(_)),
+            Err(_) => false,
+        }
+    }
+
+    #[tracing::instrument(
+        name = "Sending a record to AUDITOR server.",
+        skip(self, record),
+        fields(record_id = %record.record_id)
+    )]
+    pub fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
+        let response = self
+            .client
+            .post(format!("{}/add", &self.address))
+            .header("Content-Type", "application/json")
+            .json(record)
+            .send()
+            .map_err(ClientError::ReqwestError)?;
+
+        if response.text().map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+            Err(ClientError::RecordExists)
+        } else {
+            Ok(())
+        }
+    }
+
+    #[tracing::instrument(
+        name = "Sending a record update to AUDITOR server.",
+        skip(self, record),
+        fields(record_id = %record.record_id)
+    )]
+    pub fn update(&self, record: &RecordUpdate) -> Result<(), reqwest::Error> {
+        self.client
+            .post(format!("{}/update", &self.address))
+            .header("Content-Type", "application/json")
+            .json(record)
+            .send()?
+            .error_for_status()?;
+        Ok(())
+    }
+
+    #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
+    pub fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
+        self.client
+            .get(format!("{}/get", &self.address))
+            .send()?
+            .error_for_status()?
+            .json()
+    }
+
+    #[tracing::instrument(
+        name = "Getting all records started since a given date from AUDITOR server.",
+        skip(self),
+        fields(started_since = %since)
+    )]
+    pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
+        dbg!(since.to_rfc3339());
+        self.client
+            .get(format!(
+                "{}/get/started/since/{}",
+                &self.address,
+                since.to_rfc3339()
+            ))
+            .send()?
+            .error_for_status()?
+            .json()
+    }
+
+    #[tracing::instrument(
+        name = "Getting all records stopped since a given date from AUDITOR server.",
+        skip(self),
+        fields(started_since = %since)
+    )]
+    pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
+        self.client
+            .get(format!(
+                "{}/get/stopped/since/{}",
+                &self.address,
+                since.to_rfc3339()
+            ))
+            .send()?
+            .error_for_status()?
+            .json()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -260,6 +393,36 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_get_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let body: Vec<Record> = vec![record()];
+
+        Mock::given(method("GET"))
+            .and(path("/get"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(&body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || client.get().unwrap())
+            .await
+            .unwrap();
+
+        response
+            .into_iter()
+            .zip(body.into_iter())
+            .map(|(rr, br)| assert_eq!(rr, br))
+            .count();
+    }
+
+    #[tokio::test]
     async fn health_check_succeeds() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
@@ -272,6 +435,30 @@ mod tests {
             .await;
 
         assert!(client.health_check().await);
+    }
+
+    #[tokio::test]
+    async fn blocking_health_check_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        Mock::given(method("GET"))
+            .and(path("/health_check"))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || client.health_check())
+            .await
+            .unwrap();
+
+        assert!(response);
     }
 
     #[tokio::test]
@@ -296,6 +483,36 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_health_check_fails_on_timeout() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .timeout(1)
+                .build_blocking()
+                .unwrap()
+        })
+        .await
+        .unwrap();
+
+        Mock::given(method("GET"))
+            .and(path("/health_check"))
+            .respond_with(
+                ResponseTemplate::new(200).set_delay(Duration::seconds(180).to_std().unwrap()),
+            )
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || client.health_check())
+            .await
+            .unwrap();
+
+        assert!(!response);
+    }
+
+    #[tokio::test]
     async fn health_check_fails_on_500() {
         let mock_server = MockServer::start().await;
         let client = AuditorClientBuilder::new()
@@ -312,6 +529,34 @@ mod tests {
             .await;
 
         assert!(!client.health_check().await);
+    }
+
+    #[tokio::test]
+    async fn blocking_health_check_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .timeout(1)
+                .build_blocking()
+                .unwrap()
+        })
+        .await
+        .unwrap();
+
+        Mock::given(method("GET"))
+            .and(path("/health_check"))
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || client.health_check())
+            .await
+            .unwrap();
+
+        assert!(!response);
     }
 
     #[tokio::test]
@@ -334,6 +579,32 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_add_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let record: RecordAdd = record();
+
+        Mock::given(method("POST"))
+            .and(path("/add"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&record))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = tokio::task::spawn_blocking(move || client.add(&record))
+            .await
+            .unwrap();
+    }
+
+    #[tokio::test]
     async fn add_fails_on_existing_record() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
@@ -347,6 +618,30 @@ mod tests {
             .await;
 
         assert_err!(client.add(&record).await);
+    }
+
+    #[tokio::test]
+    async fn blocking_add_fails_on_existing_record() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let record: RecordAdd = record();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500).set_body_string(ERR_RECORD_EXISTS))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = tokio::task::spawn_blocking(move || client.add(&record))
+            .await
+            .unwrap();
+        assert_err!(res);
     }
 
     #[tokio::test]
@@ -369,6 +664,32 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_update_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let record: RecordUpdate = record();
+
+        Mock::given(method("POST"))
+            .and(path("/update"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&record))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = tokio::task::spawn_blocking(move || client.update(&record))
+            .await
+            .unwrap();
+    }
+
+    #[tokio::test]
     async fn update_fails_on_500() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
@@ -382,6 +703,30 @@ mod tests {
             .await;
 
         assert_err!(client.update(&record).await);
+    }
+
+    #[tokio::test]
+    async fn blocking_update_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let record: RecordUpdate = record();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = tokio::task::spawn_blocking(move || client.update(&record))
+            .await
+            .unwrap();
+        assert_err!(res);
     }
 
     #[tokio::test]
@@ -411,6 +756,39 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_get_started_since_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let body: Vec<Record> = vec![record()];
+
+        Mock::given(method("GET"))
+            .and(path("/get/started/since/2022-08-03T09:47:00+00:00"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(&body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || {
+            client.get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
+        })
+        .await
+        .unwrap()
+        .unwrap();
+
+        response
+            .into_iter()
+            .zip(body.into_iter())
+            .map(|(rr, br)| assert_eq!(rr, br))
+            .count();
+    }
+
+    #[tokio::test]
     async fn get_started_since_fails_on_500() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
@@ -421,11 +799,36 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        assert_err!(
-            client
-                .get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
-                .await
-        );
+        let response = client
+            .get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
+            .await;
+
+        assert_err!(response);
+    }
+
+    #[tokio::test]
+    async fn blocking_get_started_since_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || {
+            client.get_started_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
+        })
+        .await
+        .unwrap();
+
+        assert_err!(response);
     }
 
     #[tokio::test]
@@ -455,6 +858,39 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn blocking_get_stopped_since_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        let body: Vec<Record> = vec![record()];
+
+        Mock::given(method("GET"))
+            .and(path("/get/stopped/since/2022-08-03T09:47:00+00:00"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(&body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || {
+            client.get_stopped_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
+        })
+        .await
+        .unwrap()
+        .unwrap();
+
+        response
+            .into_iter()
+            .zip(body.into_iter())
+            .map(|(rr, br)| assert_eq!(rr, br))
+            .count();
+    }
+
+    #[tokio::test]
     async fn get_stopped_since_fails_on_500() {
         let mock_server = MockServer::start().await;
         let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
@@ -470,5 +906,30 @@ mod tests {
                 .get_stopped_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
                 .await
         );
+    }
+
+    #[tokio::test]
+    async fn blocking_get_stopped_since_fails_on_500() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+        })
+        .await
+        .unwrap();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let response = tokio::task::spawn_blocking(move || {
+            client.get_stopped_since(&Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap())
+        })
+        .await
+        .unwrap();
+
+        assert_err!(response);
     }
 }
