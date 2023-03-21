@@ -24,13 +24,13 @@ pub struct AuditorClientBlocking {
 impl AuditorClientBlocking {
     /// health_check()
     /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise
-    fn health_check<'a>(self_: PyRef<'a, Self>) -> bool {
+    fn health_check(self_: PyRef<'_, Self>) -> bool {
         self_.inner.health_check()
     }
 
     /// get()
     /// Gets all records from the Auditors database
-    fn get<'a>(self_: PyRef<'a, Self>) -> PyResult<Vec<Record>> {
+    fn get(self_: PyRef<'_, Self>) -> PyResult<Vec<Record>> {
         Ok(self_
             .inner
             .get()
@@ -64,10 +64,7 @@ impl AuditorClientBlocking {
     ///
     ///     records = client.get_stopped_since(start_since)
     ///
-    fn get_started_since<'a>(
-        self_: PyRef<'a, Self>,
-        timestamp: &PyDateTime,
-    ) -> PyResult<Vec<Record>> {
+    fn get_started_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
         let timestamp: NaiveDateTime = timestamp.extract()?;
         let timestamp = Utc.from_utc_datetime(&timestamp.into());
         Ok(self_
@@ -103,10 +100,7 @@ impl AuditorClientBlocking {
     ///
     ///     records = client.get_stopped_since(stop_since)
     ///
-    fn get_stopped_since<'a>(
-        self_: PyRef<'a, Self>,
-        timestamp: &PyDateTime,
-    ) -> PyResult<Vec<Record>> {
+    fn get_stopped_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
         let timestamp: NaiveDateTime = timestamp.extract()?;
         let timestamp = Utc.from_utc_datetime(&timestamp.into());
         Ok(self_
@@ -120,7 +114,7 @@ impl AuditorClientBlocking {
 
     /// add(record: Record)
     /// Push a record to the Auditor instance
-    fn add<'a>(&self, record: Record) -> PyResult<()> {
+    fn add(&self, record: Record) -> PyResult<()> {
         self.inner
             .add(&auditor::domain::RecordAdd::try_from(record.inner)?)
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
@@ -128,7 +122,7 @@ impl AuditorClientBlocking {
 
     /// update(record: Record)
     /// Update an existing record in the Auditor instance
-    fn update<'a>(&self, record: Record) -> PyResult<()> {
+    fn update(&self, record: Record) -> PyResult<()> {
         self.inner
             .update(&auditor::domain::RecordUpdate::try_from(record.inner)?)
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
