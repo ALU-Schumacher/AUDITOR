@@ -9,6 +9,7 @@
 
 use pyo3::prelude::*;
 
+mod blocking_client;
 mod builder;
 mod client;
 mod domain;
@@ -18,6 +19,7 @@ mod domain;
 fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<crate::builder::AuditorClientBuilder>()?;
     m.add_class::<crate::client::AuditorClient>()?;
+    m.add_class::<crate::blocking_client::AuditorClientBlocking>()?;
     m.add_class::<crate::domain::Record>()?;
     m.add_class::<crate::domain::Meta>()?;
     m.add_class::<crate::domain::Component>()?;

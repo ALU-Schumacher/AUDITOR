@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::client::AuditorClient;
+use crate::{blocking_client::AuditorClientBlocking, client::AuditorClient};
 use anyhow::Error;
 use pyo3::prelude::*;
 
@@ -96,6 +96,15 @@ impl AuditorClientBuilder {
             // Must clone here because `build` moves the builder, but python
             // does not allow that. Doesn't matter, Python is slow anyways.
             inner: self.inner.clone().build()?,
+        })
+    }
+
+    /// Build an ``AuditorClientBlocking`` from ``AuditorClientBuilder``
+    pub fn build_blocking(&self) -> Result<AuditorClientBlocking, Error> {
+        Ok(AuditorClientBlocking {
+            // Must clone here because `build` moves the builder, but python
+            // does not allow that. Doesn't matter, Python is slow anyways.
+            inner: self.inner.clone().build_blocking()?,
         })
     }
 }
