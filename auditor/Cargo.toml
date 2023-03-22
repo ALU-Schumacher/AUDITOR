@@ -64,7 +64,7 @@ prometheus = "0.13"
 itertools = "0.10.5"
 
 [dependencies.sqlx]
-version = "0.6.2"
+version = "0.6.3"
 default-features = false
 features = [
     "runtime-actix-rustls",
