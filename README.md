@@ -9,17 +9,17 @@
   </a>
   <a href="https://github.com/alu-schumacher/AUDITOR/actions"
     ><img
-      src="https://img.shields.io/github/workflow/status/alu-schumacher/AUDITOR/Auditor/main?label=Auditor CI&style=flat-square"
+      src="https://img.shields.io/github/actions/workflow/status/alu-schumacher/AUDITOR/general.yml?branch=main&label=Auditor CI&style=flat-square"
       alt="GitHub Actions workflow status"
   /></a>
   <a href="https://github.com/orgs/ALU-Schumacher/packages"
     ><img
-      src="https://img.shields.io/github/workflow/status/alu-schumacher/AUDITOR/Containers/main?label=Docker builds&style=flat-square"
+      src="https://img.shields.io/github/actions/workflow/status/alu-schumacher/AUDITOR/docker-build-push.yml?branch=main&label=Docker builds&style=flat-square"
       alt="GitHub Actions workflow status"
   /></a>
   <a href="https://github.com/alu-schumacher/AUDITOR/actions"
     ><img
-      src="https://img.shields.io/github/workflow/status/alu-schumacher/AUDITOR/RPM/main?label=RPM builds&style=flat-square"
+      src="https://img.shields.io/github/actions/workflow/status/alu-schumacher/AUDITOR/rpm-build.yml?branch=main&label=RPM builds&style=flat-square"
       alt="GitHub Actions workflow status"
   /></a>
   <img
