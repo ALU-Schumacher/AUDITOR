@@ -362,7 +362,8 @@ It also covers cross compiling and static linking against <code>musl</code> inst
 <h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git </span>
 <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> AUDITOR</span>
-<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/db_init.sh</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_db.sh</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_slurm_collector_sqlite.sh</span></span>
 <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span>
 </span></code></pre>
 <p>Calling <code>./scripts/db_init.sh</code> will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
