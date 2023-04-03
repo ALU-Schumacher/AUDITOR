@@ -72,3 +72,4 @@ trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
 
 compile_pyauditor
 test_pyauditor
+sleep 10
