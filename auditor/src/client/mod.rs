@@ -102,17 +102,6 @@ pub struct AuditorClient {
 
 impl AuditorClient {
 
-    pub fn from_connection_string<T: AsRef<str>>(
-        connection_string: &T,
-    ) -> Result<AuditorClient, reqwest::Error> {
-        Ok(AuditorClient {
-            address: connection_string.as_ref().into(),
-            client: reqwest::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub async fn health_check(&self) -> bool {
         match self
@@ -364,7 +353,10 @@ mod tests {
     #[tokio::test]
     async fn get_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -417,7 +409,10 @@ mod tests {
     #[tokio::test]
     async fn health_check_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(method("GET"))
             .and(path("/health_check"))
@@ -554,7 +549,10 @@ mod tests {
     #[tokio::test]
     async fn add_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordAdd = record();
 
@@ -599,7 +597,10 @@ mod tests {
     #[tokio::test]
     async fn add_fails_on_existing_record() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordAdd = record();
 
@@ -639,7 +640,10 @@ mod tests {
     #[tokio::test]
     async fn update_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordUpdate = record();
 
@@ -684,7 +688,10 @@ mod tests {
     #[tokio::test]
     async fn update_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordUpdate = record();
 
@@ -724,7 +731,10 @@ mod tests {
     #[tokio::test]
     async fn get_started_since_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -783,7 +793,10 @@ mod tests {
     #[tokio::test]
     async fn get_started_since_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(any())
             .respond_with(ResponseTemplate::new(500))
@@ -826,7 +839,10 @@ mod tests {
     #[tokio::test]
     async fn get_stopped_since_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -885,7 +901,10 @@ mod tests {
     #[tokio::test]
     async fn get_stopped_since_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(any())
             .respond_with(ResponseTemplate::new(500))
