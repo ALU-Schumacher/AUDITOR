@@ -38,7 +38,8 @@ impl std::fmt::Display for ClientError {
     }
 }
 
-/// The [`AuditorClientBuilder`] is used to build an instance of [`AuditorClient`].
+/// The [`AuditorClientBuilder`] is used to build an instance of
+/// either [`AuditorClient`] or [`AuditorClientBlocking`].
 ///
 /// # Examples
 ///
@@ -164,6 +165,9 @@ impl Default for AuditorClientBuilder {
     }
 }
 
+/// The [`AuditorClient`] handles the interaction with the Auditor instances and allows one to add
+/// records to the database, update records in the database and retrieve the records from the
+/// database.
 #[derive(Clone)]
 pub struct AuditorClient {
     address: String,
@@ -171,7 +175,7 @@ pub struct AuditorClient {
 }
 
 impl AuditorClient {
-
+    /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise.
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub async fn health_check(&self) -> bool {
         match self
@@ -185,6 +189,12 @@ impl AuditorClient {
         }
     }
 
+    /// Push a record to the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),
@@ -207,33 +217,53 @@ impl AuditorClient {
         }
     }
 
+    /// Update an existing record in the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record update to AUDITOR server.",
         skip(self, record),
         fields(record_id = %record.record_id)
     )]
-    pub async fn update(&self, record: &RecordUpdate) -> Result<(), reqwest::Error> {
+    pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
             .post(&format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await?
-            .error_for_status()?;
+            .await
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?;
         Ok(())
     }
 
+    /// Gets all records from the Auditors database.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
-    pub async fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
+    pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
         self.client
             .get(&format!("{}/get", &self.address))
             .send()
-            .await?
-            .error_for_status()?
+            .await
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
             .await
+            .map_err(ClientError::ReqwestError)
     }
 
+    /// Get all records in the database with a started timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records started since a given date from AUDITOR server.",
         skip(self),
@@ -242,7 +272,7 @@ impl AuditorClient {
     pub async fn get_started_since(
         &self,
         since: &DateTime<Utc>,
-    ) -> Result<Vec<Record>, reqwest::Error> {
+    ) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
         self.client
             .get(&format!(
@@ -251,12 +281,20 @@ impl AuditorClient {
                 since.to_rfc3339()
             ))
             .send()
-            .await?
-            .error_for_status()?
+            .await
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
             .await
+            .map_err(ClientError::ReqwestError)
     }
 
+    /// Get all records in the database with a stopped timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records stopped since a given date from AUDITOR server.",
         skip(self),
@@ -265,7 +303,7 @@ impl AuditorClient {
     pub async fn get_stopped_since(
         &self,
         since: &DateTime<Utc>,
-    ) -> Result<Vec<Record>, reqwest::Error> {
+    ) -> Result<Vec<Record>, ClientError> {
         self.client
             .get(&format!(
                 "{}/get/stopped/since/{}",
@@ -273,13 +311,19 @@ impl AuditorClient {
                 since.to_rfc3339()
             ))
             .send()
-            .await?
-            .error_for_status()?
+            .await
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
             .await
+            .map_err(ClientError::ReqwestError)
     }
 }
 
+/// The [`AuditorClientBlocking`] handles the interaction with the Auditor instances and allows one to add
+/// records to the database, update records in the database and retrieve the records from the
+/// database. In contrast to [`AuditorClient`], no async runtime is needed here.
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
     address: String,
@@ -287,6 +331,7 @@ pub struct AuditorClientBlocking {
 }
 
 impl AuditorClientBlocking {
+    /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise.
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub fn health_check(&self) -> bool {
         match self
@@ -299,6 +344,12 @@ impl AuditorClientBlocking {
         }
     }
 
+    /// Push a record to the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),
@@ -320,36 +371,56 @@ impl AuditorClientBlocking {
         }
     }
 
+    /// Update an existing record in the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record update to AUDITOR server.",
         skip(self, record),
         fields(record_id = %record.record_id)
     )]
-    pub fn update(&self, record: &RecordUpdate) -> Result<(), reqwest::Error> {
+    pub fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
             .post(format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
-            .send()?
-            .error_for_status()?;
+            .send()
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?;
         Ok(())
     }
 
+    /// Gets all records from the Auditors database.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
-    pub fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
+    pub fn get(&self) -> Result<Vec<Record>, ClientError> {
         self.client
             .get(format!("{}/get", &self.address))
-            .send()?
-            .error_for_status()?
+            .send()
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
+            .map_err(ClientError::ReqwestError)
     }
 
+    /// Get all records in the database with a started timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records started since a given date from AUDITOR server.",
         skip(self),
         fields(started_since = %since)
     )]
-    pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
+    pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
         self.client
             .get(format!(
@@ -357,26 +428,37 @@ impl AuditorClientBlocking {
                 &self.address,
                 since.to_rfc3339()
             ))
-            .send()?
-            .error_for_status()?
+            .send()
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
+            .map_err(ClientError::ReqwestError)
     }
 
+    /// Get all records in the database with a stopped timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records stopped since a given date from AUDITOR server.",
         skip(self),
         fields(started_since = %since)
     )]
-    pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
+    pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         self.client
             .get(format!(
                 "{}/get/stopped/since/{}",
                 &self.address,
                 since.to_rfc3339()
             ))
-            .send()?
-            .error_for_status()?
+            .send()
+            .map_err(ClientError::ReqwestError)?
+            .error_for_status()
+            .map_err(ClientError::ReqwestError)?
             .json()
+            .map_err(ClientError::ReqwestError)
     }
 }
 
