@@ -217,17 +217,6 @@ pub struct AuditorClientBlocking {
 }
 
 impl AuditorClientBlocking {
-    pub fn from_connection_string<T: AsRef<str>>(
-        connection_string: &T,
-    ) -> Result<AuditorClientBlocking, reqwest::Error> {
-        Ok(AuditorClientBlocking {
-            address: connection_string.as_ref().into(),
-            client: reqwest::blocking::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub fn health_check(&self) -> bool {
         match self
@@ -369,7 +358,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -417,7 +409,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -561,7 +556,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -606,7 +604,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -652,7 +653,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -697,7 +701,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -750,7 +757,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -804,7 +814,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -858,7 +871,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -912,7 +928,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
