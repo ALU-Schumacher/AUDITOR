@@ -46,8 +46,8 @@ impl std::fmt::Display for ClientError {
 /// Using the `address` and `port` of the Auditor instance:
 ///
 /// ```
-/// use auditor::client::AuditorClientBuilder;
-///
+/// # use auditor::client::AuditorClientBuilder;
+/// #
 /// let client = AuditorClientBuilder::new()
 ///     .address(&"localhost", 8000)
 ///     .timeout(20)
@@ -57,8 +57,8 @@ impl std::fmt::Display for ClientError {
 /// Using an connection string:
 ///
 /// ```
-/// use auditor::client::AuditorClientBuilder;
-///
+/// # use auditor::client::AuditorClientBuilder;
+/// #
 /// let client = AuditorClientBuilder::new()
 ///     .connection_string(&"http://localhost:8000")
 ///     .build();
