@@ -217,18 +217,6 @@ pub struct AuditorClientBlocking {
 }
 
 impl AuditorClientBlocking {
-    pub fn new<T: AsRef<str>>(
-        address: &T,
-        port: u16,
-    ) -> Result<AuditorClientBlocking, reqwest::Error> {
-        Ok(AuditorClientBlocking {
-            address: format!("http://{}:{}", address.as_ref(), port),
-            client: reqwest::blocking::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
     pub fn from_connection_string<T: AsRef<str>>(
         connection_string: &T,
     ) -> Result<AuditorClientBlocking, reqwest::Error> {
