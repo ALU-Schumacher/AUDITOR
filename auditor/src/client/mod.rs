@@ -101,14 +101,6 @@ pub struct AuditorClient {
 }
 
 impl AuditorClient {
-    pub fn new<T: AsRef<str>>(address: &T, port: u16) -> Result<AuditorClient, reqwest::Error> {
-        Ok(AuditorClient {
-            address: format!("http://{}:{}", address.as_ref(), port),
-            client: reqwest::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
 
     pub fn from_connection_string<T: AsRef<str>>(
         connection_string: &T,

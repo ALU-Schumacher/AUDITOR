@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::client::AuditorClient;
+use auditor::client::AuditorClientBuilder;
 use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
@@ -137,7 +137,9 @@ async fn main() -> Result<(), Error> {
 
     debug!(?config, "Loaded config");
 
-    let client = AuditorClient::new(&config.addr, config.port)?;
+    let client = AuditorClientBuilder::new()
+        .address(&config.addr, config.port)
+        .build()?;
 
     let job_id = get_slurm_job_id().expect("Collector not run in the context of a Slurm epilog");
 
