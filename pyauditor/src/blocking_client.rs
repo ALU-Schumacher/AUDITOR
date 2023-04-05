@@ -11,9 +11,9 @@ use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use pyo3_chrono::NaiveDateTime;
 
-/// The `AuditorClient` handles the interaction with the Auditor instances and allows one to add
+/// The `AuditorClientBlocking` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
-/// database.
+/// database. In contrast to `AuditorClient`, no async runtime is needed here.
 #[pyclass]
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
