@@ -5,11 +5,12 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+//! This module provides a client to interact with an Auditor instance.
+
 use crate::{
-    constants::ERR_RECORD_EXISTS,
+    constants::{ERR_INVALID_TIMEOUT, ERR_RECORD_EXISTS},
     domain::{Record, RecordAdd, RecordUpdate},
 };
-use anyhow::Error;
 use chrono::{DateTime, Duration, Utc};
 use reqwest;
 
@@ -19,6 +20,7 @@ static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_P
 #[non_exhaustive]
 pub enum ClientError {
     RecordExists,
+    InvalidTimeout,
     ReqwestError(reqwest::Error),
 }
 
@@ -29,12 +31,37 @@ impl std::fmt::Display for ClientError {
             "{}",
             match self {
                 ClientError::RecordExists => ERR_RECORD_EXISTS.to_string(),
+                ClientError::InvalidTimeout => ERR_INVALID_TIMEOUT.to_string(),
                 ClientError::ReqwestError(e) => format!("Reqwest Error: {e}"),
             }
         )
     }
 }
 
+/// The [`AuditorClientBuilder`] is used to build an instance of [`AuditorClient`].
+///
+/// # Examples
+///
+/// Using the `address` and `port` of the Auditor instance:
+///
+/// ```
+/// use auditor::client::AuditorClientBuilder;
+///
+/// let client = AuditorClientBuilder::new()
+///     .address(&"localhost", 8000)
+///     .timeout(20)
+///     .build();
+/// ```
+///
+/// Using an connection string:
+///
+/// ```
+/// use auditor::client::AuditorClientBuilder;
+///
+/// let client = AuditorClientBuilder::new()
+///     .connection_string(&"http://localhost:8000")
+///     .build();
+/// ```
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
     address: String,
@@ -42,6 +69,7 @@ pub struct AuditorClientBuilder {
 }
 
 impl AuditorClientBuilder {
+    /// Constructor.
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
             address: "127.0.0.1:8080".into(),
@@ -49,41 +77,83 @@ impl AuditorClientBuilder {
         }
     }
 
+    /// Set the address and port of the Auditor server.
+    ///
+    /// # Arguments
+    ///
+    /// * `address` - Host name / IP address of the Auditor instance.
+    /// * `port` - Port of the Auditor instance.
     #[must_use]
     pub fn address<T: AsRef<str>>(mut self, address: &T, port: u16) -> Self {
         self.address = format!("http://{}:{}", address.as_ref(), port);
         self
     }
 
+    /// Set a connection string of the form ``http://<auditor_address>:<auditor_port>``.
+    ///
+    /// # Arguments
+    ///
+    /// * `connection_string` - Connection string.
     #[must_use]
     pub fn connection_string<T: AsRef<str>>(mut self, connection_string: &T) -> Self {
         self.address = connection_string.as_ref().into();
         self
     }
 
+    /// Set a timeout in seconds for HTTP requests.
+    ///
+    /// # Arguments
+    ///
+    /// * `timeout` - Timeout in seconds.
     #[must_use]
     pub fn timeout(mut self, timeout: i64) -> Self {
         self.timeout = Duration::seconds(timeout);
         self
     }
 
-    pub fn build(self) -> Result<AuditorClient, Error> {
+    /// Build an [`AuditorClient`] from [`AuditorClientBuilder`].
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
+    pub fn build(self) -> Result<AuditorClient, ClientError> {
         Ok(AuditorClient {
             address: self.address,
             client: reqwest::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
-                .timeout(self.timeout.to_std()?)
-                .build()?,
+                .timeout(
+                    self.timeout
+                        .to_std()
+                        .map_err(|_| ClientError::InvalidTimeout)?,
+                )
+                .build()
+                .map_err(ClientError::ReqwestError)?,
         })
     }
 
-    pub fn build_blocking(self) -> Result<AuditorClientBlocking, Error> {
+    /// Build an [`AuditorClientBlocking`] from [`AuditorClientBuilder`].
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
+    ///
+    /// # Panics
+    ///
+    /// This method panics if it is called from an async runtime.
+    pub fn build_blocking(self) -> Result<AuditorClientBlocking, ClientError> {
         Ok(AuditorClientBlocking {
             address: self.address,
             client: reqwest::blocking::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
-                .timeout(self.timeout.to_std()?)
-                .build()?,
+                .timeout(
+                    self.timeout
+                        .to_std()
+                        .map_err(|_| ClientError::InvalidTimeout)?,
+                )
+                .build()
+                .map_err(ClientError::ReqwestError)?,
         })
     }
 }
