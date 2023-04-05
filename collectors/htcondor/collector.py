@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+
+import logging
+
+from subprocess import Popen, PIPE
+from datetime import datetime as dt
+from typing import Union, Tuple, List
+from urllib.parse import quote
+
+from pyauditor import (
+    AuditorClientBuilder,
+    AuditorClient,
+    Record,
+    Component,
+    Score,
+    Meta,
+)
+
+
+from utils import maybe_convert, get_value
+from config import Config
+from state_db import StateDB
+
+
+class CondorHistoryCollector(object):
+    def __init__(self, config: Config):
+        self.config = config
+        self.logger = self.setup_logger()
+        self.client = self.setup_auditor_client()
+        self.state_db = StateDB(config.state_db)
+
+    def setup_auditor_client(self) -> AuditorClient:
+        """Sets up the auditor client."""
+        builder = AuditorClientBuilder().address(self.config.addr, self.config.port)
+        return builder.build()
+
+    def setup_logger(self) -> logging.Logger:
+        """Sets up the logger for the collector."""
+        logger = logging.getLogger("auditor.collectors.htcondor")
+        logger.setLevel(self.config.log_level)
+        if self.config.log_file:
+            from logging.handlers import RotatingFileHandler
+
+            handler = RotatingFileHandler(
+                self.config.log_file,
+                maxBytes=10 * 1024 * 1024,
+                backupCount=5,
+            )
+        else:
+            handler = logging.StreamHandler()
+        handler.setFormatter(
+            logging.Formatter(
+                "{asctime} - {name} - {levelname: <8} - {message}", style="{"
+            )
+        )
+        logger.addHandler(handler)
+        return logger
+
+    async def run(self):
+        self.logger.info("Starting collector run.")
+        with self.state_db.connection():
+            for schedd_name in self.config.schedd_names:
+                id = self.config.get("job_id") or ""
+                await self._collect(schedd_name, job_id=id)
+        self.logger.info("Collector run finished.")
+
+    async def _collect(self, schedd_name: str, job_id: str = ""):
+        """Collects jobs from `condor_history` for a given schedd and adds them to the auditor client.
+
+        Jobs are iterated over in reverse order, so that the oldest job is processed first.
+        """
+        self.logger.info(f"Collecting jobs for schedd {schedd_name}.")
+        if job_id:
+            try:
+                if "." in job_id:
+                    cluster, proc = map(int, job_id.split("."))
+                else:
+                    cluster, proc = int(job_id), 0
+            except ValueError:
+                raise ValueError("Invalid job id.")
+        else:
+            cluster, proc = self.get_last_job(schedd_name)
+        self.logger.debug(f"Using job id {cluster}.{proc}.")
+
+        jobs = self.query_htcondor_history(schedd_name, cluster, proc)
+
+        added, failed = 0, 0
+        for job in jobs[::-1]:
+            if record := self._generate_record(job):
+                await self.client.add(record)
+                added += 1
+            else:
+                failed += 1
+                self.logger.debug(
+                    f"Failed to generate record for job {job['GlobalJobId']}."
+                )
+            self.set_last_job(schedd_name, (job["ClusterId"], job["ProcId"]))
+        self.logger.info(
+            f"Added {added} records.{f' Failed to generate {failed} records.' if failed else ''}"
+        )
+
+    def get_last_job(self, schedd_name: str) -> Tuple[int, int]:
+        """Returns the last job id that was processed for a given schedd and prefix."""
+        job = self.state_db.get(schedd_name, self.config.record_prefix)
+        if job is None:
+            self.logger.warning(
+                f'Could not find last job id for schedd "{schedd_name}" and record '
+                f'prefix "{self.config.record_prefix}". Starting from the beginning.'
+            )
+            return (0, 0)
+        return job
+
+    def set_last_job(self, schedd_name: str, job_id: Tuple[int, int]):
+        """Sets the last job id that was processed for a given schedd and prefix."""
+        self.state_db.set(schedd_name, self.config.record_prefix, *job_id)
+        self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name}.")
+
+    def query_htcondor_history(
+        self, schedd_name: str, cluster: int, proc: int
+    ) -> List[dict]:
+        """Queries HTCondor history for jobs with a given schedd name and job id."""
+        assert type(cluster) == int and type(proc) == int, "Invalid job id"
+        self.logger.debug(
+            f'Querying HTCondor history for "{schedd_name}" starting from job "{cluster}.{proc}".'
+        )
+        cmd = [
+            "condor_history",
+            "-backwards",
+            "-name",
+            schedd_name,
+            "-since",
+            f"{cluster}.{proc}",
+            "-af:,",
+            *self.config.class_ads,
+        ]
+        if getattr(self.config, "pool", None):
+            cmd.extend(["-pool", self.config.pool])
+        if getattr(self.config, "job_status", None):
+            cmd.extend(
+                [
+                    "-constraint",
+                    f"\"{' || '.join(f'JobStatus == {j}' for j in self.config.job_status)}\"",
+                ]
+            )
+
+        self.logger.debug(f"Running command: \"{' '.join(cmd)}\"")
+
+        p = Popen(" ".join(cmd), stdout=PIPE, stderr=PIPE, shell=True)
+        output, err = p.communicate()
+        if err:
+            self.logger.error(f"Error querying HTCondor history:\n{err}")
+
+        jobs = [
+            map(maybe_convert, job.decode("utf-8").split(", "))
+            for job in output.strip().splitlines()
+        ]
+
+        return [dict(zip(self.config.class_ads, job)) for job in jobs]
+
+    def _generate_components(self, job: dict) -> List[Component]:
+        components = []
+        for component in self.config.components:
+            if amount := get_value(component, job):
+                try:
+                    # AUDITOR expects int-values for components
+                    amount = int(amount)
+                except ValueError:
+                    self.logger.warning(
+                        f"Could not convert amount ({amount}) for component "
+                        f"\"{component['name']}\" of job \"{job['GlobalJobId']}\" to int. "
+                        f"Skipping record."
+                    )
+                    raise ValueError
+                comp = Component(name=component["name"], amount=amount)
+                for score in component.get("scores", []):
+                    value = get_value(score, job) or "0.0"
+                    comp.with_score(Score(score["name"], maybe_convert(value)))
+                components.append(comp)
+        return components
+
+    def _get_meta(self, job: dict) -> Meta:
+        meta = Meta()
+        for key, entry in self.config.meta.items():
+            values = []
+            for item in entry if isinstance(entry, list) else [entry]:
+                if (value := get_value(item, job)) is not None:
+                    values.append(value)
+                    if key == "site":  # site is a special case
+                        break
+            if not values:
+                self.logger.warning(
+                    f"Could not find meta value for \"{key}\" for job \"{job['GlobalJobId']}\"."
+                )
+            meta.insert(key, values)
+        return meta
+
+    def _generate_record(self, job: dict) -> Union[Record, None]:
+
+        job_id = job["GlobalJobId"]
+
+        self.logger.debug(f'Generating record for job "{job_id}".')
+
+        # Get the start time of the job
+        start_time = None
+        for key in ["LastMatchTime"]:
+            if key in job and job[key] != "undefined":
+                start_time = job[key]
+                break
+        if start_time is None:
+            self.logger.debug(
+                f'Could not find start time for job "{job_id}". Assuming job never started.'
+            )
+            return None
+
+        # Get the stop time of the job
+        stop_time = None
+        for key in ["CompletionDate", "EnteredCurrentStatus"]:
+            if key in job and job[key] != "undefined":
+                stop_time = job[key]
+                break
+        if stop_time is None:
+            self.logger.debug(f'Could not find stop time for job "{job_id}".')
+            stop_time = 0
+
+        meta = self._get_meta(job)
+
+        try:
+            record_id = (
+                f"{self.config.record_prefix}-{quote(job_id.encode('utf-8'), safe='')}"
+            )
+            record = Record(
+                record_id=record_id, start_time=dt.utcfromtimestamp(start_time)
+            )
+            record.with_stop_time(dt.utcfromtimestamp(stop_time)).with_meta(meta)
+            for component in self._generate_components(job):
+                record.with_component(component)
+        except (KeyError, ValueError) as e:
+            self.logger.error(f'Error generating record for job "{job_id}":\n{e}')
+            return None
+
+        self.logger.debug(f'Generated record for job "{job_id}."')
+        return record
