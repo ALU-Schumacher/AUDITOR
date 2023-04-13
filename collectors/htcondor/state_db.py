@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 class StateDB(object):
     """
-    A simple wrapper for an sqlite database for persistant storage of the last
+    A simple wrapper for an sqlite database for persistent storage of the last
     job id for each scheduler name/record prefix combination.
     The path to the database is set in the config file with the `state_db` key.
     If the database does not exist, it will be created.
