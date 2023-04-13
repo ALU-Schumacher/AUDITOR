@@ -2,10 +2,10 @@
 members = [
     "auditor",
     "pyauditor",
-    "collectors/*",
-    "plugins/*",
+    "collectors/slurm",
+    "collectors/slurm-epilog",
+    "plugins/priority",
 ]
 
 [profile.release]
 strip = true
-
