@@ -70,7 +70,7 @@ class CondorHistoryCollector(object):
 
         Jobs are iterated over in reverse order, so that the oldest job is processed first.
         """
-        self.logger.info(f"Collecting jobs for schedd {schedd_name}.")
+        self.logger.info(f"Collecting jobs for schedd {schedd_name!r}.")
         if job_id:
             try:
                 if "." in job_id:
@@ -104,8 +104,8 @@ class CondorHistoryCollector(object):
         job = self.state_db.get(schedd_name, self.config.record_prefix)
         if job is None:
             self.logger.warning(
-                f'Could not find last job id for schedd "{schedd_name}" and record '
-                f'prefix "{self.config.record_prefix}". Starting from the beginning.'
+                f"Could not find last job id for schedd {schedd_name!r} and record "
+                f"prefix {self.config.record_prefix!r}. Starting from the beginning."
             )
             return (0, 0)
         return job
@@ -113,7 +113,7 @@ class CondorHistoryCollector(object):
     def set_last_job(self, schedd_name: str, job_id: Tuple[int, int]):
         """Sets the last job id that was processed for a given schedd and prefix."""
         self.state_db.set(schedd_name, self.config.record_prefix, *job_id)
-        self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name}.")
+        self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name!r}.")
 
     def query_htcondor_history(
         self, schedd_name: str, cluster: int, proc: int
@@ -121,7 +121,7 @@ class CondorHistoryCollector(object):
         """Queries HTCondor history for jobs with a given schedd name and job id."""
         assert type(cluster) == int and type(proc) == int, "Invalid job id"
         self.logger.debug(
-            f'Querying HTCondor history for "{schedd_name}" starting from job "{cluster}.{proc}".'
+            f"Querying HTCondor history for {schedd_name!r} starting from job {cluster}.{proc}."
         )
         cmd = [
             "condor_history",
@@ -143,7 +143,7 @@ class CondorHistoryCollector(object):
                 ]
             )
 
-        self.logger.debug(f"Running command: \"{' '.join(cmd)}\"")
+        self.logger.debug(f"Running command: {' '.join(cmd)!r}")
 
         p = Popen(" ".join(cmd), stdout=PIPE, stderr=PIPE, shell=True)
         output, err = p.communicate()
@@ -167,8 +167,8 @@ class CondorHistoryCollector(object):
                     amount = int(amount)
                 except ValueError:
                     self.logger.warning(
-                        f"Could not convert amount ({amount}) for component "
-                        f"\"{component['name']}\" of job \"{job['GlobalJobId']}\" to int. "
+                        f"Could not convert amount ({amount!r}) for component "
+                        f"{component['name']!r} of job {job['GlobalJobId']!r} to int. "
                         f"Skipping record."
                     )
                     raise ValueError
@@ -191,7 +191,7 @@ class CondorHistoryCollector(object):
                         break
             if not values:
                 self.logger.warning(
-                    f"Could not find meta value for \"{key}\" for job \"{job['GlobalJobId']}\"."
+                    f"Could not find meta value for {key!r} for job {job['GlobalJobId']!r}."
                 )
             meta.insert(key, values)
         return meta
@@ -199,7 +199,7 @@ class CondorHistoryCollector(object):
     def _generate_record(self, job: dict) -> Record:
         job_id = job["GlobalJobId"]
 
-        self.logger.debug(f'Generating record for job "{job_id}".')
+        self.logger.debug(f"Generating record for job {job_id!r}.")
 
         # Get the start time of the job
         start_time = None
@@ -217,7 +217,7 @@ class CondorHistoryCollector(object):
                 stop_time = job[key]
                 break
         if stop_time is None:
-            self.logger.debug(f'Could not find stop time for job "{job_id}".')
+            self.logger.debug(f"Could not find stop time for job {job_id!r}.")
             stop_time = 0
 
         meta = self._get_meta(job)
@@ -233,8 +233,8 @@ class CondorHistoryCollector(object):
             for component in self._generate_components(job):
                 record.with_component(component)
         except (KeyError, ValueError) as e:
-            self.logger.error(f'Error generating record for job "{job_id}":\n{e}')
+            self.logger.error(f"Error generating record for job {job_id!r}:\n{e}")
             raise RecordGenerationException(job_id)
 
-        self.logger.debug(f'Generated record for job "{job_id}."')
+        self.logger.debug(f"Generated record for job {job_id!r}.")
         return record
