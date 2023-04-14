@@ -20,6 +20,7 @@ from pyauditor import (
 from utils import maybe_convert, get_value
 from config import Config
 from state_db import StateDB
+from exceptions import RecordGenerationException
 
 
 class CondorHistoryCollector(object):
@@ -85,15 +86,14 @@ class CondorHistoryCollector(object):
         jobs = self.query_htcondor_history(schedd_name, cluster, proc)
 
         added, failed = 0, 0
-        for job in jobs[::-1]:
-            if record := self._generate_record(job):
+        for job in reversed(jobs):
+            try:
+                record = self._generate_record(job)
                 await self.client.add(record)
                 added += 1
-            else:
+            except RecordGenerationException as e:
                 failed += 1
-                self.logger.debug(
-                    f"Failed to generate record for job {job['GlobalJobId']}."
-                )
+                self.logger.debug(e.args[0])
             self.set_last_job(schedd_name, (job["ClusterId"], job["ProcId"]))
         self.logger.info(
             f"Added {added} records.{f' Failed to generate {failed} records.' if failed else ''}"
@@ -160,7 +160,8 @@ class CondorHistoryCollector(object):
     def _generate_components(self, job: dict) -> List[Component]:
         components = []
         for component in self.config.components:
-            if amount := get_value(component, job):
+            amount = get_value(component, job)
+            if amount:
                 try:
                     # AUDITOR expects int-values for components
                     amount = int(amount)
@@ -183,7 +184,8 @@ class CondorHistoryCollector(object):
         for key, entry in self.config.meta.items():
             values = []
             for item in entry if isinstance(entry, list) else [entry]:
-                if (value := get_value(item, job)) is not None:
+                value = get_value(item, job)
+                if value is not None:
                     values.append(value)
                     if key == "site":  # site is a special case
                         break
@@ -194,8 +196,7 @@ class CondorHistoryCollector(object):
             meta.insert(key, values)
         return meta
 
-    def _generate_record(self, job: dict) -> Union[Record, None]:
-
+    def _generate_record(self, job: dict) -> Record:
         job_id = job["GlobalJobId"]
 
         self.logger.debug(f'Generating record for job "{job_id}".')
@@ -207,10 +208,7 @@ class CondorHistoryCollector(object):
                 start_time = job[key]
                 break
         if start_time is None:
-            self.logger.debug(
-                f'Could not find start time for job "{job_id}". Assuming job never started.'
-            )
-            return None
+            raise RecordGenerationException(job_id, "Could not find start time.")
 
         # Get the stop time of the job
         stop_time = None
@@ -236,7 +234,7 @@ class CondorHistoryCollector(object):
                 record.with_component(component)
         except (KeyError, ValueError) as e:
             self.logger.error(f'Error generating record for job "{job_id}":\n{e}')
-            return None
+            raise RecordGenerationException(job_id)
 
         self.logger.debug(f'Generated record for job "{job_id}."')
         return record
