@@ -296,9 +296,9 @@ database.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">AuditorClientBlocking</span></span><a class="headerlink" href="#pyauditor.AuditorClientBlocking" title="Permalink to this definition"></a></dt>
-<dd><p>The <cite>AuditorClient</cite> handles the interaction with the Auditor instances and allows one to add
+<dd><p>The <cite>AuditorClientBlocking</cite> handles the interaction with the Auditor instances and allows one to add
 records to the database, update records in the database and retrieve the records from the
-database.</p>
+database. In contrast to <cite>AuditorClient</cite>, no async runtime is needed here.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.add" title="Permalink to this definition"></a></dt>
