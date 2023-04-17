@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::client::AuditorClient;
+use auditor::client::AuditorClientBuilder;
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::Utc;
@@ -246,7 +246,9 @@ async fn main() -> Result<(), Error> {
 
     debug!(?config, "Loaded config");
 
-    let client = AuditorClient::new(&config.addr, config.port)?;
+    let client = AuditorClientBuilder::new()
+        .address(&config.addr, config.port)
+        .build()?;
 
     let records = match config.duration {
         Some(duration) => client.get_stopped_since(&(Utc::now() - duration)).await?,

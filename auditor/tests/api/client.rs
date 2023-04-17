@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::client::AuditorClient;
+use auditor::client::AuditorClientBuilder;
 use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
@@ -8,7 +8,10 @@ use fake::{Fake, Faker};
 async fn add_records() {
     // Arange
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let mut test_cases_comp: Vec<RecordTest> =
         (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
@@ -97,7 +100,10 @@ async fn add_records() {
 async fn update_records() {
     // Arange
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let mut test_cases_comp: Vec<RecordTest> =
         (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
@@ -200,7 +206,10 @@ async fn update_records() {
 async fn get_returns_empty_list_of_records() {
     // Arange
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let records = client.get().await.unwrap();
 
@@ -210,7 +219,10 @@ async fn get_returns_empty_list_of_records() {
 #[tokio::test]
 async fn get_returns_a_list_of_records() {
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let mut test_cases: Vec<RecordTest> = (0..100).map(|_| Faker.fake::<RecordTest>()).collect();
 
@@ -340,7 +352,10 @@ async fn get_returns_a_list_of_records() {
 #[tokio::test]
 async fn get_started_since_returns_a_list_of_records() {
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let mut test_cases: Vec<RecordTest> = (1..=31)
         .map(|i| {
@@ -486,7 +501,10 @@ async fn get_started_since_returns_a_list_of_records() {
 #[tokio::test]
 async fn get_stopped_since_returns_a_list_of_records() {
     let app = spawn_app().await;
-    let client = AuditorClient::from_connection_string(&app.address).unwrap();
+    let client = AuditorClientBuilder::new()
+        .connection_string(&app.address)
+        .build()
+        .unwrap();
 
     let mut test_cases: Vec<RecordTest> = (1..=31)
         .map(|i| {

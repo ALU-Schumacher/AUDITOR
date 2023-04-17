@@ -5,11 +5,12 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+//! This module provides a client to interact with an Auditor instance.
+
 use crate::{
-    constants::ERR_RECORD_EXISTS,
+    constants::{ERR_INVALID_TIMEOUT, ERR_RECORD_EXISTS},
     domain::{Record, RecordAdd, RecordUpdate},
 };
-use anyhow::Error;
 use chrono::{DateTime, Duration, Utc};
 use reqwest;
 
@@ -19,6 +20,7 @@ static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_P
 #[non_exhaustive]
 pub enum ClientError {
     RecordExists,
+    InvalidTimeout,
     ReqwestError(reqwest::Error),
 }
 
@@ -29,12 +31,50 @@ impl std::fmt::Display for ClientError {
             "{}",
             match self {
                 ClientError::RecordExists => ERR_RECORD_EXISTS.to_string(),
+                ClientError::InvalidTimeout => ERR_INVALID_TIMEOUT.to_string(),
                 ClientError::ReqwestError(e) => format!("Reqwest Error: {e}"),
             }
         )
     }
 }
 
+impl From<reqwest::Error> for ClientError {
+    fn from(error: reqwest::Error) -> Self {
+        ClientError::ReqwestError(error)
+    }
+}
+
+impl From<chrono::OutOfRangeError> for ClientError {
+    fn from(_: chrono::OutOfRangeError) -> Self {
+        ClientError::InvalidTimeout
+    }
+}
+
+/// The [`AuditorClientBuilder`] is used to build an instance of
+/// either [`AuditorClient`] or [`AuditorClientBlocking`].
+///
+/// # Examples
+///
+/// Using the `address` and `port` of the Auditor instance:
+///
+/// ```
+/// # use auditor::client::AuditorClientBuilder;
+/// #
+/// let client = AuditorClientBuilder::new()
+///     .address(&"localhost", 8000)
+///     .timeout(20)
+///     .build();
+/// ```
+///
+/// Using an connection string:
+///
+/// ```
+/// # use auditor::client::AuditorClientBuilder;
+/// #
+/// let client = AuditorClientBuilder::new()
+///     .connection_string(&"http://localhost:8000")
+///     .build();
+/// ```
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
     address: String,
@@ -42,6 +82,7 @@ pub struct AuditorClientBuilder {
 }
 
 impl AuditorClientBuilder {
+    /// Constructor.
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
             address: "127.0.0.1:8080".into(),
@@ -49,25 +90,47 @@ impl AuditorClientBuilder {
         }
     }
 
+    /// Set the address and port of the Auditor server.
+    ///
+    /// # Arguments
+    ///
+    /// * `address` - Host name / IP address of the Auditor instance.
+    /// * `port` - Port of the Auditor instance.
     #[must_use]
     pub fn address<T: AsRef<str>>(mut self, address: &T, port: u16) -> Self {
         self.address = format!("http://{}:{}", address.as_ref(), port);
         self
     }
 
+    /// Set a connection string of the form ``http://<auditor_address>:<auditor_port>``.
+    ///
+    /// # Arguments
+    ///
+    /// * `connection_string` - Connection string.
     #[must_use]
     pub fn connection_string<T: AsRef<str>>(mut self, connection_string: &T) -> Self {
         self.address = connection_string.as_ref().into();
         self
     }
 
+    /// Set a timeout in seconds for HTTP requests.
+    ///
+    /// # Arguments
+    ///
+    /// * `timeout` - Timeout in seconds.
     #[must_use]
     pub fn timeout(mut self, timeout: i64) -> Self {
         self.timeout = Duration::seconds(timeout);
         self
     }
 
-    pub fn build(self) -> Result<AuditorClient, Error> {
+    /// Build an [`AuditorClient`] from [`AuditorClientBuilder`].
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
+    pub fn build(self) -> Result<AuditorClient, ClientError> {
         Ok(AuditorClient {
             address: self.address,
             client: reqwest::ClientBuilder::new()
@@ -77,7 +140,17 @@ impl AuditorClientBuilder {
         })
     }
 
-    pub fn build_blocking(self) -> Result<AuditorClientBlocking, Error> {
+    /// Build an [`AuditorClientBlocking`] from [`AuditorClientBuilder`].
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
+    ///
+    /// # Panics
+    ///
+    /// This method panics if it is called from an async runtime.
+    pub fn build_blocking(self) -> Result<AuditorClientBlocking, ClientError> {
         Ok(AuditorClientBlocking {
             address: self.address,
             client: reqwest::blocking::ClientBuilder::new()
@@ -94,6 +167,9 @@ impl Default for AuditorClientBuilder {
     }
 }
 
+/// The [`AuditorClient`] handles the interaction with the Auditor instances and allows one to add
+/// records to the database, update records in the database and retrieve the records from the
+/// database.
 #[derive(Clone)]
 pub struct AuditorClient {
     address: String,
@@ -101,26 +177,7 @@ pub struct AuditorClient {
 }
 
 impl AuditorClient {
-    pub fn new<T: AsRef<str>>(address: &T, port: u16) -> Result<AuditorClient, reqwest::Error> {
-        Ok(AuditorClient {
-            address: format!("http://{}:{}", address.as_ref(), port),
-            client: reqwest::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
-    pub fn from_connection_string<T: AsRef<str>>(
-        connection_string: &T,
-    ) -> Result<AuditorClient, reqwest::Error> {
-        Ok(AuditorClient {
-            address: connection_string.as_ref().into(),
-            client: reqwest::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
+    /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise.
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub async fn health_check(&self) -> bool {
         match self
@@ -134,6 +191,12 @@ impl AuditorClient {
         }
     }
 
+    /// Push a record to the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),
@@ -146,22 +209,26 @@ impl AuditorClient {
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?;
+            .await?;
 
-        if response.text().await.map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+        if response.text().await? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
         } else {
             Ok(())
         }
     }
 
+    /// Update an existing record in the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record update to AUDITOR server.",
         skip(self, record),
         fields(record_id = %record.record_id)
     )]
-    pub async fn update(&self, record: &RecordUpdate) -> Result<(), reqwest::Error> {
+    pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
             .post(&format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
@@ -172,17 +239,28 @@ impl AuditorClient {
         Ok(())
     }
 
+    /// Gets all records from the Auditors database.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
-    pub async fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
-        self.client
+    pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
+        Ok(self
+            .client
             .get(&format!("{}/get", &self.address))
             .send()
             .await?
             .error_for_status()?
             .json()
-            .await
+            .await?)
     }
 
+    /// Get all records in the database with a started timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records started since a given date from AUDITOR server.",
         skip(self),
@@ -191,9 +269,10 @@ impl AuditorClient {
     pub async fn get_started_since(
         &self,
         since: &DateTime<Utc>,
-    ) -> Result<Vec<Record>, reqwest::Error> {
+    ) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        self.client
+        Ok(self
+            .client
             .get(&format!(
                 "{}/get/started/since/{}",
                 &self.address,
@@ -203,9 +282,14 @@ impl AuditorClient {
             .await?
             .error_for_status()?
             .json()
-            .await
+            .await?)
     }
 
+    /// Get all records in the database with a stopped timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records stopped since a given date from AUDITOR server.",
         skip(self),
@@ -214,8 +298,9 @@ impl AuditorClient {
     pub async fn get_stopped_since(
         &self,
         since: &DateTime<Utc>,
-    ) -> Result<Vec<Record>, reqwest::Error> {
-        self.client
+    ) -> Result<Vec<Record>, ClientError> {
+        Ok(self
+            .client
             .get(&format!(
                 "{}/get/stopped/since/{}",
                 &self.address,
@@ -225,10 +310,13 @@ impl AuditorClient {
             .await?
             .error_for_status()?
             .json()
-            .await
+            .await?)
     }
 }
 
+/// The [`AuditorClientBlocking`] handles the interaction with the Auditor instances and allows one to add
+/// records to the database, update records in the database and retrieve the records from the
+/// database. In contrast to [`AuditorClient`], no async runtime is needed here.
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
     address: String,
@@ -236,29 +324,7 @@ pub struct AuditorClientBlocking {
 }
 
 impl AuditorClientBlocking {
-    pub fn new<T: AsRef<str>>(
-        address: &T,
-        port: u16,
-    ) -> Result<AuditorClientBlocking, reqwest::Error> {
-        Ok(AuditorClientBlocking {
-            address: format!("http://{}:{}", address.as_ref(), port),
-            client: reqwest::blocking::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
-    pub fn from_connection_string<T: AsRef<str>>(
-        connection_string: &T,
-    ) -> Result<AuditorClientBlocking, reqwest::Error> {
-        Ok(AuditorClientBlocking {
-            address: connection_string.as_ref().into(),
-            client: reqwest::blocking::ClientBuilder::new()
-                .user_agent(APP_USER_AGENT)
-                .build()?,
-        })
-    }
-
+    /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise.
     #[tracing::instrument(name = "Checking health of AUDITOR server.", skip(self))]
     pub fn health_check(&self) -> bool {
         match self
@@ -271,6 +337,12 @@ impl AuditorClientBlocking {
         }
     }
 
+    /// Push a record to the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),
@@ -282,22 +354,26 @@ impl AuditorClientBlocking {
             .post(format!("{}/add", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
-            .send()
-            .map_err(ClientError::ReqwestError)?;
+            .send()?;
 
-        if response.text().map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+        if response.text()? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
         } else {
             Ok(())
         }
     }
 
+    /// Update an existing record in the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Sending a record update to AUDITOR server.",
         skip(self, record),
         fields(record_id = %record.record_id)
     )]
-    pub fn update(&self, record: &RecordUpdate) -> Result<(), reqwest::Error> {
+    pub fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
             .post(format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
@@ -307,23 +383,35 @@ impl AuditorClientBlocking {
         Ok(())
     }
 
+    /// Gets all records from the Auditors database.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
-    pub fn get(&self) -> Result<Vec<Record>, reqwest::Error> {
-        self.client
+    pub fn get(&self) -> Result<Vec<Record>, ClientError> {
+        Ok(self
+            .client
             .get(format!("{}/get", &self.address))
             .send()?
             .error_for_status()?
-            .json()
+            .json()?)
     }
 
+    /// Get all records in the database with a started timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records started since a given date from AUDITOR server.",
         skip(self),
         fields(started_since = %since)
     )]
-    pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
+    pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        self.client
+        Ok(self
+            .client
             .get(format!(
                 "{}/get/started/since/{}",
                 &self.address,
@@ -331,16 +419,22 @@ impl AuditorClientBlocking {
             ))
             .send()?
             .error_for_status()?
-            .json()
+            .json()?)
     }
 
+    /// Get all records in the database with a stopped timestamp after ``since``.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(
         name = "Getting all records stopped since a given date from AUDITOR server.",
         skip(self),
         fields(started_since = %since)
     )]
-    pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, reqwest::Error> {
-        self.client
+    pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
+        Ok(self
+            .client
             .get(format!(
                 "{}/get/stopped/since/{}",
                 &self.address,
@@ -348,7 +442,7 @@ impl AuditorClientBlocking {
             ))
             .send()?
             .error_for_status()?
-            .json()
+            .json()?)
     }
 }
 
@@ -372,7 +466,10 @@ mod tests {
     #[tokio::test]
     async fn get_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -397,7 +494,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -425,7 +525,10 @@ mod tests {
     #[tokio::test]
     async fn health_check_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(method("GET"))
             .and(path("/health_check"))
@@ -442,7 +545,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -562,7 +668,10 @@ mod tests {
     #[tokio::test]
     async fn add_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordAdd = record();
 
@@ -583,7 +692,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -607,7 +719,10 @@ mod tests {
     #[tokio::test]
     async fn add_fails_on_existing_record() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordAdd = record();
 
@@ -625,7 +740,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -647,7 +765,10 @@ mod tests {
     #[tokio::test]
     async fn update_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordUpdate = record();
 
@@ -668,7 +789,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -692,7 +816,10 @@ mod tests {
     #[tokio::test]
     async fn update_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let record: RecordUpdate = record();
 
@@ -710,7 +837,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -732,7 +862,10 @@ mod tests {
     #[tokio::test]
     async fn get_started_since_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -760,7 +893,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -791,7 +927,10 @@ mod tests {
     #[tokio::test]
     async fn get_started_since_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(any())
             .respond_with(ResponseTemplate::new(500))
@@ -811,7 +950,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -834,7 +976,10 @@ mod tests {
     #[tokio::test]
     async fn get_stopped_since_succeeds() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         let body: Vec<Record> = vec![record()];
 
@@ -862,7 +1007,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
@@ -893,7 +1041,10 @@ mod tests {
     #[tokio::test]
     async fn get_stopped_since_fails_on_500() {
         let mock_server = MockServer::start().await;
-        let client = AuditorClient::from_connection_string(&mock_server.uri()).unwrap();
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
 
         Mock::given(any())
             .respond_with(ResponseTemplate::new(500))
@@ -913,7 +1064,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
         let client = tokio::task::spawn_blocking(move || {
-            AuditorClientBlocking::from_connection_string(&uri).unwrap()
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
         })
         .await
         .unwrap();
