@@ -95,6 +95,30 @@ impl RecordAdd {
     }
 }
 
+impl RecordUpdate {
+    pub fn new<T: AsRef<str>>(
+        record_id: T,
+        meta: HashMap<T, Vec<T>>,
+        components: Vec<Component>,
+        stop_time: DateTime<Utc>,
+    ) -> Result<Self, Error> {
+        Ok(RecordUpdate {
+            record_id: ValidName::parse(record_id.as_ref().to_string())
+                .context("Failed to parse record_id.")?,
+            meta: {
+                if meta.is_empty() {
+                    None
+                } else {
+                    Some(meta.try_into()?)
+                }
+            },
+            components,
+            start_time: None,
+            stop_time,
+        })
+    }
+}
+
 impl RecordTest {
     pub fn new() -> Self {
         RecordTest::default()
