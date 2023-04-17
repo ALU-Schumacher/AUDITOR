@@ -36,6 +36,7 @@ CLI.add_argument(
     "-i",
     "--interval",
     help="Interval in seconds between queries. Defaults to 900.",
+    type=int,
 )
 CLI.add_argument(
     "-1",

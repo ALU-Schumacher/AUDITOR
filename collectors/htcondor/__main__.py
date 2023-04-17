@@ -18,4 +18,4 @@ if __name__ == "__main__":
         asyncio.run(collector.run())
         if config.one_shot:
             break
-        sleep(int(config.interval))
+        sleep(config.interval)
