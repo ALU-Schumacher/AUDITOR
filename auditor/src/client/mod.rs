@@ -38,6 +38,18 @@ impl std::fmt::Display for ClientError {
     }
 }
 
+impl From<reqwest::Error> for ClientError {
+    fn from(error: reqwest::Error) -> Self {
+        ClientError::ReqwestError(error)
+    }
+}
+
+impl From<chrono::OutOfRangeError> for ClientError {
+    fn from(_: chrono::OutOfRangeError) -> Self {
+        ClientError::InvalidTimeout
+    }
+}
+
 /// The [`AuditorClientBuilder`] is used to build an instance of
 /// either [`AuditorClient`] or [`AuditorClientBlocking`].
 ///
@@ -123,13 +135,8 @@ impl AuditorClientBuilder {
             address: self.address,
             client: reqwest::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
-                .timeout(
-                    self.timeout
-                        .to_std()
-                        .map_err(|_| ClientError::InvalidTimeout)?,
-                )
-                .build()
-                .map_err(ClientError::ReqwestError)?,
+                .timeout(self.timeout.to_std()?)
+                .build()?,
         })
     }
 
@@ -148,13 +155,8 @@ impl AuditorClientBuilder {
             address: self.address,
             client: reqwest::blocking::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
-                .timeout(
-                    self.timeout
-                        .to_std()
-                        .map_err(|_| ClientError::InvalidTimeout)?,
-                )
-                .build()
-                .map_err(ClientError::ReqwestError)?,
+                .timeout(self.timeout.to_std()?)
+                .build()?,
         })
     }
 }
@@ -207,10 +209,9 @@ impl AuditorClient {
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?;
+            .await?;
 
-        if response.text().await.map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+        if response.text().await? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
         } else {
             Ok(())
@@ -233,10 +234,8 @@ impl AuditorClient {
             .header("Content-Type", "application/json")
             .json(record)
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?;
+            .await?
+            .error_for_status()?;
         Ok(())
     }
 
@@ -247,16 +246,14 @@ impl AuditorClient {
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
-        self.client
+        Ok(self
+            .client
             .get(&format!("{}/get", &self.address))
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
+            .await?
+            .error_for_status()?
             .json()
-            .await
-            .map_err(ClientError::ReqwestError)
+            .await?)
     }
 
     /// Get all records in the database with a started timestamp after ``since``.
@@ -274,20 +271,18 @@ impl AuditorClient {
         since: &DateTime<Utc>,
     ) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        self.client
+        Ok(self
+            .client
             .get(&format!(
                 "{}/get/started/since/{}",
                 &self.address,
                 since.to_rfc3339()
             ))
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
+            .await?
+            .error_for_status()?
             .json()
-            .await
-            .map_err(ClientError::ReqwestError)
+            .await?)
     }
 
     /// Get all records in the database with a stopped timestamp after ``since``.
@@ -304,20 +299,18 @@ impl AuditorClient {
         &self,
         since: &DateTime<Utc>,
     ) -> Result<Vec<Record>, ClientError> {
-        self.client
+        Ok(self
+            .client
             .get(&format!(
                 "{}/get/stopped/since/{}",
                 &self.address,
                 since.to_rfc3339()
             ))
             .send()
-            .await
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
+            .await?
+            .error_for_status()?
             .json()
-            .await
-            .map_err(ClientError::ReqwestError)
+            .await?)
     }
 }
 
@@ -361,10 +354,9 @@ impl AuditorClientBlocking {
             .post(format!("{}/add", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
-            .send()
-            .map_err(ClientError::ReqwestError)?;
+            .send()?;
 
-        if response.text().map_err(ClientError::ReqwestError)? == ERR_RECORD_EXISTS {
+        if response.text()? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
         } else {
             Ok(())
@@ -386,10 +378,8 @@ impl AuditorClientBlocking {
             .post(format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
-            .send()
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?;
+            .send()?
+            .error_for_status()?;
         Ok(())
     }
 
@@ -400,14 +390,12 @@ impl AuditorClientBlocking {
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
-        self.client
+        Ok(self
+            .client
             .get(format!("{}/get", &self.address))
-            .send()
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
-            .json()
-            .map_err(ClientError::ReqwestError)
+            .send()?
+            .error_for_status()?
+            .json()?)
     }
 
     /// Get all records in the database with a started timestamp after ``since``.
@@ -422,18 +410,16 @@ impl AuditorClientBlocking {
     )]
     pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        self.client
+        Ok(self
+            .client
             .get(format!(
                 "{}/get/started/since/{}",
                 &self.address,
                 since.to_rfc3339()
             ))
-            .send()
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
-            .json()
-            .map_err(ClientError::ReqwestError)
+            .send()?
+            .error_for_status()?
+            .json()?)
     }
 
     /// Get all records in the database with a stopped timestamp after ``since``.
@@ -447,18 +433,16 @@ impl AuditorClientBlocking {
         fields(started_since = %since)
     )]
     pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
-        self.client
+        Ok(self
+            .client
             .get(format!(
                 "{}/get/stopped/since/{}",
                 &self.address,
                 since.to_rfc3339()
             ))
-            .send()
-            .map_err(ClientError::ReqwestError)?
-            .error_for_status()
-            .map_err(ClientError::ReqwestError)?
-            .json()
-            .map_err(ClientError::ReqwestError)
+            .send()?
+            .error_for_status()?
+            .json()?)
     }
 }
 
