@@ -58,22 +58,28 @@ impl From<chrono::OutOfRangeError> for ClientError {
 /// Using the `address` and `port` of the Auditor instance:
 ///
 /// ```
-/// # use auditor::client::AuditorClientBuilder;
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
 /// #
+/// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
 ///     .address(&"localhost", 8000)
 ///     .timeout(20)
-///     .build();
+///     .build()?;
+/// # Ok(())
+/// # }
 /// ```
 ///
 /// Using an connection string:
 ///
 /// ```
-/// # use auditor::client::AuditorClientBuilder;
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
 /// #
+/// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
 ///     .connection_string(&"http://localhost:8000")
-///     .build();
+///     .build()?;
+/// # Ok(())
+/// # }
 /// ```
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
