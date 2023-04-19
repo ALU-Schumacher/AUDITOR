@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2023-04-19
+### Added
+- pyauditor: Added `to_json` method to records ([@stefan-k](https://github.com/stefan-k))
+- pyauditor: Runtime can now be set for record either directly or by adding a `stop_time` ([@stefan-k](https://github.com/stefan-k))
+- Slurm collector: Added JSON parsing for meta fields ([@stefan-k](https://github.com/stefan-k))
+- Slurm collector: Added VOMS proxy info to meta ([@stefan-k](https://github.com/stefan-k))
+- Auditor + pyauditor: Added blocking client ([@stefan-k](https://github.com/stefan-k))
+- Auditor: Added implementation for `From` trait to `ClientError` ([@QuantumDancer](https://github.com/QuantumDancer))
+
+### Changed
+- Slurm collector: Bugfixes for parsing slurm output ([@stefan-k](https://github.com/stefan-k))
+- Slurm collector: Ignores subjobs ([@stefan-k](https://github.com/stefan-k))
+- Slurm collector: Use safer defaults ([@rkleinem](https://github.com/rkleinem))
+- Dependencies: Updated actix-web from 4.3.0 to 4.3.1 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated anyhow from 1.0.69 to 1.0.70 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated chrono from 0.4.23 to 0.4.24 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated once_cell from 1.17.0 to 1.17.1 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated regex from 1.7.1 to 1.7.3 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated reqwest from 0.11.14 to 0.11.16 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated serde from 1.0.152 to 1.0.160 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated serde-aux from 4.1.2 to 4.2.0 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated serde_json from 1.0.93 to 1.0.96 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated serde_with from 2.2.0 to 2.3.2 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated sqlx from 0.6.2 to 0.6.3 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated thiserror from 1.0.38 to 1.0.40 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated tokio from 1.25.0 to 1.27.0 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated tracing-actix-web from 0.7.2 to 0.7.4 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated tracing-bunyan-formatter from 0.3.6 to 0.3.7 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated uuid from 1.3.0 to 1.3.1 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Updated wiremock from 0.5.17 to 0.5.18 ([@stefan-k](https://github.com/stefan-k))
+
+### Removed
+- Auditor: Removed constructors for auditor client (both async and blocking) ([@QuantumDancer](https://github.com/QuantumDancer))
+
 ## [0.0.7] - 2023-02-13
 ### Added
 - Added Slurm collector ([@stefan-k](https://github.com/stefan-k))
@@ -156,3 +190,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.0.5]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5
 [0.0.6]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.6
 [0.0.7]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.7
+[0.1.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.1.0
