@@ -36,13 +36,46 @@ pub struct RecordUpdate {
     pub stop_time: DateTime<Utc>,
 }
 
+/// A `Record` represents a single accountable unit.
+///
+/// Records can be sent to and received from Auditor with the [`AuditorClient`](`crate::client::AuditorClient`).
+/// When initially inserting a record in Auditor, the record is represented as [`RecordAdd`].
+/// The `stop_time` can be updated at a later time by pushing a [`RecordUpdate`] to Auditor.
+///
+/// Records that are retrieved from Auditor are returned as `Record`.
+///
+/// # Example
+///
+/// Retrieve all records from Auditor:
+///
+/// ```no_run
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
+/// #
+/// # fn main() -> Result<(), ClientError> {
+/// // Create client by using the builder
+/// let client = AuditorClientBuilder::new()
+///     .address(&"localhost", 8000)
+///     .timeout(20)
+///     .build()?;
+///
+/// // Get all records
+/// let records = client.get();
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
+    /// Unique identifier of the record.
     pub record_id: String,
+    /// Meta information, a collection of key value pairs in the form of `String` -> `Vec<String>`.
     pub meta: Option<Meta>,
+    /// List of components that are accounted for.
     pub components: Option<Vec<Component>>,
+    /// Start time of the record.
     pub start_time: Option<DateTime<Utc>>,
+    /// Stop time of the record.
     pub stop_time: Option<DateTime<Utc>>,
+    /// Runtime of the record, i.e. the difference between stop and start time.
     pub runtime: Option<i64>,
 }
 
