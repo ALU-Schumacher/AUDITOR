@@ -50,7 +50,7 @@ impl From<chrono::OutOfRangeError> for ClientError {
     }
 }
 
-/// The [`AuditorClientBuilder`] is used to build an instance of
+/// The `AuditorClientBuilder` is used to build an instance of
 /// either [`AuditorClient`] or [`AuditorClientBlocking`].
 ///
 /// # Examples
@@ -130,7 +130,7 @@ impl AuditorClientBuilder {
         self
     }
 
-    /// Build an [`AuditorClient`] from [`AuditorClientBuilder`].
+    /// Build an [`AuditorClient`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
@@ -146,7 +146,7 @@ impl AuditorClientBuilder {
         })
     }
 
-    /// Build an [`AuditorClientBlocking`] from [`AuditorClientBuilder`].
+    /// Build an [`AuditorClientBlocking`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
@@ -173,9 +173,11 @@ impl Default for AuditorClientBuilder {
     }
 }
 
-/// The [`AuditorClient`] handles the interaction with the Auditor instances and allows one to add
+/// The `AuditorClient` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database.
+///
+/// It is constructed using the [`AuditorClientBuilder`].
 #[derive(Clone)]
 pub struct AuditorClient {
     address: String,
@@ -320,9 +322,11 @@ impl AuditorClient {
     }
 }
 
-/// The [`AuditorClientBlocking`] handles the interaction with the Auditor instances and allows one to add
+/// The `AuditorClientBlocking` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database. In contrast to [`AuditorClient`], no async runtime is needed here.
+///
+/// It is constructed using the [`AuditorClientBuilder`].
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
     address: String,
