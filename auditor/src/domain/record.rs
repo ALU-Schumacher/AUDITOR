@@ -224,6 +224,7 @@ pub struct Record {
     pub runtime: Option<i64>,
 }
 
+#[doc(hidden)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RecordDatabase {
     pub record_id: String,
@@ -234,6 +235,7 @@ pub struct RecordDatabase {
     pub runtime: Option<i64>,
 }
 
+#[doc(hidden)]
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct RecordTest {
     pub record_id: Option<String>,
