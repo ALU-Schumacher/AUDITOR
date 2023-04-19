@@ -119,12 +119,65 @@ pub struct RecordAdd {
     pub stop_time: Option<DateTime<Utc>>,
 }
 
+/// `RecordUpdate` represents a single accountable unit that is used to set the `stop_time` of a
+/// [`Record`].
+///
+/// Initially, records are added to Auditor by pushing a [`RecordAdd`], where the `stop_time` field
+/// is optional. To later set the `stop_time` of the record, push a `RecordUpdate` with the same
+/// `record_id` to auditor.
+///
+/// Use the constructor to build a new record.
+///
+/// # Note
+/// All strings must not include the characters `/()"<>\{}`.
+///
+/// When created using the constructor,
+/// the record is already valid in terms of all checks that
+/// Auditor performs when receiving it.
+///
+/// Currently, only the `stop_time` can be updated.
+/// Setting other fields such as `meta` or `components` has no effect.
+///
+/// # Examples
+///
+/// Create a valid record
+///
+/// ```
+/// # use auditor::domain::{Component, RecordUpdate};
+/// # use std::collections::HashMap;
+/// use chrono::{DateTime, TimeZone, Utc};
+///
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 12, 0, 0).unwrap();
+/// let record = RecordUpdate::new("123456", HashMap::new(), Vec::new(), stop_time)?;
+/// # Ok(())
+/// # }
+/// ```
+/// Create a record with an invalid ID:
+///
+/// ```
+/// # use auditor::domain::{Component, RecordUpdate};
+/// # use chrono::{DateTime, TimeZone, Utc};
+/// # use std::collections::HashMap;
+/// #
+/// # fn main() {
+/// # let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+/// let record = RecordUpdate::new("123/456", HashMap::new(), Vec::new(), stop_time);
+/// assert!(record.is_err());
+/// # }
+/// ```
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordUpdate {
+    /// Unique identifier of the record.
     pub record_id: ValidName,
+    /// Meta information, a collection of key value pairs in the form of `String` -> `Vec<String>`.
     pub meta: Option<ValidMeta>,
+    /// List of components that are accounted for.
     pub components: Vec<Component>,
+    /// Start time of the record.
     pub start_time: Option<DateTime<Utc>>,
+    /// Stop time of the record.
     pub stop_time: DateTime<Utc>,
 }
 
@@ -228,6 +281,12 @@ impl RecordAdd {
 }
 
 impl RecordUpdate {
+    /// Constructor.
+    ///
+    /// # Errors
+    ///
+    /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `record_id` or the
+    /// `meta` information.
     pub fn new<T: AsRef<str>>(
         record_id: T,
         meta: HashMap<T, Vec<T>>,
