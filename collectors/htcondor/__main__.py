@@ -8,7 +8,6 @@ from config import Config
 
 
 if __name__ == "__main__":
-
     args = CLI.parse_args()
     config = Config(args)
 

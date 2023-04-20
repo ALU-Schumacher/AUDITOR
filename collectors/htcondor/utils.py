@@ -1,9 +1,11 @@
 import re
 
-from typing import Union
+from typing import Any, AnyStr, Generator, Union
+
+from custom_types import Config as T_Config
 
 
-def extract_values(key, var):
+def extract_values(key: str, var: dict) -> Generator[Any, None, None]:
     """Extracts all values from nested dictionary for a given key.
 
     Args:
@@ -27,7 +29,7 @@ def extract_values(key, var):
                         yield result
 
 
-def maybe_convert(value: str) -> Union[int, float, bool, str]:
+def maybe_convert(value: AnyStr) -> Union[int, float, bool, AnyStr]:
     """Convert string to int, float or bool if possible.
 
     Args:
@@ -50,7 +52,7 @@ def maybe_convert(value: str) -> Union[int, float, bool, str]:
                 return value
 
 
-def get_value(config_entry, job):
+def get_value(config_entry: T_Config, job: dict):
     """Get value from job based on config entry.
 
     The value is extracted from the job based on the "key". If "key" is not
