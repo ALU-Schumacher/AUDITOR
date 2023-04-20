@@ -1,5 +1,6 @@
 import sqlite3
 
+from typing import Generator, Optional, Tuple
 from contextlib import contextmanager
 
 
@@ -10,7 +11,8 @@ class StateDB(object):
     The path to the database is set in the config file with the `state_db` key.
     If the database does not exist, it will be created.
     """
-    def __init__(self, db_path):
+
+    def __init__(self, db_path: str):
         self._db_path = db_path
         self._conn = sqlite3.connect(self._db_path)
         self._cursor = self._conn.cursor()
@@ -29,7 +31,7 @@ class StateDB(object):
         self._cursor.close()
         self._conn.close()
 
-    def get(self, schedd, prefix):
+    def get(self, schedd: str, prefix: str) -> Optional[Tuple[int, int]]:
         self._cursor.execute(
             "SELECT cluster, proc FROM last_jobs WHERE schedd = ? AND prefix = ?",
             (schedd, prefix),
@@ -39,23 +41,23 @@ class StateDB(object):
             return row
         return None
 
-    def set(self, schedd, prefix, cluster, proc):
+    def set(self, schedd: str, prefix: str, cluster: int, proc: int) -> None:
         self._cursor.execute(
             "INSERT OR REPLACE INTO last_jobs VALUES (?, ?, ?, ?)",
             (schedd, prefix, cluster, proc),
         )
         self._conn.commit()
 
-    def connect(self):
+    def connect(self) -> None:
         self._conn = sqlite3.connect(self._db_path)
         self._cursor = self._conn.cursor()
 
-    def close(self):
+    def close(self) -> None:
         self._cursor.close()
         self._conn.close()
 
     @contextmanager
-    def connection(self):
+    def connection(self) -> Generator[sqlite3.Connection, None, None]:
         self.connect()
         try:
             yield self._conn

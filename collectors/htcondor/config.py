@@ -1,14 +1,17 @@
 import yaml
 import re
 
+from argparse import Namespace
 from functools import reduce
+from typing import List, Tuple, Union, Iterator
 
 from utils import extract_values
 from exceptions import MalformedConfigEntryError, MissingConfigEntryError
+from custom_types import Keys, Config as T_Config
 
 
 class Config(object):
-    _config = {
+    _config: T_Config = {
         "interval": 900,
         "log_level": "INFO",
         "log_file": None,
@@ -21,7 +24,7 @@ class Config(object):
         ],
     }
 
-    def __init__(self, args):
+    def __init__(self, args: Namespace):
         with open(args.config) as f:
             file = yaml.safe_load(f)
 
@@ -33,14 +36,16 @@ class Config(object):
         )
         self.check()
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str):
         return self._config[attr]
 
-    def get(self, attr, default=None):
+    def get(self, attr: str, default=None):
         return self._config.get(attr, default)
 
     def check(self):
-        def _get(keys, config=self._config):
+        def _get(
+            keys: Keys, config: T_Config = self._config
+        ) -> Union[T_Config, int, str, List[T_Config], List[int], List[str], None]:
             try:
                 return reduce(lambda d, k: d[k], keys, config)
             except KeyError:
@@ -66,24 +71,34 @@ class Config(object):
                 raise MalformedConfigEntryError(
                     keys, f"Must be of type {_type.__name__}"
                 )
-            if _type == list and len(_cfg) == 0:
-                raise MalformedConfigEntryError(keys, "Must not be empty list")
+            if _type == list:
+                assert isinstance(_cfg, list)  # For type checking
+                if len(_cfg) == 0:
+                    raise MalformedConfigEntryError(
+                        keys, "Must contain at least one entry"
+                    )
 
         # Check that certain config entries contain the required keys
         for keys in [["meta", "site"], ["components"]]:
-            for i, entry in enumerate(_get(keys)):  # type: ignore
+            entries = _get(keys)
+            assert isinstance(entries, list)  # For type checking
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict):
+                    raise MalformedConfigEntryError([*keys, i], "Must be a dictionary")
                 if "name" not in entry or len(entry["name"].strip()) == 0:
                     raise MalformedConfigEntryError(
-                        keys + [i],
-                        "Must contain the key 'name' and it must not be empty",
+                        [*keys, i],
+                        "Must contain a non-empty string entry named 'name'",
                     )
 
         # Check that certain config entries are lists of non-empty strings
         for keys in [["schedd_names"]]:
-            for i, entry in enumerate(_get(keys)):  # type: ignore
+            entries = _get(keys)
+            assert isinstance(entries, list)  # For type checking
+            for i, entry in enumerate(entries):
                 if not isinstance(entry, str) or len(entry.strip()) == 0:
                     raise MalformedConfigEntryError(
-                        keys + [i], "Must be a non-empty string"
+                        [*keys, i], "Must be a non-empty string"
                     )
 
         # If "job_status" is present, check that it is a list of integers
@@ -92,19 +107,21 @@ class Config(object):
             entries = _get(keys)
             if not isinstance(entries, list):
                 raise MalformedConfigEntryError(
-                    keys, "Must be a list of job status entries"
+                    keys, "Must be a list of job status entries (integers)"
                 )
             for i, entry in enumerate(entries):
                 if not isinstance(entry, int):
-                    raise MalformedConfigEntryError(keys + [i], "Must be an integer")
+                    raise MalformedConfigEntryError([*keys, i], "Must be an integer")
 
-        def _iter_config(keys=[], config=self._config):
+        def _iter_config(
+            keys: Keys = [], config: T_Config = self._config
+        ) -> Iterator[Tuple[Keys, Union[str, int]]]:
             for key, value in config.items():
-                _keys = keys + [key]
+                _keys = [*keys, key]
                 if isinstance(value, dict):
                     yield from _iter_config(keys=_keys, config=value)
                 elif isinstance(value, list):
-                    _list = dict(enumerate(value))
+                    _list: T_Config = dict(enumerate(value))
                     yield from _iter_config(keys=_keys, config=_list)
                 else:
                     yield _keys, value
@@ -116,6 +133,10 @@ class Config(object):
                     raise MalformedConfigEntryError(keys, "Must be a string")
             elif keys[-1] == "matches":
                 try:
+                    if not isinstance(value, str):
+                        raise MalformedConfigEntryError(
+                            keys, "Must be a string containing a regular expression"
+                        )
                     re.compile(value)
                 except re.error:
                     raise MalformedConfigEntryError(
@@ -124,11 +145,17 @@ class Config(object):
             if len(keys) > 1:
                 if keys[-2] == "only_if":
                     only_if = _get(keys[:-1])
-                    if "key" not in only_if:  # type: ignore
+                    if not isinstance(only_if, dict):
+                        raise MalformedConfigEntryError(
+                            keys[:-1],
+                            "Must be a dictionary with keys 'key' and 'matches'",
+                        )
+                    if "key" not in only_if:
                         raise MalformedConfigEntryError(
                             keys[:-1], "Must contain the key 'key'"
                         )
-                    if "matches" not in only_if:  # type: ignore
+                    if "matches" not in only_if:
                         raise MalformedConfigEntryError(
-                            keys[:-1], "Must contain the key 'matches'"
+                            keys[:-1],
+                            "Must contain the key 'matches' (a regular expression)",
                         )
