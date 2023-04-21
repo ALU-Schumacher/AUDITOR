@@ -40,7 +40,7 @@ use pyo3_chrono::NaiveDateTime;
 /// Components are added via ``with_component``. Call this method multiple times for adding
 /// multiple components.
 ///
-/// Meta information is added via `with_meta`.
+/// Meta information is added via ``with_meta``.
 ///
 /// The individual fields of the record can be accessed using the getter methods described below.
 ///

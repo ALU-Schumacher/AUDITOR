@@ -18,7 +18,7 @@ These records can then be requested again from Auditor to take an action based o
 
 A record consists of a unique identifier and meta information which provides some context (associated site, group, user).
 It also contains an arbitrary number of `components` that are to be accounted for (CPU, RAM, Disk, ...) and the amount of each of these components.
-The components can optionally be enhanced with `scores`  which are are floating point values which put components of the same kind, but different performance in relation to each other.
+The components can optionally be enhanced with `scores`, which are floating point values which put components of the same kind, but different performance in relation to each other.
 For instance, in case of CPUs these could be HEPSPEC06 benchmark values.
 
 pyauditor is an async library and as such requires an event loop.
@@ -136,11 +136,11 @@ The records to be retrieved can be limited to the ones started or stopped since 
 Checking the health of Auditor
 ==============================
 
-Assuming that a record and a client were already created, the record can be pushed to Auditor like this:
+The health of Auditor can be checked with
 
 .. code-block:: python
 
-   healthy = await client.health_check(record)
+   healthy = await client.health_check()
    if healthy:
        print(":)")
    else:
