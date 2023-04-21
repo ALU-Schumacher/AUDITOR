@@ -88,22 +88,39 @@ impl TryFrom<Meta> for ValidMeta {
     }
 }
 
+/// `Meta` stores a list of key-value pairs of the form `String` -> `Vec<String>`.
+///
+/// # Example
+///
+/// Create a new meta list and insert two key-value pairs:
+///
+/// ```
+/// # use auditor::domain::Meta;
+/// #
+/// let mut meta = Meta::new();
+/// meta.insert("site_id".to_string(), vec!["site1".to_string()]);
+/// meta.insert("features".to_string(), vec!["ssd".to_string(), "gpu".to_string()]);
+/// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct Meta(pub HashMap<String, Vec<String>>);
 
 impl Meta {
+    /// Constructor.
     pub fn new() -> Self {
         Self(HashMap::new())
     }
 
+    /// Returns the number of key-value pairs that are stored inside the meta list.
     pub fn len(&self) -> usize {
         self.0.len()
     }
 
+    /// Returns `true` if no information is stored in the meta list.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Convert to a vector.
     pub fn to_vec(&self) -> Vec<(String, Vec<String>)> {
         self.0
             .iter()
@@ -111,10 +128,12 @@ impl Meta {
             .collect::<Vec<_>>()
     }
 
+    /// Insert a new key-value pair.
     pub fn insert(&mut self, name: String, values: Vec<String>) {
         self.0.insert(name, values);
     }
 
+    /// Returns a reference to the value corresponding to the `key`.
     pub fn get<T: AsRef<str>>(&self, key: T) -> Option<&Vec<String>> {
         self.0.get(key.as_ref())
     }
