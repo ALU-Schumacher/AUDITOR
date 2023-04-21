@@ -268,6 +268,22 @@
     },
     "query": "SELECT value as \"name!\", count(*) as \"num!\"\n               FROM meta\n               WHERE key = $1 \n               GROUP BY value;\n            "
   },
+  "6ba76bcc9e877d3b6e353a4b85a1115d4821d4304b91593614ea39597ae29bc1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8",
+          "TextArray",
+          "Float8Array",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            WITH insert_components AS (\n                INSERT INTO components (name, amount)\n                VALUES ($1, $2)\n                RETURNING id\n            ),\n            insert_scores AS (\n                INSERT INTO scores (name, value)\n                SELECT * FROM UNNEST($3::text[], $4::double precision[])\n                -- Update if already in table. This isn't great, but \n                -- otherwise RETURNING won't return anything.\n                ON CONFLICT (name, value) DO UPDATE\n                SET value = EXCLUDED.value, name = EXCLUDED.name\n                RETURNING id\n            ),\n            insert_components_scores AS (\n                INSERT INTO components_scores (component_id, score_id)\n                SELECT (SELECT id FROM insert_components), id\n                FROM insert_scores\n            )\n            INSERT INTO records_components (record_id, component_id)\n            SELECT $5, (SELECT id from insert_components) \n            "
+  },
   "6c7c9b840bd8bf36dd80484f6c82787423b2304ccff83a98a57ec398c1b46ddb": {
     "describe": {
       "columns": [
@@ -308,22 +324,6 @@
       }
     },
     "query": "\n        UPDATE accounting\n        SET stop_time = $2,\n            runtime = $3,\n            updated_at = $4\n        WHERE\n            record_id = $1\n        "
-  },
-  "909d8a192fb7cbf882d2e2b759df5c3d09455c45e2c68d64f10e40ac9229a1b5": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Int8",
-          "TextArray",
-          "Float8Array",
-          "Int4"
-        ]
-      }
-    },
-    "query": "\n            WITH insert_components AS (\n                INSERT INTO components (name, amount)\n                VALUES ($1, $2)\n                RETURNING id\n            ),\n            insert_scores AS (\n                INSERT INTO scores (name, value)\n                SELECT * FROM UNNEST($3::text[], $4::double precision[])\n                -- Update if already in table. This isn't great, but \n                -- otherwise RETURNING won't return anything.\n                ON CONFLICT (name, value) DO UPDATE\n                SET value = EXCLUDED.value, name = EXCLUDED.name\n                RETURNING id\n            ),\n            insert_components_scores AS (\n                INSERT INTO components_scores (component_id, score_id)\n                SELECT (SELECT id FROM insert_components), id\n                FROM insert_scores\n            )\n            INSERT INTO records_components (record_id, component_id)\n            SELECT $5, (SELECT id from insert_components) \n            -- FROM accounting WHERE id = $5\n            "
   },
   "b205b9e460541ad09dcd6de4d75df490a88f4b31b3ef45a9ec68047c39081eb5": {
     "describe": {
