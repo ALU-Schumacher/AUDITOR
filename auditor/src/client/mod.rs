@@ -50,7 +50,7 @@ impl From<chrono::OutOfRangeError> for ClientError {
     }
 }
 
-/// The [`AuditorClientBuilder`] is used to build an instance of
+/// The `AuditorClientBuilder` is used to build an instance of
 /// either [`AuditorClient`] or [`AuditorClientBlocking`].
 ///
 /// # Examples
@@ -58,22 +58,28 @@ impl From<chrono::OutOfRangeError> for ClientError {
 /// Using the `address` and `port` of the Auditor instance:
 ///
 /// ```
-/// # use auditor::client::AuditorClientBuilder;
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
 /// #
+/// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
 ///     .address(&"localhost", 8000)
 ///     .timeout(20)
-///     .build();
+///     .build()?;
+/// # Ok(())
+/// # }
 /// ```
 ///
 /// Using an connection string:
 ///
 /// ```
-/// # use auditor::client::AuditorClientBuilder;
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
 /// #
+/// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
 ///     .connection_string(&"http://localhost:8000")
-///     .build();
+///     .build()?;
+/// # Ok(())
+/// # }
 /// ```
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
@@ -124,7 +130,7 @@ impl AuditorClientBuilder {
         self
     }
 
-    /// Build an [`AuditorClient`] from [`AuditorClientBuilder`].
+    /// Build an [`AuditorClient`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
@@ -140,7 +146,7 @@ impl AuditorClientBuilder {
         })
     }
 
-    /// Build an [`AuditorClientBlocking`] from [`AuditorClientBuilder`].
+    /// Build an [`AuditorClientBlocking`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
@@ -167,9 +173,11 @@ impl Default for AuditorClientBuilder {
     }
 }
 
-/// The [`AuditorClient`] handles the interaction with the Auditor instances and allows one to add
+/// The `AuditorClient` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database.
+///
+/// It is constructed using the [`AuditorClientBuilder`].
 #[derive(Clone)]
 pub struct AuditorClient {
     address: String,
@@ -314,9 +322,11 @@ impl AuditorClient {
     }
 }
 
-/// The [`AuditorClientBlocking`] handles the interaction with the Auditor instances and allows one to add
+/// The `AuditorClientBlocking` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database. In contrast to [`AuditorClient`], no async runtime is needed here.
+///
+/// It is constructed using the [`AuditorClientBuilder`].
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
     address: String,

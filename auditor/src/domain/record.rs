@@ -18,34 +18,213 @@ use quickcheck;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
+/// `RecordAdd` represents a single accountable unit that is added to Auditor.
+///
+/// Use the constructor to build a new record. A stop time can be added with the `with_stop_time()`
+/// method.
+///
+/// # Note
+/// All strings must not include the characters `/()"<>\{}`.
+///
+/// When created using the constructor,
+/// the record is already valid in terms of all checks that
+/// Auditor performs when receiving it.
+///
+/// # Examples
+///
+/// Create a record with a valid ID:
+///
+/// ```
+/// # use auditor::domain::{Component, RecordAdd, Score};
+/// # use std::collections::HashMap;
+/// use chrono::{DateTime, TimeZone, Utc};
+///
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+///
+/// let component_cpu = Component::new("CPU", 10)?
+///     .with_score(Score::new("HEPSPEC06", 9.2)?);
+/// let component_mem = Component::new("MEM", 32)?;
+/// let components = vec![component_cpu, component_mem];
+///
+/// let mut meta = HashMap::new();
+/// meta.insert("site_id", vec!["site1"]);
+/// meta.insert("features", vec!["ssd", "gpu"]);
+///
+/// let record = RecordAdd::new("123456", meta, components, start_time)?;
+/// # Ok(())
+/// # }
+/// ```
+///
+/// Create a record with a valid ID and a stop time:
+///
+/// ```
+/// # use auditor::domain::{Component, RecordAdd, Score};
+/// # use chrono::{DateTime, TimeZone, Utc};
+/// # use std::collections::HashMap;
+/// #
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+/// let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 12, 0, 0).unwrap();
+///
+/// # let component_cpu = Component::new("CPU", 10)?
+/// #     .with_score(Score::new("HEPSPEC06", 9.2)?);
+/// # let component_mem = Component::new("MEM", 32)?;
+/// # let components = vec![component_cpu, component_mem];
+/// #
+/// # let mut meta = HashMap::new();
+/// # meta.insert("site_id", vec!["site1"]);
+/// # meta.insert("features", vec!["ssd", "gpu"]);
+/// #
+/// let record = RecordAdd::new("123456", meta, components, start_time)?
+///     .with_stop_time(stop_time);
+/// # Ok(())
+/// # }
+/// ```
+/// Create a record with an invalid ID:
+///
+/// ```
+/// # use auditor::domain::{Component, RecordAdd, Score};
+/// # use chrono::{DateTime, TimeZone, Utc};
+/// # use std::collections::HashMap;
+/// #
+/// # fn main() -> Result<(), anyhow::Error> {
+/// # let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+/// #
+/// # let component_cpu = Component::new("CPU", 10)?
+/// #     .with_score(Score::new("HEPSPEC06", 9.2)?);
+/// # let component_mem = Component::new("MEM", 32)?;
+/// # let components = vec![component_cpu, component_mem];
+/// #
+/// # let mut meta = HashMap::new();
+/// # meta.insert("site_id", vec!["site1"]);
+/// # meta.insert("features", vec!["ssd", "gpu"]);
+/// #
+/// let record = RecordAdd::new("123/456", meta, components, start_time);
+/// assert!(record.is_err());
+/// Ok(())
+/// # }
+/// ```
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordAdd {
+    /// Unique identifier of the record.
     pub record_id: ValidName,
+    /// Meta information, a collection of key value pairs in the form of `String` -> `Vec<String>`.
     pub meta: Option<ValidMeta>,
+    /// List of components that are accounted for.
     pub components: Vec<Component>,
+    /// Start time of the record.
     pub start_time: DateTime<Utc>,
+    /// Stop time of the record.
     pub stop_time: Option<DateTime<Utc>>,
 }
+
+/// `RecordUpdate` represents a single accountable unit that is used to set the `stop_time` of a
+/// [`Record`].
+///
+/// Initially, records are added to Auditor by pushing a [`RecordAdd`], where the `stop_time` field
+/// is optional. To later set the `stop_time` of the record, push a `RecordUpdate` with the same
+/// `record_id` to auditor.
+///
+/// Use the constructor to build a new record.
+///
+/// # Note
+/// All strings must not include the characters `/()"<>\{}`.
+///
+/// When created using the constructor,
+/// the record is already valid in terms of all checks that
+/// Auditor performs when receiving it.
+///
+/// Currently, only the `stop_time` can be updated.
+/// Setting other fields such as `meta` or `components` has no effect.
+///
+/// # Examples
+///
+/// Create a valid record
+///
+/// ```
+/// # use auditor::domain::{Component, RecordUpdate};
+/// # use std::collections::HashMap;
+/// use chrono::{DateTime, TimeZone, Utc};
+///
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 12, 0, 0).unwrap();
+/// let record = RecordUpdate::new("123456", HashMap::new(), Vec::new(), stop_time)?;
+/// # Ok(())
+/// # }
+/// ```
+/// Create a record with an invalid ID:
+///
+/// ```
+/// # use auditor::domain::{Component, RecordUpdate};
+/// # use chrono::{DateTime, TimeZone, Utc};
+/// # use std::collections::HashMap;
+/// #
+/// # fn main() {
+/// # let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+/// let record = RecordUpdate::new("123/456", HashMap::new(), Vec::new(), stop_time);
+/// assert!(record.is_err());
+/// # }
+/// ```
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordUpdate {
+    /// Unique identifier of the record.
     pub record_id: ValidName,
+    /// Meta information, a collection of key value pairs in the form of `String` -> `Vec<String>`.
     pub meta: Option<ValidMeta>,
+    /// List of components that are accounted for.
     pub components: Vec<Component>,
+    /// Start time of the record.
     pub start_time: Option<DateTime<Utc>>,
+    /// Stop time of the record.
     pub stop_time: DateTime<Utc>,
 }
 
+/// A `Record` represents a single accountable unit.
+///
+/// Records can be sent to and received from Auditor with the [`AuditorClient`](`crate::client::AuditorClient`).
+/// When initially inserting a record in Auditor, the record is represented as [`RecordAdd`].
+/// The `stop_time` can be updated at a later time by pushing a [`RecordUpdate`] to Auditor.
+///
+/// Records that are retrieved from Auditor are returned as `Record`.
+///
+/// # Example
+///
+/// Retrieve all records from Auditor:
+///
+/// ```no_run
+/// # use auditor::client::{AuditorClientBuilder, ClientError};
+/// #
+/// # fn main() -> Result<(), ClientError> {
+/// // Create client by using the builder
+/// let client = AuditorClientBuilder::new()
+///     .address(&"localhost", 8000)
+///     .timeout(20)
+///     .build()?;
+///
+/// // Get all records
+/// let records = client.get();
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
+    /// Unique identifier of the record.
     pub record_id: String,
+    /// Meta information, a collection of key value pairs in the form of `String` -> `Vec<String>`.
     pub meta: Option<Meta>,
+    /// List of components that are accounted for.
     pub components: Option<Vec<Component>>,
+    /// Start time of the record.
     pub start_time: Option<DateTime<Utc>>,
+    /// Stop time of the record.
     pub stop_time: Option<DateTime<Utc>>,
+    /// Runtime of the record, i.e. the difference between stop and start time.
     pub runtime: Option<i64>,
 }
 
+#[doc(hidden)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RecordDatabase {
     pub record_id: String,
@@ -56,6 +235,7 @@ pub struct RecordDatabase {
     pub runtime: Option<i64>,
 }
 
+#[doc(hidden)]
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct RecordTest {
     pub record_id: Option<String>,
@@ -66,6 +246,12 @@ pub struct RecordTest {
 }
 
 impl RecordAdd {
+    /// Constructor.
+    ///
+    /// # Errors
+    ///
+    /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `record_id` or the
+    /// `meta` information.
     pub fn new<T: AsRef<str>>(
         record_id: T,
         meta: HashMap<T, Vec<T>>,
@@ -88,10 +274,41 @@ impl RecordAdd {
         })
     }
 
+    /// Set the stop time to the record.
     #[must_use]
     pub fn with_stop_time(mut self, stop_time: DateTime<Utc>) -> Self {
         self.stop_time = Some(stop_time);
         self
+    }
+}
+
+impl RecordUpdate {
+    /// Constructor.
+    ///
+    /// # Errors
+    ///
+    /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `record_id` or the
+    /// `meta` information.
+    pub fn new<T: AsRef<str>>(
+        record_id: T,
+        meta: HashMap<T, Vec<T>>,
+        components: Vec<Component>,
+        stop_time: DateTime<Utc>,
+    ) -> Result<Self, Error> {
+        Ok(RecordUpdate {
+            record_id: ValidName::parse(record_id.as_ref().to_string())
+                .context("Failed to parse record_id.")?,
+            meta: {
+                if meta.is_empty() {
+                    None
+                } else {
+                    Some(meta.try_into()?)
+                }
+            },
+            components,
+            start_time: None,
+            stop_time,
+        })
     }
 }
 

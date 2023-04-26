@@ -15,15 +15,42 @@ use sqlx::{
     Postgres, Type,
 };
 
+/// A `Component` represents a single component that is to be accounted for.
+///
+/// A component has an associated `name` and `amount` (how many or how much of this component is to
+/// be accounted for).
+/// Optionally, multiple [`Score`]s can be attached to a single component.
+///
+/// # Example:
+///
+/// Create a component that represents 10 CPU cores with a HEPSPEC06 value of 9.2.
+///
+/// ```
+/// # use auditor::domain::{Component, Score};
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let component = Component::new("CPU", 10)?
+///     .with_score(Score::new("HEPSPEC06", 9.2)?);
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, sqlx::Encode, Clone, PartialOrd, Ord)]
 #[sqlx(type_name = "component")]
 pub struct Component {
+    /// Name of the component.
     pub name: ValidName,
+    /// Amount of the component (how many or how much of this component is to be accounted for).
     pub amount: ValidAmount,
+    /// Scores that are attached to the component.
     pub scores: Vec<Score>,
 }
 
 impl Component {
+    /// Create a new component.
+    ///
+    /// # Errors
+    ///
+    /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `name`
+    /// or if a negative `amount` was given.
     pub fn new<T: AsRef<str>>(name: T, amount: i64) -> Result<Self, Error> {
         Ok(Component {
             name: ValidName::parse(name.as_ref().to_string())
@@ -33,11 +60,13 @@ impl Component {
         })
     }
 
+    /// Attach a [`Score`] to the component.
     pub fn with_score(mut self, score: Score) -> Self {
         self.scores.push(score);
         self
     }
 
+    /// Attach multiple [`Score`]s to the component.
     pub fn with_scores(mut self, mut scores: Vec<Score>) -> Self {
         self.scores.append(&mut scores);
         self

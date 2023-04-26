@@ -139,7 +139,6 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
             )
             INSERT INTO records_components (record_id, component_id)
             SELECT $5, (SELECT id from insert_components) 
-            -- FROM accounting WHERE id = $5
             "#,
             component.name.as_ref(),
             component.amount,

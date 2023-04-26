@@ -13,6 +13,24 @@ use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgHasArrayType;
 use std::cmp::Ordering;
 
+/// `Score`s are attached to a [`Component`](`crate::domain::Component`)
+/// and are used to relate different components of the same kind to each other in some
+/// kind of performance characteristic.
+///
+/// For example, in case of CPUs, a score could be the corresponding HEPSPEC06 value.
+///
+/// An individual score consists of a `name` and a `value`.
+///
+/// # Example
+///
+/// Create a score that represents a HEPSPEC06 value of 9.2:
+///
+/// ```
+/// # use auditor::domain::{Component, Score};
+/// # fn main() -> Result<(), anyhow::Error> {
+/// let score =  Score::new("HEPSPEC06", 9.2)?;
+/// # Ok(())
+/// # }
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, Clone)]
 #[sqlx(type_name = "score")]
 pub struct Score {
@@ -21,6 +39,12 @@ pub struct Score {
 }
 
 impl Score {
+    /// Create a new score.
+    ///
+    /// # Errors
+    ///
+    /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `name`
+    /// or if a negative `value` was given.
     pub fn new<T: AsRef<str>>(name: T, value: f64) -> Result<Self, Error> {
         Ok(Score {
             name: ValidName::parse(name.as_ref().to_string())
