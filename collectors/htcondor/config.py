@@ -4,6 +4,7 @@ import re
 from argparse import Namespace
 from functools import reduce
 from typing import List, Tuple, Union, Iterator
+from datetime import date, datetime as dt
 
 from utils import extract_values
 from exceptions import MalformedConfigEntryError, MissingConfigEntryError
@@ -15,6 +16,7 @@ class Config(object):
         "interval": 900,
         "log_level": "INFO",
         "log_file": None,
+        "earliest_datetime": date.today().isoformat(),
         "class_ads": [
             "GlobalJobId",
             "ClusterId",
@@ -56,6 +58,7 @@ class Config(object):
             (["addr"], str),
             (["port"], int),
             (["interval"], int),
+            (["earliest_datetime"], str),
             (["log_level"], str),
             (["state_db"], str),
             (["record_prefix"], str),
@@ -141,6 +144,13 @@ class Config(object):
                 except re.error:
                     raise MalformedConfigEntryError(
                         keys, "Must be a valid regular expression"
+                    )
+            elif keys[-1] == "earliest_datetime":
+                try:
+                    dt.fromisoformat(value)
+                except (TypeError, ValueError):
+                    raise MalformedConfigEntryError(
+                        keys, "Must be a valid ISO 8601 datetime string"
                     )
             if len(keys) > 1:
                 if keys[-2] == "only_if":

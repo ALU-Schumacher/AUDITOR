@@ -3,8 +3,8 @@
 import logging
 
 from subprocess import Popen, PIPE
-from datetime import datetime as dt
-from typing import Union, Tuple, List
+from datetime import date, datetime as dt
+from typing import Optional, Tuple, List
 from urllib.parse import quote
 
 from pyauditor import (
@@ -29,6 +29,10 @@ class CondorHistoryCollector(object):
         self.logger = self.setup_logger()
         self.client = self.setup_auditor_client()
         self.state_db = StateDB(config.state_db)
+        earliest_datetime = self.config.get("earliest_datetime",
+                                            date.today().isoformat())
+        self.earliest_datetime = int(
+            dt.fromisoformat(earliest_datetime).timestamp())
 
     def setup_auditor_client(self) -> AuditorClient:
         """Sets up the auditor client."""
@@ -71,19 +75,21 @@ class CondorHistoryCollector(object):
         Jobs are iterated over in reverse order, so that the oldest job is processed first.
         """
         self.logger.info(f"Collecting jobs for schedd {schedd_name!r}.")
+        # Convert Job ID to (cluster, proc) tuple
         if job_id:
             try:
                 if "." in job_id:
-                    cluster, proc = map(int, job_id.split("."))
+                    job_id = tuple(map(int, job_id.split(".")))
                 else:
-                    cluster, proc = int(job_id), 0
+                    job_id = (int(job_id), 0)
             except ValueError:
                 raise ValueError("Invalid job id.")
         else:
-            cluster, proc = self.get_last_job(schedd_name)
-        self.logger.debug(f"Using job id {cluster}.{proc}.")
+            job_id = self.get_last_job(schedd_name)
 
-        jobs = self.query_htcondor_history(schedd_name, cluster, proc)
+        self.logger.debug(f"Using job id {job_id}.")
+
+        jobs = self.query_htcondor_history(schedd_name, job_id)
 
         added, failed = 0, 0
         for job in reversed(jobs):
@@ -99,15 +105,15 @@ class CondorHistoryCollector(object):
             f"Added {added} records.{f' Failed to generate {failed} records.' if failed else ''}"
         )
 
-    def get_last_job(self, schedd_name: str) -> Tuple[int, int]:
+    def get_last_job(self, schedd_name: str) -> Optional[Tuple[int, int]]:
         """Returns the last job id that was processed for a given schedd and prefix."""
         job = self.state_db.get(schedd_name, self.config.record_prefix)
         if job is None:
             self.logger.warning(
                 f"Could not find last job id for schedd {schedd_name!r} and record "
-                f"prefix {self.config.record_prefix!r}. Starting from the beginning."
+                f"prefix {self.config.record_prefix!r}. Starting from timestamp."
             )
-            return (0, 0)
+            return None
         return job
 
     def set_last_job(self, schedd_name: str, job_id: Tuple[int, int]):
@@ -116,20 +122,30 @@ class CondorHistoryCollector(object):
         self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name!r}.")
 
     def query_htcondor_history(
-        self, schedd_name: str, cluster: int, proc: int
+        self, schedd_name: str, job: Optional[Tuple[int, int]]
     ) -> List[dict]:
         """Queries HTCondor history for jobs with a given schedd name and job id."""
-        assert type(cluster) == int and type(proc) == int, "Invalid job id"
-        self.logger.debug(
-            f"Querying HTCondor history for {schedd_name!r} starting from job {cluster}.{proc}."
-        )
+        if job is not None:
+            assert type(job) == tuple and len(job) == 2, "Invalid job id"
+            assert type(job[0]) == int and type(job[1]) == int, "Invalid job id"
+
+        since = f"'CompletionDate<={self.earliest_datetime}'"
+        if job is None:
+            self.logger.debug(
+                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.earliest_datetime)}.")
+        else:
+            self.logger.debug(
+                f"Querying HTCondor history for {schedd_name!r} starting from job {job}.")
+            since = f"{job[0]}.{job[1]}"
+
         cmd = [
             "condor_history",
             "-backwards",
+            "-wide",
             "-name",
             schedd_name,
             "-since",
-            f"{cluster}.{proc}",
+            since,
             "-af:,",
             *self.config.class_ads,
         ]
@@ -151,7 +167,8 @@ class CondorHistoryCollector(object):
             self.logger.error(f"Error querying HTCondor history:\n{err}")
 
         jobs = [
-            map(maybe_convert, job.decode("utf-8").split(", "))
+            map(maybe_convert,
+                map(str.strip, job.decode("utf-8").split(",")))
             for job in output.strip().splitlines()
         ]
 
