@@ -37,6 +37,7 @@ class Config(object):
             set(self._config["class_ads"]).union(set(extract_values("key", file)))
         )
         self.check()
+        self._config["condor_timestamp"] = int(dt.fromisoformat(self.earliest_datetime).timestamp())
 
     def __getattr__(self, attr: str):
         return self._config[attr]
@@ -147,6 +148,7 @@ class Config(object):
                     )
             elif keys[-1] == "earliest_datetime":
                 try:
+                    assert isinstance(value, str)  # For type checking
                     dt.fromisoformat(value)
                 except (TypeError, ValueError):
                     raise MalformedConfigEntryError(
