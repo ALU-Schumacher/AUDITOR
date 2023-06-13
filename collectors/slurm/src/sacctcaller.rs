@@ -95,23 +95,31 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let (lastcheck, last_record_id) = database.get_lastcheck().await?;
 
-    let cmd_out = Command::new("/usr/bin/sacct")
-        .arg("-a")
-        .arg("--format")
-        .arg(KEYS.iter().map(|k| k.0.clone()).join(","))
-        .arg("--noconvert")
-        .arg("--noheader")
-        .arg("-S")
-        .arg(format!("{}", lastcheck.format("%Y-%m-%dT%H:%M:%S")))
-        .arg("-E")
-        .arg("now")
-        .arg("-s")
-        .arg(CONFIG.job_status.join(","))
-        .arg("-P")
-        .output()
-        .await?;
+    let binary = "/usr/bin/sacct";
+    let args = vec![
+        "-a".to_string(),
+        "--format".to_string(),
+        KEYS.iter().map(|k| k.0.clone()).join(","),
+        "--noconvert".to_string(),
+        "--noheader".to_string(),
+        "-S".to_string(),
+        format!("{}", lastcheck.format("%Y-%m-%dT%H:%M:%S")),
+        "-E".to_string(),
+        "now".to_string(),
+        "-s".to_string(),
+        CONFIG.job_status.join(","),
+        "-P".to_string(),
+    ];
 
-    let sacct_rows = std::str::from_utf8(&cmd_out.stdout)?
+    let cmd = binary.to_owned() + " " + &args.join(" ");
+    tracing::debug!("Executing the following command: {}", cmd);
+
+    let cmd_out = Command::new(binary).args(&args).output().await?;
+
+    let cmd_out = std::str::from_utf8(&cmd_out.stdout)?;
+    tracing::debug!("Got: {}", cmd_out);
+
+    let sacct_rows = cmd_out
         .lines()
         .map(|l| {
             KEYS.iter()
