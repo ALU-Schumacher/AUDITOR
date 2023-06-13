@@ -166,12 +166,12 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
                                 match map2.get(&k) {
                                     Some(Some(v)) => Some(v.clone()),
                                     _ => {
-                                        tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                        tracing::error!("Something went wrong during parsing (map1, id: {id}, key: {k}, value: {:?})", map2.get(&k));
                                         None
                                     },
                                 }
                             } else {
-                                tracing::error!("Something went wrong during parsing (id: {id}, key: {k})");
+                                tracing::error!("Something went wrong during parsing (map2, id: {id}, key: {k}, value: {:?})", map1.get(&k));
                                 None
                             }
                         },
