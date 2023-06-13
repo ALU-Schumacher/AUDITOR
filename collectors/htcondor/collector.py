@@ -29,10 +29,6 @@ class CondorHistoryCollector(object):
         self.logger = self.setup_logger()
         self.client = self.setup_auditor_client()
         self.state_db = StateDB(config.state_db)
-        earliest_datetime = self.config.get("earliest_datetime",
-                                            date.today().isoformat())
-        self.earliest_datetime = int(
-            dt.fromisoformat(earliest_datetime).timestamp())
 
     def setup_auditor_client(self) -> AuditorClient:
         """Sets up the auditor client."""
@@ -76,20 +72,21 @@ class CondorHistoryCollector(object):
         """
         self.logger.info(f"Collecting jobs for schedd {schedd_name!r}.")
         # Convert Job ID to (cluster, proc) tuple
+        parsed_job_id: Optional[Tuple[int, int]] = None
         if job_id:
             try:
                 if "." in job_id:
-                    job_id = tuple(map(int, job_id.split(".")))
+                    parsed_job_id = tuple(map(int, job_id.split(".")))
                 else:
-                    job_id = (int(job_id), 0)
+                    parsed_job_id = (int(job_id), 0)
             except ValueError:
                 raise ValueError("Invalid job id.")
         else:
-            job_id = self.get_last_job(schedd_name)
+            parsed_job_id = self.get_last_job(schedd_name)
 
-        self.logger.debug(f"Using job id {job_id}.")
+        self.logger.debug(f"Using job id {parsed_job_id}.")
 
-        jobs = self.query_htcondor_history(schedd_name, job_id)
+        jobs = self.query_htcondor_history(schedd_name, parsed_job_id)
 
         added, failed = 0, 0
         for job in reversed(jobs):
@@ -129,10 +126,10 @@ class CondorHistoryCollector(object):
             assert type(job) == tuple and len(job) == 2, "Invalid job id"
             assert type(job[0]) == int and type(job[1]) == int, "Invalid job id"
 
-        since = f"'CompletionDate<={self.earliest_datetime}'"
+        since = f"'CompletionDate<={self.config.condor_timestamp}'"
         if job is None:
             self.logger.debug(
-                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.earliest_datetime)}.")
+                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.config.condor_timestamp)}.")
         else:
             self.logger.debug(
                 f"Querying HTCondor history for {schedd_name!r} starting from job {job}.")
