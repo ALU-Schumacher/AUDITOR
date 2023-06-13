@@ -2,10 +2,11 @@
 
 import logging
 
-from subprocess import Popen, PIPE
-from datetime import date, datetime as dt
+from datetime import datetime as dt
 from typing import Optional, Tuple, List
 from urllib.parse import quote
+from asyncio import create_subprocess_shell
+from asyncio.subprocess import PIPE
 
 from pyauditor import (
     AuditorClientBuilder,
@@ -86,7 +87,7 @@ class CondorHistoryCollector(object):
 
         self.logger.debug(f"Using job id {parsed_job_id}.")
 
-        jobs = self.query_htcondor_history(schedd_name, parsed_job_id)
+        jobs = await self.query_htcondor_history(schedd_name, parsed_job_id)
 
         added, failed = 0, 0
         for job in reversed(jobs):
@@ -118,7 +119,7 @@ class CondorHistoryCollector(object):
         self.state_db.set(schedd_name, self.config.record_prefix, *job_id)
         self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name!r}.")
 
-    def query_htcondor_history(
+    async def query_htcondor_history(
         self, schedd_name: str, job: Optional[Tuple[int, int]]
     ) -> List[dict]:
         """Queries HTCondor history for jobs with a given schedd name and job id."""
@@ -129,10 +130,12 @@ class CondorHistoryCollector(object):
         since = f"'CompletionDate<={self.config.condor_timestamp}'"
         if job is None:
             self.logger.debug(
-                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.config.condor_timestamp)}.")
+                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.config.condor_timestamp)}."
+            )
         else:
             self.logger.debug(
-                f"Querying HTCondor history for {schedd_name!r} starting from job {job}.")
+                f"Querying HTCondor history for {schedd_name!r} starting from job {job}."
+            )
             since = f"{job[0]}.{job[1]}"
 
         cmd = [
@@ -158,14 +161,13 @@ class CondorHistoryCollector(object):
 
         self.logger.debug(f"Running command: {' '.join(cmd)!r}")
 
-        p = Popen(" ".join(cmd), stdout=PIPE, stderr=PIPE, shell=True)
-        output, err = p.communicate()
+        p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
+        output, err = await p.communicate()
         if err:
             self.logger.error(f"Error querying HTCondor history:\n{err}")
 
         jobs = [
-            map(maybe_convert,
-                map(str.strip, job.decode("utf-8").split(",")))
+            map(maybe_convert, map(str.strip, job.decode("utf-8").split(",")))
             for job in output.strip().splitlines()
         ]
 
