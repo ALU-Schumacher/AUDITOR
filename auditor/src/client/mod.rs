@@ -91,7 +91,7 @@ impl AuditorClientBuilder {
     /// Constructor.
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
-            address: "127.0.0.1:8080".into(),
+            address: "http://127.0.0.1:8080".into(),
             timeout: Duration::seconds(30),
         }
     }
