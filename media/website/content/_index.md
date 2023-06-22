@@ -414,18 +414,23 @@ Command line arguments override the values set in the config file.
 ## Configuration
 The collector is configured using a yaml-file. Configuration parameters are as follows:
 
-| Parameter       | Description                                                                                                                                                                                                                                             |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `addr`          | Address of the AUDITOR-instance.                                                                                                                                                                                                                        |
-| `port`          | Port of the AUDITOR-instance.                                                                                                                                                                                                                           |
-| `state_db`      | Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.                                                                                                                                                 |
-| `record_prefix` | Prefix used for all records put into the AUDITOR-database.                                                                                                                                                                                              |
-| `interval`      | Interval in seconds between runs of the collector.                                                                                                                                                                                                      |
-| `pool`          | The `-pool` argument used for the invocation of `condor_history`.                                                                                                                                                                                       |
-| `schedd_names`  | List of the schedulers used for the `-name` argument of the invocation of `condor_history`.                                                                                                                                                             |
-| `job_status`    | List of job statuses considered. See [HTCondor magic numbers](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers).                                                                                                                         |
+| Parameter       | Description                                                                                                                                                                                                                                                                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `state_db`      | Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.                                                                                                                                                                                                                                               |
+| `record_prefix` | Prefix used for all records put into the AUDITOR-database.                                                                                                                                                                                                                                                                                            |
+| `interval`      | Interval in seconds between runs of the collector.                                                                                                                                                                                                                                                                                                    |
+| `pool`          | The `-pool` argument used for the invocation of `condor_history`.                                                                                                                                                                                                                                                                                     |
+| `schedd_names`  | List of the schedulers used for the `-name` argument of the invocation of `condor_history`.                                                                                                                                                                                                                                                           |
+| `job_status`    | List of job statuses considered. See [HTCondor magic numbers](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers).                                                                                                                                                                                                                       |
 | `meta`          | Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are [`entry`](#entry)s.<br>If multiple [`entry`](#entry)s are given for specified name, the values are appended to a list. A special case is `site`, which is a list of [`entry`](#entry)s, but only the first match is used. |
-| `components`    | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score)s ([`entry`](#entry)s).                                                                                                                                    |
+| `components`    | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score)s ([`entry`](#entry)s).                                            |
+
+The following parameters are optional:
+| Parameter | Default            | Description                                                                     |
+| --------- | ------------------ | ------------------------------------------------------------------------------- |
+| `addr`    | `http://127.0.0.1` | Address of the AUDITOR-instance. If this is set, `port` must also be specified. |
+| `port`    | `8080`             | Port of the AUDITOR-instance. If this is set, `addr` must also be specified.    |
+| `timeout` | `30`               | Timeout in seconds for the connection to the AUDITOR-instance.                  |
 
 ### `entry`
 An `entry` describes how to get the value for a meta-var or component from the job.
@@ -446,6 +451,7 @@ See below for an example config and the use of such `entry`s.
 ```yaml
 addr: localhost
 port: 8000
+timeout: 10
 state_db: htcondor_history_state.db
 record_prefix: htcondor
 interval: 900 # 15 minutes

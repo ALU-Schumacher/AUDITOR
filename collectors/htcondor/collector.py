@@ -33,7 +33,16 @@ class CondorHistoryCollector(object):
 
     def setup_auditor_client(self) -> AuditorClient:
         """Sets up the auditor client."""
-        builder = AuditorClientBuilder().address(self.config.addr, self.config.port)
+        builder = AuditorClientBuilder()
+        addr = self.config.get("addr")
+        port = self.config.get("port")
+        if addr and port:
+            self.logger.info(f"Using AUDITOR client at {addr}:{port}.")
+            builder.address(addr, port)
+        timeout = self.config.get("timeout")
+        if timeout:
+            self.logger.info(f"Using timeout of {timeout} seconds for AUDITOR client.")
+            builder.timeout(timeout)
         return builder.build()
 
     def setup_logger(self) -> logging.Logger:

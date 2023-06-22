@@ -24,6 +24,15 @@ class MissingConfigEntryError(ConfigError):
         )
 
 
+class MissingConfigDependencyError(ConfigError):
+    def __init__(self, keys: Keys, dependency: Keys):
+        self.keys = keys
+        self.dependency = dependency
+        super(MissingConfigDependencyError, self).__init__(
+            f"Missing config entry {self.keys!r}, must be specified if {self.dependency!r} is specified."
+        )
+
+
 class MalformedConfigEntryError(ConfigError):
     """Exception for malformed config entries."""
 
