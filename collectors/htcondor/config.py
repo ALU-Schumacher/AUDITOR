@@ -7,7 +7,11 @@ from typing import List, Tuple, Union, Iterator
 from datetime import date, datetime as dt
 
 from utils import extract_values
-from exceptions import MalformedConfigEntryError, MissingConfigEntryError
+from exceptions import (
+    MalformedConfigEntryError,
+    MissingConfigEntryError,
+    MissingConfigDependencyError,
+)
 from custom_types import Keys, Config as T_Config
 
 
@@ -56,8 +60,6 @@ class Config(object):
 
         # Check for required keys and their types
         for keys, _type in [
-            (["addr"], str),
-            (["port"], int),
             (["interval"], int),
             (["earliest_datetime"], str),
             (["log_level"], str),
@@ -116,6 +118,30 @@ class Config(object):
             for i, entry in enumerate(entries):
                 if not isinstance(entry, int):
                     raise MalformedConfigEntryError([*keys, i], "Must be an integer")
+
+        if "addr" in self._config:
+            if not isinstance(self._config["addr"], str):
+                raise MalformedConfigEntryError(["addr"], "Must be a string")
+            if len(self._config["addr"].strip()) == 0:
+                raise MalformedConfigEntryError(["addr"], "Must be a non-empty string")
+            if "port" not in self._config:
+                raise MissingConfigDependencyError(["port"], ["addr"])
+
+        if "port" in self._config:
+            if not isinstance(self._config["port"], int):
+                raise MalformedConfigEntryError(["port"], "Must be an integer")
+            if self._config["port"] < 0:
+                raise MalformedConfigEntryError(["port"], "Must be a positive integer")
+            if "addr" not in self._config:
+                raise MissingConfigDependencyError(["addr"], ["port"])
+
+        if "timeout" in self._config:
+            if not isinstance(self._config["timeout"], int):
+                raise MalformedConfigEntryError(["timeout"], "Must be an integer")
+            if self._config["timeout"] < 0:
+                raise MalformedConfigEntryError(
+                    ["timeout"], "Must be a positive integer"
+                )
 
         def _iter_config(
             keys: Keys = [], config: T_Config = self._config
