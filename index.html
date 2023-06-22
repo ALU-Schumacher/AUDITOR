@@ -194,6 +194,21 @@
                 
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#htcondor-collector">HTCondor Collector</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#configuration-1"><small>- Configuration</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#example-config"><small>- Example config</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#priority-plugin">Priority Plugin</a>
                 </div>
                 
@@ -229,7 +244,7 @@
             
             <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
             <h1 id="auditor">Auditor</h1>
-<p>Auditor stands for <strong>A</strong>cco<strong>u</strong>nting <strong>D</strong>ata Handl<strong>i</strong>ng <strong>T</strong>oolbox For <strong>O</strong>pportunistic <strong>R</strong>esources. 
+<p>Auditor stands for <strong>A</strong>cco<strong>u</strong>nting <strong>D</strong>ata Handl<strong>i</strong>ng <strong>T</strong>oolbox For <strong>O</strong>pportunistic <strong>R</strong>esources.
 Auditor ingests accounting data provided by so-called <em>collectors</em>, stores it and provides it to the outside to so-called <em>plugins</em>.</p>
 <p>It comes with a well-defined REST API which allows for the implementation of application-specific collectors and plugins. This makes it well suited for a wide range of use cases.</p>
 <p align="center">
@@ -245,7 +260,7 @@ Auditor ingests accounting data provided by so-called <em>collectors</em>, store
 </ul>
 <h1 id="running-auditor">Running Auditor</h1>
 <p>Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
-Both methods require that the PostgreSQL database is installed migrated beforehand. </p>
+Both methods require that the PostgreSQL database is installed migrated beforehand.</p>
 <h2 id="migrating-the-database">Migrating the database</h2>
 <p>Migrating the database requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
 A prerequisite is a working Rust setup, which can be installed either via your distributions package manager or via the following command:</p>
@@ -255,7 +270,7 @@ A prerequisite is a working Rust setup, which can be installed either via your d
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>version</span><span class="z-keyword z-operator z-assignment z-option z-shell">=</span>0.6.3 sqlx-cli<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>no-default-features</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>features</span> postgres,rustls,sqlite</span>
 </span></code></pre>
 <p>Clone the repository and <code>cd</code> into the directory.</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git </span>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git</span>
 <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> AUDITOR</span>
 </span></code></pre>
 <p>To migrate the database, run the following from the root directory of the repo:</p>
@@ -330,7 +345,7 @@ Database metrics export can be configured in the configuration:</p>
       <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerGroup</span>
       <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">RecordCountPerUser</span>
 </span></code></pre>
-<p>How often the database metrics are computed is defined by the <code>frequency</code> configuration variable. 
+<p>How often the database metrics are computed is defined by the <code>frequency</code> configuration variable.
 Note that computing the database metrics is a potentially expensive operation.
 Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
 The frequency setting should be somewhat in accordance with the Prometheus scraping interval.</p>
@@ -360,7 +375,7 @@ It also covers cross compiling and static linking against <code>musl</code> inst
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install bunyan</span>
 </span></code></pre>
 <h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git </span>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git</span>
 <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> AUDITOR</span>
 <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_db.sh</span></span>
 <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_slurm_collector_sqlite.sh</span></span>
@@ -374,7 +389,7 @@ Building requires a running database, because database queries are checked again
 <p>For nicer logs pipe the output through <code>bunyan</code>:</p>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">bunyan</span></span>
 </span></code></pre>
-<p>Note that this will be a debug build which will not pass all optimizations during compilation. 
+<p>Note that this will be a debug build which will not pass all optimizations during compilation.
 For maximum performance a <code>release</code> build is necessary:</p>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span></span>
 </span></code></pre>
@@ -382,7 +397,7 @@ For maximum performance a <code>release</code> build is necessary:</p>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
 </span></code></pre>
 <p>Output logs while running the tests:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">TEST_LOG</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test </span>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">TEST_LOG</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
 </span></code></pre>
 <h2 id="building-binaries">Building binaries</h2>
 <p>Binaries used in production should be built in release mode:</p>
@@ -423,7 +438,7 @@ Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be 
 <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">/absolute/path/to/auditor-slurm-epilog-collector</span></span><span class="z-meta z-function-call z-arguments z-shell"> /absolute/path/to/auditor-slurm-epilog-collector-config.yaml</span>
 </span></code></pre>
 <p>This will read the <code>$SLURM_JOB_ID</code> environment variable, which is only available in the context of a SLURM epilog script.</p>
-<p>Internally, <code>scontrol</code> is called to obtain the necessary information of the job. </p>
+<p>Internally, <code>scontrol</code> is called to obtain the necessary information of the job.</p>
 <p>If not all jobs are of relevance, filtering should be done in the epilog script such that the collector is only executed for relevant jobs.
 This avoids unnecessary and potentially expensive calls to <code>scontrol</code>.
 Slurm provides a number of environment variables in the context of an epilog script which are listed in the <a href="https://slurm.schedmd.com/prolog_epilog.html">Slurm documentation</a>.</p>
@@ -443,7 +458,7 @@ Slurm provides a number of environment variables in the context of an epilog scr
 <p>The following configuration shows how to set the Auditor host address and port.
 The <code>record_prefix</code> will be used to prefix the Slurm job id in the record identifier (in this case it will be <code>slurm-JOBID</code>).
 The <code>site_name</code> is the <code>site_id</code> which will be attached to every record.
-<code>components</code> defines how to extract accountable information from the call to <code>scontrol</code> and attaches <code>score</code>s to it. 
+<code>components</code> defines how to extract accountable information from the call to <code>scontrol</code> and attaches <code>score</code>s to it.
 In the context of <code>components</code>, <code>name</code> indicates how this component will be identified in the final record and <code>key</code> indicates the <code>key</code> which is to be extracted from the <code>scontrol</code> output.
 <code>scores</code> are optional.</p>
 <pre data-lang="yaml" class="language-yaml z-code"><code class="language-yaml" data-lang="yaml"><span class="z-source z-yaml"><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">addr</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>auditor_host_addr<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
@@ -488,6 +503,115 @@ Regex is accepted.</p>
       <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>Partition<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
       <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>^part2$<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
 </span></code></pre>
+<h1 id="htcondor-collector">HTCondor Collector</h1>
+<p>The collector relies on <code>condor_history</code> to retrieve the information about the jobs.
+The collector runs periodically, creating <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record">records</a> and committing them to the AUDITOR-instance using <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor</a>.</p>
+<p>The collector is run as follows:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">python</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>m</span> collectors.htcondor<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span> CONFIG_FILE</span>
+</span></code></pre>
+<p><code>-c/--config CONFIG_FILE</code> is required to be set and of the form as stated below.
+Further, optional arguments are</p>
+<pre class="z-code"><code><span class="z-text z-plain">-h, --help            show this help message and exit
+-c CONFIG_FILE, --config CONFIG_FILE
+                      Path to config file.
+-j &lt;CLUSTERID&gt;[.&lt;PROCID&gt;], --job-id &lt;CLUSTERID&gt;[.&lt;PROCID&gt;]
+                      ID of the job, condor_history to invoke with.
+-n SCHEDD, --schedd-names SCHEDD
+                      Name of the schedd, condor_history to invoke with.
+-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                      Log level. Defaults to INFO.
+-f LOG_FILE, --log-file LOG_FILE
+                      Log file. Defaults to stdout.
+-i INTERVAL, --interval INTERVAL
+                      Interval in seconds between queries. Defaults to 900.
+-1, --one-shot        Run once and exit.
+</span></code></pre>
+<p>Command line arguments override the values set in the config file.</p>
+<h2 id="configuration-1">Configuration</h2>
+<p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>state_db</code></td><td>Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.</td></tr>
+<tr><td><code>record_prefix</code></td><td>Prefix used for all records put into the AUDITOR-database.</td></tr>
+<tr><td><code>interval</code></td><td>Interval in seconds between runs of the collector.</td></tr>
+<tr><td><code>pool</code></td><td>The <code>-pool</code> argument used for the invocation of <code>condor_history</code>.</td></tr>
+<tr><td><code>schedd_names</code></td><td>List of the schedulers used for the <code>-name</code> argument of the invocation of <code>condor_history</code>.</td></tr>
+<tr><td><code>job_status</code></td><td>List of job statuses considered. See <a href="https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers">HTCondor magic numbers</a>.</td></tr>
+<tr><td><code>meta</code></td><td>Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s.<br>If multiple <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s are given for specified name, the values are appended to a list. A special case is <code>site</code>, which is a list of <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s, but only the first match is used.</td></tr>
+<tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s).</td></tr>
+</tbody></table>
+<p>The following parameters are optional:
+| Parameter | Default            | Description                                                                     |
+| --------- | ------------------ | ------------------------------------------------------------------------------- |
+| <code>addr</code>    | <code>http://127.0.0.1</code> | Address of the AUDITOR-instance. If this is set, <code>port</code> must also be specified. |
+| <code>port</code>    | <code>8080</code>             | Port of the AUDITOR-instance. If this is set, <code>addr</code> must also be specified.    |
+| <code>timeout</code> | <code>30</code>               | Timeout in seconds for the connection to the AUDITOR-instance.                  |</p>
+<h3 id="entry"><code>entry</code></h3>
+<p>An <code>entry</code> describes how to get the value for a meta-var or component from the job.
+Unlike meta-variables, components contain a <code>name</code>-field, which is used as the name of the component.
+If the entry has a <code>key</code>-field, the value is taken from the corresponding ClassAd.
+Else, if the entry has a <code>factor</code>-field, this factor is used as the value.
+Else, if the entry has a <code>name</code>-field, this name is used as the value (this is used for the <code>site</code>-meta-var).
+Else, the value is not set.</p>
+<p>If the entry has a <code>matches</code>-field, the value is matched against the regex given in <code>matches</code>.
+In case the regex contains a group, the value is set to the (first) matching group, else the <code>name</code>-field is used.</p>
+<p>If the entry contains an <code>only_if</code>-field, the value is only returned if the value of the ClassAd in <code>only_if.key</code>  matches the regex given in <code>only_if.matches</code>.</p>
+<p>See below for an example config and the use of such <code>entry</code>s.</p>
+<h2 id="example-config">Example config</h2>
+<pre data-lang="yaml" class="language-yaml z-code"><code class="language-yaml" data-lang="yaml"><span class="z-source z-yaml"><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">addr</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">localhost</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">port</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">8000</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">timeout</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">10</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">state_db</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">htcondor_history_state.db</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">record_prefix</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">htcondor</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">interval</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">900</span> <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> 15 minutes
+</span><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">pool</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">htcondor.example.com</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">schedd_names</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">schedd1.example.com</span>
+  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml">schedd2.example.com</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">job_status</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> See https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers
+</span>  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">3</span> <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> Removed
+</span>  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">4</span> <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> Completed
+</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">meta</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">user</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">Owner</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^(.+)$</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">group</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">VoName</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^(.+)$</span>
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">submithost</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>GlobalJobId<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^(.*)#\d+.\d+#\d+$</span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> As this regex contains a group, the value for &#39;submithost&#39; is set to the matching group.
+</span>
+  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> For `site` the first match is used.
+</span>  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">site</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+    <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>site1<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> This entry
+</span>      <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>LastRemoteHost<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+      <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^slot.+@site1-.+$</span>
+    <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>LastRemoteHost<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+      <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^slot.+@(site2)-.+$</span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> This regex contains a group, the value for &#39;site&#39; is set to the matching group (&quot;site2&quot;).
+</span>    <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>UNDEF<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> If no match is found, site is set to &quot;UNDEF&quot;
+</span>
+<span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">components</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>Cores<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>CpusProvisioned<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">scores</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>HEPSPEC<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>MachineAttrApelSpecs0<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">HEPSPEC\D+(\d+(\.\d+)?)</span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> This regex matches the value of HEPSPEC in the corresponding ClassAd
+</span>        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">only_if</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+          <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>LastRemoteHost<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+          <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^slot.+@(?:site1)-.{10}@.+$</span>  <span class="z-comment z-line z-number-sign z-yaml"><span class="z-punctuation z-definition z-comment z-line z-number-sign z-yaml">#</span> This score is only attributed to the component on site1
+</span>      <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>HEPscore23<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>MachineAttrApelSpecs0<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">HEPscore23\D+(\d+(\.\d+)?)</span>
+        <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">only_if</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
+          <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>LastRemoteHost<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+          <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">^slot.+@(?:site1)-.{10}@.+$</span>
+  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>Memory<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>MemoryProvisioned<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+  <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>UserCPU<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+    <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>RemoteUserCpu<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
+</span></code></pre>
 <h1 id="priority-plugin">Priority Plugin</h1>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
 This allows one to transfer provided resources on one system to priorities in another system.
@@ -505,7 +629,7 @@ In general, the priority plugin should be run on a regular basis (for instance a
 </span><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">components</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
   <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">NumCPUs</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>HEPSPEC<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
 <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">group_mapping</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
-  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">group1</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> 
+  <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">group1</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
     <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>part1<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
   <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">group2</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span>
     <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>part2<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
@@ -519,7 +643,7 @@ In general, the priority plugin should be run on a regular basis (for instance a
 </span></code></pre>
 <p>The resources used for calculating the priorities can be configured via the <code>components</code> field.
 It defines which components to extract from the <code>components</code> field of the record (<code>NumCPUs</code> in this example), as well as the corresponding score (<code>HEPSPEC</code> in this example).
-Multiple components can be extracted. 
+Multiple components can be extracted.
 The configured components and scores must be part of the records.
 The resources of each component will be multiplied by the corresponding score and the resulting provided resource per group is the sum of all these.
 The records considered in the computation can be limited to all records which finished in the past X seconds via the <code>duration</code> field (in seconds).
@@ -541,7 +665,7 @@ This plugin offers two <code>computation_modes</code>: <code>FullSpread</code> a
 Via <code>min_priority</code> and <code>max_priority</code>, lower and upper limits on the computed priority are set.</p>
 <ul>
 <li><code>FullSpread</code>:  This mode will spread the resources on the full range given by <code>min_priority</code> and <code>max_priority</code>, such that the group with the least provided resources will be assigned a priority equal to <code>min_priority</code> and the group with the most provided resources will be assigned a priority equal to <code>max_priority</code>. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorites of two consecutive runs can be substantially different, leading to large jumps in priorities.</li>
-<li><code>ScaledBySum</code>: Computes the priorities such that <code>max_priority</code> is equal to the sum of all provide resources plus <code>min_priority</code>. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources. </li>
+<li><code>ScaledBySum</code>: Computes the priorities such that <code>max_priority</code> is equal to the sum of all provide resources plus <code>min_priority</code>. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources.</li>
 </ul>
 <h1 id="auditor-clients">Auditor Clients</h1>
 <p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
