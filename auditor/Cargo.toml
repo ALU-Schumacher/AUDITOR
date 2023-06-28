@@ -41,7 +41,7 @@ serde = { version = "1", features = ["derive"] }
 serde-aux = "4"
 serde_with = { version = "3", features = ["chrono_0_4"] }
 config = "0.13"
-uuid = { version = "1.3", features = ["v4"] }
+uuid = { version = "1.4", features = ["v4"] }
 chrono = { version = "0.4.26", default-features = false, features = ["serde"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
