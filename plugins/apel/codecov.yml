@@ -1,0 +1,6 @@
+coverage:
+  status:
+    patch: off
+    project: off
+codecov: 
+ token: 90cfa924-4216-4957-872b-4fc3db26ded5

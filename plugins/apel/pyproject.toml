@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auditor_apel_plugin"
+dynamic = ["version"]
+requires-python = ">=3.7"
+dependencies = [
+	     "python-auditor==0.1.0",
+	     "pytz==2023.3",
+	     "requests==2.31.0",
+	     "cryptography==41.0.1",
+]
+description = "AUDITOR plugin for sending accounting data to APEL"
+readme = "README.md"
+
+[project.optional-dependencies]
+style = [
+      "black",
+      "flake8",
+]
+tests = [
+      "pytest",
+      "pytest-cov",
+]
+build = [
+      "build",
+      "setuptools",
+      "setuptools_scm[toml]",
+]
+
+[project.scripts]
+auditor-apel-publish = "auditor_apel_plugin.publish:main"
+auditor-apel-republish = "auditor_apel_plugin.republish:main"
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+write_to = "src/auditor_apel_plugin/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*__init__.py","*publish.py","*_version.py"]
+branch = true
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+addopts = "-s -v --cov"
+testpaths = [
+	  "tests",
+]
+filterwarnings = [
+	       "ignore::DeprecationWarning",
+]
