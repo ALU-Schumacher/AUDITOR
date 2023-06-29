@@ -278,7 +278,16 @@ Auditor is configured via the files in the `configuration` directory, a configur
 
 RPMs are provided for each release on the [Github release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
 
-# SLURM Epilog Collector
+# Collectors
+
+Collectors are used to collect data from various sources.
+See below for all currently available collectors.
+
+## SLURM Collector
+
+TODO
+
+## SLURM Epilog Collector
 
 The Slurm epilog collector can installed from the provided RPM or can be built with this command:
 
@@ -324,7 +333,7 @@ if [ "$SLURM_JOB_PARTITION" == "some_partition" ]; then
 fi
 ```
 
-## Example configurations
+### Example configurations
 
 The following configuration shows how to set the Auditor host address and port.
 The `record_prefix` will be used to prefix the Slurm job id in the record identifier (in this case it will be `slurm-JOBID`).
@@ -380,7 +389,7 @@ components:
       matches: "^part2$"
 ```
 
-# HTCondor Collector
+## HTCondor Collector
 
 The collector relies on `condor_history` to retrieve the information about the jobs.
 The collector runs periodically, creating [records](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record) and committing them to the AUDITOR-instance using [pyauditor](https://alu-schumacher.github.io/AUDITOR/pyauditor/).
@@ -411,7 +420,7 @@ Further, optional arguments are
 ```
 Command line arguments override the values set in the config file.
 
-## Configuration
+### Configuration
 The collector is configured using a yaml-file. Configuration parameters are as follows:
 
 | Parameter       | Description                                                                                                                                                                                                                                                                                                                                           |
@@ -447,7 +456,7 @@ If the entry contains an `only_if`-field, the value is only returned if the valu
 
 See below for an example config and the use of such `entry`s.
 
-## Example config
+### Example config
 ```yaml
 addr: localhost
 port: 8000
@@ -505,7 +514,16 @@ components:
     key: "RemoteUserCpu"
 ```
 
-# Priority Plugin
+# Plugins
+
+Plugins are used to retrieve data from Auditor for further processing.
+See below for all currently available collectors.
+
+## APEL Plugin
+
+TODO
+
+## Priority Plugin
 
 The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
 This allows one to transfer provided resources on one system to priorities in another system.
@@ -561,7 +579,7 @@ In the `command` field one can also see a string `{priority}`, which will be rep
 Another special string, `{resources}` is available, which is replaced by the computed provided resource per group.
 The command is executed for each group separately and multiple commands can be provided.
 
-## Priority computation modes
+### Priority computation modes
 
 As stated above, the priorities are computed from the provided resources of each group.
 However, the computed resources and the priorities are in different units and span different ranges.
