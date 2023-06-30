@@ -19,7 +19,7 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, ParsableType},
+    configuration::{AllowedTypes, KeyConfig, ParsableType},
     database::Database,
     shutdown::Shutdown,
     CONFIG, END, GROUP, JOBID, KEYS, START, USER,
@@ -99,7 +99,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let args = vec![
         "-a".to_string(),
         "--format".to_string(),
-        KEYS.iter().map(|k| k.0.clone()).join(","),
+        KEYS.iter().map(|k| k.name.clone()).join(","),
         "--noconvert".to_string(),
         "--noheader".to_string(),
         "-S".to_string(),
@@ -130,7 +130,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             let map2 = sacct_rows.get(&format!("{id}.batch"));
             Ok(KEYS.iter()
                 .cloned()
-                .filter_map(|(k, _)| {
+                .filter_map(|KeyConfig {name: k, key_type: _, allow_empty: _}| {
                     let val = match map1.get(&k) {
                         Some(Some(v)) => Some(v.clone()),
                         _ => {
@@ -252,8 +252,11 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
 }
 
 #[tracing::instrument(name = "Parsing sacct output", skip(keys))]
-fn parse_sacct_output(output: &str, keys: Vec<(String, ParsableType)>) -> HashMap<String, HashMap<String, Option<AllowedTypes>>> {
-   output
+fn parse_sacct_output(
+    output: &str,
+    keys: Vec<KeyConfig>,
+) -> HashMap<String, HashMap<String, Option<AllowedTypes>>> {
+    output
         .lines()
         .map(|l| {
             keys.iter()
@@ -261,29 +264,28 @@ fn parse_sacct_output(output: &str, keys: Vec<(String, ParsableType)>) -> HashMa
                 .zip(l.split('|').map(|s| s.to_owned()))
                 // Occasionally fields are empty by design. filter those out to avoid
                 // problems later on when parsing.
-                .filter(|(_, v)| !v.is_empty())
-                .map(|((k, pt), v)| {
-                    let v = match pt.parse(&v) {
+                .filter(|(kc, v)| !v.is_empty() || kc.allow_empty)
+                .map(|(kc, v)| {
+                    let v = match kc.key_type.parse(&v) {
                         Ok(v) => Some(v),
                         Err(e) => {
                             tracing::warn!(
                                 "Parsing '{}' (key: {}) as {:?} failed: {:?}. This may or may not be a problem. It probably is.",
                                 v,
-                                k,
-                                pt,
+                                kc.name,
+                                kc.key_type,
                                 e
                             );
                             None
                         }
                     };
-                    (k, v)
+                    (kc.name, v)
                 })
                 .collect::<HashMap<String, Option<AllowedTypes>>>()
         })
         .map(|hm| (hm[JOBID].as_ref().unwrap().extract_string().unwrap(), hm))
         .collect::<HashMap<String, HashMap<String, Option<AllowedTypes>>>>()
 }
-
 
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
 fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
@@ -380,26 +382,80 @@ mod tests {
     }
 
     #[test]
-    fn parse_sacct_output_json_empty_string() {
+    fn parse_sacct_output_json_empty_string_allow() {
         let keys = vec![
-            (JOBID.to_owned(), ParsableType::String),
-            ("Comment".to_owned(), ParsableType::Json),
-            (STATE.to_owned(), ParsableType::String),
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "Comment".to_owned(),
+                key_type: ParsableType::Json,
+                allow_empty: true,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
         ];
         let sacct_output = "100||COMPLETED";
         let sacct_rows = parse_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from(
-            [
-                ("100".to_owned(), HashMap::from(
-                    [
-                        (JOBID.to_owned(), Some(AllowedTypes::String("100".to_owned()))),
-                        (STATE.to_owned(), Some(AllowedTypes::String("COMPLETED".to_owned()))),
-                        ("Comment".to_owned(), Some(AllowedTypes::Map(vec![]))),
-                    ]
-                ))
-            ]
-        );
+        let expected = HashMap::from([(
+            "100".to_owned(),
+            HashMap::from([
+                (
+                    JOBID.to_owned(),
+                    Some(AllowedTypes::String("100".to_owned())),
+                ),
+                (
+                    STATE.to_owned(),
+                    Some(AllowedTypes::String("COMPLETED".to_owned())),
+                ),
+                ("Comment".to_owned(), Some(AllowedTypes::Map(vec![]))),
+            ]),
+        )]);
+
+        assert_eq!(sacct_rows, expected);
+    }
+
+    #[test]
+    fn parse_sacct_output_json_empty_string_disallow() {
+        let keys = vec![
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "Comment".to_owned(),
+                key_type: ParsableType::Json,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+        let sacct_output = "100||COMPLETED";
+        let sacct_rows = parse_sacct_output(sacct_output, keys);
+
+        let expected = HashMap::from([(
+            "100".to_owned(),
+            HashMap::from([
+                (
+                    JOBID.to_owned(),
+                    Some(AllowedTypes::String("100".to_owned())),
+                ),
+                (
+                    STATE.to_owned(),
+                    Some(AllowedTypes::String("COMPLETED".to_owned())),
+                ),
+            ]),
+        )]);
 
         assert_eq!(sacct_rows, expected);
     }
@@ -407,24 +463,39 @@ mod tests {
     #[test]
     fn parse_sacct_output_json_empty_json() {
         let keys = vec![
-            (JOBID.to_owned(), ParsableType::String),
-            ("Comment".to_owned(), ParsableType::Json),
-            (STATE.to_owned(), ParsableType::String),
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "Comment".to_owned(),
+                key_type: ParsableType::Json,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
         ];
         let sacct_output = "100|{}|COMPLETED";
         let sacct_rows = parse_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from(
-            [
-                ("100".to_owned(), HashMap::from(
-                    [
-                        (JOBID.to_owned(), Some(AllowedTypes::String("100".to_owned()))),
-                        (STATE.to_owned(), Some(AllowedTypes::String("COMPLETED".to_owned()))),
-                        ("Comment".to_owned(), Some(AllowedTypes::Map(vec![]))),
-                    ]
-                ))
-            ]
-        );
+        let expected = HashMap::from([(
+            "100".to_owned(),
+            HashMap::from([
+                (
+                    JOBID.to_owned(),
+                    Some(AllowedTypes::String("100".to_owned())),
+                ),
+                (
+                    STATE.to_owned(),
+                    Some(AllowedTypes::String("COMPLETED".to_owned())),
+                ),
+                ("Comment".to_owned(), Some(AllowedTypes::Map(vec![]))),
+            ]),
+        )]);
 
         assert_eq!(sacct_rows, expected);
     }
@@ -432,28 +503,46 @@ mod tests {
     #[test]
     fn parse_sacct_output_json_full_json() {
         let keys = vec![
-            (JOBID.to_owned(), ParsableType::String),
-            ("Comment".to_owned(), ParsableType::Json),
-            (STATE.to_owned(), ParsableType::String),
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "Comment".to_owned(),
+                key_type: ParsableType::Json,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
         ];
         let sacct_output = "100|{ 'key': 'value' }|COMPLETED";
         let sacct_rows = parse_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from(
-            [
-                ("100".to_owned(), HashMap::from(
-                    [
-                        (JOBID.to_owned(), Some(AllowedTypes::String("100".to_owned()))),
-                        (STATE.to_owned(), Some(AllowedTypes::String("COMPLETED".to_owned()))),
-                        ("Comment".to_owned(), Some(AllowedTypes::Map(vec![
-                            (AllowedTypes::String("key".to_owned()), AllowedTypes::String("value".to_owned()))
-                        ]))),
-                    ]
-                ))
-            ]
-        );
+        let expected = HashMap::from([(
+            "100".to_owned(),
+            HashMap::from([
+                (
+                    JOBID.to_owned(),
+                    Some(AllowedTypes::String("100".to_owned())),
+                ),
+                (
+                    STATE.to_owned(),
+                    Some(AllowedTypes::String("COMPLETED".to_owned())),
+                ),
+                (
+                    "Comment".to_owned(),
+                    Some(AllowedTypes::Map(vec![(
+                        AllowedTypes::String("key".to_owned()),
+                        AllowedTypes::String("value".to_owned()),
+                    )])),
+                ),
+            ]),
+        )]);
 
         assert_eq!(sacct_rows, expected);
     }
-
 }
