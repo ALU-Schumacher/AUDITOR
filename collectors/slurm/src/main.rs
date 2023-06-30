@@ -25,7 +25,7 @@ use uuid::Uuid;
 
 use crate::{
     auditorsender::AuditorSender,
-    configuration::{get_configuration, ParsableType, Settings},
+    configuration::{get_configuration, KeyConfig, ParsableType, Settings},
     database::Database,
     sacctcaller::run_sacct_monitor,
     shutdown::{Shutdown, ShutdownSender},
@@ -38,14 +38,38 @@ const GROUP: &str = "Group";
 const START: &str = "Start";
 const END: &str = "End";
 const STATE: &str = "State";
-static KEYS: Lazy<Vec<(String, ParsableType)>> = Lazy::new(|| {
+static KEYS: Lazy<Vec<KeyConfig>> = Lazy::new(|| {
     let mut keys = CONFIG.get_keys();
-    keys.push((JOBID.to_owned(), ParsableType::String));
-    keys.push((START.to_owned(), ParsableType::DateTime));
-    keys.push((END.to_owned(), ParsableType::DateTime));
-    keys.push((GROUP.to_owned(), ParsableType::String));
-    keys.push((USER.to_owned(), ParsableType::String));
-    keys.push((STATE.to_owned(), ParsableType::String));
+    keys.push(KeyConfig {
+        name: JOBID.to_owned(),
+        key_type: ParsableType::String,
+        allow_empty: false,
+    });
+    keys.push(KeyConfig {
+        name: START.to_owned(),
+        key_type: ParsableType::DateTime,
+        allow_empty: false,
+    });
+    keys.push(KeyConfig {
+        name: END.to_owned(),
+        key_type: ParsableType::DateTime,
+        allow_empty: false,
+    });
+    keys.push(KeyConfig {
+        name: GROUP.to_owned(),
+        key_type: ParsableType::String,
+        allow_empty: false,
+    });
+    keys.push(KeyConfig {
+        name: USER.to_owned(),
+        key_type: ParsableType::String,
+        allow_empty: false,
+    });
+    keys.push(KeyConfig {
+        name: STATE.to_owned(),
+        key_type: ParsableType::String,
+        allow_empty: false,
+    });
     keys
 });
 static CONFIG: Lazy<Settings> =

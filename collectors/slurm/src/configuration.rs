@@ -57,7 +57,7 @@ pub struct SiteConfig {
 }
 
 impl SiteConfig {
-    fn keys(&self) -> Option<(String, ParsableType)> {
+    fn keys(&self) -> Option<KeyConfig> {
         self.only_if.as_ref().map(|oif| oif.key())
     }
 }
@@ -68,12 +68,18 @@ pub struct MetaConfig {
     pub key: String,
     #[serde(default = "default_key_type")]
     pub key_type: ParsableType,
+    #[serde(default = "default_key_allow_empty")]
+    pub key_allow_empty: bool,
     pub only_if: Option<OnlyIf>,
 }
 
 impl MetaConfig {
-    fn keys(&self) -> Vec<(String, ParsableType)> {
-        let mut keys: Vec<(String, ParsableType)> = vec![(self.key.clone(), self.key_type)];
+    fn keys(&self) -> Vec<KeyConfig> {
+        let mut keys: Vec<KeyConfig> = vec![KeyConfig {
+            name: self.key.clone(),
+            key_type: self.key_type,
+            allow_empty: self.key_allow_empty,
+        }];
         if let Some(ref oif) = self.only_if {
             keys.push(oif.key());
         }
@@ -87,16 +93,21 @@ pub struct ComponentConfig {
     pub key: String,
     #[serde(default = "default_key_type")]
     pub key_type: ParsableType,
+    #[serde(default = "default_key_allow_empty")]
+    pub key_allow_empty: bool,
     #[serde(default = "default_score")]
     pub scores: Vec<ScoreConfig>,
     pub only_if: Option<OnlyIf>,
 }
 
 impl ComponentConfig {
-    fn keys(&self) -> Vec<(String, ParsableType)> {
-        let mut keys: Vec<(String, ParsableType)> =
-            self.scores.iter().flat_map(|s| s.keys()).collect();
-        keys.push((self.key.clone(), self.key_type));
+    fn keys(&self) -> Vec<KeyConfig> {
+        let mut keys: Vec<KeyConfig> = self.scores.iter().flat_map(|s| s.keys()).collect();
+        keys.push(KeyConfig {
+            name: self.key.clone(),
+            key_type: self.key_type,
+            allow_empty: self.key_allow_empty,
+        });
         if let Some(ref oif) = self.only_if {
             keys.push(oif.key());
         }
@@ -112,7 +123,7 @@ pub struct ScoreConfig {
 }
 
 impl ScoreConfig {
-    fn keys(&self) -> Vec<(String, ParsableType)> {
+    fn keys(&self) -> Vec<KeyConfig> {
         self.only_if.iter().map(|oif| oif.key()).collect()
     }
 }
@@ -124,8 +135,12 @@ pub struct OnlyIf {
 }
 
 impl OnlyIf {
-    fn key(&self) -> (String, ParsableType) {
-        (self.key.clone(), ParsableType::String)
+    fn key(&self) -> KeyConfig {
+        KeyConfig {
+            name: self.key.clone(),
+            key_type: ParsableType::String,
+            allow_empty: false,
+        }
     }
 }
 
@@ -164,6 +179,10 @@ fn default_key_type() -> ParsableType {
     ParsableType::default()
 }
 
+fn default_key_allow_empty() -> bool {
+    false
+}
+
 fn default_earliest_datetime() -> DateTime<Local> {
     Local::now()
 }
@@ -189,19 +208,20 @@ fn default_components() -> Vec<ComponentConfig> {
         name: "Cores".into(),
         key: "NCPUS".into(),
         key_type: ParsableType::default(),
+        key_allow_empty: false,
         scores: vec![],
         only_if: None,
     }]
 }
 
 impl Settings {
-    pub fn get_keys(&self) -> Vec<(String, ParsableType)> {
+    pub fn get_keys(&self) -> Vec<KeyConfig> {
         let mut keys = self.sites.iter().flat_map(|s| s.keys()).collect::<Vec<_>>();
         if let Some(ref meta) = self.meta {
             keys.extend(meta.iter().flat_map(|m| m.keys()).collect::<Vec<_>>());
         }
         keys.extend(self.components.iter().flat_map(|c| c.keys()));
-        keys.into_iter().unique_by(|t| t.0.clone()).collect()
+        keys.into_iter().unique_by(|t| t.name.clone()).collect()
     }
 }
 
@@ -416,6 +436,13 @@ impl ParsableType {
             }
         })
     }
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct KeyConfig {
+    pub name: String,
+    pub key_type: ParsableType,
+    pub allow_empty: bool,
 }
 
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
