@@ -183,38 +183,35 @@
                 
                 
                 <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#slurm-epilog-collector">SLURM Epilog Collector</a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#collectors">Collectors</a>
                 </div>
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#example-configurations"><small>- Example configurations</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#slurm-collector"><small>- SLURM Collector</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#slurm-epilog-collector"><small>- SLURM Epilog Collector</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#htcondor-collector"><small>- HTCondor Collector</small></a>
                 </div>
                 
                 
                 
                 <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#htcondor-collector">HTCondor Collector</a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#plugins">Plugins</a>
                 </div>
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#configuration-1"><small>- Configuration</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#apel-plugin"><small>- APEL Plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#example-config"><small>- Example config</small></a>
-                </div>
-                
-                
-                
-                <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#priority-plugin">Priority Plugin</a>
-                </div>
-                
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#priority-computation-modes"><small>- Priority computation modes</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#priority-plugin"><small>- Priority Plugin</small></a>
                 </div>
                 
                 
@@ -422,7 +419,12 @@ Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be 
 <p>Auditor is configured via the files in the <code>configuration</code> directory, a configuration file passed to the binary, or via environment variables as mentioned above.</p>
 <h1 id="packages">Packages</h1>
 <p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>.</p>
-<h1 id="slurm-epilog-collector">SLURM Epilog Collector</h1>
+<h1 id="collectors">Collectors</h1>
+<p>Collectors are used to collect data from various sources.
+See below for all currently available collectors.</p>
+<h2 id="slurm-collector">SLURM Collector</h2>
+<p>TODO</p>
+<h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
 <p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
 <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTFLAGS</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>-C link-arg=-s<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>target</span> x86_64-unknown-linux-musl<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>bin</span> auditor-slurm-epilog-collector</span>
 </span></code></pre>
@@ -454,7 +456,7 @@ Slurm provides a number of environment variables in the context of an epilog scr
 	<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">/absolute/path/to/auditor-slurm-epilog-collector</span></span><span class="z-meta z-function-call z-arguments z-shell"> /absolute/path/to/auditor-slurm-epilog-collector-config.yaml</span>
 <span class="z-keyword z-control z-conditional z-end z-shell">fi</span>
 </span></code></pre>
-<h2 id="example-configurations">Example configurations</h2>
+<h3 id="example-configurations">Example configurations</h3>
 <p>The following configuration shows how to set the Auditor host address and port.
 The <code>record_prefix</code> will be used to prefix the Slurm job id in the record identifier (in this case it will be <code>slurm-JOBID</code>).
 The <code>site_name</code> is the <code>site_id</code> which will be attached to every record.
@@ -503,7 +505,7 @@ Regex is accepted.</p>
       <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>Partition<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
       <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">matches</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>^part2$<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
 </span></code></pre>
-<h1 id="htcondor-collector">HTCondor Collector</h1>
+<h2 id="htcondor-collector">HTCondor Collector</h2>
 <p>The collector relies on <code>condor_history</code> to retrieve the information about the jobs.
 The collector runs periodically, creating <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record">records</a> and committing them to the AUDITOR-instance using <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor</a>.</p>
 <p>The collector is run as follows:</p>
@@ -527,7 +529,7 @@ Further, optional arguments are</p>
 -1, --one-shot        Run once and exit.
 </span></code></pre>
 <p>Command line arguments override the values set in the config file.</p>
-<h2 id="configuration-1">Configuration</h2>
+<h3 id="configuration-1">Configuration</h3>
 <p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>state_db</code></td><td>Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.</td></tr>
@@ -556,7 +558,7 @@ Else, the value is not set.</p>
 In case the regex contains a group, the value is set to the (first) matching group, else the <code>name</code>-field is used.</p>
 <p>If the entry contains an <code>only_if</code>-field, the value is only returned if the value of the ClassAd in <code>only_if.key</code>  matches the regex given in <code>only_if.matches</code>.</p>
 <p>See below for an example config and the use of such <code>entry</code>s.</p>
-<h2 id="example-config">Example config</h2>
+<h3 id="example-config">Example config</h3>
 <pre data-lang="yaml" class="language-yaml z-code"><code class="language-yaml" data-lang="yaml"><span class="z-source z-yaml"><span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">addr</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-unquoted z-plain z-out z-yaml">localhost</span>
 <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">port</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">8000</span>
 <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">timeout</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-constant z-numeric z-integer z-decimal z-yaml">10</span>
@@ -612,7 +614,12 @@ In case the regex contains a group, the value is set to the (first) matching gro
   <span class="z-punctuation z-definition z-block z-sequence z-item z-yaml">-</span> <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">name</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>UserCPU<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
     <span class="z-string z-unquoted z-plain z-out z-yaml"><span class="z-entity z-name z-tag z-yaml">key</span></span><span class="z-punctuation z-separator z-key-value z-mapping z-yaml">:</span> <span class="z-string z-quoted z-double z-yaml"><span class="z-punctuation z-definition z-string z-begin z-yaml">&quot;</span>RemoteUserCpu<span class="z-punctuation z-definition z-string z-end z-yaml">&quot;</span></span>
 </span></code></pre>
-<h1 id="priority-plugin">Priority Plugin</h1>
+<h1 id="plugins">Plugins</h1>
+<p>Plugins are used to retrieve data from Auditor for further processing.
+See below for all currently available collectors.</p>
+<h2 id="apel-plugin">APEL Plugin</h2>
+<p>TODO</p>
+<h2 id="priority-plugin">Priority Plugin</h2>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
 This allows one to transfer provided resources on one system to priorities in another system.
 The computed priorities are set via shelling out, and the executed commands can be defined as needed.</p>
@@ -657,7 +664,7 @@ This allows one to adapt the command for the various groups involved.
 In the <code>command</code> field one can also see a string <code>{priority}</code>, which will be replaced by the computed priority for the group.
 Another special string, <code>{resources}</code> is available, which is replaced by the computed provided resource per group.
 The command is executed for each group separately and multiple commands can be provided.</p>
-<h2 id="priority-computation-modes">Priority computation modes</h2>
+<h3 id="priority-computation-modes">Priority computation modes</h3>
 <p>As stated above, the priorities are computed from the provided resources of each group.
 However, the computed resources and the priorities are in different units and span different ranges.
 Therefore a mapping between resources and priorities needs to be in place.
