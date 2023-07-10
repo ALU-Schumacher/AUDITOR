@@ -6,7 +6,7 @@ Plugin for AUDITOR to report job records to APEL
 
 Licensed under
 
- - BSD-2-Clause Plus Patent License ([LICENSE](https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin/blob/main/LICENSE))
+ - BSD-2-Clause Plus Patent License ([LICENSE](https://github.com/ALU-Schumacher/AUDITOR/tree/main/plugins/apel/LICENSE))
 
 ### Contribution
 
