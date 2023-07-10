@@ -521,7 +521,117 @@ See below for all currently available collectors.
 
 ## APEL Plugin
 
-TODO
+The APEL plugin creates job summary records and sends them to APEL.
+The following fields need to be present in the config file:
+
+```
+[logging]
+log_level =
+
+[paths]
+time_db_path =
+
+[intervals]
+report_interval =
+
+[site]
+publish_since =
+sites_to_report =
+site_name_mapping =
+default_submit_host =
+infrastructure_type =
+benchmark_type =
+
+[auditor]
+auditor_ip =
+auditor_port =
+auditor_timeout =
+benchmark_name =
+cores_name =
+cpu_time_name =
+nnodes_name =
+meta_key_site =
+meta_key_submithost =
+meta_key_voms =
+meta_key_username =
+
+[authentication]
+auth_url =
+ams_url =
+client_cert =
+client_key =
+ca_path =
+verify_ca =
+```
+
+`log_level`: can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).
+`time_db_path`: path of the `time.db`. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.
+`report_interval`: time in seconds between reports to APEL.
+`publish_since`: date and time (UTC) after which jobs will be published. Only relevant for first run when no `time.db` is present yet.
+`sites_to_report`: list of sites that will be reported. Uses the site name as stored in the AUDITOR records.
+`site_name_mapping`: maps the site name as stored in the AUDITOR record to the name of the site in the GOCDB.
+`default_submit_host`: default submit host if this information is missing in the AUDITOR record.
+`infrastructure_type`: origin of the job, can be set to `grid` or `local`.
+`benchmark_type`: name of the benchmark that will be reported to APEL.
+`auditor_ip`: IP of the AUDITOR instance.
+`auditor_port`: port of the AUDITOR instance.
+`auditor_timeout`: time in seconds after which the connection to the AUDITOR instance times out.
+`benchmark_name`: name of the `benchmark` field in the AUDITOR records.
+`cores_name`: name of the `cores` field in the AUDITOR records.
+`cpu_time_name`: name of the field that stores the total CPU time in the AUDITOR records.
+`nnodes_name`: name of the field that stores the number of nodes in the AUDITOR records.
+`meta_key_site`: name of the field that stores the name of the site in the AUDITOR records.
+`meta_key_submithost`: name of the field that stores the submithost in the AUDITOR records.
+`meta_key_voms`: name of the field that stores the VOMS information in the AUDITOR records.
+`meta_key_user`: name of the field that stores the GlobalUserName in the AUDITOR records.
+`auth_url`: URL from which the APEL authentication token is received.
+`ams_url`: URL to which the reports are sent.
+`client_cert`: path of the host certificate.
+`client_key`: path of the host key.
+`ca_path`: path of the local certificate folder.
+`verify_ca`: controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).
+
+Example config:
+
+```
+[logging]
+log_level = INFO
+
+[paths]
+time_db_path = /etc/auditor_apel_plugin/time.db
+
+[intervals]
+report_interval = 86400
+
+[site]
+publish_since = 2023-01-01 13:37:42+00:00
+sites_to_report = ["site1", "site2"]
+site_name_mapping = {"site1": "SITE-2-GOCDB", "site2": "SITE-2-GOCDB"}
+default_submit_host = gsiftp://accounting.grid_site.de:1337/jobs
+infrastructure_type = grid
+benchmark_type = hepscore23
+
+[auditor]
+auditor_ip = 127.0.0.1
+auditor_port = 3333
+auditor_timeout = 60
+benchmark_name = hepscore23
+cores_name = Cores
+cpu_time_name = TotalCPU
+nnodes_name = NNodes
+meta_key_site = site_id
+meta_key_submithost = headnode
+meta_key_voms = voms
+meta_key_username = subject
+
+[authentication]
+auth_url = https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
+ams_url = https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+client_cert = /etc/grid-security/hostcert.pem
+client_key = /etc/grid-security/hostkey.pem
+ca_path = /etc/grid-security/certificates
+verify_ca = True
+```
 
 ## Priority Plugin
 
