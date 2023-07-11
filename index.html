@@ -541,12 +541,12 @@ Further, optional arguments are</p>
 <tr><td><code>meta</code></td><td>Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s.<br>If multiple <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s are given for specified name, the values are appended to a list. A special case is <code>site</code>, which is a list of <a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s, but only the first match is used.</td></tr>
 <tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR/#entry"><code>entry</code></a>s).</td></tr>
 </tbody></table>
-<p>The following parameters are optional:
-| Parameter | Default            | Description                                                                     |
-| --------- | ------------------ | ------------------------------------------------------------------------------- |
-| <code>addr</code>    | <code>http://127.0.0.1</code> | Address of the AUDITOR-instance. If this is set, <code>port</code> must also be specified. |
-| <code>port</code>    | <code>8080</code>             | Port of the AUDITOR-instance. If this is set, <code>addr</code> must also be specified.    |
-| <code>timeout</code> | <code>30</code>               | Timeout in seconds for the connection to the AUDITOR-instance.                  |</p>
+<p>The following parameters are optional:</p>
+<table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>addr</code></td><td><code>http://127.0.0.1</code></td><td>Address of the AUDITOR-instance. If this is set, <code>port</code> must also be specified.</td></tr>
+<tr><td><code>port</code></td><td><code>8080</code></td><td>Port of the AUDITOR-instance. If this is set, <code>addr</code> must also be specified.</td></tr>
+<tr><td><code>timeout</code></td><td><code>30</code></td><td>Timeout in seconds for the connection to the AUDITOR-instance.</td></tr>
+</tbody></table>
 <h3 id="entry"><code>entry</code></h3>
 <p>An <code>entry</code> describes how to get the value for a meta-var or component from the job.
 Unlike meta-variables, components contain a <code>name</code>-field, which is used as the name of the component.
@@ -658,32 +658,34 @@ client_key =
 ca_path =
 verify_ca =
 </span></code></pre>
-<p><code>log_level</code>: can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).
-<code>time_db_path</code>: path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.
-<code>report_interval</code>: time in seconds between reports to APEL.
-<code>publish_since</code>: date and time (UTC) after which jobs will be published. Only relevant for first run when no <code>time.db</code> is present yet.
-<code>sites_to_report</code>: list of sites that will be reported. Uses the site name as stored in the AUDITOR records.
-<code>site_name_mapping</code>: maps the site name as stored in the AUDITOR record to the name of the site in the GOCDB.
-<code>default_submit_host</code>: default submit host if this information is missing in the AUDITOR record.
-<code>infrastructure_type</code>: origin of the job, can be set to <code>grid</code> or <code>local</code>.
-<code>benchmark_type</code>: name of the benchmark that will be reported to APEL.
-<code>auditor_ip</code>: IP of the AUDITOR instance.
-<code>auditor_port</code>: port of the AUDITOR instance.
-<code>auditor_timeout</code>: time in seconds after which the connection to the AUDITOR instance times out.
-<code>benchmark_name</code>: name of the <code>benchmark</code> field in the AUDITOR records.
-<code>cores_name</code>: name of the <code>cores</code> field in the AUDITOR records.
-<code>cpu_time_name</code>: name of the field that stores the total CPU time in the AUDITOR records.
-<code>nnodes_name</code>: name of the field that stores the number of nodes in the AUDITOR records.
-<code>meta_key_site</code>: name of the field that stores the name of the site in the AUDITOR records.
-<code>meta_key_submithost</code>: name of the field that stores the submithost in the AUDITOR records.
-<code>meta_key_voms</code>: name of the field that stores the VOMS information in the AUDITOR records.
-<code>meta_key_user</code>: name of the field that stores the GlobalUserName in the AUDITOR records.
-<code>auth_url</code>: URL from which the APEL authentication token is received.
-<code>ams_url</code>: URL to which the reports are sent.
-<code>client_cert</code>: path of the host certificate.
-<code>client_key</code>: path of the host key.
-<code>ca_path</code>: path of the local certificate folder.
-<code>verify_ca</code>: controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
+<tr><td><code>time_db_path</code></td><td>Path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.</td></tr>
+<tr><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
+<tr><td><code>publish_since</code></td><td>Date and time (UTC) after which jobs will be published. Only relevant for first run when no <code>time.db</code> is present yet.</td></tr>
+<tr><td><code>sites_to_report</code></td><td>List of sites that will be reported. Uses the site name as stored in the AUDITOR records.</td></tr>
+<tr><td><code>site_name_mapping</code></td><td>Maps the site name as stored in the AUDITOR record to the name of the site in the GOCDB.</td></tr>
+<tr><td><code>default_submit_host</code></td><td>Default submit host if this information is missing in the AUDITOR record.</td></tr>
+<tr><td><code>infrastructure_type</code></td><td>Origin of the job, can be set to <code>grid</code> or <code>local</code>.</td></tr>
+<tr><td><code>benchmark_type</code></td><td>Name of the benchmark that will be reported to APEL.</td></tr>
+<tr><td><code>auditor_ip</code></td><td>IP of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor_port</code></td><td>Port of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor_timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
+<tr><td><code>benchmark_name</code></td><td>Name of the <code>benchmark</code> field in the AUDITOR records.</td></tr>
+<tr><td><code>cores_name</code></td><td>Name of the <code>cores</code> field in the AUDITOR records.</td></tr>
+<tr><td><code>cpu_time_name</code></td><td>Name of the field that stores the total CPU time in the AUDITOR records.</td></tr>
+<tr><td><code>nnodes_name</code></td><td>Name of the field that stores the number of nodes in the AUDITOR records.</td></tr>
+<tr><td><code>meta_key_site</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+<tr><td><code>meta_key_submithost</code></td><td>Name of the field that stores the submithost in the AUDITOR records.</td></tr>
+<tr><td><code>meta_key_voms</code></td><td>Name of the field that stores the VOMS information in the AUDITOR records.</td></tr>
+<tr><td><code>meta_key_user</code></td><td>Name of the field that stores the GlobalUserName in the AUDITOR records.</td></tr>
+<tr><td><code>auth_url</code></td><td>URL from which the APEL authentication token is received.</td></tr>
+<tr><td><code>ams_url</code></td><td>URL to which the reports are sent.</td></tr>
+<tr><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
+<tr><td><code>client_key</code></td><td>Path of the host key.</td></tr>
+<tr><td><code>ca_path</code></td><td>Path of the local certificate folder.</td></tr>
+<tr><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
+</tbody></table>
 <p>Example config:</p>
 <pre class="z-code"><code><span class="z-text z-plain">[logging]
 log_level = INFO
