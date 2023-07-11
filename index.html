@@ -618,7 +618,111 @@ In case the regex contains a group, the value is set to the (first) matching gro
 <p>Plugins are used to retrieve data from Auditor for further processing.
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
-<p>TODO</p>
+<p>The APEL plugin creates job summary records and sends them to APEL.
+The following fields need to be present in the config file:</p>
+<pre class="z-code"><code><span class="z-text z-plain">[logging]
+log_level =
+
+[paths]
+time_db_path =
+
+[intervals]
+report_interval =
+
+[site]
+publish_since =
+sites_to_report =
+site_name_mapping =
+default_submit_host =
+infrastructure_type =
+benchmark_type =
+
+[auditor]
+auditor_ip =
+auditor_port =
+auditor_timeout =
+benchmark_name =
+cores_name =
+cpu_time_name =
+nnodes_name =
+meta_key_site =
+meta_key_submithost =
+meta_key_voms =
+meta_key_username =
+
+[authentication]
+auth_url =
+ams_url =
+client_cert =
+client_key =
+ca_path =
+verify_ca =
+</span></code></pre>
+<p><code>log_level</code>: can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).
+<code>time_db_path</code>: path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.
+<code>report_interval</code>: time in seconds between reports to APEL.
+<code>publish_since</code>: date and time (UTC) after which jobs will be published. Only relevant for first run when no <code>time.db</code> is present yet.
+<code>sites_to_report</code>: list of sites that will be reported. Uses the site name as stored in the AUDITOR records.
+<code>site_name_mapping</code>: maps the site name as stored in the AUDITOR record to the name of the site in the GOCDB.
+<code>default_submit_host</code>: default submit host if this information is missing in the AUDITOR record.
+<code>infrastructure_type</code>: origin of the job, can be set to <code>grid</code> or <code>local</code>.
+<code>benchmark_type</code>: name of the benchmark that will be reported to APEL.
+<code>auditor_ip</code>: IP of the AUDITOR instance.
+<code>auditor_port</code>: port of the AUDITOR instance.
+<code>auditor_timeout</code>: time in seconds after which the connection to the AUDITOR instance times out.
+<code>benchmark_name</code>: name of the <code>benchmark</code> field in the AUDITOR records.
+<code>cores_name</code>: name of the <code>cores</code> field in the AUDITOR records.
+<code>cpu_time_name</code>: name of the field that stores the total CPU time in the AUDITOR records.
+<code>nnodes_name</code>: name of the field that stores the number of nodes in the AUDITOR records.
+<code>meta_key_site</code>: name of the field that stores the name of the site in the AUDITOR records.
+<code>meta_key_submithost</code>: name of the field that stores the submithost in the AUDITOR records.
+<code>meta_key_voms</code>: name of the field that stores the VOMS information in the AUDITOR records.
+<code>meta_key_user</code>: name of the field that stores the GlobalUserName in the AUDITOR records.
+<code>auth_url</code>: URL from which the APEL authentication token is received.
+<code>ams_url</code>: URL to which the reports are sent.
+<code>client_cert</code>: path of the host certificate.
+<code>client_key</code>: path of the host key.
+<code>ca_path</code>: path of the local certificate folder.
+<code>verify_ca</code>: controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</p>
+<p>Example config:</p>
+<pre class="z-code"><code><span class="z-text z-plain">[logging]
+log_level = INFO
+
+[paths]
+time_db_path = /etc/auditor_apel_plugin/time.db
+
+[intervals]
+report_interval = 86400
+
+[site]
+publish_since = 2023-01-01 13:37:42+00:00
+sites_to_report = [&quot;site1&quot;, &quot;site2&quot;]
+site_name_mapping = {&quot;site1&quot;: &quot;SITE-2-GOCDB&quot;, &quot;site2&quot;: &quot;SITE-2-GOCDB&quot;}
+default_submit_host = gsiftp://accounting.grid_site.de:1337/jobs
+infrastructure_type = grid
+benchmark_type = hepscore23
+
+[auditor]
+auditor_ip = 127.0.0.1
+auditor_port = 3333
+auditor_timeout = 60
+benchmark_name = hepscore23
+cores_name = Cores
+cpu_time_name = TotalCPU
+nnodes_name = NNodes
+meta_key_site = site_id
+meta_key_submithost = headnode
+meta_key_voms = voms
+meta_key_username = subject
+
+[authentication]
+auth_url = https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
+ams_url = https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+client_cert = /etc/grid-security/hostcert.pem
+client_key = /etc/grid-security/hostkey.pem
+ca_path = /etc/grid-security/certificates
+verify_ca = True
+</span></code></pre>
 <h2 id="priority-plugin">Priority Plugin</h2>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
 This allows one to transfer provided resources on one system to priorities in another system.
