@@ -4,3 +4,5 @@ nohup.out
 dist/
 **/testdb.db
 **/target/
+/venv
+*~
