@@ -29,7 +29,8 @@ class MissingConfigDependencyError(ConfigError):
         self.keys = keys
         self.dependency = dependency
         super(MissingConfigDependencyError, self).__init__(
-            f"Missing config entry {self.keys!r}, must be specified if {self.dependency!r} is specified."
+            f"Missing config entry {self.keys!r}, "
+            f"must be specified if {self.dependency!r} is specified."
         )
 
 
@@ -40,5 +41,6 @@ class MalformedConfigEntryError(ConfigError):
         self.keys = keys
         self.reason = reason
         super(MalformedConfigEntryError, self).__init__(
-            f"Malformed config entry {self.keys!r}{f': {self.reason}' if self.reason else ''}."
+            f"Malformed config entry {self.keys!r}"
+            f"{f': {self.reason}' if self.reason else ''}."
         )

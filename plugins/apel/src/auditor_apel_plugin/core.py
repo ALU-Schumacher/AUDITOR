@@ -85,9 +85,7 @@ def create_time_db(publish_since, time_db_path):
                  """
 
     initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
-    publish_since_datetime = datetime.strptime(
-        publish_since, "%Y-%m-%d %H:%M:%S%z"
-    )
+    publish_since_datetime = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
     data_tuple = (
         publish_since_datetime.replace(tzinfo=pytz.utc).timestamp(),
         initial_report_time,
@@ -178,9 +176,7 @@ def get_submit_host(record, config):
     default_submit_host = config["site"].get("default_submit_host")
 
     try:
-        submit_host = replace_record_string(
-            record.meta.get(meta_key_submithost)[0]
-        )
+        submit_host = replace_record_string(record.meta.get(meta_key_submithost)[0])
     except TypeError:
         logging.warning(
             f"No {meta_key_submithost} found in record {record.record_id}, "
@@ -314,9 +310,7 @@ def create_summary_db(config, records):
         try:
             site_name = site_name_mapping[site_id]
         except KeyError:
-            logging.critical(
-                f"No site name mapping defined for site {site_id}"
-            )
+            logging.critical(f"No site name mapping defined for site {site_id}")
             raise
 
         submit_host = get_submit_host(r, config)
@@ -327,8 +321,7 @@ def create_summary_db(config, records):
             user_name = replace_record_string(r.meta.get(meta_key_username)[0])
         except TypeError:
             logging.warning(
-                f"No GlobalUserName found in {r.record_id}, "
-                "not sending GlobalUserName"
+                f"No GlobalUserName found in {r.record_id}, not sending GlobalUserName"
             )
             user_name = None
 
@@ -452,9 +445,7 @@ def create_sync_db(config, records):
         try:
             site_name = site_name_mapping[site_id]
         except KeyError:
-            logging.critical(
-                f"No site name mapping defined for site {site_id}"
-            )
+            logging.critical(f"No site name mapping defined for site {site_id}")
             raise
 
         submit_host = get_submit_host(r, config)
@@ -623,9 +614,7 @@ def get_token(config):
     else:
         ca_path = False
 
-    response = requests.get(
-        auth_url, cert=(client_cert, client_key), verify=ca_path
-    )
+    response = requests.get(auth_url, cert=(client_cert, client_key), verify=ca_path)
     token = response.json()["token"]
 
     return token

@@ -41,7 +41,9 @@ class Config(object):
             set(self._config["class_ads"]).union(set(extract_values("key", file)))
         )
         self.check()
-        self._config["condor_timestamp"] = int(dt.fromisoformat(self.earliest_datetime).timestamp())
+        self._config["condor_timestamp"] = int(
+            dt.fromisoformat(self.earliest_datetime).timestamp()
+        )
 
     def __getattr__(self, attr: str):
         return self._config[attr]

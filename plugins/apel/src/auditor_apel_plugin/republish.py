@@ -37,9 +37,7 @@ def run(config, args, client):
     logging.debug(token)
 
     summary_db = create_summary_db(config, records)
-    grouped_summary_list = group_summary_db(
-        summary_db, filter_by=(month, year, site)
-    )
+    grouped_summary_list = group_summary_db(summary_db, filter_by=(month, year, site))
     summary = create_summary(grouped_summary_list)
     logging.debug(summary)
     signed_summary = sign_msg(client_cert, client_key, summary)
@@ -63,9 +61,7 @@ def main():
     parser.add_argument(
         "-s", "--site", required=True, help="Site (GOCDB): UNI-FREIBURG, ..."
     )
-    parser.add_argument(
-        "-c", "--config", required=True, help="Path to the config file"
-    )
+    parser.add_argument("-c", "--config", required=True, help="Path to the config file")
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
@@ -87,9 +83,7 @@ def main():
     auditor_timeout = config["auditor"].getint("auditor_timeout")
 
     builder = AuditorClientBuilder()
-    builder = builder.address(auditor_ip, auditor_port).timeout(
-        auditor_timeout
-    )
+    builder = builder.address(auditor_ip, auditor_port).timeout(auditor_timeout)
     client = builder.build_blocking()
 
     try:

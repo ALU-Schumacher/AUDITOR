@@ -34,9 +34,7 @@ async def main():
     component1 = Component("comp-1", 10).with_score(score1)
     component2 = Component("comp-2", 100).with_score(score1).with_score(score2)
     record = (
-        Record(record_id, start)
-        .with_component(component1)
-        .with_component(component2)
+        Record(record_id, start).with_component(component1).with_component(component2)
     )
 
     await client.add(record)

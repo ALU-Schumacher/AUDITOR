@@ -76,9 +76,11 @@ class CondorHistoryCollector(object):
         self.logger.info("Collector run finished.")
 
     async def _collect(self, schedd_name: str, job_id: str = ""):
-        """Collects jobs from `condor_history` for a given schedd and adds them to the auditor client.
+        """Collects jobs from `condor_history` for a given schedd
+        and adds them to the auditor client.
 
-        Jobs are iterated over in reverse order, so that the oldest job is processed first.
+        Jobs are iterated over in reverse order,
+        so that the oldest job is processed first.
         """
         self.logger.info(f"Collecting jobs for schedd {schedd_name!r}.")
         # Convert Job ID to (cluster, proc) tuple
@@ -109,7 +111,8 @@ class CondorHistoryCollector(object):
                 self.logger.debug(e.args[0])
             self.set_last_job(schedd_name, (job["ClusterId"], job["ProcId"]))
         self.logger.info(
-            f"Added {added} records.{f' Failed to generate {failed} records.' if failed else ''}"
+            f"Added {added} records."
+            f"{f' Failed to generate {failed} records.' if failed else ''}"
         )
 
     def get_last_job(self, schedd_name: str) -> Optional[Tuple[int, int]]:
@@ -139,11 +142,13 @@ class CondorHistoryCollector(object):
         since = f"'CompletionDate<={self.config.condor_timestamp}'"
         if job is None:
             self.logger.debug(
-                f"Querying HTCondor history for {schedd_name!r} starting from {dt.fromtimestamp(self.config.condor_timestamp)}."
+                f"Querying HTCondor history for {schedd_name!r} starting "
+                f"from {dt.fromtimestamp(self.config.condor_timestamp)}."
             )
         else:
             self.logger.debug(
-                f"Querying HTCondor history for {schedd_name!r} starting from job {job}."
+                f"Querying HTCondor history for {schedd_name!r} "
+                f"starting from job {job}."
             )
             since = f"{job[0]}.{job[1]}"
 
@@ -161,12 +166,9 @@ class CondorHistoryCollector(object):
         if getattr(self.config, "pool", None):
             cmd.extend(["-pool", self.config.pool])
         if getattr(self.config, "job_status", None):
-            cmd.extend(
-                [
-                    "-constraint",
-                    f"\"{' || '.join(f'JobStatus == {j}' for j in self.config.job_status)}\"",
-                ]
-            )
+            job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
+
+            cmd.extend(["-constraint", f'"{job_stats}"'])
 
         self.logger.debug(f"Running command: {' '.join(cmd)!r}")
 
@@ -216,7 +218,8 @@ class CondorHistoryCollector(object):
                         break
             if not values:
                 self.logger.warning(
-                    f"Could not find meta value for {key!r} for job {job['GlobalJobId']!r}."
+                    f"Could not find meta value for {key!r} "
+                    f"for job {job['GlobalJobId']!r}."
                 )
             meta.insert(key, values)
         return meta

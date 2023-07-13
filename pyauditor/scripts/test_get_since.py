@@ -29,9 +29,7 @@ async def main():
         # datetimes sent to auditor MUST BE in UTC.
         start = datetime.datetime(2022, 8, 8, i, 0, 0, 0, tzinfo=pytz.utc)
         stop = datetime.datetime(2022, 8, 9, i, 0, 0, 0, tzinfo=pytz.utc)
-        record = Record(record_id, start).with_stop_time(
-            stop
-        )
+        record = Record(record_id, start).with_stop_time(stop)
 
         await client.add(record)
 
