@@ -194,7 +194,7 @@ impl AuditorClient {
             .send()
             .await
         {
-            Ok(s) => matches!(s.error_for_status(), Ok(_)),
+            Ok(s) => s.error_for_status().is_ok(),
             Err(_) => false,
         }
     }
@@ -342,7 +342,7 @@ impl AuditorClientBlocking {
             .get(format!("{}/health_check", &self.address))
             .send()
         {
-            Ok(s) => matches!(s.error_for_status(), Ok(_)),
+            Ok(s) => s.error_for_status().is_ok(),
             Err(_) => false,
         }
     }
@@ -494,7 +494,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }
@@ -527,7 +527,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }
@@ -893,7 +893,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }
@@ -929,7 +929,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }
@@ -1007,7 +1007,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }
@@ -1043,7 +1043,7 @@ mod tests {
 
         response
             .into_iter()
-            .zip(body.into_iter())
+            .zip(body)
             .map(|(rr, br)| assert_eq!(rr, br))
             .count();
     }

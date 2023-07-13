@@ -28,12 +28,12 @@ use crate::{
 type Job = HashMap<String, AllowedTypes>;
 
 static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"^[0-9_]+\.batch$"#)
+    Regex::new(r"^[0-9_]+\.batch$")
         .expect("Could not construct essential Regex for matching job ids.")
 });
 
 static SUB_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"^[0-9]+\.[0-9]*$"#)
+    Regex::new(r"^[0-9]+\.[0-9]*$")
         .expect("Could not construct essential Regex for matching job ids.")
 });
 
