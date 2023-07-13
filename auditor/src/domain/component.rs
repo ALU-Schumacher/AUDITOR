@@ -160,7 +160,7 @@ impl PartialEq<Component> for ComponentTest {
             && s_amount.as_ref().unwrap() == o_amount.as_ref()
             && s_scores
                 .into_iter()
-                .zip(o_scores.into_iter())
+                .zip(o_scores)
                 .fold(true, |acc, (a, b)| acc && a == b)
     }
 }
