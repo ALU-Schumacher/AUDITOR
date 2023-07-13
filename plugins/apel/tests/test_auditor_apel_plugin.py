@@ -42,18 +42,14 @@ def create_rec_metaless(rec_values, conf):
     rec = pyauditor.Record(rec_values["rec_id"], rec_values["start_time"])
     rec.with_stop_time(rec_values["stop_time"])
     rec.with_component(
-        pyauditor.Component(
-            conf["cores_name"], rec_values["n_cores"]
-        ).with_score(
+        pyauditor.Component(conf["cores_name"], rec_values["n_cores"]).with_score(
             pyauditor.Score(conf["benchmark_name"], rec_values["hepscore"])
         )
     )
     rec.with_component(
         pyauditor.Component(conf["cpu_time_name"], rec_values["tot_cpu"])
     )
-    rec.with_component(
-        pyauditor.Component(conf["nnodes_name"], rec_values["n_nodes"])
-    )
+    rec.with_component(pyauditor.Component(conf["nnodes_name"], rec_values["n_nodes"]))
 
     return rec
 
@@ -62,18 +58,14 @@ def create_rec(rec_values, conf):
     rec = pyauditor.Record(rec_values["rec_id"], rec_values["start_time"])
     rec.with_stop_time(rec_values["stop_time"])
     rec.with_component(
-        pyauditor.Component(
-            conf["cores_name"], rec_values["n_cores"]
-        ).with_score(
+        pyauditor.Component(conf["cores_name"], rec_values["n_cores"]).with_score(
             pyauditor.Score(conf["benchmark_name"], rec_values["hepscore"])
         )
     )
     rec.with_component(
         pyauditor.Component(conf["cpu_time_name"], rec_values["tot_cpu"])
     )
-    rec.with_component(
-        pyauditor.Component(conf["nnodes_name"], rec_values["n_nodes"])
-    )
+    rec.with_component(pyauditor.Component(conf["nnodes_name"], rec_values["n_nodes"]))
     meta = pyauditor.Meta()
 
     if rec_values["submit_host"] is not None:
@@ -431,9 +423,7 @@ class TestAuditorApelPlugin:
                 content[idx][0]
                 == ast.literal_eval(site_name_mapping)[rec_values["site"]]
             )
-            assert content[idx][1] == replace_record_string(
-                rec_values["submit_host"]
-            )
+            assert content[idx][1] == replace_record_string(rec_values["submit_host"])
             assert (
                 content[idx][2]
                 == replace_record_string(rec_values["voms"]).split("/")[1]
@@ -449,23 +439,16 @@ class TestAuditorApelPlugin:
             assert content[idx][11] == runtime
             assert content[idx][12] == runtime * rec_values["hepscore"]
             assert content[idx][13] == rec_values["tot_cpu"]
-            assert (
-                content[idx][14]
-                == rec_values["tot_cpu"] * rec_values["hepscore"]
-            )
+            assert content[idx][14] == rec_values["tot_cpu"] * rec_values["hepscore"]
             assert (
                 content[idx][15]
-                == rec_values["start_time"]
-                .replace(tzinfo=pytz.utc)
-                .timestamp()
+                == rec_values["start_time"].replace(tzinfo=pytz.utc).timestamp()
             )
             assert (
                 content[idx][16]
                 == rec_values["stop_time"].replace(tzinfo=pytz.utc).timestamp()
             )
-            assert content[idx][17] == replace_record_string(
-                rec_values["user_name"]
-            )
+            assert content[idx][17] == replace_record_string(rec_values["user_name"])
 
         rec_1_values["user_name"] = None
         records = []
@@ -617,9 +600,7 @@ class TestAuditorApelPlugin:
             assert pytest_error.type == KeyError
 
             conf["auditor"]["benchmark_name"] = "hepscore"
-            conf["site"][
-                "site_name_mapping"
-            ] = '{"test-site-2": "TEST_SITE_2"}'
+            conf["site"]["site_name_mapping"] = '{"test-site-2": "TEST_SITE_2"}'
             with pytest.raises(Exception) as pytest_error:
                 create_summary_db(conf, records)
             assert pytest_error.type == KeyError

@@ -10,7 +10,9 @@ def main():
     local_tz = get_localzone()
     print("LOCAL TIMEZONE: " + str(local_tz))
 
-    client = AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    client = (
+        AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    )
 
     print("Testing /health_check endpoint")
     health = client.health_check()

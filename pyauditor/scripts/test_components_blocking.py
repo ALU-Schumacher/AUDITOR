@@ -10,7 +10,9 @@ def main():
     local_tz = get_localzone()
     print("LOCAL TIMEZONE: " + str(local_tz))
 
-    client = AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    client = (
+        AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    )
 
     print("Testing /health_check endpoint")
     health = client.health_check()
@@ -33,9 +35,7 @@ def main():
     component1 = Component("comp-1", 10).with_score(score1)
     component2 = Component("comp-2", 100).with_score(score1).with_score(score2)
     record = (
-        Record(record_id, start)
-        .with_component(component1)
-        .with_component(component2)
+        Record(record_id, start).with_component(component1).with_component(component2)
     )
 
     client.add(record)

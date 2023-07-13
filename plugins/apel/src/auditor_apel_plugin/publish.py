@@ -60,9 +60,7 @@ def run(config, client):
 
             records_summary = get_records(client, start_time, 30)
 
-            latest_stop_time = records_summary[-1].stop_time.replace(
-                tzinfo=pytz.utc
-            )
+            latest_stop_time = records_summary[-1].stop_time.replace(tzinfo=pytz.utc)
             logging.debug(f"Latest stop time is {latest_stop_time}")
             summary_db = create_summary_db(config, records_summary)
             grouped_summary_list = group_summary_db(summary_db)
@@ -109,9 +107,7 @@ def run(config, client):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-c", "--config", required=True, help="Path to the config file"
-    )
+    parser.add_argument("-c", "--config", required=True, help="Path to the config file")
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
@@ -119,8 +115,7 @@ def main():
 
     log_level = config["logging"].get("log_level")
     log_format = (
-        "[%(asctime)s] %(levelname)-8s %(message)s "
-        "(%(pathname)s at line %(lineno)d)"
+        "[%(asctime)s] %(levelname)-8s %(message)s (%(pathname)s at line %(lineno)d)"
     )
     logging.basicConfig(
         # filename="apel_plugin.log",
@@ -137,9 +132,7 @@ def main():
     auditor_timeout = config["auditor"].getint("auditor_timeout")
 
     builder = AuditorClientBuilder()
-    builder = builder.address(auditor_ip, auditor_port).timeout(
-        auditor_timeout
-    )
+    builder = builder.address(auditor_ip, auditor_port).timeout(auditor_timeout)
     client = builder.build_blocking()
 
     try:

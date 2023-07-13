@@ -10,7 +10,9 @@ def main():
     local_tz = get_localzone()
     print("LOCAL TIMEZONE: " + str(local_tz))
 
-    client = AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    client = (
+        AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build_blocking()
+    )
 
     print("Testing /health_check endpoint")
     health = client.health_check()
@@ -28,9 +30,7 @@ def main():
         # datetimes sent to auditor MUST BE in UTC.
         start = datetime.datetime(2022, 8, 8, i, 0, 0, 0, tzinfo=pytz.utc)
         stop = datetime.datetime(2022, 8, 9, i, 0, 0, 0, tzinfo=pytz.utc)
-        record = Record(record_id, start).with_stop_time(
-            stop
-        )
+        record = Record(record_id, start).with_stop_time(stop)
 
         client.add(record)
 
