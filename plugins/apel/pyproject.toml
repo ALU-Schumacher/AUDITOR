@@ -10,7 +10,7 @@ dependencies = [
 	     "python-auditor==0.1.0",
 	     "pytz==2023.3",
 	     "requests==2.31.0",
-	     "cryptography==41.0.1",
+	     "cryptography==41.0.2",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
 readme = "README.md"
