@@ -37,7 +37,7 @@ jobs:
           args: --release --sdist -o dist --interpreter python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -81,7 +81,7 @@ jobs:
           args: --release -o dist --interpreter python3.7 python3.8 python3.9 python3.10 python3.11 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -116,7 +116,7 @@ jobs:
           args: --release -o dist --universal2 --interpreter python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
