@@ -1,7 +1,17 @@
 version: 2
 updates:
-- package-ecosystem: cargo
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+  # Rust code
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  # APEL plugin
+  - package-ecosystem: "pip"
+    directory: "/plugins/apel"
+    schedule:
+      interval: "daily"
+  # GitHub action
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
