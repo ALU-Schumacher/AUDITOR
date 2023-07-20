@@ -2,7 +2,6 @@
 
 from pyauditor import AuditorClientBuilder, Record
 import datetime
-import pytz
 from tzlocal import get_localzone
 
 
@@ -28,8 +27,8 @@ def main():
         record_id = f"record-{i:02d}"
 
         # datetimes sent to auditor MUST BE in UTC.
-        start = datetime.datetime(2022, 8, 8, i, 0, 0, 0, tzinfo=pytz.utc)
-        stop = datetime.datetime(2022, 8, 9, i, 0, 0, 0, tzinfo=pytz.utc)
+        start = datetime.datetime(2022, 8, 8, i, 0, 0, 0, tzinfo=datetime.timezone.utc)
+        stop = datetime.datetime(2022, 8, 9, i, 0, 0, 0, tzinfo=datetime.timezone.utc)
         record = Record(record_id, start).with_stop_time(stop)
 
         client.add(record)
@@ -44,7 +43,9 @@ def main():
     for i in range(0, 24):
         assert records[i].record_id == f"record-{i:02d}"
 
-    start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=pytz.utc)
+    start_since = datetime.datetime(
+        2022, 8, 8, 11, 30, 0, 0, tzinfo=datetime.timezone.utc
+    )
 
     records = client.get_started_since(start_since)
     assert len(records) == 12
@@ -54,7 +55,9 @@ def main():
     for i in range(12, 24):
         assert records[i - 12].record_id == f"record-{i:02d}"
 
-    stop_since = datetime.datetime(2022, 8, 9, 11, 30, 0, 0, tzinfo=pytz.utc)
+    stop_since = datetime.datetime(
+        2022, 8, 9, 11, 30, 0, 0, tzinfo=datetime.timezone.utc
+    )
 
     records = client.get_stopped_since(stop_since)
     assert len(records) == 12

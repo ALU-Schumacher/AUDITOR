@@ -2,7 +2,6 @@
 
 from pyauditor import Record, Component, Score
 import datetime
-import pytz
 from tzlocal import get_localzone
 
 
@@ -19,7 +18,7 @@ def main():
     # datetimes sent to auditor MUST BE in UTC.
     start = datetime.datetime(
         2021, 12, 6, 16, 29, 43, 79043, tzinfo=local_tz
-    ).astimezone(pytz.utc)
+    ).astimezone(datetime.timezone.utc)
 
     score1 = Score(score, value)
     score2 = Score(score, value)

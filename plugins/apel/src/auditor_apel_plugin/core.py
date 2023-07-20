@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 import sqlite3
 from sqlite3 import Error
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time, timezone
 from time import sleep
 import pytz
 import json
@@ -325,8 +325,8 @@ def create_summary_db(config, records):
             )
             user_name = None
 
-        year = r.stop_time.replace(tzinfo=pytz.utc).year
-        month = r.stop_time.replace(tzinfo=pytz.utc).month
+        year = r.stop_time.replace(tzinfo=timezone.utc).year
+        month = r.stop_time.replace(tzinfo=timezone.utc).month
 
         component_dict = {}
         score_dict = {}
@@ -379,8 +379,8 @@ def create_summary_db(config, records):
             norm_runtime,
             cputime,
             norm_cputime,
-            r.start_time.replace(tzinfo=pytz.utc).timestamp(),
-            r.stop_time.replace(tzinfo=pytz.utc).timestamp(),
+            r.start_time.replace(tzinfo=timezone.utc).timestamp(),
+            r.stop_time.replace(tzinfo=timezone.utc).timestamp(),
             user_name,
             benchmark_type,
             benchmark_value,
@@ -450,8 +450,8 @@ def create_sync_db(config, records):
 
         submit_host = get_submit_host(r, config)
 
-        year = r.stop_time.replace(tzinfo=pytz.utc).year
-        month = r.stop_time.replace(tzinfo=pytz.utc).month
+        year = r.stop_time.replace(tzinfo=timezone.utc).year
+        month = r.stop_time.replace(tzinfo=timezone.utc).month
 
         data_tuple = (
             site_name,

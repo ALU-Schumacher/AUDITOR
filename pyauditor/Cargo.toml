@@ -27,9 +27,8 @@ crate-type = ["cdylib"]
 [dependencies]
 auditor = { path = "../auditor", version = "0.1.0", default-features = false, features = ["client"] }
 anyhow = "1"
-pyo3 = { version = "0.15.2", features = ["extension-module", "anyhow"] }
-pyo3-asyncio = { version = "0.15", features = ["attributes", "tokio-runtime"] }
+pyo3 = { version = "0.19", features = ["chrono", "extension-module", "anyhow"] }
+pyo3-asyncio = { version = "0.19", features = ["attributes", "tokio-runtime"] }
 tokio = "1"
 chrono = { version = "0.4.26", features = ["serde"] }
-pyo3-chrono = { version = "0.3.0", features = [] }
 serde_json = "1.0.104"

@@ -14,7 +14,7 @@ from auditor_apel_plugin.core import (
     get_records,
     get_site_id,
 )
-from datetime import datetime
+from datetime import datetime, timezone
 import pytz
 import sqlite3
 import os
@@ -381,8 +381,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -395,8 +395,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,
@@ -453,11 +453,11 @@ class TestAuditorApelPlugin:
             assert content[idx][14] == rec_values["tot_cpu"] * rec_values["hepscore"]
             assert (
                 content[idx][15]
-                == rec_values["start_time"].replace(tzinfo=pytz.utc).timestamp()
+                == rec_values["start_time"].replace(tzinfo=timezone.utc).timestamp()
             )
             assert (
                 content[idx][16]
-                == rec_values["stop_time"].replace(tzinfo=pytz.utc).timestamp()
+                == rec_values["stop_time"].replace(tzinfo=timezone.utc).timestamp()
             )
             assert content[idx][17] == replace_record_string(rec_values["user_name"])
 
@@ -549,8 +549,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -563,8 +563,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,
@@ -651,8 +651,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -665,8 +665,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,
@@ -679,8 +679,8 @@ class TestAuditorApelPlugin:
 
         rec_3_values = {
             "rec_id": "test_record_3",
-            "start_time": datetime(2022, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2022, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 2,
             "hepscore": 3.0,
             "tot_cpu": 12265325,
@@ -743,8 +743,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -757,8 +757,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,
@@ -771,8 +771,8 @@ class TestAuditorApelPlugin:
 
         rec_3_values = {
             "rec_id": "test_record_3",
-            "start_time": datetime(2022, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2022, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 2,
             "hepscore": 3.0,
             "tot_cpu": 12265325,
@@ -786,8 +786,8 @@ class TestAuditorApelPlugin:
 
         rec_4_values = {
             "rec_id": "test_record_4",
-            "start_time": datetime(2022, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2022, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 2,
             "hepscore": 3.0,
             "tot_cpu": 12265325,
@@ -801,8 +801,8 @@ class TestAuditorApelPlugin:
 
         rec_5_values = {
             "rec_id": "test_record_4",
-            "start_time": datetime(2022, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2022, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 2,
             "hepscore": 3.0,
             "tot_cpu": 12265325,
@@ -922,8 +922,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -936,8 +936,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,
@@ -993,8 +993,8 @@ class TestAuditorApelPlugin:
 
         rec_1_values = {
             "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0),
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
             "n_cores": 8,
             "hepscore": 10.0,
             "tot_cpu": 15520000,
@@ -1007,8 +1007,8 @@ class TestAuditorApelPlugin:
 
         rec_2_values = {
             "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45),
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
             "n_cores": 1,
             "hepscore": 23.0,
             "tot_cpu": 12234325,

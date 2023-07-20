@@ -2,7 +2,6 @@
 
 from pyauditor import AuditorClientBuilder, Record
 import datetime
-import pytz
 from tzlocal import get_localzone
 
 
@@ -28,7 +27,8 @@ def main():
     # datetimes sent to auditor MUST BE in UTC.
     start = datetime.datetime(
         2021, 12, 6, 16, 29, 43, 79043, tzinfo=local_tz
-    ).astimezone(pytz.utc)
+    ).astimezone(datetime.timezone.utc)
+
     record = Record(record_id, start)
 
     client.add(record)
@@ -38,10 +38,10 @@ def main():
     assert len(records) == 1
     record = records[0]
     assert record.record_id == record_id
-    assert record.start_time.replace(tzinfo=pytz.utc) == start
+    assert record.start_time.replace(tzinfo=datetime.timezone.utc) == start
 
     print("Updating record: Adding stop time")
-    stop = datetime.datetime.now(tz=local_tz).astimezone(pytz.utc)
+    stop = datetime.datetime.now(tz=local_tz).astimezone(datetime.timezone.utc)
 
     record = record.with_stop_time(stop)
     client.update(record)
@@ -51,8 +51,8 @@ def main():
     assert len(records) == 1
     record = records[0]
     assert record.record_id == record_id
-    assert record.start_time.replace(tzinfo=pytz.utc) == start
-    assert record.stop_time.replace(tzinfo=pytz.utc) == stop
+    assert record.start_time.replace(tzinfo=datetime.timezone.utc) == start
+    assert record.stop_time.replace(tzinfo=datetime.timezone.utc) == stop
 
     print("Script test_add_update.py finished.")
 

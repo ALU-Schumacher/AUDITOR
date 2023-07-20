@@ -10,11 +10,10 @@
 use crate::domain::{Component, Meta};
 use anyhow::Error;
 use auditor::domain::ValidName;
-use chrono::{offset::TimeZone, Utc};
-use pyo3::class::basic::{CompareOp, PyObjectProtocol};
+use chrono::{DateTime, Utc};
+use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
-use pyo3_chrono::NaiveDateTime;
 
 /// Record(record_id: str, start_time: datetime.datetime)
 /// A Record represents a single accountable unit. It consists of meta information such as
@@ -58,8 +57,7 @@ pub struct Record {
 impl Record {
     #[new]
     fn new(record_id: String, start_time: &PyDateTime) -> Result<Self, Error> {
-        let start_time: NaiveDateTime = start_time.extract()?;
-        let start_time = Utc.from_utc_datetime(&start_time.into());
+        let start_time: DateTime<Utc> = start_time.extract()?;
         Ok(Record {
             inner: auditor::domain::Record {
                 record_id: ValidName::parse(record_id)?.as_ref().to_owned(),
@@ -110,8 +108,7 @@ impl Record {
         mut self_: PyRefMut<'a, Self>,
         stop_time: &'a PyDateTime,
     ) -> Result<PyRefMut<'a, Self>, Error> {
-        let stop_time: NaiveDateTime = stop_time.extract()?;
-        let stop_time = Utc.from_utc_datetime(&stop_time.into());
+        let stop_time: DateTime<Utc> = stop_time.extract()?;
         self_.inner.stop_time = Some(stop_time);
         if let Some(start_time) = self_.inner.start_time.as_ref() {
             self_.inner.runtime = Some((stop_time - *start_time).num_seconds())
@@ -150,7 +147,7 @@ impl Record {
         self.inner
             .start_time
             .as_ref()
-            .map(|start_time| NaiveDateTime(start_time.naive_utc()).into_py(py))
+            .map(|start_time| start_time.naive_utc().into_py(py))
     }
 
     /// Returns the stop_time
@@ -159,7 +156,7 @@ impl Record {
         self.inner
             .stop_time
             .as_ref()
-            .map(|stop_time| NaiveDateTime(stop_time.naive_utc()).into_py(py))
+            .map(|stop_time| stop_time.naive_utc().into_py(py))
     }
 
     /// Returns the runtime of a record.
@@ -172,10 +169,7 @@ impl Record {
     fn to_json(&self) -> Result<String, Error> {
         Ok(format!("{}", serde_json::to_value(&self.inner)?))
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for Record {
     fn __richcmp__(&self, other: PyRef<Record>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {
