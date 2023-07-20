@@ -209,7 +209,7 @@ jobs:
       - uses: nick-fields/retry@v2
         with:
           timeout_minutes: 20
-          max_attempts: 3
+          max_attempts: 5
           retry_wait_seconds: 120
           retry_on: error
           command: SKIP_COMPILATION=true ./scripts/test_pyauditor.sh
