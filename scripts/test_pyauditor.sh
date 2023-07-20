@@ -17,7 +17,6 @@ function compile_pyauditor() {
 	python -m venv $ENV_DIR
 	source $ENV_DIR/bin/activate
   pip install maturin
-  pip install pytz
   pip install tzlocal
 	if [ "$RELEASE_MODE" = true ]; then
 		maturin develop --manifest-path pyauditor/Cargo.toml --release

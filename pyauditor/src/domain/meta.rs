@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use pyo3::class::basic::{CompareOp, PyObjectProtocol};
+use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
 
 /// Meta()
@@ -49,10 +49,7 @@ impl Meta {
     fn get(&self, key: String) -> Option<Vec<String>> {
         self.inner.get(&key).cloned()
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for Meta {
     fn __richcmp__(&self, other: PyRef<Meta>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {

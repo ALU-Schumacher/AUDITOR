@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use pyo3::class::basic::{CompareOp, PyObjectProtocol};
+use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
 
 /// Score(name: str, value: float)
@@ -53,10 +53,7 @@ impl Score {
     fn value(&self) -> f64 {
         *self.inner.value.as_ref()
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for Score {
     fn __richcmp__(&self, other: PyRef<Score>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {
