@@ -113,7 +113,7 @@ jobs:
       - uses: messense/maturin-action@v1
         with:
           command: build
-          args: --release -o dist --universal2 --interpreter python3.7 python3.8 python3.9 python3.10 python3.11 --manifest-path pyauditor/Cargo.toml
+          args: --release -o dist --target universal2-apple-darwin --interpreter python3.7 python3.8 python3.9 python3.10 python3.11 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
