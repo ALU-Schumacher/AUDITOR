@@ -163,9 +163,9 @@ class CondorHistoryCollector(object):
             "-af:,",
             *self.config.class_ads,
         ]
-        if getattr(self.config, "pool", None):
+        if self.config.get("pool"):
             cmd.extend(["-pool", self.config.pool])
-        if getattr(self.config, "job_status", None):
+        if self.config.get("job_status"):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
 
             cmd.extend(["-constraint", f'"{job_stats}"'])

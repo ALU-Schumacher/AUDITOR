@@ -1,0 +1,61 @@
+addr: auditor
+port: 8000
+log_level: DEBUG
+
+state_db: htcondor_history_state.db
+record_prefix: htcondor
+interval: 10
+schedd_names:
+  - schedd@submit
+
+job_status:
+  - 3
+  - 4
+
+meta:
+  user:
+    key: Owner
+    matches: ^(.+)$
+  group:
+    key: VoName
+    matches: ^(.+)$
+  submithost:
+    key: "GlobalJobId"
+    matches: ^(.*)#\d+.\d+#\d+$
+
+  # First match is used.
+  site:
+    - name: "test-site"
+      key: "LastRemoteHost"
+      matches: ^slot.+@execute$
+    - name: "UNDEF"
+
+components:
+  - name: "Cores"
+    key: "CpusProvisioned"
+    scores:
+      - name: "HEPSPEC"
+        key: "MachineAttrApelSpecs0"
+        matches: HEPSPEC\D+(\d+(\.\d+)?)
+        only_if:
+          key: "LastRemoteHost"
+          matches: ^slot.+@execute$
+      - name: "HEPscore23"
+        key: "MachineAttrApelSpecs0"
+        matches: HEPscore23\D+(\d+(\.\d+)?)
+        only_if:
+          key: "LastRemoteHost"
+          matches: ^slot.+@execute$
+  - name: "Memory"
+    key: "MemoryProvisioned"
+  - name: "UserCPU"
+    key: "RemoteUserCpu"
+  - name: "SysCPU"
+    key: "RemoteSysCpu"
+  - name: "Wallclocktime"
+    key: "RemoteWallClockTime"
+  - name: "MinHosts"
+    key: "MinHosts"
+  - name: "MaxHosts"
+    key: "MaxHosts"
+
