@@ -1,0 +1,64 @@
+services:
+  auditor:
+    image: aluschumacher/auditor:main
+    environment:
+      - AUDITOR_DATABASE__REQUIRE_SSL=false
+      - AUDITOR_DATABASE__HOST=postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auditor
+    volumes:
+      - ./../../migrations:/docker-entrypoint-initdb.d/
+
+  centralmanager:
+    image: htcondor/cm:10.3.1-el8
+    hostname: centralmanager
+    environment:
+      - USE_POOL_PASSWORD=yes
+    volumes:
+      - ./condor_passwords:/etc/condor/passwords-orig.d/
+
+  execute:
+    image: htcondor/execute:10.3.1-el8
+    hostname: execute
+    environment:
+      - CONDOR_HOST=centralmanager
+      - USE_POOL_PASSWORD=yes
+    volumes:
+      - ./condor_passwords:/etc/condor/passwords-orig.d/
+      - ./execute.conf:/etc/condor/condor_config.local
+    depends_on:
+      - centralmanager
+
+  submit:
+    image: htcondor/submit:10.3.1-el8
+    hostname: submit
+    environment:
+      - CONDOR_HOST=centralmanager
+      - USE_POOL_PASSWORD=yes
+    volumes:
+      - ./condor_passwords:/etc/condor/passwords-orig.d/
+      - ./submit.conf:/etc/condor/condor_config.local
+    depends_on:
+      - centralmanager
+
+  auditor-collector:
+    build:
+      dockerfile: collector.Dockerfile
+    hostname: auditor-collector
+    environment:
+      - CONDOR_HOST=centralmanager
+      - USE_POOL_PASSWORD=yes
+    volumes:
+      - ./condor_passwords:/etc/condor/passwords-orig.d/
+      - ./../../collectors/htcondor:/app
+      - ./htcondor_collector_config.yaml:/configs/collector.yaml
+    depends_on:
+      - auditor
+      - submit
