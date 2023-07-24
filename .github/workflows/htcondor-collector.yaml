@@ -12,7 +12,7 @@ jobs:
     outputs:
       table: ${{ steps.table.outputs.table }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Start docker containers
       working-directory: containers/htcondor
       run: |
