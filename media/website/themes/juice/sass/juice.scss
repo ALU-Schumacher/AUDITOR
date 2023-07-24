@@ -31,7 +31,7 @@ p > img {
 
 header {
   background-color: var(--primary-color);
-  color: black;
+  color: white;
   padding: 20px 50px;
   display: flex;
   align-items: center;
@@ -43,8 +43,7 @@ header {
   font-size: 32px;
   font-weight: bold;
   letter-spacing: 20px; 
-
-  color: var(--primary-text-color);
+  color: white;
   display: flex;
   align-items: center;
   margin: 0 40px;
@@ -79,6 +78,7 @@ header {
   .explore-more {
     position: absolute;
     bottom: 20px;
+    color: white;
     cursor: pointer;
   }
 }
@@ -158,6 +158,7 @@ footer {
 @media screen and (max-width: 768px) {
   header {
     padding: 10px 30px;
+    background-color : white;
     flex-direction: column;
     align-items: center;
     justify-content: center;
