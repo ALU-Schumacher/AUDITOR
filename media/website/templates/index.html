@@ -21,7 +21,7 @@
 <body>
     {% block header %}
 
-    <header class="pos-absolute" style="background-color: transparent">
+    <header class="pos-absolute" style="text-color : white; background-color: transparent">
         {{ macros::render_header() }}
     </header>
 
@@ -29,10 +29,10 @@
         {% block hero %}
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         <section class="text-center">
-            <h1 class="heading-text" style="font-size: 80px">
+            <h1 class="heading-text" style="color : white;font-size: 80px">
               <b>AUDITOR</b>
             </h1>
-            <h3 class="title-text">
+            <h3 class="title-text" style="color:white">
                 Accounting Data Handling Toolbox For Opportunistic Resources
             </h3>
             <div>
@@ -42,7 +42,7 @@
                    data-show-count="true" aria-label="Fork ALU-Schumacher/AUDITOR on GitHub">Fork</a>
             </div>
         </section>
-        <img class="hero-image" style="width: 15%" src="{{ get_url(path="auditorlogo_transparent.png") }}">
+        <img class="hero-image" style="width: 15%" src="{{ get_url(path="white_transparent_background.png") }}">
 
 
         <div class="explore-more text"
