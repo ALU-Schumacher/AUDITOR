@@ -2,4 +2,7 @@
 ba = "ba"
 
 [files]
-extend-exclude = ["plugins/apel/tests/*.cert"]
+extend-exclude = [
+    "plugins/apel/tests/*.cert",
+    "containers/htcondor/*.conf"
+]
