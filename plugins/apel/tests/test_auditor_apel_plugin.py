@@ -23,6 +23,9 @@ import configparser
 import pyauditor
 from unittest.mock import patch, PropertyMock
 import ast
+from pathlib import Path, PurePath
+
+test_dir = PurePath(__file__).parent
 
 
 class FakeAuditorClient:
@@ -163,7 +166,11 @@ class TestAuditorApelPlugin:
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
 
     def test_sign_msg(self):
-        result = sign_msg("tests/test_cert.cert", "tests/test_key.key", "test")
+        result = sign_msg(
+            Path.joinpath(test_dir, "test_cert.cert"),
+            Path.joinpath(test_dir, "test_key.key"),
+            "test",
+        )
 
         with open("/tmp/signed_msg.txt", "wb") as msg_file:
             msg_file.write(result)
@@ -179,13 +186,17 @@ class TestAuditorApelPlugin:
     def test_sign_msg_fail(self):
         with pytest.raises(Exception) as pytest_error:
             sign_msg(
-                "tests/nofolder/test_cert.cert",
-                "tests/no/folder/test_key.key",
+                "tests/nodir/test_cert.cert",
+                "tests/no/dir/test_key.key",
                 "test",
             )
         assert pytest_error.type == FileNotFoundError
 
-        result = sign_msg("tests/test_cert.cert", "tests/test_key.key", "test")
+        result = sign_msg(
+            Path.joinpath(test_dir, "test_cert.cert"),
+            Path.joinpath(test_dir, "test_key.key"),
+            "test",
+        )
 
         with open("/tmp/signed_msg.txt", "wb") as msg_file:
             msg_file.write(result.replace(b"test", b"TEST"))

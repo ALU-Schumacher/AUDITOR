@@ -36,22 +36,25 @@ auditor-apel-republish = "auditor_apel_plugin.republish:main"
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"
-write_to = "src/auditor_apel_plugin/_version.py"
+root = "../.."
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*__init__.py","*publish.py","*_version.py"]
+omit = ["*__init__.py", "*publish.py", "*_version.py"]
 branch = true
+
+[tool.coverage.lcov]
+output = "lcov.info"
 
 [tool.black]
 line-length = 79
 include = '\.pyi?$'
 
 [tool.pytest.ini_options]
-addopts = "-s -v --cov"
+addopts = "-s -v --cov --cov-report lcov"
 testpaths = [
 	  "tests",
 ]

@@ -1,0 +1,40 @@
+name: python-unit-tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  unit-tests-apel-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/apel
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pyauditor from repo
+        working-directory: ./pyauditor
+        run: |
+          pip install --upgrade pip
+          pip install .
+      - name: Install dependencies
+        run: |
+          pip install -e .[tests]
+      - name: Run pytest
+        run: pytest
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          working-directory: ./plugins/apel
+          files: lcov.info
+          fail_ci_if_error: true
