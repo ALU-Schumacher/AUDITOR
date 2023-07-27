@@ -11,3 +11,6 @@ component_management:
       name: auditor
       paths:
         - auditor/**
+
+codecov:
+  token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
