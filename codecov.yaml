@@ -11,6 +11,18 @@ component_management:
       name: auditor
       paths:
         - auditor/**
+    - component_id: module_slurm_collector
+      name: slurm_collector
+      paths:
+        - collectors/slurm/**
+    - component_id: module_slurm_epilog_collector
+      name: slurm_epilog_collector
+      paths:
+        - collectors/slurm-epilog/**
+    - component_id: module_priority_plugin
+      name: priority_plugin
+      paths:
+        - plugins/priority/**
 
 codecov:
   token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
