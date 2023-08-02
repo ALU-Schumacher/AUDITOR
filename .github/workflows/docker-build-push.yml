@@ -22,6 +22,7 @@ jobs:
       matrix:
         containers:
           - auditor
+          - auditor-apel-plugin
 
     steps:
       - name: Checkout repository
