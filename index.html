@@ -36,24 +36,25 @@
 <body>
     
 
-    <header class="pos-absolute" style="background-color: transparent">
+    <header class="pos-absolute" style="text-color : white; background-color: transparent">
         
 
 <a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;">
     <div class="logo">
-        <img src="https://alu-schumacher.github.io/AUDITOR/auditorlogo_transparent.png" alt="logo">
-        UDITOR
-<!--        AUDITOR -->
+        <img src="https://alu-schumacher.github.io/AUDITOR/white_transparent_background.png" alt="logo">
+         UDITOR
     </div>
 </a>
 
 <nav>
     
-    <a class="nav-item subtitle-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;about&#x2F;">About</a>
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;changelog&#x2F;">ChangeLog</a>
     
     
         
-        <a class="nav-item subtitle-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
         
     
 </nav>
@@ -64,10 +65,11 @@
         
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         <section class="text-center">
-            <h1 class="heading-text" style="font-size: 80px">
+            <img src="../../auditor_overview.png" alt="AUDITOR"  style="width: 100%">
+            <h1 class="heading-text" style="color : white;font-size: 80px">
               <b>AUDITOR</b>
             </h1>
-            <h3 class="title-text">
+            <h3 class="title-text" style="color:white">
                 Accounting Data Handling Toolbox For Opportunistic Resources
             </h3>
             <div>
@@ -77,8 +79,7 @@
                    data-show-count="true" aria-label="Fork ALU-Schumacher/AUDITOR on GitHub">Fork</a>
             </div>
         </section>
-        <img class="hero-image" style="width: 15%" src="https://alu-schumacher.github.io/AUDITOR/auditorlogo_transparent.png">
-
+        <img class="hero-image" style="width: 15%" src="https://alu-schumacher.github.io/AUDITOR/white_transparent_background.png">
 
         <div class="explore-more text"
             onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
@@ -250,11 +251,9 @@ Auditor ingests accounting data provided by so-called <em>collectors</em>, store
     src="auditor_overview.png"
   />
 </p>
-<p>TODO: Grafik, detaillierte Erklaerung.</p>
+<p>Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
+database and o ers these records to plugins which take an action based on the records.</p>
 <h2 id="features">Features</h2>
-<ul>
-<li>TODO</li>
-</ul>
 <h1 id="running-auditor">Running Auditor</h1>
 <p>Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
 Both methods require that the PostgreSQL database is installed migrated beforehand.</p>
