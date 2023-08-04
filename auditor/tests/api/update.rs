@@ -3,7 +3,7 @@ use auditor::domain::{Component, Record, RecordDatabase, RecordTest};
 use fake::{Fake, Faker};
 
 #[tokio::test]
-async fn update_returns_a_400_for_non_existing_record() {
+async fn update_returns_a_404_for_non_existing_record() {
     // Arange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
@@ -19,7 +19,7 @@ async fn update_returns_a_400_for_non_existing_record() {
         .await
         .expect("Failed to execute request.");
 
-    assert_eq!(400, response.status().as_u16());
+    assert_eq!(404, response.status().as_u16());
 }
 
 #[tokio::test]

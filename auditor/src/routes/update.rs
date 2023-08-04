@@ -22,7 +22,7 @@ pub enum UpdateError {
 debug_for_error!(UpdateError);
 responseerror_for_error!(
     UpdateError,
-    UnknownRecord => BAD_REQUEST;
+    UnknownRecord => NOT_FOUND;
     UnexpectedError => INTERNAL_SERVER_ERROR;
 );
 
