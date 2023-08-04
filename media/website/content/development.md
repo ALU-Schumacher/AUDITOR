@@ -122,6 +122,10 @@ RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-m
 
 The resulting binaries will be placed in `target/x86_64-unknown-linux-musl/release`.
 
+# Adding new plugins and collectors
+
+TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)
+
 # Github pages
 
 This webpage is based on the [Zola](https://www.getzola.org/) framework.
