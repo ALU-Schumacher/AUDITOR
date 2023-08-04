@@ -15,11 +15,11 @@ It also covers cross compiling and static linking against `musl` instead of `gli
 
 Compiling Auditor requires
 
-* Rust
+* Rust (see below)
 * Docker
-* sqlx-cli
-* PostgreSQL
-* bunyan (optional)
+* sqlx-cli (see below)
+* PostgreSQL client (`psql`)
+* bunyan (optional, see below)
 
 
 ### Rust
