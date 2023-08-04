@@ -121,3 +121,16 @@ RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-m
 ```
 
 The resulting binaries will be placed in `target/x86_64-unknown-linux-musl/release`.
+
+# Github pages
+
+This webpage is based on the [Zola](https://www.getzola.org/) framework.
+
+For local development, [install](https://www.getzola.org/documentation/getting-started/installation/) the `zola` CLI program and run
+
+```bash
+ zola -r media/website serve
+```
+in the root directory of the Auditor repo.
+
+The local version of the webpage is now available at [http://127.0.0.1:1111/](http://127.0.0.1:1111/).
