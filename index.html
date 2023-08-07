@@ -52,6 +52,8 @@
     
     <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;changelog&#x2F;">ChangeLog</a>
     
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;development&#x2F;">Development</a>
+    
     
         
         <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
@@ -150,32 +152,6 @@
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#compiling-auditor">Compiling Auditor</a>
                 </div>
-                
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#prerequisites"><small>- Prerequisites</small></a>
-                </div>
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#running-auditor-via-cargo"><small>- Running Auditor via cargo</small></a>
-                </div>
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#running-the-tests"><small>- Running the tests</small></a>
-                </div>
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#building-binaries"><small>- Building binaries</small></a>
-                </div>
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#static-linking-and-cross-compiling"><small>- Static linking and cross compiling</small></a>
-                </div>
-                
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/#configuration"><small>- Configuration</small></a>
-                </div>
-                
                 
                 
                 <div class="toc-item">
@@ -347,75 +323,7 @@ Therefore it is advised to monitor the performance of Auditor when working with 
 The frequency setting should be somewhat in accordance with the Prometheus scraping interval.</p>
 <h1 id="compiling-auditor">Compiling Auditor</h1>
 <p>Alternatively, Auditor can be compiled and run directly.
-This section describes how to set up the required development environment.
-It also covers cross compiling and static linking against <code>musl</code> instead of <code>glibc</code> in order to obtain a maximally portable binary.</p>
-<h2 id="prerequisites">Prerequisites</h2>
-<p>Compiling Auditor requires</p>
-<ul>
-<li>Rust</li>
-<li>Docker</li>
-<li>sqlx-cli</li>
-<li>PostgreSQL</li>
-<li>bunyan (optional)</li>
-</ul>
-<h3 id="rust">Rust</h3>
-<p>Requires a recent Rust version (MSRV 1.56.1) and cargo.</p>
-<p>Ideally installed via rustup:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">curl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>proto</span> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>=https<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>tlsv1</span>.2<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>sSf</span> https://sh.rustup.rs</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sh</span></span>
-</span></code></pre>
-<h3 id="sqlx">sqlx</h3>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>version</span><span class="z-keyword z-operator z-assignment z-option z-shell">=</span>0.6.3 sqlx-cli<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>no-default-features</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>features</span> postgres,rustls</span>
-</span></code></pre>
-<h3 id="bunyan">bunyan</h3>
-<p>For nicer logs install bunyan:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install bunyan</span>
-</span></code></pre>
-<h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git</span>
-<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> AUDITOR</span>
-<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_db.sh</span></span>
-<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_slurm_collector_sqlite.sh</span></span>
-<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span>
-</span></code></pre>
-<p>Calling <code>./scripts/db_init.sh</code> will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
-If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling <code>db_init.sh</code> pass the correct settings to auditor via the configuration environment variables mentioned above.
-Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">SQLX_OFFLINE</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span>
-</span></code></pre>
-<p>For nicer logs pipe the output through <code>bunyan</code>:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">bunyan</span></span>
-</span></code></pre>
-<p>Note that this will be a debug build which will not pass all optimizations during compilation.
-For maximum performance a <code>release</code> build is necessary:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span></span>
-</span></code></pre>
-<h2 id="running-the-tests">Running the tests</h2>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
-</span></code></pre>
-<p>Output logs while running the tests:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">TEST_LOG</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
-</span></code></pre>
-<h2 id="building-binaries">Building binaries</h2>
-<p>Binaries used in production should be built in release mode:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span></span>
-</span></code></pre>
-<p>The binary can then be found in <code>target/release/auditor</code>.</p>
-<p>Make sure a database is up and running when starting Auditor.</p>
-<h2 id="static-linking-and-cross-compiling">Static linking and cross compiling</h2>
-<p>The binary will only link to the system <code>glibc</code>.
-Fully statically linked binaries can be obtained by statically linking against <code>musl</code> instead auf <code>glibc</code>.
-This can be beneficial when cross compiling, in particular for older targets (e.g. CentOS7).
-This requires the <code>musl</code> dev tools to be installed on the system where Auditor is compiled.
-The exact packages needed depends on your Linux distribution.
-Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be installed (once):</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">rustup</span></span><span class="z-meta z-function-call z-arguments z-shell"> target add x86_64-unknown-linux-musl</span>
-</span></code></pre>
-<p>Then cross-compilation with static linking can be done via</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTFLAGS</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>-C link-arg=-s<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>target</span> x86_64-unknown-linux-musl</span>
-</span></code></pre>
-<p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
-<h2 id="configuration">Configuration</h2>
-<p>Auditor is configured via the files in the <code>configuration</code> directory, a configuration file passed to the binary, or via environment variables as mentioned above.</p>
+Instructions for compiling Auditor from source can be found in the <a href="https://alu-schumacher.github.io/AUDITOR/development/#compiling-auditor-from-source">development</a> documentation.</p>
 <h1 id="packages">Packages</h1>
 <p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>.</p>
 <h1 id="collectors">Collectors</h1>
@@ -528,7 +436,7 @@ Further, optional arguments are</p>
 -1, --one-shot        Run once and exit.
 </span></code></pre>
 <p>Command line arguments override the values set in the config file.</p>
-<h3 id="configuration-1">Configuration</h3>
+<h3 id="configuration">Configuration</h3>
 <p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>state_db</code></td><td>Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.</td></tr>

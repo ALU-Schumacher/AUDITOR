@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Development | Auditor </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR/juice.css">
+    
+    
+</head>
+
+<body>
+    
+<header class="box-shadow">
+    
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;development&#x2F;">Development</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+</header>
+
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#compiling-auditor-from-source">Compiling Auditor from source</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#prerequisites"><small>- Prerequisites</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#running-auditor-via-cargo"><small>- Running Auditor via cargo</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#running-the-tests"><small>- Running the tests</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#building-binaries"><small>- Building binaries</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#static-linking-and-cross-compiling"><small>- Static linking and cross compiling</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#adding-new-plugins-and-collectors">Adding new plugins and collectors</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#github-pages">Github pages</a>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+<div class="heading-text">Instructions for developers</div>
+<p>This document covers instructions for developers of Auditor and its plugins/collectors.</p>
+<h1 id="compiling-auditor-from-source">Compiling Auditor from source</h1>
+<p>This section describes how to set up the required development environment in order to compile Auditor from source.
+It also covers cross compiling and static linking against <code>musl</code> instead of <code>glibc</code> in order to obtain a maximally portable binary.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Compiling Auditor requires</p>
+<ul>
+<li>Rust (see below)</li>
+<li>Docker</li>
+<li>sqlx-cli (see below)</li>
+<li>PostgreSQL client (<code>psql</code>)</li>
+<li>bunyan (optional, see below)</li>
+</ul>
+<h3 id="rust">Rust</h3>
+<p>Requires a recent Rust version (MSRV 1.56.1) and cargo.</p>
+<p>Ideally installed via rustup:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">curl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>proto</span> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>=https<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>tlsv1</span>.2<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>sSf</span> https://sh.rustup.rs</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sh</span></span>
+</span></code></pre>
+<h3 id="sqlx">sqlx</h3>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>version</span><span class="z-keyword z-operator z-assignment z-option z-shell">=</span>0.6.3 sqlx-cli<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>no-default-features</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>features</span> postgres,rustls</span>
+</span></code></pre>
+<h3 id="bunyan">bunyan</h3>
+<p>For nicer logs install bunyan:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install bunyan</span>
+</span></code></pre>
+<h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone git@github.com:ALU-Schumacher/AUDITOR.git</span>
+<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> AUDITOR</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_db.sh</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">./scripts/init_slurm_collector_sqlite.sh</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span>
+</span></code></pre>
+<p>Calling <code>./scripts/db_init.sh</code> will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
+If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling <code>db_init.sh</code> pass the correct settings to auditor via the configuration environment variables mentioned above.
+Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">SQLX_OFFLINE</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span>
+</span></code></pre>
+<p>For nicer logs pipe the output through <code>bunyan</code>:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">bunyan</span></span>
+</span></code></pre>
+<p>Note that this will be a debug build which will not pass all optimizations during compilation.
+For maximum performance a <code>release</code> build is necessary:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> run<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span></span>
+</span></code></pre>
+<h2 id="running-the-tests">Running the tests</h2>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
+</span></code></pre>
+<p>Output logs while running the tests:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">TEST_LOG</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> test</span>
+</span></code></pre>
+<h2 id="building-binaries">Building binaries</h2>
+<p>Binaries used in production should be built in release mode:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span></span>
+</span></code></pre>
+<p>The binary can then be found in <code>target/release/auditor</code>.</p>
+<p>Make sure a database is up and running when starting Auditor.</p>
+<h2 id="static-linking-and-cross-compiling">Static linking and cross compiling</h2>
+<p>The binary will only link to the system <code>glibc</code>.
+Fully statically linked binaries can be obtained by statically linking against <code>musl</code> instead auf <code>glibc</code>.
+This can be beneficial when cross compiling, in particular for older targets (e.g. CentOS7).
+This requires the <code>musl</code> dev tools to be installed on the system where Auditor is compiled.
+The exact packages needed depends on your Linux distribution.
+Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be installed (once):</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">rustup</span></span><span class="z-meta z-function-call z-arguments z-shell"> target add x86_64-unknown-linux-musl</span>
+</span></code></pre>
+<p>Then cross-compilation with static linking can be done via</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTFLAGS</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>-C link-arg=-s<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>release</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>target</span> x86_64-unknown-linux-musl</span>
+</span></code></pre>
+<p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
+<h1 id="adding-new-plugins-and-collectors">Adding new plugins and collectors</h1>
+<p>TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)</p>
+<h1 id="github-pages">Github pages</h1>
+<p>This webpage is based on the <a href="https://www.getzola.org/">Zola</a> framework.</p>
+<p>For local development, <a href="https://www.getzola.org/documentation/getting-started/installation/">install</a> the <code>zola</code> CLI program and run</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">zola</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span> media/website serve</span>
+</span></code></pre>
+<p>in the root directory of the Auditor repo.</p>
+<p>The local version of the webpage is now available at <a href="http://127.0.0.1:1111/">http://127.0.0.1:1111/</a>.</p>
+
+
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
