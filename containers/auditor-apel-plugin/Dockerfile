@@ -19,9 +19,6 @@ ENV PATH /env/bin:$PATH
 
 # copy code
 COPY . /code
-# copy git dir (needed for setuptools_scm)
-COPY .git /code/.git
-
 
 # install python package
 WORKDIR /code/plugins/apel
