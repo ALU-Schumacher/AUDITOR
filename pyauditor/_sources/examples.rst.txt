@@ -168,33 +168,30 @@ When the timestamps you are using are already in UTC, they can be used without f
 Timestamp in local time
 -----------------------
 
-This requires the python modules ``pytz`` and ``tzlocal``.
+This requires the python modules ``tzlocal``.
 
 Assuming that you are creating the timestamp yourself (it is not obtained from an external source), you need to attach the local timezone to the timestamp and then convert it to UTC:
 
 .. code-block:: python
 
-   import pytz
    from tzlocal import get_localzone
    local_tz = get_localzone()
-   timestamp = datetime.datetime(2022, 8, 16, 12, 00, 43, 48942, tzinfo=local_tz).astimezone(pytz.utc)
+   timestamp = datetime.datetime(2022, 8, 16, 12, 00, 43, 48942, tzinfo=local_tz).astimezone(datetime.timezone.utc)
 
 If you have a ``datetime`` object from some external source, the timezone can be attached like this:
 
 
 .. code-block:: python
 
-   import pytz
    from tzlocal import get_localzone
    local_tz = get_localzone()
-   timestamp = datetime_from_somewhere_else.replace(tzinfo=local_tz).astimezone(pytz.utc)
+   timestamp = datetime_from_somewhere_else.replace(tzinfo=local_tz).astimezone(datetime.timezone.utc)
 
 
 When using ``datetime.now()`` the local timezone also has to be provided explicitly. However, the parameter is now called ``tz`` instead of ``tzinfo`` because who needs consistency anyways?
 
 .. code-block:: python
 
-   import pytz
    from tzlocal import get_localzone
    local_tz = get_localzone()
-   timestamp = datetime.now(tz=local_tz).astimezone(pytz.utc)
+   timestamp = datetime.now(tz=local_tz).astimezone(datetime.timezone.utc)
