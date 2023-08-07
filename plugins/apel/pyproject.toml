@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools", "setuptools_scm[toml]"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "auditor_apel_plugin"
-dynamic = ["version"]
+version = "0.1.0"
 requires-python = ">=3.7"
 dependencies = [
 	     "python-auditor==0.1.0",
@@ -27,16 +27,11 @@ tests = [
 build = [
       "build",
       "setuptools",
-      "setuptools_scm[toml]",
 ]
 
 [project.scripts]
 auditor-apel-publish = "auditor_apel_plugin.publish:main"
 auditor-apel-republish = "auditor_apel_plugin.republish:main"
-
-[tool.setuptools_scm]
-local_scheme = "no-local-version"
-root = "../.."
 
 [tool.setuptools.packages.find]
 where = ["src"]
