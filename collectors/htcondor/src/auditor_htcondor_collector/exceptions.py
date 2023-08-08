@@ -1,4 +1,4 @@
-from custom_types import Keys
+from .custom_types import Keys
 
 
 class RecordGenerationException(Exception):

@@ -2,7 +2,7 @@ import re
 
 from typing import Any, AnyStr, Generator, Union
 
-from custom_types import Config as T_Config
+from .custom_types import Config as T_Config
 
 
 def extract_values(key: str, var: dict) -> Generator[Any, None, None]:
