@@ -6,13 +6,13 @@ from functools import reduce
 from typing import List, Tuple, Union, Iterator
 from datetime import date, datetime as dt
 
-from utils import extract_values
-from exceptions import (
+from .utils import extract_values
+from .exceptions import (
     MalformedConfigEntryError,
     MissingConfigEntryError,
     MissingConfigDependencyError,
 )
-from custom_types import Keys, Config as T_Config
+from .custom_types import Keys, Config as T_Config
 
 
 class Config(object):

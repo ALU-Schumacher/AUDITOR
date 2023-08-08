@@ -18,10 +18,10 @@ from pyauditor import (
 )
 
 
-from utils import maybe_convert, get_value
-from config import Config
-from state_db import StateDB
-from exceptions import RecordGenerationException
+from .utils import maybe_convert, get_value
+from .config import Config
+from .state_db import StateDB
+from .exceptions import RecordGenerationException
 
 
 class CondorHistoryCollector(object):

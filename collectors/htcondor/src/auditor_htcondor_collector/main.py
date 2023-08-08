@@ -2,9 +2,9 @@ import asyncio
 
 from time import sleep
 
-from collector import CondorHistoryCollector
-from cli import CLI
-from config import Config
+from .collector import CondorHistoryCollector
+from .cli import CLI
+from .config import Config
 
 
 if __name__ == "__main__":
