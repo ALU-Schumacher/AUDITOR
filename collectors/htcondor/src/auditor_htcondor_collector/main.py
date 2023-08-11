@@ -7,7 +7,7 @@ from .cli import CLI
 from .config import Config
 
 
-if __name__ == "__main__":
+def main():
     args = CLI.parse_args()
     config = Config(args)
 
