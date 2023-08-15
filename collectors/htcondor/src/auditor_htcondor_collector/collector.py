@@ -137,9 +137,7 @@ class CondorHistoryCollector(object):
         """Queries HTCondor history for jobs with a given schedd name and job id."""
         if job is not None:
             assert type(job) == tuple and len(job) == 2, "Invalid job id"
-            assert isinstance(type(job[0]), int) and isinstance(
-                type(job[1]), int
-            ), "Invalid job id"
+            assert isinstance(job[0], int) and isinstance(job[1], int), "Invalid job id"
 
         since = f"'CompletionDate<={self.config.condor_timestamp}'"
         if job is None:

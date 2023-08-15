@@ -57,7 +57,6 @@ services:
       - USE_POOL_PASSWORD=yes
     volumes:
       - ./condor_passwords:/etc/condor/passwords-orig.d/
-      - ./../../collectors/htcondor:/app
       - ./htcondor_collector_config.yaml:/configs/collector.yaml
     depends_on:
       - auditor

@@ -13,15 +13,31 @@ jobs:
       table: ${{ steps.table.outputs.table }}
     steps:
     - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Build collector package
+      run: |
+        python3.9 -m venv pvenv
+        source pvenv/bin/activate
+        pip install --upgrade pip build
+        python -m build -o dist collectors/htcondor
     - name: Start docker containers
       working-directory: containers/htcondor
       run: |
         docker compose -f docker-compose.yaml up -d --build
         sleep 5
+    - name: Install collector in container
+      run: |
+        docker cp dist/*whl htcondor-auditor-collector-1:/tmp/
+        docker exec -u submituser htcondor-auditor-collector-1 \
+          bash -c "pip install --upgrade pip && \
+            pip install --no-cache-dir --no-index /tmp/auditor_htcondor_collector-*.whl"
     - name: Start collector
       run: |
         docker exec -d -u submituser -w /home/submituser htcondor-auditor-collector-1 \
-          bash -c "python3.9 /app/__main__.py -c /configs/collector.yaml -i 5"
+          bash -l -c "auditor-htcondor-collector -c /configs/collector.yaml -i 5"
     - name: Submit test job
       run: |
         docker exec -u submituser -w /home/submituser htcondor-submit-1 \
