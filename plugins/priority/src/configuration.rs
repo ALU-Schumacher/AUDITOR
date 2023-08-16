@@ -23,6 +23,9 @@ pub struct Settings {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     #[serde(default = "default_port")]
     pub port: u16,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    #[serde(default = "default_timeout")]
+    pub timeout: i64,
     pub components: HashMap<String, String>,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     #[serde(default = "default_min_priority")]
@@ -45,6 +48,10 @@ fn default_addr() -> String {
 
 fn default_port() -> u16 {
     8000
+}
+
+fn default_timeout() -> i64 {
+    30
 }
 
 fn default_min_priority() -> u64 {
