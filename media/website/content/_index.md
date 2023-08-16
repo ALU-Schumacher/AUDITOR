@@ -541,6 +541,7 @@ A typical configuration for the SLURM batch system may look like this:
 ```yaml
 addr: "auditor_host_address"
 port: 8000
+timeout: 30 # in seconds
 duration: 1209600 # in seconds
 components:
   NumCPUs: "HEPSPEC"

@@ -248,6 +248,7 @@ async fn main() -> Result<(), Error> {
 
     let client = AuditorClientBuilder::new()
         .address(&config.addr, config.port)
+        .timeout(config.timeout)
         .build()?;
 
     let records = match config.duration {
@@ -278,6 +279,7 @@ mod tests {
         let config = Settings {
             addr: "whatever".to_string(),
             port: 1234,
+            timeout: 30,
             components: HashMap::new(),
             min_priority: 1,
             max_priority: 10,
@@ -304,6 +306,7 @@ mod tests {
         let config = Settings {
             addr: "whatever".to_string(),
             port: 1234,
+            timeout: 30,
             components: HashMap::new(),
             min_priority: 1,
             max_priority: 10,
