@@ -9,7 +9,7 @@ packages = ["auditor_htcondor_collector"]
 [project]
 name = "auditor-htcondor-collector"
 description = "AUDITOR collector for aggregating data from the HTCondor batch system"
-version = "0.0.1"
+version = "0.1.0"
 requires-python = ">=3.6"
 dependencies = [
     "pyyaml",
