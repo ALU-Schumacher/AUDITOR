@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -89,7 +89,7 @@
            <div itemprop="articleBody">
              
   <section id="tutorial">
-<span id="ref-examples"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
+<span id="ref-examples"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading"></a></h1>
 <p>This section walks you through several basic usecases of <cite>pyauditor</cite>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -107,7 +107,7 @@ The components can optionally be enhanced with <cite>scores</cite>, which are fl
 For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <p>pyauditor is an async library and as such requires an event loop.</p>
 <section id="creating-a-record">
-<h2>Creating a Record<a class="headerlink" href="#creating-a-record" title="Permalink to this heading"></a></h2>
+<h2>Creating a Record<a class="headerlink" href="#creating-a-record" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Score</span>
 
 <span class="c1"># Define meta information</span>
@@ -147,7 +147,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 </div>
 </section>
 <section id="connecting-to-auditor">
-<h2>Connecting to Auditor<a class="headerlink" href="#connecting-to-auditor" title="Permalink to this heading"></a></h2>
+<h2>Connecting to Auditor<a class="headerlink" href="#connecting-to-auditor" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code> is used to build an <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> object which can be used for interacting with Auditor:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">AuditorClientBuilder</span>
 
@@ -165,14 +165,14 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 </div>
 </section>
 <section id="pushing-records-to-auditor">
-<h2>Pushing records to Auditor<a class="headerlink" href="#pushing-records-to-auditor" title="Permalink to this heading"></a></h2>
+<h2>Pushing records to Auditor<a class="headerlink" href="#pushing-records-to-auditor" title="Link to this heading"></a></h2>
 <p>Assuming that a record and a client were already created, the record can be pushed to Auditor like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="updating-records-in-auditor">
-<h2>Updating records in Auditor<a class="headerlink" href="#updating-records-in-auditor" title="Permalink to this heading"></a></h2>
+<h2>Updating records in Auditor<a class="headerlink" href="#updating-records-in-auditor" title="Link to this heading"></a></h2>
 <p>Auditor accepts incomplete records. In particular, the stop time can be missing. These records can be updated at a later time, by adding the same record which includes a stop time.
 Note that the <code class="docutils literal notranslate"><span class="pre">record_id</span></code> must match the one already in the database!
 Fields other than the stop time cannot be updated.</p>
@@ -181,14 +181,14 @@ Fields other than the stop time cannot be updated.</p>
 </div>
 </section>
 <section id="receiving-all-records-from-auditor">
-<h2>Receiving all records from Auditor<a class="headerlink" href="#receiving-all-records-from-auditor" title="Permalink to this heading"></a></h2>
+<h2>Receiving all records from Auditor<a class="headerlink" href="#receiving-all-records-from-auditor" title="Link to this heading"></a></h2>
 <p>Via <code class="docutils literal notranslate"><span class="pre">get()</span></code> all records can be retrieved from Auditor:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_of_records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="receiving-all-records-started-stopped-since-a-given-timestamp">
-<h2>Receiving all records started/stopped since a given timestamp<a class="headerlink" href="#receiving-all-records-started-stopped-since-a-given-timestamp" title="Permalink to this heading"></a></h2>
+<h2>Receiving all records started/stopped since a given timestamp<a class="headerlink" href="#receiving-all-records-started-stopped-since-a-given-timestamp" title="Link to this heading"></a></h2>
 <p>The records to be retrieved can be limited to the ones started or stopped since a given timestamp.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_of_records_started_since</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_started_since</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
 <span class="n">list_of_records_stopped_since</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
@@ -196,7 +196,7 @@ Fields other than the stop time cannot be updated.</p>
 </div>
 </section>
 <section id="checking-the-health-of-auditor">
-<h2>Checking the health of Auditor<a class="headerlink" href="#checking-the-health-of-auditor" title="Permalink to this heading"></a></h2>
+<h2>Checking the health of Auditor<a class="headerlink" href="#checking-the-health-of-auditor" title="Link to this heading"></a></h2>
 <p>The health of Auditor can be checked with</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">healthy</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">health_check</span><span class="p">()</span>
 <span class="k">if</span> <span class="n">healthy</span><span class="p">:</span>
@@ -207,19 +207,19 @@ Fields other than the stop time cannot be updated.</p>
 </div>
 </section>
 <section id="creating-utc-timestamps">
-<h2>Creating UTC timestamps<a class="headerlink" href="#creating-utc-timestamps" title="Permalink to this heading"></a></h2>
+<h2>Creating UTC timestamps<a class="headerlink" href="#creating-utc-timestamps" title="Link to this heading"></a></h2>
 <p>This section gives hints on how to create appropriate timestamps for use with Auditor.
 The <cite>actual</cite> timezone assigned to the <cite>datetime</cite> object is irrelevant when passed to any pyauditor classes/functions/methods!
 Only the actual numbers for hours, minutes, and so on matter.</p>
 <section id="timestamp-already-in-utc">
-<h3>Timestamp already in UTC<a class="headerlink" href="#timestamp-already-in-utc" title="Permalink to this heading"></a></h3>
+<h3>Timestamp already in UTC<a class="headerlink" href="#timestamp-already-in-utc" title="Link to this heading"></a></h3>
 <p>When the timestamps you are using are already in UTC, they can be used without further processing.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">48942</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="timestamp-in-local-time">
-<h3>Timestamp in local time<a class="headerlink" href="#timestamp-in-local-time" title="Permalink to this heading"></a></h3>
+<h3>Timestamp in local time<a class="headerlink" href="#timestamp-in-local-time" title="Link to this heading"></a></h3>
 <p>This requires the python modules <code class="docutils literal notranslate"><span class="pre">tzlocal</span></code>.</p>
 <p>Assuming that you are creating the timestamp yourself (it is not obtained from an external source), you need to attach the local timezone to the timestamp and then convert it to UTC:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
