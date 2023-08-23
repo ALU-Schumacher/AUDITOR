@@ -103,7 +103,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
         runtime,
         Utc::now()
     )
-    .fetch_optional(&mut transaction)
+    .fetch_optional(&mut *transaction)
     .await
     .map_err(AddRecordError)?
     .ok_or_else(|| AddRecordError(sqlx::Error::RowNotFound))?
@@ -146,7 +146,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
             &scores[..],
             id,
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await
         .map_err(AddRecordError)?;
     }
@@ -170,7 +170,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
             &names[..],
             &values[..],
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await
         .map_err(AddRecordError)?;
     }

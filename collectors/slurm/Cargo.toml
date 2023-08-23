@@ -49,17 +49,16 @@ serde_with = { version = "3.3.0", features = ["chrono_0_4"] }
 serde_json = "1.0.107"
 
 [dependencies.sqlx]
-version = "0.6.3"
+version = "0.7.1"
 default-features = false
 features = [
-    "runtime-actix-rustls",
+    "runtime-tokio-rustls",
     "macros",
     "postgres",
     "sqlite",
     "uuid",
     "chrono",
-    "migrate",
-    "offline"
+    "migrate"
 ]
 
 [dev-dependencies]

@@ -1,0 +1,100 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT a.record_id,\n                  m.meta as \"meta: Vec<(String, Vec<String>)>\",\n                  css.components as \"components: Vec<Component>\",\n                  a.start_time as \"start_time?\",\n                  a.stop_time,\n                  a.runtime\n           FROM accounting a\n           LEFT JOIN (\n               WITH subquery AS (\n                   SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values\n                   FROM meta as m\n                   GROUP BY m.record_id, m.key\n               )\n               SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta\n               FROM subquery as s\n               GROUP BY s.record_id\n               ) m ON m.record_id = a.record_id\n           LEFT JOIN (\n               WITH subquery AS (\n                  SELECT \n                      c.id as cid,\n                      COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores\n                  FROM components as c\n                  LEFT JOIN components_scores as cs\n                  ON c.id = cs.component_id\n                  LEFT JOIN scores as s\n                  ON cs.score_id = s.id\n                  GROUP BY c.id\n               )\n               SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components\n               FROM records_components AS rc\n               LEFT JOIN components as c\n               ON rc.component_id = c.id\n               LEFT JOIN subquery AS sq\n               ON sq.cid = rc.component_id\n               GROUP BY rc.record_id\n           ) css ON css.id = a.id\n           ORDER BY a.stop_time\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "record_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "meta: Vec<(String, Vec<String>)>",
+        "type_info": "RecordArray"
+      },
+      {
+        "ordinal": 2,
+        "name": "components: Vec<Component>",
+        "type_info": {
+          "Custom": {
+            "name": "_component",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "component",
+                  "kind": {
+                    "Composite": [
+                      [
+                        "name",
+                        "Text"
+                      ],
+                      [
+                        "amount",
+                        "Int8"
+                      ],
+                      [
+                        "scores",
+                        {
+                          "Custom": {
+                            "name": "_score",
+                            "kind": {
+                              "Array": {
+                                "Custom": {
+                                  "name": "score",
+                                  "kind": {
+                                    "Composite": [
+                                      [
+                                        "name",
+                                        "Text"
+                                      ],
+                                      [
+                                        "value",
+                                        "Float8"
+                                      ]
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "start_time?",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "stop_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "runtime",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      null,
+      null,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "17f4686d8430a057a076f44db1d54859c3fb4f569d162d7095f8734b87ab73b7"
+}

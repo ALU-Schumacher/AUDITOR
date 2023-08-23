@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM lastcheck",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "897e404e440cbb47b4dbc56186a0b730030eb2c7af29f32b9d0bc1443066f9f3"
+}
