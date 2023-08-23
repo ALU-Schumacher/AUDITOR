@@ -118,14 +118,14 @@ impl Database {
             Err(e) => return Err(eyre!("Error initializing transaction: {:?}", e)),
         };
         sqlx::query!(r#"DELETE FROM lastcheck"#)
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await?;
         sqlx::query!(
             r#"INSERT INTO lastcheck (lastcheck, jobid) VALUES ($1, $2)"#,
             timestamp,
             job_id
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await?;
         if let Err(e) = transaction.commit().await {
             Err(eyre!("Error committing transaction: {:?}", e))

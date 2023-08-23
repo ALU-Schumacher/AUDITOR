@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO lastcheck (lastcheck, jobid) VALUES ($1, $2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "4a574fb0928bf006ce1538c52bfaedf6c4467996aeeac27f2c7c183278486a26"
+}

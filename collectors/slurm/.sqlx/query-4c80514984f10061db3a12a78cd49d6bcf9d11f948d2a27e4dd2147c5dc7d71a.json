@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT lastcheck, jobid FROM lastcheck",
+  "describe": {
+    "columns": [
+      {
+        "name": "lastcheck",
+        "ordinal": 0,
+        "type_info": "Datetime"
+      },
+      {
+        "name": "jobid",
+        "ordinal": 1,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "4c80514984f10061db3a12a78cd49d6bcf9d11f948d2a27e4dd2147c5dc7d71a"
+}

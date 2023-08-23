@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE accounting\n        SET stop_time = $2,\n            runtime = $3,\n            updated_at = $4\n        WHERE\n            record_id = $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Timestamptz",
+        "Int8",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "80a4ffc9c5af2cf8570c4543df24cc9fc9604f98bc4716ae4f99479af245774e"
+}

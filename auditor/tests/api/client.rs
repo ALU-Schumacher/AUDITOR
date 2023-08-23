@@ -244,7 +244,7 @@ async fn get_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .fetch_optional(&mut transaction)
+        .fetch_optional(&mut *transaction)
         .await
         .unwrap()
         .unwrap()
@@ -288,7 +288,7 @@ async fn get_returns_a_list_of_records() {
                 &scores[..],
                 id,
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
@@ -316,7 +316,7 @@ async fn get_returns_a_list_of_records() {
                 &names[..],
                 &values[..],
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
@@ -385,7 +385,7 @@ async fn get_started_since_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .fetch_optional(&mut transaction)
+        .fetch_optional(&mut *transaction)
         .await
         .unwrap()
         .unwrap()
@@ -429,7 +429,7 @@ async fn get_started_since_returns_a_list_of_records() {
                 &scores[..],
                 id,
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
@@ -457,7 +457,7 @@ async fn get_started_since_returns_a_list_of_records() {
                 &names[..],
                 &values[..],
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
@@ -534,7 +534,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
             runtime,
             Utc::now()
         )
-        .fetch_optional(&mut transaction)
+        .fetch_optional(&mut *transaction)
         .await
         .unwrap()
         .unwrap()
@@ -578,7 +578,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
                 &scores[..],
                 id,
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
@@ -606,7 +606,7 @@ async fn get_stopped_since_returns_a_list_of_records() {
                 &names[..],
                 &values[..],
             )
-            .execute(&mut transaction)
+            .execute(&mut *transaction)
             .await
             .unwrap();
         }
