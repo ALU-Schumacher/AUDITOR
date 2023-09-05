@@ -385,10 +385,11 @@ impl ParsableType {
             ParsableType::String => AllowedTypes::String(input.to_owned()),
             ParsableType::DateTime => {
                 let local_offset = Local::now().offset().local_minus_utc();
-                AllowedTypes::DateTime(DateTime::<Utc>::from(DateTime::<Local>::from_local(
-                    NaiveDateTime::parse_from_str(input, "%Y-%m-%dT%H:%M:%S")?,
-                    FixedOffset::east_opt(local_offset).unwrap(),
-                )))
+                AllowedTypes::DateTime(DateTime::<Utc>::from(
+                    NaiveDateTime::parse_from_str(input, "%Y-%m-%dT%H:%M:%S")?
+                        .and_local_timezone(FixedOffset::east_opt(local_offset).unwrap())
+                        .unwrap(),
+                ))
             }
             ParsableType::Id => {
                 AllowedTypes::String(input.split('(').take(1).collect::<Vec<_>>()[0].to_owned())

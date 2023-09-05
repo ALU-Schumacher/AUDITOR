@@ -238,7 +238,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
             },
         );
         (
-            DateTime::<Local>::from_utc(
+            DateTime::<Local>::from_naive_utc_and_offset(
                 ts.naive_utc(),
                 FixedOffset::east_opt(local_offset).unwrap(),
             ),
