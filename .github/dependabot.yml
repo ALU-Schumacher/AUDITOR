@@ -10,6 +10,11 @@ updates:
     directory: "/plugins/apel"
     schedule:
       interval: "daily"
+  # HTCondor collector
+  - package-ecosystem: "pip"
+    directory: "/collectors/htcondor"
+    schedule:
+      interval: "daily"
   # GitHub action
   - package-ecosystem: "github-actions"
     directory: "/"

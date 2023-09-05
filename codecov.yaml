@@ -19,6 +19,10 @@ component_management:
       name: slurm_epilog_collector
       paths:
         - collectors/slurm-epilog/**
+    - component_id: module_htcondor_collector
+      name: htcondor_collector
+      paths:
+        - collectors/htcondor/**
     - component_id: module_priority_plugin
       name: priority_plugin
       paths:
