@@ -55,10 +55,11 @@ fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
     timestamp: T,
 ) -> Result<DateTime<Utc>, Error> {
     let local_offset = Local::now().offset().local_minus_utc();
-    Ok(DateTime::<Utc>::from(DateTime::<Local>::from_local(
-        NaiveDateTime::parse_from_str(timestamp.as_ref(), "%Y-%m-%dT%H:%M:%S")?,
-        FixedOffset::east_opt(local_offset).unwrap(),
-    )))
+    Ok(DateTime::<Utc>::from(
+        NaiveDateTime::parse_from_str(timestamp.as_ref(), "%Y-%m-%dT%H:%M:%S")?
+            .and_local_timezone(FixedOffset::east_opt(local_offset).unwrap())
+            .unwrap(),
+    ))
 }
 
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
