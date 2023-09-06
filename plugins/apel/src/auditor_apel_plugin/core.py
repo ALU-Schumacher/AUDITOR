@@ -9,7 +9,6 @@ import sqlite3
 from sqlite3 import Error
 from datetime import datetime, timedelta, time, timezone
 from time import sleep
-import pytz
 import json
 import sys
 import requests
@@ -49,7 +48,7 @@ def get_begin_previous_month(current_time):
     previous_month = first_current_month - timedelta(days=1)
     first_previous_month = previous_month.replace(day=1)
     begin_previous_month = datetime.combine(first_previous_month, time())
-    begin_previous_month_utc = begin_previous_month.replace(tzinfo=pytz.utc)
+    begin_previous_month_utc = begin_previous_month.replace(tzinfo=timezone.utc)
 
     return begin_previous_month_utc
 
@@ -87,7 +86,7 @@ def create_time_db(publish_since, time_db_path):
     initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
     publish_since_datetime = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
     data_tuple = (
-        publish_since_datetime.replace(tzinfo=pytz.utc).timestamp(),
+        publish_since_datetime.replace(tzinfo=timezone.utc).timestamp(),
         initial_report_time,
     )
 
@@ -113,7 +112,7 @@ def get_start_time(conn):
         cur.row_factory = lambda cursor, row: row[0]
         cur.execute("SELECT last_end_time FROM times")
         start_time_row = cur.fetchall()
-        start_time = datetime.fromtimestamp(start_time_row[0], tz=pytz.utc)
+        start_time = datetime.fromtimestamp(start_time_row[0], tz=timezone.utc)
         cur.close()
         return start_time
     except Error as e:
