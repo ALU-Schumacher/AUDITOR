@@ -2,7 +2,7 @@
 
 import logging
 
-from datetime import datetime as dt
+from datetime import datetime as dt, timezone
 from typing import Optional, Tuple, List
 from urllib.parse import quote
 from asyncio import create_subprocess_shell
@@ -255,9 +255,12 @@ class CondorHistoryCollector(object):
                 f"{self.config.record_prefix}-{quote(job_id.encode('utf-8'), safe='')}"
             )
             record = Record(
-                record_id=record_id, start_time=dt.utcfromtimestamp(start_time)
+                record_id=record_id,
+                start_time=dt.fromtimestamp(start_time, tz=timezone.utc),
             )
-            record.with_stop_time(dt.utcfromtimestamp(stop_time)).with_meta(meta)
+            record.with_stop_time(
+                dt.fromtimestamp(stop_time, tz=timezone.utc)
+            ).with_meta(meta)
             for component in self._generate_components(job):
                 record.with_component(component)
         except (KeyError, ValueError) as e:
