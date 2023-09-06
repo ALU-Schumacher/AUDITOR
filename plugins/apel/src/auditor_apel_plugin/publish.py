@@ -5,8 +5,7 @@
 
 import logging
 from pyauditor import AuditorClientBuilder
-from datetime import datetime, timedelta
-import pytz
+from datetime import datetime, timedelta, timezone
 import configparser
 import argparse
 import base64
@@ -60,7 +59,9 @@ def run(config, client):
 
             records_summary = get_records(client, start_time, 30)
 
-            latest_stop_time = records_summary[-1].stop_time.replace(tzinfo=pytz.utc)
+            latest_stop_time = records_summary[-1].stop_time.replace(
+                tzinfo=timezone.utc
+            )
             logging.debug(f"Latest stop time is {latest_stop_time}")
             summary_db = create_summary_db(config, records_summary)
             grouped_summary_list = group_summary_db(summary_db)

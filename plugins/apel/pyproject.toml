@@ -8,7 +8,6 @@ version = "0.1.0"
 requires-python = ">=3.7"
 dependencies = [
 	     "python-auditor==0.1.0",
-	     "pytz==2023.3",
 	     "requests==2.31.0",
 	     "cryptography==41.0.3",
 ]
@@ -45,7 +44,6 @@ branch = true
 output = "lcov.info"
 
 [tool.black]
-line-length = 79
 include = '\.pyi?$'
 
 [tool.pytest.ini_options]

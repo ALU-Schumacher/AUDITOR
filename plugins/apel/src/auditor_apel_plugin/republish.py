@@ -7,8 +7,7 @@ import logging
 from pyauditor import AuditorClientBuilder
 import configparser
 import argparse
-from datetime import datetime
-import pytz
+from datetime import datetime, timezone
 import base64
 from auditor_apel_plugin.core import (
     get_token,
@@ -30,7 +29,7 @@ def run(config, args, client):
     year = args.year
     site = args.site
 
-    begin_month = datetime(year, month, 1).replace(tzinfo=pytz.utc)
+    begin_month = datetime(year, month, 1).replace(tzinfo=timezone.utc)
 
     records = get_records(client, begin_month, 30)
     token = get_token(config)

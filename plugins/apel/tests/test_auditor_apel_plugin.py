@@ -15,7 +15,6 @@ from auditor_apel_plugin.core import (
     get_site_id,
 )
 from datetime import datetime, timezone
-import pytz
 import sqlite3
 import os
 import subprocess
@@ -90,10 +89,10 @@ class TestAuditorApelPlugin:
         time_b = datetime(1970, 1, 1, 00, 00, 00)
 
         result = get_begin_previous_month(time_a)
-        assert result == datetime(2022, 9, 1, 00, 00, 00, tzinfo=pytz.utc)
+        assert result == datetime(2022, 9, 1, 00, 00, 00, tzinfo=timezone.utc)
 
         result = get_begin_previous_month(time_b)
-        assert result == datetime(1969, 12, 1, 00, 00, 00, tzinfo=pytz.utc)
+        assert result == datetime(1969, 12, 1, 00, 00, 00, tzinfo=timezone.utc)
 
     def test_create_time_db(self):
         path = ":memory:"
@@ -111,7 +110,7 @@ class TestAuditorApelPlugin:
             cur.close()
             time_db.close()
             time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=pytz.utc).timestamp()
+            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
 
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
 
@@ -145,7 +144,7 @@ class TestAuditorApelPlugin:
             cur.close()
             time_db.close()
             time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=pytz.utc).timestamp()
+            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
             os.remove(path)
 
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
@@ -160,7 +159,7 @@ class TestAuditorApelPlugin:
             cur.close()
             time_db.close()
             time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=pytz.utc).timestamp()
+            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
             os.remove(path)
 
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
@@ -222,7 +221,7 @@ class TestAuditorApelPlugin:
             result = get_start_time(time_db)
             time_db.close()
             time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_dt_utc = time_dt.replace(tzinfo=pytz.utc)
+            time_dt_utc = time_dt.replace(tzinfo=timezone.utc)
 
             assert result == time_dt_utc
 
