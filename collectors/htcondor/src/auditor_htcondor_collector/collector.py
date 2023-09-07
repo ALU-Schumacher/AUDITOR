@@ -213,7 +213,7 @@ class CondorHistoryCollector(object):
             for item in entry if isinstance(entry, list) else [entry]:
                 value = get_value(item, job)
                 if value is not None:
-                    values.append(value)
+                    values.append(quote(value, safe=""))
                     if key == "site":  # site is a special case
                         break
             if not values:
