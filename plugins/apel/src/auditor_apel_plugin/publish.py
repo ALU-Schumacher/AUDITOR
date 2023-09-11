@@ -53,50 +53,55 @@ def run(config, client):
         else:
             logging.info("Enough time since last report, create new report")
 
+        start_time = get_start_time(time_db_conn)
+        logging.info(f"Getting records since {start_time}")
+
+        records_summary = get_records(client, start_time, 30)
         try:
-            start_time = get_start_time(time_db_conn)
-            logging.info(f"Getting records since {start_time}")
-
-            records_summary = get_records(client, start_time, 30)
-
             latest_stop_time = records_summary[-1].stop_time.replace(
                 tzinfo=timezone.utc
             )
-            logging.debug(f"Latest stop time is {latest_stop_time}")
-            summary_db = create_summary_db(config, records_summary)
-            grouped_summary_list = group_summary_db(summary_db)
-            summary = create_summary(grouped_summary_list)
-            logging.debug(summary)
-            signed_summary = sign_msg(client_cert, client_key, summary)
-            logging.debug(signed_summary)
-            encoded_summary = base64.b64encode(signed_summary).decode("utf-8")
-            logging.debug(encoded_summary)
-            payload_summary = build_payload(encoded_summary)
-            logging.debug(payload_summary)
-            post_summary = send_payload(config, token, payload_summary)
-            logging.debug(post_summary.status_code)
-
-            begin_previous_month = get_begin_previous_month(current_time)
-            records_sync = get_records(client, begin_previous_month, 30)
-            sync_db = create_sync_db(config, records_sync)
-            grouped_sync_list = group_sync_db(sync_db)
-            sync = create_sync(grouped_sync_list)
-            logging.debug(sync)
-            signed_sync = sign_msg(client_cert, client_key, sync)
-            logging.debug(signed_sync)
-            encoded_sync = base64.b64encode(signed_sync).decode("utf-8")
-            logging.debug(encoded_sync)
-            payload_sync = build_payload(encoded_sync)
-            logging.debug(payload_sync)
-            post_sync = send_payload(config, token, payload_sync)
-            logging.debug(post_sync.status_code)
-
-            latest_report_time = datetime.now()
-            update_time_db(
-                time_db_conn, latest_stop_time.timestamp(), latest_report_time
-            )
         except IndexError:
             logging.info("No new records, do nothing for now")
+            time_db_conn.close()
+            logging.info(
+                "Next report scheduled for "
+                f"{datetime.now() + timedelta(seconds=report_interval)}"
+            )
+            sleep(report_interval)
+            continue
+
+        logging.debug(f"Latest stop time is {latest_stop_time}")
+        summary_db = create_summary_db(config, records_summary)
+        grouped_summary_list = group_summary_db(summary_db)
+        summary = create_summary(grouped_summary_list)
+        logging.debug(summary)
+        signed_summary = sign_msg(client_cert, client_key, summary)
+        logging.debug(signed_summary)
+        encoded_summary = base64.b64encode(signed_summary).decode("utf-8")
+        logging.debug(encoded_summary)
+        payload_summary = build_payload(encoded_summary)
+        logging.debug(payload_summary)
+        post_summary = send_payload(config, token, payload_summary)
+        logging.debug(post_summary.status_code)
+
+        begin_previous_month = get_begin_previous_month(current_time)
+        records_sync = get_records(client, begin_previous_month, 30)
+        sync_db = create_sync_db(config, records_sync)
+        grouped_sync_list = group_sync_db(sync_db)
+        sync = create_sync(grouped_sync_list)
+        logging.debug(sync)
+        signed_sync = sign_msg(client_cert, client_key, sync)
+        logging.debug(signed_sync)
+        encoded_sync = base64.b64encode(signed_sync).decode("utf-8")
+        logging.debug(encoded_sync)
+        payload_sync = build_payload(encoded_sync)
+        logging.debug(payload_sync)
+        post_sync = send_payload(config, token, payload_sync)
+        logging.debug(post_sync.status_code)
+
+        latest_report_time = datetime.now()
+        update_time_db(time_db_conn, latest_stop_time.timestamp(), latest_report_time)
 
         time_db_conn.close()
         logging.info(
