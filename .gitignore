@@ -4,5 +4,6 @@ nohup.out
 dist/
 **/testdb.db
 **/target/
+**/lcov.info
 /venv
 *~
