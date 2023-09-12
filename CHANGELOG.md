@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Updated docker/build-push-action from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Updated docker/login-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Updated docker/setup-buildx-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Updated docker/metadata-action from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Handle `undefined` values from the batch system correctly ([@rfvc](https://github.com/rfvc))
 
 ### Removed
