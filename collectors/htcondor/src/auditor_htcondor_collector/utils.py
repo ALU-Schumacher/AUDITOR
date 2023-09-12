@@ -76,6 +76,8 @@ def get_value(config_entry: T_Config, job: dict):
     if "key" in config_entry:
         try:
             val = job[config_entry["key"]]
+            if val == "undefined":
+                return None
         except KeyError:
             return None
     elif "factor" in config_entry:
