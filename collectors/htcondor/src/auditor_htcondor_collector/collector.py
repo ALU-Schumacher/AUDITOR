@@ -188,7 +188,7 @@ class CondorHistoryCollector(object):
         components = []
         for component in self.config.components:
             amount = get_value(component, job)
-            if amount:
+            if amount is not None:
                 try:
                     # AUDITOR expects int-values for components
                     amount = int(amount)
@@ -204,6 +204,12 @@ class CondorHistoryCollector(object):
                     value = get_value(score, job) or "0.0"
                     comp.with_score(Score(score["name"], maybe_convert(value)))
                 components.append(comp)
+            else:
+                self.logger.warning(
+                    f"Could not get value for component {component['name']!r} "
+                    f"for job {job['GlobalJobId']!r}."
+                )
+                raise ValueError
         return components
 
     def _get_meta(self, job: dict) -> Meta:
@@ -216,12 +222,13 @@ class CondorHistoryCollector(object):
                     values.append(quote(value, safe=""))
                     if key == "site":  # site is a special case
                         break
-            if not values:
+            if values:
+                meta.insert(key, values)
+            else:
                 self.logger.warning(
                     f"Could not find meta value for {key!r} "
                     f"for job {job['GlobalJobId']!r}."
                 )
-            meta.insert(key, values)
         return meta
 
     def _generate_record(self, job: dict) -> Record:
