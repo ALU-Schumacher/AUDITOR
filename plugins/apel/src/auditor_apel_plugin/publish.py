@@ -57,11 +57,8 @@ def run(config, client):
         logging.info(f"Getting records since {start_time}")
 
         records_summary = get_records(client, start_time, 30)
-        try:
-            latest_stop_time = records_summary[-1].stop_time.replace(
-                tzinfo=timezone.utc
-            )
-        except IndexError:
+
+        if len(records_summary) == 0:
             logging.info("No new records, do nothing for now")
             time_db_conn.close()
             logging.info(
@@ -70,6 +67,8 @@ def run(config, client):
             )
             sleep(report_interval)
             continue
+
+        latest_stop_time = records_summary[-1].stop_time.replace(tzinfo=timezone.utc)
 
         logging.debug(f"Latest stop time is {latest_stop_time}")
         summary_db = create_summary_db(config, records_summary)
