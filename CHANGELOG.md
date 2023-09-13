@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Breaking changes
+- pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped ([@dirksammel](https://github.com/dirksammel) and [@QuantumDancer](https://github.com/QuantumDancer)).
 - Apel plugin: `cpu_time_unit` has to be present in the config file. See [Documentation](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin) ([@dirksammel](https://github.com/dirksammel))
+
 ### Added
 
 ### Changed
