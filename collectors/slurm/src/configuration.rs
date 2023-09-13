@@ -324,8 +324,9 @@ impl ParsableType {
             ParsableType::Time => {
                 let set = Lazy::new(|| {
                     RegexSet::new([
-                        r"(?P<min>\d{2}):(?P<sec>\d{2})\.(?P<milli>\d+)",
-                        r"(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})",
+                        r"^(?P<min>\d{2}):(?P<sec>\d{2})\.(?P<milli>\d+)$",
+                        r"^(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$",
+                        r"^(?P<day>\d{1,2})-(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$",
                     ])
                     .unwrap()
                 });
@@ -383,9 +384,10 @@ impl ParsableType {
 
                 AllowedTypes::Integer(
                     pm("milli", &cap)?
-                        + pm("sec", &cap)? * 1000
+                        + pm("sec", &cap)? * 1_000
                         + pm("min", &cap)? * 60_000
-                        + pm("hour", &cap)? * 1_440_000,
+                        + pm("hour", &cap)? * 3_600_000
+                        + pm("day", &cap)? * 86_400_000,
                 )
             }
             ParsableType::String => AllowedTypes::String(input.to_owned()),
@@ -484,6 +486,21 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn correct_time_parsed() {
+        let parsed = ParsableType::Time.parse("43:28.686").unwrap();
+        let expected = AllowedTypes::Integer(2608686);
+        assert_eq!(parsed, expected);
+
+        let parsed = ParsableType::Time.parse("10:07:24").unwrap();
+        let expected = AllowedTypes::Integer(36444000);
+        assert_eq!(parsed, expected);
+
+        let parsed = ParsableType::Time.parse("2-08:19:41").unwrap();
+        let expected = AllowedTypes::Integer(202781000);
+        assert_eq!(parsed, expected);
+    }
 
     #[test]
     fn correct_json_parsed() {
