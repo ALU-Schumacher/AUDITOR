@@ -13,6 +13,7 @@ from auditor_apel_plugin.core import (
     replace_record_string,
     get_records,
     get_site_id,
+    convert_to_seconds,
 )
 from datetime import datetime, timezone
 import sqlite3
@@ -350,6 +351,7 @@ class TestAuditorApelPlugin:
         benchmark_name = "hepscore"
         cores_name = "Cores"
         cpu_time_name = "TotalCPU"
+        cpu_time_unit = "seconds"
         nnodes_name = "NNodes"
         meta_key_site = "site_id"
         meta_key_submithost = "headnode"
@@ -369,6 +371,7 @@ class TestAuditorApelPlugin:
             "benchmark_name": benchmark_name,
             "cores_name": cores_name,
             "cpu_time_name": cpu_time_name,
+            "cpu_time_unit": cpu_time_unit,
             "nnodes_name": nnodes_name,
             "meta_key_site": meta_key_site,
             "meta_key_submithost": meta_key_submithost,
@@ -518,6 +521,7 @@ class TestAuditorApelPlugin:
         benchmark_name = "hepscore"
         cores_name = "Cores"
         cpu_time_name = "TotalCPU"
+        cpu_time_unit = "seconds"
         nnodes_name = "NNodes"
         meta_key_site = "site_id"
         meta_key_submithost = "headnode"
@@ -537,6 +541,7 @@ class TestAuditorApelPlugin:
             "benchmark_name": benchmark_name,
             "cores_name": cores_name,
             "cpu_time_name": cpu_time_name,
+            "cpu_time_unit": cpu_time_unit,
             "nnodes_name": nnodes_name,
             "meta_key_site": meta_key_site,
             "meta_key_submithost": meta_key_submithost,
@@ -1028,3 +1033,41 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             get_site_id(rec_2, conf)
         assert pytest_error.type == AttributeError
+
+    def test_convert_to_seconds(self):
+        cpu_time_name = "TotalCPU"
+        cpu_time_unit = "seconds"
+
+        conf = configparser.ConfigParser()
+        conf["auditor"] = {
+            "cpu_time_name": cpu_time_name,
+            "cpu_time_unit": cpu_time_unit,
+        }
+
+        result = convert_to_seconds(1100, conf)
+        assert result == 1100
+
+        result = convert_to_seconds(1500, conf)
+        assert result == 1500
+
+        conf["auditor"]["cpu_time_unit"] = "milliseconds"
+
+        result = convert_to_seconds(1100, conf)
+        assert result == 1
+
+        result = convert_to_seconds(1500, conf)
+        assert result == 2
+
+    def test_convert_to_seconds_fail(self):
+        cpu_time_name = "TotalCPU"
+        cpu_time_unit = "hours"
+
+        conf = configparser.ConfigParser()
+        conf["auditor"] = {
+            "cpu_time_name": cpu_time_name,
+            "cpu_time_unit": cpu_time_unit,
+        }
+
+        with pytest.raises(Exception) as pytest_error:
+            convert_to_seconds(1100, conf)
+        assert pytest_error.type == ValueError
