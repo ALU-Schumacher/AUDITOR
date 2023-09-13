@@ -188,6 +188,9 @@ class CondorHistoryCollector(object):
         components = []
         for component in self.config.components:
             amount = get_value(component, job)
+            self.logger.debug(
+                f"Got amount {amount!r} ({type(amount)}) for component {component!r}."
+            )
             if amount is not None:
                 try:
                     # AUDITOR expects int-values for components
@@ -207,7 +210,7 @@ class CondorHistoryCollector(object):
             else:
                 self.logger.warning(
                     f"Could not get value for component {component['name']!r} "
-                    f"for job {job['GlobalJobId']!r}."
+                    f"({component!r}) for job {job['GlobalJobId']!r}."
                 )
                 raise ValueError
         return components
