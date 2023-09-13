@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "python-auditor"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 authors = [
     { name = "Stefan Kroboth", email = "stefan.kroboth@gmail.com" }
 ]
