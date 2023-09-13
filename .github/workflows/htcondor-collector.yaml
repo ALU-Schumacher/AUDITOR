@@ -41,7 +41,7 @@ jobs:
     - name: Submit test job
       run: |
         docker exec -u submituser -w /home/submituser htcondor-submit-1 \
-          bash -c "echo -e \"executable=/bin/sleep\narguments=2\n+VoName=testgroup\nqueue\" > job \
+          bash -c "echo -e \"executable=/bin/sleep\narguments=2\n+VoName=\\\"testgroup\\\"\nqueue\" > job \
             && condor_submit job"
     - name: Wait for job and collector
       run: |
