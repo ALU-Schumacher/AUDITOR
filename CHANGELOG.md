@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Apel plugin: Bugfix in catching empty record list ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Fix parsing of ParsableType::Time for certain cases ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Updated docker/build-push-action from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
