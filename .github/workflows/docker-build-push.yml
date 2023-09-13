@@ -52,7 +52,7 @@ jobs:
             ghcr.io/ALU-Schumacher/${{ matrix.containers }}
 
       - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
