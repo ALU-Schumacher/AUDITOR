@@ -30,5 +30,5 @@ anyhow = "1"
 pyo3 = { version = "0.19", features = ["chrono", "extension-module", "anyhow"] }
 pyo3-asyncio = { version = "0.19", features = ["attributes", "tokio-runtime"] }
 tokio = "1"
-chrono = { version = "0.4.28", features = ["serde"] }
+chrono = { version = "0.4.30", features = ["serde"] }
 serde_json = "1.0.106"
