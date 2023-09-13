@@ -339,6 +339,8 @@ def create_summary_db(config, records):
             logging.critical(f"no {cpu_time_name} in components")
             raise
 
+        cputime = convert_to_seconds(cputime, config)
+
         try:
             nodecount = component_dict[nnodes_name].amount
         except KeyError:
@@ -650,6 +652,7 @@ def build_payload(msg):
 def send_payload(config, token, payload):
     ams_url = config["authentication"].get("ams_url")
     verify_ca = config["authentication"].getboolean("verify_ca")
+
     if verify_ca:
         ca_path = config["authentication"].get("ca_path")
     else:
@@ -664,3 +667,19 @@ def send_payload(config, token, payload):
     )
 
     return post
+
+
+def convert_to_seconds(cpu_time, config):
+    cpu_time_name = config["auditor"].get("cpu_time_name")
+    cpu_time_unit = config["auditor"].get("cpu_time_unit")
+
+    if cpu_time_unit == "seconds":
+        return cpu_time
+    elif cpu_time_unit == "milliseconds":
+        return round(cpu_time / 1000)
+    else:
+        logging.critical(
+            f"Unknown unit for {cpu_time_name}: {cpu_time_unit}. "
+            "Possible values are seconds or milliseconds."
+        )
+        raise ValueError
