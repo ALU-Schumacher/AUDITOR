@@ -527,44 +527,6 @@ See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
 <p>The APEL plugin creates job summary records and sends them to APEL.
 The following fields need to be present in the config file:</p>
-<pre class="z-code"><code><span class="z-text z-plain">[logging]
-log_level =
-
-[paths]
-time_db_path =
-
-[intervals]
-report_interval =
-
-[site]
-publish_since =
-sites_to_report =
-site_name_mapping =
-default_submit_host =
-infrastructure_type =
-benchmark_type =
-
-[auditor]
-auditor_ip =
-auditor_port =
-auditor_timeout =
-benchmark_name =
-cores_name =
-cpu_time_name =
-nnodes_name =
-meta_key_site =
-meta_key_submithost =
-meta_key_voms =
-meta_key_username =
-
-[authentication]
-auth_url =
-ams_url =
-client_cert =
-client_key =
-ca_path =
-verify_ca =
-</span></code></pre>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
 <tr><td><code>time_db_path</code></td><td>Path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.</td></tr>
@@ -581,6 +543,7 @@ verify_ca =
 <tr><td><code>benchmark_name</code></td><td>Name of the <code>benchmark</code> field in the AUDITOR records.</td></tr>
 <tr><td><code>cores_name</code></td><td>Name of the <code>cores</code> field in the AUDITOR records.</td></tr>
 <tr><td><code>cpu_time_name</code></td><td>Name of the field that stores the total CPU time in the AUDITOR records.</td></tr>
+<tr><td><code>cpu_time_unit</code></td><td>Unit of total CPU time in the AUDITOR records, can be <code>seconds</code> or <code>milliseconds</code>.</td></tr>
 <tr><td><code>nnodes_name</code></td><td>Name of the field that stores the number of nodes in the AUDITOR records.</td></tr>
 <tr><td><code>meta_key_site</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
 <tr><td><code>meta_key_submithost</code></td><td>Name of the field that stores the submithost in the AUDITOR records.</td></tr>
@@ -618,6 +581,7 @@ auditor_timeout = 60
 benchmark_name = hepscore23
 cores_name = Cores
 cpu_time_name = TotalCPU
+cpu_time_unit = milliseconds
 nnodes_name = NNodes
 meta_key_site = site_id
 meta_key_submithost = headnode
