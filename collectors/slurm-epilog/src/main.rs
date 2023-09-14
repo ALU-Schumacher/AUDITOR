@@ -9,7 +9,7 @@ use anyhow::Error;
 use auditor::client::AuditorClientBuilder;
 use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
-use auditor::telemetry::{get_subscriber, init_subscriber};
+use auditor::telemetry::{get_subscriber, init_subscriber, LogLevel};
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use regex::Regex;
 use std::collections::HashMap;
@@ -118,10 +118,21 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    let config = configuration::get_configuration()?;
+
+    // Set up log level
+    let log_level: String = match LogLevel::try_from(config.loglevel.clone()) {
+        Ok(log_level) => log_level.to_string(),
+        Err(error) => {
+            eprintln!("Error in setting log level: {}", error);
+            LogLevel::INFO.to_string()
+        }
+    };
+
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
-        "info".into(),
+        log_level,
         std::io::stdout,
     );
     init_subscriber(subscriber);
@@ -132,8 +143,6 @@ async fn main() -> Result<(), Error> {
         %run_id,
     );
     let _span_guard = span.enter();
-
-    let config = configuration::get_configuration()?;
 
     debug!(?config, "Loaded config");
 

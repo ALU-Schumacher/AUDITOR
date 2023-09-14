@@ -20,6 +20,8 @@ pub struct Settings {
     pub site_id: String,
     #[serde(default = "default_components")]
     pub components: Vec<ComponentConfig>,
+    #[serde(default = "default_log_level")]
+    pub loglevel: String,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -73,6 +75,10 @@ fn default_components() -> Vec<ComponentConfig> {
     }]
 }
 
+fn default_log_level() -> String {
+    "info".to_string()
+}
+
 /// Loads the configuration from a file `configuration.{yaml,json,toml,...}`
 #[tracing::instrument(name = "Loading configuration")]
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
@@ -82,7 +88,9 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .join("slurm-epilog-collector");
 
     let settings = config::Config::builder()
-        .add_source(config::File::from(configuration_directory.join("base")).required(false));
+        .add_source(config::File::from(configuration_directory.join("base")).required(false))
+        .add_source(config::File::from(configuration_directory.join("loglevel")).required(false));
+
     let settings = match std::env::args().nth(1) {
         Some(file) => settings.add_source(
             config::File::from(file.as_ref())
