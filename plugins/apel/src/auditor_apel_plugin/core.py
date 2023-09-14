@@ -192,34 +192,50 @@ def get_voms_info(record, config):
 
     try:
         voms_string = replace_record_string(record.meta.get(meta_key_voms)[0])
-        voms_list = voms_string.split("/")
-        voms_dict["vo"] = voms_list[1]
-
-        if "Role" not in voms_string:
-            logging.warning(
-                f"No Role found in VOMS of {record.record_id}: {voms_string}, "
-                "not sending VORole"
-            )
-            voms_dict["vorole"] = None
-
-            if len(voms_list) == 2:
-                voms_dict["vogroup"] = "/" + voms_list[1]
-            else:
-                voms_dict["vogroup"] = "/" + voms_list[1] + "/" + voms_list[2]
-        elif len(voms_list) == 3:
-            voms_dict["vogroup"] = "/" + voms_list[1]
-            voms_dict["vorole"] = voms_list[2]
-        else:
-            voms_dict["vogroup"] = "/" + voms_list[1] + "/" + voms_list[2]
-            voms_dict["vorole"] = voms_list[3]
     except TypeError:
         logging.warning(
             f"No VOMS information found in {record.record_id}, "
             "not sending VO, VOGroup, and VORole"
         )
+
         voms_dict["vo"] = None
         voms_dict["vogroup"] = None
         voms_dict["vorole"] = None
+
+        return voms_dict
+
+    if not voms_string.startswith("/"):
+        logging.warning(
+            f"VOMS information found in {record.record_id} has unknown "
+            f"format: {voms_string}. Not sending VO, VOGroup, and VORole"
+        )
+
+        voms_dict["vo"] = None
+        voms_dict["vogroup"] = None
+        voms_dict["vorole"] = None
+
+        return voms_dict
+
+    voms_list = voms_string.split("/")
+    voms_dict["vo"] = voms_list[1]
+
+    if "Role" not in voms_string:
+        logging.warning(
+            f"No Role found in VOMS of {record.record_id}: {voms_string}, "
+            "not sending VORole"
+        )
+        voms_dict["vorole"] = None
+
+        if len(voms_list) == 2:
+            voms_dict["vogroup"] = "/" + voms_list[1]
+        else:
+            voms_dict["vogroup"] = "/" + voms_list[1] + "/" + voms_list[2]
+    elif len(voms_list) == 3:
+        voms_dict["vogroup"] = "/" + voms_list[1]
+        voms_dict["vorole"] = voms_list[2]
+    else:
+        voms_dict["vogroup"] = "/" + voms_list[1] + "/" + voms_list[2]
+        voms_dict["vorole"] = voms_list[3]
 
     return voms_dict
 
