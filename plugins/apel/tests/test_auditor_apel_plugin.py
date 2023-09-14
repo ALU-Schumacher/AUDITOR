@@ -818,12 +818,28 @@ class TestAuditorApelPlugin:
             "voms": None,
         }
 
+        rec_6_values = {
+            "rec_id": "test_record_4",
+            "start_time": datetime(2022, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
+            "n_cores": 2,
+            "hepscore": 3.0,
+            "tot_cpu": 12265325,
+            "n_nodes": 1,
+            "site": "test-site-2",
+            "user": "second_user",
+            "submit_host": None,
+            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
+            "voms": "atlas",
+        }
+
         rec_value_list = [
             rec_1_values,
             rec_2_values,
             rec_3_values,
             rec_4_values,
             rec_5_values,
+            rec_6_values,
         ]
         records = []
 
@@ -857,6 +873,11 @@ class TestAuditorApelPlugin:
         assert result["vorole"] is None
 
         result = get_voms_info(records[4], conf)
+        assert result["vo"] is None
+        assert result["vogroup"] is None
+        assert result["vorole"] is None
+
+        result = get_voms_info(records[5], conf)
         assert result["vo"] is None
         assert result["vogroup"] is None
         assert result["vorole"] is None
