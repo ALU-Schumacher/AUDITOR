@@ -27,6 +27,7 @@ from auditor_apel_plugin.core import (
     group_sync_db,
     create_sync,
     get_records,
+    check_sites_in_records,
 )
 
 
@@ -67,6 +68,20 @@ def run(config, client):
             )
             sleep(report_interval)
             continue
+
+        sites_to_report = check_sites_in_records(config, records_summary)
+
+        if not sites_to_report:
+            logging.info("No sites to report in the records, do nothing for now")
+            time_db_conn.close()
+            logging.info(
+                "Next report scheduled for "
+                f"{datetime.now() + timedelta(seconds=report_interval)}"
+            )
+            sleep(report_interval)
+            continue
+        else:
+            logging.info(f"Create reports for {sites_to_report}")
 
         latest_stop_time = records_summary[-1].stop_time.replace(tzinfo=timezone.utc)
 

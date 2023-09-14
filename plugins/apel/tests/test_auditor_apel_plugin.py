@@ -14,6 +14,7 @@ from auditor_apel_plugin.core import (
     get_records,
     get_site_id,
     convert_to_seconds,
+    check_sites_in_records,
 )
 from datetime import datetime, timezone
 import sqlite3
@@ -1092,3 +1093,84 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             convert_to_seconds(1100, conf)
         assert pytest_error.type == ValueError
+
+    def test_check_sites_in_records(self):
+        sites_to_report = '["test-site-1", "test-site-2"]'
+        benchmark_name = "hepscore"
+        cores_name = "Cores"
+        cpu_time_name = "TotalCPU"
+        nnodes_name = "NNodes"
+        meta_key_site = "site_id"
+        meta_key_submithost = "headnode"
+        meta_key_voms = "voms"
+        meta_key_username = "subject"
+
+        conf = configparser.ConfigParser()
+        conf["site"] = {
+            "sites_to_report": sites_to_report,
+        }
+        conf["auditor"] = {
+            "benchmark_name": benchmark_name,
+            "cores_name": cores_name,
+            "cpu_time_name": cpu_time_name,
+            "nnodes_name": nnodes_name,
+            "meta_key_site": meta_key_site,
+            "meta_key_submithost": meta_key_submithost,
+            "meta_key_voms": meta_key_voms,
+            "meta_key_username": meta_key_username,
+        }
+
+        runtime = 55
+
+        rec_1_values = {
+            "rec_id": "test_record_1",
+            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+            "n_cores": 8,
+            "hepscore": 10.0,
+            "tot_cpu": 15520000,
+            "n_nodes": 1,
+            "site": "test-site-1",
+            "submit_host": "https:%2F%2Ftest1.submit_host.de:1234%2Fxxx",
+            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test1: test1",
+            "voms": "%2Fatlas%2Fde",
+        }
+
+        rec_2_values = {
+            "rec_id": "test_record_2",
+            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
+            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
+            "n_cores": 1,
+            "hepscore": 23.0,
+            "tot_cpu": 12234325,
+            "n_nodes": 2,
+            "site": "test-site-2",
+            "submit_host": "https:%2F%2Ftest2.submit_host.de:1234%2Fxxx",
+            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
+            "voms": "%2Fatlas%2Fde",
+        }
+
+        rec_value_list = [rec_1_values, rec_2_values]
+        records = []
+
+        with patch(
+            "pyauditor.Record.runtime", new_callable=PropertyMock
+        ) as mocked_runtime:
+            mocked_runtime.return_value = runtime
+
+            for r_values in rec_value_list:
+                rec = create_rec(r_values, conf["auditor"])
+                records.append(rec)
+
+            result = check_sites_in_records(conf, records)
+            assert len(result) == 2
+
+            conf["site"]["sites_to_report"] = '["test-site-1"]'
+
+            result = check_sites_in_records(conf, records)
+            assert len(result) == 1
+
+            conf["site"]["sites_to_report"] = '["test-site-3"]'
+
+            result = check_sites_in_records(conf, records)
+            assert len(result) == 0
