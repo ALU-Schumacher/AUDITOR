@@ -13,7 +13,7 @@ mod shutdown;
 
 use auditor::{
     client::AuditorClientBuilder,
-    telemetry::{get_subscriber, init_subscriber},
+    telemetry::{get_subscriber, init_subscriber, LogLevel},
 };
 use color_eyre::eyre::{eyre, Result};
 use once_cell::sync::Lazy;
@@ -72,12 +72,22 @@ static KEYS: Lazy<Vec<KeyConfig>> = Lazy::new(|| {
     });
     keys
 });
+
 static CONFIG: Lazy<Settings> =
     Lazy::new(|| get_configuration().expect("Failed loading configuration"));
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let subscriber = get_subscriber(NAME.into(), "info".into(), std::io::stdout);
+    // Set up log level
+    let log_level: String = match LogLevel::try_from(CONFIG.loglevel.clone()) {
+        Ok(log_level) => log_level.to_string(),
+        Err(error) => {
+            eprintln!("Error in setting log level: {}", error);
+            LogLevel::INFO.to_string()
+        }
+    };
+
+    let subscriber = get_subscriber(NAME.into(), log_level, std::io::stdout);
     init_subscriber(subscriber);
 
     let run_id = Uuid::new_v4();

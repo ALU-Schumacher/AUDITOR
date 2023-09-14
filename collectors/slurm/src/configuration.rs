@@ -48,6 +48,8 @@ pub struct Settings {
     /// Potentially interesting: completed, failed, node_fail
     #[serde(default = "default_job_status")]
     pub job_status: Vec<String>,
+    #[serde(default = "default_log_level")]
+    pub loglevel: String,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -201,6 +203,10 @@ fn default_database_path() -> String {
 
 fn default_job_status() -> Vec<String> {
     vec!["completed".into()]
+}
+
+fn default_log_level() -> String {
+    "into".to_string()
 }
 
 fn default_components() -> Vec<ComponentConfig> {
@@ -452,7 +458,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let configuration_directory = base_path.join("configuration").join("slurm-collector");
 
     let settings = config::Config::builder()
-        .add_source(config::File::from(configuration_directory.join("base")).required(false));
+        .add_source(config::File::from(configuration_directory.join("base")).required(false))
+        .add_source(config::File::from(configuration_directory.join("loglevel")).required(false));
     let settings = match std::env::args().nth(1) {
         Some(file) => settings.add_source(
             config::File::from(file.as_ref())
