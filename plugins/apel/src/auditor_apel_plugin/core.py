@@ -307,7 +307,7 @@ def create_summary_db(config, records):
         raise
 
     site_name_mapping = json.loads(config["site"].get("site_name_mapping"))
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
     infrastructure = config["site"].get("infrastructure_type")
     benchmark_type = config["site"].get("benchmark_type")
     benchmark_name = config["auditor"].get("benchmark_name")
@@ -451,7 +451,7 @@ def create_sync_db(config, records):
         raise
 
     site_name_mapping = json.loads(config["site"].get("site_name_mapping"))
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
 
     for r in records:
         site_id = get_site_id(r, config)
@@ -699,3 +699,14 @@ def convert_to_seconds(cpu_time, config):
             "Possible values are seconds or milliseconds."
         )
         raise ValueError
+
+
+def check_sites_in_records(config, records):
+    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
+
+    logging.debug(f"Sites to report from config: {sites_to_report}")
+
+    sites_in_records = {get_site_id(r, config) for r in records}
+    logging.debug(f"Sites found in records: {sites_in_records}")
+
+    return sites_to_report.intersection(sites_in_records)
