@@ -67,10 +67,9 @@ impl TryFrom<String> for LogLevel {
             "info" => Ok(Self::INFO),
             "warn" => Ok(Self::WARN),
             "error" => Ok(Self::ERROR),
-            _ => Err(format!(
-                "Not a supported log level. Please check your spelling. 
-                Setting INFO as default log level"
-            )),
+            _ => Err("Not a supported log level. Please check your spelling. 
+					Setting INFO as default log level"
+                .to_string()),
         }
     }
 }
