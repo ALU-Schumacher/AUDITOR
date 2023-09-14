@@ -16,6 +16,7 @@ pub struct Settings {
     pub application: AuditorSettings,
     #[serde(default = "default_metrics")]
     pub metrics: MetricsSettings,
+    pub loglevel: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -114,7 +115,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(config::File::from(configuration_directory.join("base")).required(false))
         .add_source(
             config::File::from(configuration_directory.join(environment.as_str())).required(false),
-        );
+        )
+        .add_source(config::File::from(configuration_directory.join("loglevel")).required(false));
 
     let settings = match std::env::args().nth(1) {
         Some(file) => settings.add_source(

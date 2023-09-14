@@ -8,18 +8,26 @@
 use auditor::configuration::get_configuration;
 use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::startup::run;
-use auditor::telemetry::{get_subscriber, init_subscriber};
+use auditor::telemetry::{get_subscriber, init_subscriber, LogLevel};
 use sqlx::postgres::PgPoolOptions;
 use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
-    // Set up logging
-    let subscriber = get_subscriber("AUDITOR".into(), "info".into(), std::io::stdout);
-    init_subscriber(subscriber);
-
     // Read in configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
+
+    // Set up log level
+    let log_level: String = match LogLevel::try_from(configuration.loglevel.clone()) {
+        Ok(log_level) => log_level.to_string(),
+        Err(error) => {
+            eprintln!("Error in setting log level: {}", error);
+            LogLevel::INFO.to_string()
+        }
+    };
+
+    let subscriber = get_subscriber("AUDITOR".into(), log_level, std::io::stdout);
+    init_subscriber(subscriber);
 
     // Create a connection pool for the PostgreSQL database
     let connection_pool = PgPoolOptions::new()

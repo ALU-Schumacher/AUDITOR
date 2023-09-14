@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use std::fmt;
 use tracing::{subscriber::set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_log::LogTracer;
@@ -32,4 +33,56 @@ where
 pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
     LogTracer::init().expect("Failed to set logger");
     set_global_default(subscriber).expect("Failed to set subscriber");
+}
+
+/// Log level options for AUDITOR and collectors                                                                                                                                          
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub enum LogLevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+}
+
+impl LogLevel {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            LogLevel::TRACE => "trace",
+            LogLevel::DEBUG => "debug",
+            LogLevel::INFO => "info",
+            LogLevel::WARN => "warn",
+            LogLevel::ERROR => "error",
+        }
+    }
+}
+
+impl TryFrom<String> for LogLevel {
+    type Error = String;
+    fn try_from(log_string: String) -> Result<Self, Self::Error> {
+        match log_string.to_lowercase().as_str() {
+            "trace" => Ok(Self::TRACE),
+            "debug" => Ok(Self::DEBUG),
+            "info" => Ok(Self::INFO),
+            "warn" => Ok(Self::WARN),
+            "error" => Ok(Self::ERROR),
+            _ => Err(format!(
+                "Not a supported log level. Please check your spelling. 
+                Setting INFO as default log level"
+            )),
+        }
+    }
+}
+
+impl fmt::Display for LogLevel {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            LogLevel::TRACE => write!(f, "trace"),
+            LogLevel::DEBUG => write!(f, "debug"),
+            LogLevel::INFO => write!(f, "info"),
+            LogLevel::WARN => write!(f, "warn"),
+            LogLevel::ERROR => write!(f, "error"),
+        }
+    }
 }
