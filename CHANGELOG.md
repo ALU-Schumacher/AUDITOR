@@ -6,20 +6,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Breaking changes
-- pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped ([@dirksammel](https://github.com/dirksammel) and [@QuantumDancer](https://github.com/QuantumDancer)).
+- pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: `cpu_time_unit` has to be present in the config file. See [Documentation](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin) ([@dirksammel](https://github.com/dirksammel))
+- Auditor: Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update pyo3 from 0.15.2 to 0.19 and pyo3-asyncio from 0.15 to 0.19 ([@QuantumDancer](https://github.com/QuantumDancer))
+  - When creating a record with `pyauditor`, the timezone of the datetime object now needs to be converted to `datetime.timezone.utc` instead of `pytz.utc`
+
+### Security
+- [RUSTSEC-2023-0052]: Update webpki from 0.22.0 to 0.22.1 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- Auditor + Apel plugin: Add semver tags and edge tag for docker container ([@QuantumDancer](https://github.com/QuantumDancer))
+- Apel plugin: Migrate the Apel plugin from [ALU-Schumacher/AUDITOR-APEL-plugin](https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin) to this repo ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Docker image ([@QuantumDancer](https://github.com/QuantumDancer))
+- HTCondor collector ([@rfvc](https://github.com/rfvc))
+- Priority plugin: Add option for client timeout ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Linting of python code with ruff and black ([@dirksammel](https://github.com/dirksammel))
+- CI: Dependabot checks for python plugins/collectors and GitHub actions ([@dirksammel](https://github.com/dirksammel))
+- CI: GitHub workflow for python unit tests ([@dirksammel](https://github.com/dirksammel))
+- Docs: Document `Record`, `RecordAdd`, `RecordUpdate`, `Component`, `Score`, and `Meta` in Rust API ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add tutorial for Rust client ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Common sections for collectors and plugins ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Dedicated docs for development ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed
 - Apel plugin: Bugfix in catching empty record list ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Catch VOMS information that does not start with `/` ([@dirksammel](https://github.com/dirksammel))
-- Slurm collector: Fix parsing of ParsableType::Time for certain cases ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Updated docker/build-push-action from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Updated docker/login-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Updated docker/setup-buildx-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Updated docker/metadata-action from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Remove `pytz` dependency ([@dirksammel](https://github.com/dirksammel))
+- Auditor: Fix default address in AuditorClientBuilder ([@QuantumDancer](https://github.com/QuantumDancer))
 - HTCondor collector: Handle `undefined` values from the batch system correctly ([@rfvc](https://github.com/rfvc))
+- HTCondor collector: Replace `datetime.utcfromtimestamp` with `datetime.fromtimestamp` ([@dirksammel](https://github.com/dirksammel))
+- Slurm collector: Add option to allow for empty fields in `sacct` output ([@QuantumDancer](https://github.com/QuantumDancer))
+- Slurm collector: Fix parsing of ParsableType::Time for certain cases ([@QuantumDancer](https://github.com/QuantumDancer))
+- Webpage: Adjust color schema and add text to About and ChangeLog pages ([@frboehler](https://github.com/frboehler), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update actions/checkout from 1 to 4 ([@dirksammel](https://github.com/dirksammel), [@rfvc](https://github.com/rfvc))
+- Dependencies: Update actions/download-artifact from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actions/setup-python from 2 to 4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actions/upload-artifact from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actix-web from 4.3.1 to 4.4.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update anyhow from 1.0.70 to 1.0.75 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update chrono from 0.4.24 to 0.4.28 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update cryptography from 41.0.1 to 41.0.3 in /plugins/apel ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/build-push-action from 2.5.0 to 5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/login-action from 1.10.0 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/metadata-action from 3.3.0 to 5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/setup-buildx-action from 1 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update fake from 2.5.0 to 2.8.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update itertools from 0.10.5 to 0.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update maturin from 0.13 to 1.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update num-traits from 0.2.15 to 0.2.16 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update once_cell from 1.17.1 to 1.18.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update regex from 1.7.3 to 1.9.5 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update reqwest from 0.11.16 to 0.11.20 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update rustls-webpki from 0.101.2 to 0.101.4 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde from 1.0.160 to 1.0.188 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde_json from 1.0.96 to 1.0.106 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde_with from 2.3.2 to 3.3.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update thiserror from 1.0.40 to 1.0.48 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tokio from 1.27.0 to 1.32.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tracing from 0.1.37 to 0.1.38 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Update tracing-actix-web from 0.7.4 to 0.7.6 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tracing-bunyan-formatter from 0.3.7 to 0.3.9 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 ([@stefan-k](https://github.com/stefan-k))
+- Dependencies: Update uuid from 1.3.1 to 1.4.1 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update wiremock from 0.5.18 to 0.5.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
