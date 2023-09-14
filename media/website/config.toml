@@ -18,7 +18,7 @@ highlight_code = true
 #highlight_theme = "kronuz"
 #highlight_theme = "base16-ocean-dark"
 #highlight_theme = "base16-ocean-light"
-highlight_theme = "css"
+highlight_theme = "idle"
 
 [extra]
 juice_logo_name = "AUDITOR"
