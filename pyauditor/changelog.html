@@ -49,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#breaking-changes">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#security">Security</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
@@ -139,24 +140,82 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <section id="breaking-changes">
 <h3>Breaking changes<a class="headerlink" href="#breaking-changes" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a> and <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>).</p></li>
+<li><p>pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
 <li><p>Apel plugin: <code class="docutils literal notranslate"><span class="pre">cpu_time_unit</span></code> has to be present in the config file. See <a class="reference external" href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin">Documentation</a> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor: Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pyo3 from 0.15.2 to 0.19 and pyo3-asyncio from 0.15 to 0.19 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p>
+<ul>
+<li><p>When creating a record with <code class="docutils literal notranslate"><span class="pre">pyauditor</span></code>, the timezone of the datetime object now needs to be converted to <code class="docutils literal notranslate"><span class="pre">datetime.timezone.utc</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pytz.utc</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="security">
+<h3>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[RUSTSEC-2023-0052]: Update webpki from 0.22.0 to 0.22.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
 </ul>
 </section>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor + Apel plugin: Add semver tags and edge tag for docker container (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: Migrate the Apel plugin from <a class="reference external" href="https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin">ALU-Schumacher/AUDITOR-APEL-plugin</a> to this repo (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Docker image (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>HTCondor collector (<a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>Priority plugin: Add option for client timeout (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Linting of python code with ruff and black (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Dependabot checks for python plugins/collectors and GitHub actions (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: GitHub workflow for python unit tests (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Docs: Document <code class="docutils literal notranslate"><span class="pre">Record</span></code>, <code class="docutils literal notranslate"><span class="pre">RecordAdd</span></code>, <code class="docutils literal notranslate"><span class="pre">RecordUpdate</span></code>, <code class="docutils literal notranslate"><span class="pre">Component</span></code>, <code class="docutils literal notranslate"><span class="pre">Score</span></code>, and <code class="docutils literal notranslate"><span class="pre">Meta</span></code> in Rust API (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Add tutorial for Rust client (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Common sections for collectors and plugins (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Dedicated docs for development (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
 </section>
 <section id="changed">
 <h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Apel plugin: Bugfix in catching empty record list (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
 <li><p>Apel plugin: Catch VOMS information that does not start with <code class="docutils literal notranslate"><span class="pre">/</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
-<li><p>Slurm collector: Fix parsing of ParsableType::Time for certain cases (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
-<li><p>Dependencies: Updated docker/build-push-action from 4 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
-<li><p>Dependencies: Updated docker/login-action from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
-<li><p>Dependencies: Updated docker/setup-buildx-action from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
-<li><p>Dependencies: Updated docker/metadata-action from 4 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Remove <code class="docutils literal notranslate"><span class="pre">pytz</span></code> dependency (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor: Fix default address in AuditorClientBuilder (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
 <li><p>HTCondor collector: Handle <code class="docutils literal notranslate"><span class="pre">undefined</span></code> values from the batch system correctly (<a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>HTCondor collector: Replace <code class="docutils literal notranslate"><span class="pre">datetime.utcfromtimestamp</span></code> with <code class="docutils literal notranslate"><span class="pre">datetime.fromtimestamp</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Slurm collector: Add option to allow for empty fields in <code class="docutils literal notranslate"><span class="pre">sacct</span></code> output (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Slurm collector: Fix parsing of ParsableType::Time for certain cases (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Webpage: Adjust color schema and add text to About and ChangeLog pages (<a class="reference external" href="https://github.com/frboehler">&#64;frboehler</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actions/checkout from 1 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>, <a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>Dependencies: Update actions/download-artifact from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/setup-python from 2 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/upload-artifact from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actix-web from 4.3.1 to 4.4.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update anyhow from 1.0.70 to 1.0.75 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update chrono from 0.4.24 to 0.4.28 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 41.0.1 to 41.0.3 in /plugins/apel (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/build-push-action from 2.5.0 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/login-action from 1.10.0 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/metadata-action from 3.3.0 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/setup-buildx-action from 1 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update fake from 2.5.0 to 2.8.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update itertools from 0.10.5 to 0.11.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update maturin from 0.13 to 1.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update num-traits from 0.2.15 to 0.2.16 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update once_cell from 1.17.1 to 1.18.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.7.3 to 1.9.5 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.11.16 to 0.11.20 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update rustls-webpki from 0.101.2 to 0.101.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.160 to 1.0.188 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.96 to 1.0.106 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_with from 2.3.2 to 3.3.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update thiserror from 1.0.40 to 1.0.48 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update tokio from 1.27.0 to 1.32.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing from 0.1.37 to 0.1.38 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Update tracing-actix-web from 0.7.4 to 0.7.6 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-bunyan-formatter from 0.3.7 to 0.3.9 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.3.1 to 1.4.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update wiremock from 0.5.18 to 0.5.19 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
 </ul>
 </section>
 <section id="removed">
