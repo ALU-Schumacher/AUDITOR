@@ -77,7 +77,7 @@ static CONFIG: Lazy<Settings> =
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let subscriber = get_subscriber(NAME.into(), "info".into(), std::io::stdout);
+    let subscriber = get_subscriber(NAME.into(), CONFIG.log_level.clone(), std::io::stdout);
     init_subscriber(subscriber);
 
     let run_id = Uuid::new_v4();

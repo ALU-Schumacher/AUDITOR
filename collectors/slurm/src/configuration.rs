@@ -7,12 +7,14 @@
 
 use std::collections::HashMap;
 
+use auditor::telemetry::deserialize_log_level;
 use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};
 use color_eyre::eyre::{eyre, Report, Result, WrapErr};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
 use regex::{Captures, Regex, RegexSet};
 use serde_aux::field_attributes::deserialize_number_from_string;
+use tracing_subscriber::filter::LevelFilter;
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -48,6 +50,13 @@ pub struct Settings {
     /// Potentially interesting: completed, failed, node_fail
     #[serde(default = "default_job_status")]
     pub job_status: Vec<String>,
+    #[serde(default = "default_log_level")]
+    #[serde(deserialize_with = "deserialize_log_level")]
+    pub log_level: LevelFilter,
+}
+
+fn default_log_level() -> LevelFilter {
+    LevelFilter::INFO
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
