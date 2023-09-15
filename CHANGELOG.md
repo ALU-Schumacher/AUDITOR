@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Migrate the Apel plugin from [ALU-Schumacher/AUDITOR-APEL-plugin](https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin) to this repo ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Docker image ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Check if there are sites to report in the record list ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin + HTCondor collector: Add GitHub workflow for publishing to PyPI and GitHub ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector ([@rfvc](https://github.com/rfvc))
 - Priority plugin: Add option for client timeout ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Linting of python code with ruff and black ([@dirksammel](https://github.com/dirksammel))

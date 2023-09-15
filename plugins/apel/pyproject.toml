@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools==68.2.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -20,12 +20,12 @@ style = [
       "flake8",
 ]
 tests = [
-      "pytest",
-      "pytest-cov",
+      "pytest==7.4.2",
+      "pytest-cov==4.1.0",
 ]
 build = [
-      "build",
-      "setuptools",
+      "build==1.0.3",
+      "setuptools==68.2.2",
 ]
 
 [project.scripts]
