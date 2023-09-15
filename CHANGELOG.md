@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actix-web from 4.3.1 to 4.4.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update anyhow from 1.0.70 to 1.0.75 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update chrono from 0.4.24 to 0.4.28 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update codecov/codecov-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 41.0.1 to 41.0.3 in /plugins/apel ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/build-push-action from 2.5.0 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/login-action from 1.10.0 to 3 ([@dirksammel](https://github.com/dirksammel))
