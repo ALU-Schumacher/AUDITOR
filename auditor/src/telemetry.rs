@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use serde::Deserialize;
+use serde::{de, Deserialize};
 use std::str::FromStr;
 use tracing::{subscriber::set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
@@ -44,5 +44,5 @@ where
     D: serde::Deserializer<'de>,
 {
     let s = String::deserialize(deserializer)?;
-    Ok(LevelFilter::from_str(&s.to_lowercase()).unwrap())
+    LevelFilter::from_str(&s.to_lowercase()).map_err(de::Error::custom)
 }

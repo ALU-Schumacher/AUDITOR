@@ -5,9 +5,11 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use auditor::telemetry::deserialize_log_level;
 use chrono::Duration;
 use serde_aux::field_attributes::deserialize_number_from_string;
 use std::collections::HashMap;
+use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub enum ComputationMode {
@@ -40,6 +42,13 @@ pub struct Settings {
     pub duration: Option<Duration>,
     #[serde(default = "default_computation_mode")]
     pub computation_mode: ComputationMode,
+    #[serde(default = "default_log_level")]
+    #[serde(deserialize_with = "deserialize_log_level")]
+    pub log_level: LevelFilter,
+}
+
+fn default_log_level() -> LevelFilter {
+    LevelFilter::INFO
 }
 
 fn default_addr() -> String {

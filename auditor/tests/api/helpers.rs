@@ -4,10 +4,11 @@ use auditor::telemetry::{get_subscriber, init_subscriber};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
+use tracing_subscriber::filter::LevelFilter;
 use uuid::Uuid;
 
 static TRACING: Lazy<()> = Lazy::new(|| {
-    let default_filter_level = "info".to_string();
+    let default_filter_level = LevelFilter::INFO;
     let subscriber_name = "test".to_string();
     if std::env::var("TEST_LOG").is_ok() {
         let subscriber = get_subscriber(subscriber_name, default_filter_level, std::io::stdout);

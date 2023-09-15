@@ -123,7 +123,7 @@ async fn main() -> Result<(), Error> {
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
-        config.log_level.into(),
+        config.log_level,
         std::io::stdout,
     );
     init_subscriber(subscriber);
