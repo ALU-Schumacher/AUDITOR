@@ -14,12 +14,16 @@ use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
-    // Set up logging
-    let subscriber = get_subscriber("AUDITOR".into(), "info".into(), std::io::stdout);
-    init_subscriber(subscriber);
-
     // Read in configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
+
+    // Set up logging
+    let subscriber = get_subscriber(
+        "AUDITOR".into(),
+        configuration.log_level.clone(),
+        std::io::stdout,
+    );
+    init_subscriber(subscriber);
 
     // Create a connection pool for the PostgreSQL database
     let connection_pool = PgPoolOptions::new()
