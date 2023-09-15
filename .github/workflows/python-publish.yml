@@ -1,0 +1,63 @@
+name: python-publish
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  publish-apel-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/apel
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install build
+        run: |
+          pip install --upgrade pip
+          pip install .[build]
+      - name: Build binary wheel and source tarball
+        run: python3 -m build --sdist --wheel --outdir dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          
+  publish-htcondor-collector:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./collectors/htcondor
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install build
+        run: |
+          pip install --upgrade pip
+          pip install .[build]
+      - name: Build binary wheel and source tarball
+        run: python3 -m build --sdist --wheel --outdir dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*

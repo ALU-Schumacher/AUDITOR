@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools==68.2.2"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -16,6 +16,12 @@ dependencies = [
     "python-auditor==0.1.0"
 ]
 readme = "README.md"
+
+[project.optional-dependencies]
+build = [
+      "build==1.0.3",
+      "setuptools==68.2.2",
+]
 
 [project.scripts]
 auditor-htcondor-collector = "auditor_htcondor_collector.main:main"
