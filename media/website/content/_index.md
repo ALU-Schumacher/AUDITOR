@@ -167,7 +167,106 @@ See below for all currently available collectors.
 
 ## SLURM Collector
 
-TODO
+The Slurm collector collects information from slurm jobs based on the `sacct` command.
+It can be installed from the provided RPM or can be built with this command:
+
+```bash
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-collector
+```
+
+The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-slurm-collector` and should be placed on the Slurm head node.
+
+Run the Slurm collector with
+
+```bash
+/absolute/path/to/auditor-slurm-collector /absolute/path/to/auditor-slurm-collector-config.yml
+```
+
+Ideally, you should run the Slurm collector as a service, e.g. by using a systemd unit file.
+
+Example:
+
+```ini
+[Unit]
+Description=Auditor Slurm collector
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User=<service user>
+ExecStart=/absolute/path/to/auditor-slurm-collector /absolute/path/to/auditor-slurm-collector-config.yml
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Configuration
+
+The Slurm collector is configured using a yaml-file. Configuration parameters are as follows:
+
+| Parameter          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addr`             | Host name or IP address of the Auditor instance.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `port`             | Port of the Auditor instance.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `record_prefix`    | Prefix for the record identifier. The full record identifier is then `<record_prefix>-<slurm-job-id>`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `job_status`       | A list of acceptable job states that is used to filter the slurm jobs when calling the `sacct` command. See [SLURM JOB STATE CODES](https://slurm.schedmd.com/sacct.html#SECTION_JOB-STATE-CODES) for a list of allowed values.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `sacct_frequency`  | Frequency of executing the `sacct` command  (in seconds). Resulting records are first placed in a queue (based on a SQLite database) and later sent to the Auditor instance.                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `sender_frequency` | Frequency of sending new records from the sending queue to the Auditor instance.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `earliest_datetime`| After starting the collector for the first time, only query jobs that started later than `earliest_datetime`. Has to follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `database_path`    | Path to the SQLite database that is used for the sending queue.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `sites`            | A list of potential sites that can be associated with a job. Each site has to have a `name` field. A site can be matched to a job based on the contents of a field in the job information using the `only_if` field. The `only_if` field needs to have a `key`, that corresponds to a field in the `sacct` output, and a `matches` field, used to match a certain value. Regular expressions are supported.                                                                                                                                                                                                                                    |
+| `meta`             | A list of meta objects that are added to the record. Each meta object needs to have a `name` that is used as the name of the meta object, and a `key`, that corresponds to a field in the job information. The type of the data can be specified with `key_type`. Possible values are `Integer` (default), `IntegerMega` (integer with a `M` behind the number), `Time`, `String`, `DateTime`, `Id`, `Json`. Per default, empty values are not allowed. This can be changed by setting `key_allow_empty` to `true`. Setting meta information can optionally be limited to a subset of records using the `only_if` syntax, as described above . |
+| `components`       | A list of components that is added to the record. A component needs to have a `name`, `key`, and `key_type`, similar to the `meta` configuration. One or multiple scores can be added to a component with the `scores` option. Each score config needs to have a `name` and a `value`. Setting scores can optionally be limited to a subset of records using the `only_if` syntax, as described above.                                                                                                                                                                                                                                         |
+
+### Example configuration
+
+```yaml
+addr: "auditor_host_addr"
+port: 8000
+record_prefix: "slurm"
+job_status:
+  - "completed"
+  - "failed"
+sacct_frequency: 300
+sender_frequency: 60
+earliest_datetime: "2023-09-15T12:00:00+00:00"
+database_path: "/absolute/path/to/db.db"
+sites:
+  - name: "mysite1"
+    only_if:
+      key: "Partition"
+      matches: "^mypartition$"
+  - name: "mysite2"
+meta:
+  - name: Comment
+    key: "Comment"
+    key_type: Json
+    key_allow_empty: true
+components:
+  - name: "Cores"
+    key: "NCPUS"
+    scores:
+      - name: "HEPSPEC06"
+        value: 10.0
+      - name: "hepscore23"
+        value: 10.0
+  - name: "SystemCPU"
+    key: "SystemCPU"
+    key_type: Time
+  - name: "UserCPU"
+    key: "UserCPU"
+    key_type: Time
+  - name: "TotalCPU"
+    key: "TotalCPU"
+    key_type: Time
+  - name: "Memory"
+    key: "ReqMem"
+    key_type: IntegerMega
+  - name: "NNodes"
+    key: "NNodes"
+```
 
 ## SLURM Epilog Collector
 
@@ -219,7 +318,7 @@ fi
 
 The following configuration shows how to set the Auditor host address and port.
 The `record_prefix` will be used to prefix the Slurm job id in the record identifier (in this case it will be `slurm-JOBID`).
-The `site_name` is the `site_id` which will be attached to every record.
+The `site_name` is the `site_id` which will be attached to the meta field of every record.
 `components` defines how to extract accountable information from the call to `scontrol` and attaches `score`s to it.
 In the context of `components`, `name` indicates how this component will be identified in the final record and `key` indicates the `key` which is to be extracted from the `scontrol` output.
 `scores` are optional.
