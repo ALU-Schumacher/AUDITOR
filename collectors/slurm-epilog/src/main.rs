@@ -119,10 +119,11 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    let config = configuration::get_configuration()?;
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
-        "info".into(),
+        config.log_level.into(),
         std::io::stdout,
     );
     init_subscriber(subscriber);
@@ -133,8 +134,6 @@ async fn main() -> Result<(), Error> {
         %run_id,
     );
     let _span_guard = span.enter();
-
-    let config = configuration::get_configuration()?;
 
     debug!(?config, "Loaded config");
 

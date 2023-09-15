@@ -5,7 +5,9 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use auditor::telemetry::deserialize_log_level;
 use serde_aux::field_attributes::deserialize_number_from_string;
+use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
@@ -20,6 +22,13 @@ pub struct Settings {
     pub site_id: String,
     #[serde(default = "default_components")]
     pub components: Vec<ComponentConfig>,
+    #[serde(default = "default_log_level")]
+    #[serde(deserialize_with = "deserialize_log_level")]
+    pub log_level: LevelFilter,
+}
+
+fn default_log_level() -> LevelFilter {
+    LevelFilter::INFO
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
