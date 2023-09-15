@@ -5,10 +5,12 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::telemetry::deserialize_log_level;
 use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use sqlx::ConnectOptions;
+use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug)]
 pub struct Settings {
@@ -16,6 +18,13 @@ pub struct Settings {
     pub application: AuditorSettings,
     #[serde(default = "default_metrics")]
     pub metrics: MetricsSettings,
+    #[serde(default = "default_log_level")]
+    #[serde(deserialize_with = "deserialize_log_level")]
+    pub log_level: LevelFilter,
+}
+
+fn default_log_level() -> LevelFilter {
+    LevelFilter::INFO
 }
 
 #[derive(serde::Deserialize, Debug)]

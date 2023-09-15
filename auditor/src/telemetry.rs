@@ -5,22 +5,27 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use serde::Deserialize;
+use std::str::FromStr;
 use tracing::{subscriber::set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_log::LogTracer;
-use tracing_subscriber::{fmt::MakeWriter, layer::SubscriberExt, EnvFilter, Registry};
+use tracing_subscriber::{
+    filter::LevelFilter, fmt::MakeWriter, layer::SubscriberExt, EnvFilter, Registry,
+};
 
 /// Compose multiple layers into a `tracing`'s subscriber.
 pub fn get_subscriber<Sink>(
     name: String,
-    env_filter: String,
+    env_filter: LevelFilter,
     sink: Sink,
 ) -> impl Subscriber + Send + Sync
 where
     Sink: for<'a> MakeWriter<'a> + Send + Sync + 'static,
 {
-    let env_filter =
-        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
+    //let env_filter =
+    //    EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
+    let env_filter = EnvFilter::from_default_env().add_directive(env_filter.into());
     let formatting_layer = BunyanFormattingLayer::new(name, sink);
     Registry::default()
         .with(env_filter)
@@ -32,4 +37,12 @@ where
 pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
     LogTracer::init().expect("Failed to set logger");
     set_global_default(subscriber).expect("Failed to set subscriber");
+}
+
+pub fn deserialize_log_level<'de, D>(deserializer: D) -> Result<LevelFilter, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    Ok(LevelFilter::from_str(&s.to_lowercase()).unwrap())
 }
