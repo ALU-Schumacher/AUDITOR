@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Migration | Auditor </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR/juice.css">
+    
+    
+</head>
+
+<body>
+    
+<header class="box-shadow">
+    
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;development&#x2F;">Development</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;migration&#x2F;">Migration</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+</header>
+
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#from-0-1-0-to-unreleased">From 0.1.0 to Unreleased</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#auditor-client"><small>- Auditor client</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#auditor-server"><small>- Auditor server</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#htcondor-plugin"><small>- HTCondor plugin</small></a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+<div class="heading-text">Migration Guide</div>
+<h1 id="from-0-1-0-to-unreleased">From 0.1.0 to Unreleased</h1>
+<h2 id="apel-plugin">Apel plugin</h2>
+<ul>
+<li>The config file now needs to have a field <code>cpu_time_unit</code> present, which describes the unit of total CPU time in the AUDITOR records.
+Possible values are <code>seconds</code> or <code>milliseconds</code>.</li>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+</ul>
+<h2 id="auditor-client">Auditor client</h2>
+<ul>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+<li>Due to the update of the <code>pyo3</code> library, the timezone of datetime objects now needs to be <code>datetime.timezone.utc</code> instead of <code>pytz.utc</code>
+when creating a new record:
+<ul>
+<li>When the datetime object is already in UTC
+<ul>
+<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">import </span><span>pytz
+</span><span>
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>pytz.utc)
+</span></code></pre>
+</li>
+<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span>
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>datetime.timezone.utc)
+</span></code></pre>
+</li>
+</ul>
+</li>
+<li>If it is in local time
+<ul>
+<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">import </span><span>pytz
+</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
+</span><span>
+</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(pytz.utc)
+</span></code></pre>
+</li>
+<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
+</span><span>
+</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(datetime.timezone.utc)
+</span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="auditor-server">Auditor server</h2>
+<ul>
+<li>Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error</li>
+</ul>
+<h2 id="htcondor-plugin">HTCondor plugin</h2>
+<ul>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+</ul>
+
+
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
