@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: Add tutorial for Rust client ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Common sections for collectors and plugins ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Dedicated docs for development ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add documentation for the Slurm collector ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed
 - Apel plugin: Bugfix in catching empty record list ([@dirksammel](https://github.com/dirksammel))
