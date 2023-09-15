@@ -227,10 +227,12 @@ fn set_priorities(
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    let config = configuration::get_configuration()?;
+
     // Set up logging
     let subscriber = get_subscriber(
         "AUDITOR-priority-plugin".into(),
-        "info".into(),
+        config.log_level,
         std::io::stdout,
     );
     init_subscriber(subscriber);
@@ -268,6 +270,7 @@ async fn main() -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tracing_subscriber::filter::LevelFilter;
 
     #[test]
     fn test_compute_priorities_fullspread() {
@@ -287,6 +290,7 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::FullSpread,
+            log_level: LevelFilter::INFO,
         };
 
         let prios = compute_priorities(&resources, &config);
@@ -314,6 +318,7 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::ScaledBySum,
+            log_level: LevelFilter::INFO,
         };
 
         let prios = compute_priorities(&resources, &config);

@@ -18,11 +18,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let configuration = get_configuration().expect("Failed to read configuration.");
 
     // Set up logging
-    let subscriber = get_subscriber(
-        "AUDITOR".into(),
-        configuration.log_level.clone(),
-        std::io::stdout,
-    );
+    let subscriber = get_subscriber("AUDITOR".into(), configuration.log_level, std::io::stdout);
     init_subscriber(subscriber);
 
     // Create a connection pool for the PostgreSQL database

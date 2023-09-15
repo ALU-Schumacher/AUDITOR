@@ -33,6 +33,7 @@ strip = true
 auditor = { path = "../../auditor", version = "0.1.0" }
 config = "0.13"
 tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3" }
 serde = { version = "1", features = ["derive"] }
 serde_with = { version = "3", features = ["chrono_0_4"] }
 serde-aux = "4"
