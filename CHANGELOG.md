@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin + HTCondor collector: Add GitHub workflow for publishing to PyPI and GitHub ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector ([@rfvc](https://github.com/rfvc))
 - Priority plugin: Add option for client timeout ([@QuantumDancer](https://github.com/QuantumDancer))
+- Set LogLevel using env variable for auditor, slurm and slurm-epilog collectors and priority plugin ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Linting of python code with ruff and black ([@dirksammel](https://github.com/dirksammel))
 - CI: Dependabot checks for python plugins/collectors and GitHub actions ([@dirksammel](https://github.com/dirksammel))
 - CI: GitHub workflow for python unit tests ([@dirksammel](https://github.com/dirksammel))
