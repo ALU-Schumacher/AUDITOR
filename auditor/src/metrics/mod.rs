@@ -5,25 +5,19 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use opentelemetry::sdk::metrics::MeterProvider;
 use prometheus::Registry;
 
 mod database;
 pub use database::*;
 
-pub struct PrometheusExporterBuilder<F> {
+pub struct PrometheusExporterBuilder {
     db_watcher: Option<DatabaseMetricsWatcher>,
-    should_render_metrics: F,
 }
 
-impl<F> PrometheusExporterBuilder<F>
-where
-    F: Fn(&actix_web::dev::ServiceRequest) -> bool + Send + Clone,
-{
-    pub fn new(should_render_metrics: F) -> PrometheusExporterBuilder<F> {
-        PrometheusExporterBuilder {
-            db_watcher: None,
-            should_render_metrics,
-        }
+impl PrometheusExporterBuilder {
+    pub fn new() -> PrometheusExporterBuilder {
+        PrometheusExporterBuilder { db_watcher: None }
     }
 
     pub fn with_database_watcher(mut self, db_watcher: DatabaseMetricsWatcher) -> Self {
@@ -32,7 +26,7 @@ where
     }
 
     #[tracing::instrument(name = "Initializing Prometheus exporter", skip(self))]
-    pub fn build(self) -> Result<actix_web_opentelemetry::RequestMetrics<F>, anyhow::Error> {
+    pub fn build(self) -> Result<MeterProvider, anyhow::Error> {
         let prom_registry = Registry::new();
 
         if let Some(db_watcher) = self.db_watcher {
@@ -40,13 +34,19 @@ where
         }
 
         let metrics_exporter = opentelemetry_prometheus::exporter()
-            .with_registry(prom_registry)
-            .init();
+            .with_registry(prom_registry.clone())
+            .build()?;
 
-        Ok(actix_web_opentelemetry::RequestMetrics::new(
-            opentelemetry::global::meter("auditor_http_tracing"),
-            Some(self.should_render_metrics),
-            Some(metrics_exporter),
-        ))
+        let provider = MeterProvider::builder()
+            .with_reader(metrics_exporter)
+            .build();
+
+        Ok(provider)
+    }
+}
+
+impl Default for PrometheusExporterBuilder {
+    fn default() -> Self {
+        Self::new()
     }
 }

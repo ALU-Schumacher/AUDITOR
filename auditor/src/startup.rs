@@ -9,6 +9,8 @@ use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
 use crate::routes::{add, get, get_since, health_check, update};
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
+use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
+use opentelemetry_api::global;
 use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
@@ -19,18 +21,21 @@ pub fn run(
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
 ) -> Result<Server, anyhow::Error> {
-    let request_metrics = PrometheusExporterBuilder::new(|req: &actix_web::dev::ServiceRequest| {
-        req.path() == "/metrics" && req.method() == actix_web::http::Method::GET
-    })
-    .with_database_watcher(db_watcher)
-    .build()?;
+    let request_metrics = PrometheusExporterBuilder::new()
+        .with_database_watcher(db_watcher)
+        .build()?;
+    global::set_meter_provider(request_metrics);
 
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         App::new()
             // Logging middleware
             .wrap(TracingLogger::default())
-            .wrap(request_metrics.clone())
+            .wrap(RequestMetrics::default())
+            .route(
+                "/metrics",
+                web::get().to(PrometheusMetricsHandler::new(prometheus::Registry::new())),
+            )
             // Routes
             .route("/health_check", web::get().to(health_check))
             .route("/add", web::post().to(add))
