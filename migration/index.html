@@ -95,6 +95,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#htcondor-plugin"><small>- HTCondor plugin</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development"><small>- Development</small></a>
+                </div>
+                
                 
                 
             </div>
@@ -162,6 +166,12 @@ when creating a new record:
 <h2 id="htcondor-plugin">HTCondor plugin</h2>
 <ul>
 <li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+</ul>
+<h2 id="development">Development</h2>
+<h3 id="update-to-sqlx-0-7-1">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.1</p>
+<ul>
+<li><code>cargo install --version=0.7.1 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 
 
