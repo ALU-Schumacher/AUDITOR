@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update docker/setup-buildx-action from 1 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.5.0 to 2.8.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update itertools from 0.10.5 to 0.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update libsqlite3-sys from 0.24.2 to 0.26.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update maturin from 0.13 to 1.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.15 to 0.2.16 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update once_cell from 1.17.1 to 1.18.0 ([@QuantumDancer](https://github.com/QuantumDancer))
