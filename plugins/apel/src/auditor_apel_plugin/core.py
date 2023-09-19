@@ -53,7 +53,10 @@ def get_begin_previous_month(current_time):
     return begin_previous_month_utc
 
 
-def get_time_db(publish_since, time_db_path):
+def get_time_db(config):
+    time_db_path = config["paths"].get("time_db_path")
+    publish_since = config["site"].get("publish_since")
+
     if Path(time_db_path).is_file():
         conn = sqlite3.connect(
             time_db_path,
@@ -156,7 +159,7 @@ def replace_record_string(string):
     return updated_string
 
 
-def get_site_id(record, config):
+def get_site_id(config, record):
     meta_key_site = config["auditor"].get("meta_key_site")
 
     try:
@@ -170,7 +173,7 @@ def get_site_id(record, config):
         raise
 
 
-def get_submit_host(record, config):
+def get_submit_host(config, record):
     meta_key_submithost = config["auditor"].get("meta_key_submithost")
     default_submit_host = config["site"].get("default_submit_host")
 
@@ -186,7 +189,7 @@ def get_submit_host(record, config):
     return submit_host
 
 
-def get_voms_info(record, config):
+def get_voms_info(config, record):
     meta_key_voms = config["auditor"].get("meta_key_voms")
     voms_dict = {}
 
@@ -317,7 +320,7 @@ def create_summary_db(config, records):
     meta_key_username = config["auditor"].get("meta_key_username")
 
     for r in records:
-        site_id = get_site_id(r, config)
+        site_id = get_site_id(config, r)
 
         if site_id not in sites_to_report:
             continue
@@ -328,9 +331,9 @@ def create_summary_db(config, records):
             logging.critical(f"No site name mapping defined for site {site_id}")
             raise
 
-        submit_host = get_submit_host(r, config)
+        submit_host = get_submit_host(config, r)
 
-        voms_dict = get_voms_info(r, config)
+        voms_dict = get_voms_info(config, r)
 
         try:
             user_name = replace_record_string(r.meta.get(meta_key_username)[0])
@@ -355,7 +358,7 @@ def create_summary_db(config, records):
             logging.critical(f"no {cpu_time_name} in components")
             raise
 
-        cputime = convert_to_seconds(cputime, config)
+        cputime = convert_to_seconds(config, cputime)
 
         try:
             nodecount = component_dict[nnodes_name].amount
@@ -454,7 +457,7 @@ def create_sync_db(config, records):
     sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
 
     for r in records:
-        site_id = get_site_id(r, config)
+        site_id = get_site_id(config, r)
 
         if site_id not in sites_to_report:
             continue
@@ -465,7 +468,7 @@ def create_sync_db(config, records):
             logging.critical(f"No site name mapping defined for site {site_id}")
             raise
 
-        submit_host = get_submit_host(r, config)
+        submit_host = get_submit_host(config, r)
 
         year = r.stop_time.replace(tzinfo=timezone.utc).year
         month = r.stop_time.replace(tzinfo=timezone.utc).month
@@ -637,7 +640,10 @@ def get_token(config):
     return token
 
 
-def sign_msg(client_cert, client_key, msg):
+def sign_msg(config, msg):
+    client_cert = config["authentication"].get("client_cert")
+    client_key = config["authentication"].get("client_key")
+
     with open(client_cert, "rb") as cc:
         cert = x509.load_pem_x509_certificate(cc.read())
 
@@ -685,7 +691,7 @@ def send_payload(config, token, payload):
     return post
 
 
-def convert_to_seconds(cpu_time, config):
+def convert_to_seconds(config, cpu_time):
     cpu_time_name = config["auditor"].get("cpu_time_name")
     cpu_time_unit = config["auditor"].get("cpu_time_unit")
 
@@ -706,7 +712,7 @@ def check_sites_in_records(config, records):
 
     logging.debug(f"Sites to report from config: {sites_to_report}")
 
-    sites_in_records = {get_site_id(r, config) for r in records}
+    sites_in_records = {get_site_id(config, r) for r in records}
     logging.debug(f"Sites found in records: {sites_in_records}")
 
     return sites_to_report.intersection(sites_in_records)

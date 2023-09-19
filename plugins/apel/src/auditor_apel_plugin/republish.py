@@ -21,10 +21,7 @@ from auditor_apel_plugin.core import (
 )
 
 
-def run(config, args, client):
-    client_cert = config["authentication"].get("client_cert")
-    client_key = config["authentication"].get("client_key")
-
+def run(config, client, args):
     month = args.month
     year = args.year
     site = args.site
@@ -39,7 +36,7 @@ def run(config, args, client):
     grouped_summary_list = group_summary_db(summary_db, filter_by=(month, year, site))
     summary = create_summary(grouped_summary_list)
     logging.debug(summary)
-    signed_summary = sign_msg(client_cert, client_key, summary)
+    signed_summary = sign_msg(config, summary)
     logging.debug(signed_summary)
     encoded_summary = base64.b64encode(signed_summary).decode("utf-8")
     logging.debug(encoded_summary)
@@ -86,7 +83,7 @@ def main():
     client = builder.build_blocking()
 
     try:
-        run(config, args, client)
+        run(config, client, args)
     except KeyboardInterrupt:
         logging.critical("User abort")
     finally:
