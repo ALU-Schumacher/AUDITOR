@@ -50,7 +50,6 @@ weight = 3
       local_tz = get_localzone()
       start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=local_tz).astimezone(datetime.timezone.utc)
       ```
-
 ## Auditor server
 
 - Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error
@@ -58,3 +57,8 @@ weight = 3
 ## HTCondor plugin
 
 - Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.
+
+## Development
+### Update to [sqlx 0.7.1](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.7.1
+- `cargo install --version=0.7.1 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
