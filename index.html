@@ -332,7 +332,90 @@ Instructions for compiling Auditor from source can be found in the <a href="http
 <p>Collectors are used to collect data from various sources.
 See below for all currently available collectors.</p>
 <h2 id="slurm-collector">SLURM Collector</h2>
-<p>TODO</p>
+<p>The Slurm collector collects information from slurm jobs based on the <code>sacct</code> command.
+It can be installed from the provided RPM or can be built with this command:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-collector
+</span></code></pre>
+<p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-slurm-collector</code> and should be placed on the Slurm head node.</p>
+<p>Run the Slurm collector with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>/absolute/path/to/auditor-slurm-collector /absolute/path/to/auditor-slurm-collector-config.yml
+</span></code></pre>
+<p>Ideally, you should run the Slurm collector as a service, e.g. by using a systemd unit file.</p>
+<p>Example:</p>
+<pre data-lang="ini" style="background-color:#ffffff;color:#000000;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#ff5600;">[Unit]
+</span><span>Description</span><span style="color:#ff5600;">=</span><span>Auditor Slurm collector
+</span><span>After</span><span style="color:#ff5600;">=</span><span>network</span><span style="color:#ff5600;">.</span><span>target
+</span><span>
+</span><span style="color:#ff5600;">[Service]
+</span><span>Type</span><span style="color:#ff5600;">=</span><span>simple
+</span><span>Restart</span><span style="color:#ff5600;">=</span><span>always
+</span><span>RestartSec</span><span style="color:#ff5600;">=</span><span>10
+</span><span>User</span><span style="color:#ff5600;">=&lt;</span><span>service user</span><span style="color:#ff5600;">&gt;
+</span><span>ExecStart</span><span style="color:#ff5600;">=/</span><span>absolute</span><span style="color:#ff5600;">/</span><span>path</span><span style="color:#ff5600;">/</span><span>to</span><span style="color:#ff5600;">/</span><span>auditor</span><span style="color:#ff5600;">-</span><span>slurm</span><span style="color:#ff5600;">-</span><span>collector </span><span style="color:#ff5600;">/</span><span>absolute</span><span style="color:#ff5600;">/</span><span>path</span><span style="color:#ff5600;">/</span><span>to</span><span style="color:#ff5600;">/</span><span>auditor</span><span style="color:#ff5600;">-</span><span>slurm</span><span style="color:#ff5600;">-</span><span>collector</span><span style="color:#ff5600;">-</span><span>config</span><span style="color:#ff5600;">.</span><span>yml
+</span><span>
+</span><span style="color:#ff5600;">[Install]
+</span><span>WantedBy</span><span style="color:#ff5600;">=</span><span>multi</span><span style="color:#ff5600;">-</span><span>user</span><span style="color:#ff5600;">.</span><span>target
+</span></code></pre>
+<h3 id="configuration">Configuration</h3>
+<p>The Slurm collector is configured using a yaml-file. Configuration parameters are as follows:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>addr</code></td><td>Host name or IP address of the Auditor instance.</td></tr>
+<tr><td><code>port</code></td><td>Port of the Auditor instance.</td></tr>
+<tr><td><code>record_prefix</code></td><td>Prefix for the record identifier. The full record identifier is then <code>&lt;record_prefix&gt;-&lt;slurm-job-id&gt;</code>.</td></tr>
+<tr><td><code>job_status</code></td><td>A list of acceptable job states that is used to filter the slurm jobs when calling the <code>sacct</code> command. See <a href="https://slurm.schedmd.com/sacct.html#SECTION_JOB-STATE-CODES">SLURM JOB STATE CODES</a> for a list of allowed values.</td></tr>
+<tr><td><code>sacct_frequency</code></td><td>Frequency of executing the <code>sacct</code> command  (in seconds). Resulting records are first placed in a queue (based on a SQLite database) and later sent to the Auditor instance.</td></tr>
+<tr><td><code>sender_frequency</code></td><td>Frequency of sending new records from the sending queue to the Auditor instance.</td></tr>
+<tr><td><code>earliest_datetime</code></td><td>After starting the collector for the first time, only query jobs that started later than <code>earliest_datetime</code>. Has to follow the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> standard</td></tr>
+<tr><td><code>database_path</code></td><td>Path to the SQLite database that is used for the sending queue.</td></tr>
+<tr><td><code>sites</code></td><td>A list of potential sites that can be associated with a job. Each site has to have a <code>name</code> field. A site can be matched to a job based on the contents of a field in the job information using the <code>only_if</code> field. The <code>only_if</code> field needs to have a <code>key</code>, that corresponds to a field in the <code>sacct</code> output, and a <code>matches</code> field, used to match a certain value. Regular expressions are supported.</td></tr>
+<tr><td><code>meta</code></td><td>A list of meta objects that are added to the record. Each meta object needs to have a <code>name</code> that is used as the name of the meta object, and a <code>key</code>, that corresponds to a field in the job information. The type of the data can be specified with <code>key_type</code>. Possible values are <code>Integer</code> (default), <code>IntegerMega</code> (integer with a <code>M</code> behind the number), <code>Time</code>, <code>String</code>, <code>DateTime</code>, <code>Id</code>, <code>Json</code>. Per default, empty values are not allowed. This can be changed by setting <code>key_allow_empty</code> to <code>true</code>. Setting meta information can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above .</td></tr>
+<tr><td><code>components</code></td><td>A list of components that is added to the record. A component needs to have a <code>name</code>, <code>key</code>, and <code>key_type</code>, similar to the <code>meta</code> configuration. One or multiple scores can be added to a component with the <code>scores</code> option. Each score config needs to have a <code>name</code> and a <code>value</code>. Setting scores can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above.</td></tr>
+</tbody></table>
+<h3 id="example-configuration">Example configuration</h3>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
+</span><span style="color:#00a33f;">job_status</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">&quot;completed&quot;
+</span><span>  - </span><span style="color:#00a33f;">&quot;failed&quot;
+</span><span style="color:#00a33f;">sacct_frequency</span><span>: 300
+</span><span style="color:#00a33f;">sender_frequency</span><span>: 60
+</span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2023-09-15T12:00:00+00:00&quot;
+</span><span style="color:#00a33f;">database_path</span><span>: </span><span style="color:#00a33f;">&quot;/absolute/path/to/db.db&quot;
+</span><span style="color:#00a33f;">sites</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;mysite1&quot;
+</span><span>    </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>      </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
+</span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^mypartition$&quot;
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;mysite2&quot;
+</span><span style="color:#00a33f;">meta</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Comment
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Comment&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Json
+</span><span>    </span><span style="color:#00a33f;">key_allow_empty</span><span>: </span><span style="color:#a535ae;">true
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Cores&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NCPUS&quot;
+</span><span>    </span><span style="color:#00a33f;">scores</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC06&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 10.0
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;hepscore23&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 10.0
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;SystemCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;SystemCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;TotalCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;TotalCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;ReqMem&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">IntegerMega
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
+</span></code></pre>
 <h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
 <p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-epilog-collector
@@ -368,7 +451,7 @@ Slurm provides a number of environment variables in the context of an epilog scr
 <h3 id="example-configurations">Example configurations</h3>
 <p>The following configuration shows how to set the Auditor host address and port.
 The <code>record_prefix</code> will be used to prefix the Slurm job id in the record identifier (in this case it will be <code>slurm-JOBID</code>).
-The <code>site_name</code> is the <code>site_id</code> which will be attached to every record.
+The <code>site_name</code> is the <code>site_id</code> which will be attached to the meta field of every record.
 <code>components</code> defines how to extract accountable information from the call to <code>scontrol</code> and attaches <code>score</code>s to it.
 In the context of <code>components</code>, <code>name</code> indicates how this component will be identified in the final record and <code>key</code> indicates the <code>key</code> which is to be extracted from the <code>scontrol</code> output.
 <code>scores</code> are optional.</p>
@@ -438,7 +521,7 @@ Further, optional arguments are</p>
 </span><span>-1, --one-shot        Run once and exit.
 </span></code></pre>
 <p>Command line arguments override the values set in the config file.</p>
-<h3 id="configuration">Configuration</h3>
+<h3 id="configuration-1">Configuration</h3>
 <p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>state_db</code></td><td>Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.</td></tr>
