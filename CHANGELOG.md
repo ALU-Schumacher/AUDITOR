@@ -70,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.160 to 1.0.188 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.96 to 1.0.107 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 2.3.2 to 3.3.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update sqlx from 0.6.3 to 0.7.1 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update thiserror from 1.0.40 to 1.0.48 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.27.0 to 1.32.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing from 0.1.37 to 0.1.38 ([@stefan-k](https://github.com/stefan-k))
