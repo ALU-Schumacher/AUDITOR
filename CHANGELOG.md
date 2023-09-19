@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Auditor + Apel plugin: Add semver tags and edge tag for docker container ([@QuantumDancer](https://github.com/QuantumDancer))
+- Auditor + CI: Add integration test for Auditor Prometheus exporter([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Migrate the Apel plugin from [ALU-Schumacher/AUDITOR-APEL-plugin](https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin) to this repo ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Docker image ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Check if there are sites to report in the record list ([@dirksammel](https://github.com/dirksammel))
