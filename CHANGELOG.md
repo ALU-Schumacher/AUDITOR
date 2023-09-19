@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Bugfix in catching empty record list ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Catch VOMS information that does not start with `/` ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Remove `pytz` dependency ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Refactor code ([@dirksammel](https://github.com/dirksammel))
 - Auditor: Fix default address in AuditorClientBuilder ([@QuantumDancer](https://github.com/QuantumDancer))
 - HTCondor collector: Handle `undefined` values from the batch system correctly ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Replace `datetime.utcfromtimestamp` with `datetime.fromtimestamp` ([@dirksammel](https://github.com/dirksammel))

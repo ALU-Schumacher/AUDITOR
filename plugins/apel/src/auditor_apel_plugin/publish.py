@@ -33,15 +33,11 @@ from auditor_apel_plugin.core import (
 
 def run(config, client):
     report_interval = config["intervals"].getint("report_interval")
-    time_db_path = config["paths"].get("time_db_path")
-    publish_since = config["site"].get("publish_since")
-    client_cert = config["authentication"].get("client_cert")
-    client_key = config["authentication"].get("client_key")
     token = get_token(config)
     logging.debug(token)
 
     while True:
-        time_db_conn = get_time_db(publish_since, time_db_path)
+        time_db_conn = get_time_db(config)
         last_report_time = get_report_time(time_db_conn)
         current_time = datetime.now()
         time_since_report = (current_time - last_report_time).total_seconds()
@@ -90,7 +86,7 @@ def run(config, client):
         grouped_summary_list = group_summary_db(summary_db)
         summary = create_summary(grouped_summary_list)
         logging.debug(summary)
-        signed_summary = sign_msg(client_cert, client_key, summary)
+        signed_summary = sign_msg(config, summary)
         logging.debug(signed_summary)
         encoded_summary = base64.b64encode(signed_summary).decode("utf-8")
         logging.debug(encoded_summary)
@@ -105,7 +101,7 @@ def run(config, client):
         grouped_sync_list = group_sync_db(sync_db)
         sync = create_sync(grouped_sync_list)
         logging.debug(sync)
-        signed_sync = sign_msg(client_cert, client_key, sync)
+        signed_sync = sign_msg(config, sync)
         logging.debug(signed_sync)
         encoded_sync = base64.b64encode(signed_sync).decode("utf-8")
         logging.debug(encoded_sync)

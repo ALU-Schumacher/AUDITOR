@@ -138,8 +138,13 @@ class TestAuditorApelPlugin:
             "2022-12-17 20:20:20+01:00",
         ]
 
+        conf = configparser.ConfigParser()
+        conf["paths"] = {"time_db_path": path}
+        conf["site"] = {}
+
         for publish_since in publish_since_list:
-            time_db = get_time_db(publish_since, path)
+            conf["site"]["publish_since"] = publish_since
+            time_db = get_time_db(conf)
             cur = time_db.cursor()
             cur.execute("SELECT * FROM times")
             result = cur.fetchall()
@@ -152,9 +157,10 @@ class TestAuditorApelPlugin:
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
 
         for publish_since in publish_since_list:
+            conf["site"]["publish_since"] = publish_since
             time_db = create_time_db(publish_since, path)
             time_db.close()
-            time_db = get_time_db(publish_since, path)
+            time_db = get_time_db(conf)
             cur = time_db.cursor()
             cur.execute("SELECT * FROM times")
             result = cur.fetchall()
@@ -167,11 +173,13 @@ class TestAuditorApelPlugin:
             assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
 
     def test_sign_msg(self):
-        result = sign_msg(
-            Path.joinpath(test_dir, "test_cert.cert"),
-            Path.joinpath(test_dir, "test_key.key"),
-            "test",
-        )
+        conf = configparser.ConfigParser()
+        conf["authentication"] = {
+            "client_cert": Path.joinpath(test_dir, "test_cert.cert"),
+            "client_key": Path.joinpath(test_dir, "test_key.key"),
+        }
+
+        result = sign_msg(conf, "test")
 
         with open("/tmp/signed_msg.txt", "wb") as msg_file:
             msg_file.write(result)
@@ -185,19 +193,25 @@ class TestAuditorApelPlugin:
         assert process.returncode == 0
 
     def test_sign_msg_fail(self):
+        conf = configparser.ConfigParser()
+        conf["authentication"] = {
+            "client_cert": "tests/nodir/test_cert.cert",
+            "client_key": "tests/no/dir/test_key.key",
+        }
+
         with pytest.raises(Exception) as pytest_error:
-            sign_msg(
-                "tests/nodir/test_cert.cert",
-                "tests/no/dir/test_key.key",
-                "test",
-            )
+            sign_msg(conf, "test")
+
         assert pytest_error.type == FileNotFoundError
 
-        result = sign_msg(
-            Path.joinpath(test_dir, "test_cert.cert"),
-            Path.joinpath(test_dir, "test_key.key"),
-            "test",
+        conf["authentication"]["client_cert"] = str(
+            Path.joinpath(test_dir, "test_cert.cert")
         )
+        conf["authentication"]["client_key"] = str(
+            Path.joinpath(test_dir, "test_key.key")
+        )
+
+        result = sign_msg(conf, "test")
 
         with open("/tmp/signed_msg.txt", "wb") as msg_file:
             msg_file.write(result.replace(b"test", b"TEST"))
@@ -709,13 +723,13 @@ class TestAuditorApelPlugin:
                 rec = create_rec(r_values, conf["auditor"])
                 records.append(rec)
 
-        result = get_submit_host(records[0], conf)
+        result = get_submit_host(conf, records[0])
         assert result == replace_record_string(rec_1_values["submit_host"])
 
-        result = get_submit_host(records[1], conf)
+        result = get_submit_host(conf, records[1])
         assert result == replace_record_string(rec_2_values["submit_host"])
 
-        result = get_submit_host(records[2], conf)
+        result = get_submit_host(conf, records[2])
         assert result == default_submit_host
 
     def test_get_voms_info(self):
@@ -853,32 +867,32 @@ class TestAuditorApelPlugin:
                 rec = create_rec(r_values, conf["auditor"])
                 records.append(rec)
 
-        result = get_voms_info(records[0], conf)
+        result = get_voms_info(conf, records[0])
         assert result["vo"] == "atlas"
         assert result["vogroup"] == "/atlas"
         assert result["vorole"] == "Role=production"
 
-        result = get_voms_info(records[1], conf)
+        result = get_voms_info(conf, records[1])
         assert result["vo"] == "atlas"
         assert result["vogroup"] == "/atlas"
         assert result["vorole"] is None
 
-        result = get_voms_info(records[2], conf)
+        result = get_voms_info(conf, records[2])
         assert result["vo"] == "atlas"
         assert result["vogroup"] == "/atlas/de"
         assert result["vorole"] == "Role=production"
 
-        result = get_voms_info(records[3], conf)
+        result = get_voms_info(conf, records[3])
         assert result["vo"] == "atlas"
         assert result["vogroup"] == "/atlas/de"
         assert result["vorole"] is None
 
-        result = get_voms_info(records[4], conf)
+        result = get_voms_info(conf, records[4])
         assert result["vo"] is None
         assert result["vogroup"] is None
         assert result["vorole"] is None
 
-        result = get_voms_info(records[5], conf)
+        result = get_voms_info(conf, records[5])
         assert result["vo"] is None
         assert result["vogroup"] is None
         assert result["vorole"] is None
@@ -977,10 +991,10 @@ class TestAuditorApelPlugin:
         rec_1 = create_rec(rec_1_values, conf["auditor"])
         rec_2 = create_rec(rec_2_values, conf["auditor"])
 
-        result = get_site_id(rec_1, conf)
+        result = get_site_id(conf, rec_1)
         assert result == rec_1_values["site"]
 
-        result = get_site_id(rec_2, conf)
+        result = get_site_id(conf, rec_2)
         assert result == rec_2_values["site"]
 
     def test_get_site_id_fail(self):
@@ -1049,11 +1063,11 @@ class TestAuditorApelPlugin:
         rec_2 = create_rec_metaless(rec_2_values, conf["auditor"])
 
         with pytest.raises(Exception) as pytest_error:
-            get_site_id(rec_1, conf)
+            get_site_id(conf, rec_1)
         assert pytest_error.type == TypeError
 
         with pytest.raises(Exception) as pytest_error:
-            get_site_id(rec_2, conf)
+            get_site_id(conf, rec_2)
         assert pytest_error.type == AttributeError
 
     def test_convert_to_seconds(self):
@@ -1066,18 +1080,18 @@ class TestAuditorApelPlugin:
             "cpu_time_unit": cpu_time_unit,
         }
 
-        result = convert_to_seconds(1100, conf)
+        result = convert_to_seconds(conf, 1100)
         assert result == 1100
 
-        result = convert_to_seconds(1500, conf)
+        result = convert_to_seconds(conf, 1500)
         assert result == 1500
 
         conf["auditor"]["cpu_time_unit"] = "milliseconds"
 
-        result = convert_to_seconds(1100, conf)
+        result = convert_to_seconds(conf, 1100)
         assert result == 1
 
-        result = convert_to_seconds(1500, conf)
+        result = convert_to_seconds(conf, 1500)
         assert result == 2
 
     def test_convert_to_seconds_fail(self):
@@ -1091,7 +1105,7 @@ class TestAuditorApelPlugin:
         }
 
         with pytest.raises(Exception) as pytest_error:
-            convert_to_seconds(1100, conf)
+            convert_to_seconds(conf, 1100)
         assert pytest_error.type == ValueError
 
     def test_check_sites_in_records(self):
