@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
+use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
 use crate::routes::{add, get, get_since, health_check, update};
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
@@ -21,10 +21,10 @@ pub fn run(
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
 ) -> Result<Server, anyhow::Error> {
-    let request_metrics = PrometheusExporterBuilder::new()
+    let request_metrics: PrometheusExporterConfig = PrometheusExporterBuilder::new()
         .with_database_watcher(db_watcher)
         .build()?;
-    global::set_meter_provider(request_metrics);
+    global::set_meter_provider(request_metrics.provider);
 
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
@@ -34,7 +34,9 @@ pub fn run(
             .wrap(RequestMetrics::default())
             .route(
                 "/metrics",
-                web::get().to(PrometheusMetricsHandler::new(prometheus::Registry::new())),
+                web::get().to(PrometheusMetricsHandler::new(
+                    request_metrics.prom_registry.clone(),
+                )),
             )
             // Routes
             .route("/health_check", web::get().to(health_check))

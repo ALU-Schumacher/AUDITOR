@@ -11,6 +11,11 @@ use prometheus::Registry;
 mod database;
 pub use database::*;
 
+pub struct PrometheusExporterConfig {
+    pub provider: MeterProvider,
+    pub prom_registry: Registry,
+}
+
 pub struct PrometheusExporterBuilder {
     db_watcher: Option<DatabaseMetricsWatcher>,
 }
@@ -26,7 +31,7 @@ impl PrometheusExporterBuilder {
     }
 
     #[tracing::instrument(name = "Initializing Prometheus exporter", skip(self))]
-    pub fn build(self) -> Result<MeterProvider, anyhow::Error> {
+    pub fn build(self) -> Result<PrometheusExporterConfig, anyhow::Error> {
         let prom_registry = Registry::new();
 
         if let Some(db_watcher) = self.db_watcher {
@@ -41,7 +46,10 @@ impl PrometheusExporterBuilder {
             .with_reader(metrics_exporter)
             .build();
 
-        Ok(provider)
+        Ok(PrometheusExporterConfig {
+            provider,
+            prom_registry,
+        })
     }
 }
 
