@@ -610,8 +610,29 @@ In case the regex contains a group, the value is set to the (first) matching gro
 <p>Plugins are used to retrieve data from Auditor for further processing.
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
-<p>The APEL plugin creates job summary records and sends them to APEL.
-The following fields need to be present in the config file:</p>
+<p>The APEL plugin creates job summary records and sends them to APEL. It is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.
+Two CLI commands are available after the installation: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
+<p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
+</span><span>
+</span><span>options:
+</span><span>  -h, --help            show this help message and exit
+</span><span>  -c CONFIG, --config CONFIG
+</span><span>                        Path to the config file
+</span></code></pre>
+<p><code>auditor-apel-republish</code> runs once and submits a report for a given month, year, and site.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -y YEAR -m MONTH -s SITE -c CONFIG
+</span><span>
+</span><span>options:
+</span><span>  -h, --help            show this help message and exit
+</span><span>  -y YEAR, --year YEAR  Year: 2020, 2021, ...
+</span><span>  -m MONTH, --month MONTH
+</span><span>                        Month: 4, 8, 12, ...
+</span><span>  -s SITE, --site SITE  Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
+</span><span>  -c CONFIG, --config CONFIG
+</span><span>                        Path to the config file
+</span></code></pre>
+<p>The following fields need to be present in the config file:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
 <tr><td><code>time_db_path</code></td><td>Path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.</td></tr>
