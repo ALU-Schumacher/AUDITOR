@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update wiremock from 0.5.18 to 0.5.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
+- CI: RUSTSEC ignores ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.1.0] - 2023-04-19
 ### Added
