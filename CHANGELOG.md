@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Migrate the Apel plugin from [ALU-Schumacher/AUDITOR-APEL-plugin](https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin) to this repo ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Docker image ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Check if there are sites to report in the record list ([@dirksammel](https://github.com/dirksammel))
-- Apel plugin + HTCondor collector: Add GitHub workflow for publishing to PyPI and GitHub ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector ([@rfvc](https://github.com/rfvc))
 - Priority plugin: Add option for client timeout ([@QuantumDancer](https://github.com/QuantumDancer))
 - Set LogLevel using env variable for auditor, slurm and slurm-epilog collectors and priority plugin ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -29,11 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Dependabot checks for python plugins/collectors and GitHub actions ([@dirksammel](https://github.com/dirksammel))
 - CI: Python unit tests ([@dirksammel](https://github.com/dirksammel))
 - CI: Check CHANGELOG.md for changes ([@dirksammel](https://github.com/dirksammel))
+- CI: Publish Apel plugin and HTCondor collector to PyPI and GitHub ([@dirksammel](https://github.com/dirksammel))
 - Docs: Document `Record`, `RecordAdd`, `RecordUpdate`, `Component`, `Score`, and `Meta` in Rust API ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Add tutorial for Rust client ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Common sections for collectors and plugins ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Dedicated docs for development ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Add documentation for the Slurm collector ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add documentation for the Apel plugin ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Apel plugin: Bugfix in catching empty record list ([@dirksammel](https://github.com/dirksammel))
