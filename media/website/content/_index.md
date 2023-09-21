@@ -504,7 +504,7 @@ See below for all currently available collectors.
 ## APEL Plugin
 
 The APEL plugin creates job summary records and sends them to APEL. It is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/) and as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin).
-Two CLI commands are available after the installation: `auditor-apel-publish` and `auditor-apel-republish`.
+Two CLI commands are available after the installation via `pip`: `auditor-apel-publish` and `auditor-apel-republish`.
 
 `auditor-apel-publish` runs periodically at a given report interval.
 
@@ -606,6 +606,20 @@ client_cert = /etc/grid-security/hostcert.pem
 client_key = /etc/grid-security/hostkey.pem
 ca_path = /etc/grid-security/certificates
 verify_ca = True
+```
+
+When using the Docker container, `auditor-apel-publish` for example can be started with
+
+```bash
+docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
+```
+
+In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.cfg`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The database `time.db` will also be written in `config_folder`. The corresponding entries in the config file would be:
+
+```
+time_db_path = time.db
+client_cert = hostcert.pem
+client_key = hostkey.pem
 ```
 
 ## Priority Plugin
