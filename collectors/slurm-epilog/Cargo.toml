@@ -1,6 +1,6 @@
 [package]
 name = "auditor-slurm-epilog-collector"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -30,7 +30,7 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-auditor = { path = "../../auditor", version = "0.1.0" }
+auditor = { path = "../../auditor", version = "0.2.0" }
 chrono = { version = "0.4.31", default-features = false, features = ["serde"] }
 anyhow = "1"
 regex = "1"
