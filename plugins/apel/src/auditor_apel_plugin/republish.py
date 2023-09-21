@@ -66,7 +66,6 @@ def main():
     log_level = config["logging"].get("log_level")
     log_format = "[%(asctime)s] %(levelname)-8s %(message)s"
     logging.basicConfig(
-        encoding="utf-8",
         level=log_level,
         format=log_format,
         datefmt="%Y-%m-%d %H:%M:%S",
