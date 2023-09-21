@@ -372,17 +372,24 @@ dependencies = [
 name = "auditor-priority-plugin"
 version = "0.2.0"
 dependencies = [
+ "actix-web",
+ "actix-web-opentelemetry",
  "anyhow",
  "auditor",
  "chrono",
  "config",
  "num-traits",
+ "opentelemetry",
+ "opentelemetry-prometheus",
+ "opentelemetry_api",
+ "prometheus",
  "serde",
  "serde-aux",
  "serde_with",
  "shell-words",
  "tokio",
  "tracing",
+ "tracing-actix-web",
  "tracing-subscriber",
  "uuid",
 ]

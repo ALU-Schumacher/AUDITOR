@@ -10,14 +10,20 @@ use auditor::client::AuditorClientBuilder;
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::Utc;
-use configuration::{ComputationMode, Settings};
+use configuration::{ComputationMode, PrometheusMetricsOptions, Settings};
 use num_traits::cast::FromPrimitive;
 use std::collections::HashMap;
+use std::net::TcpListener;
 use std::process::Command;
 use tracing::{debug, error, warn};
 use uuid::Uuid;
 
 mod configuration;
+pub mod metrics;
+mod startup;
+use metrics::PrometheusExporterConfig;
+
+use startup::run;
 
 type ResourceName = String;
 type ResourceValue = f64;
@@ -226,8 +232,10 @@ fn set_priorities(
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = configuration::get_configuration()?;
+
+    debug!(?config, "Loaded config");
 
     // Set up logging
     let subscriber = get_subscriber(
@@ -244,25 +252,87 @@ async fn main() -> Result<(), Error> {
     );
     let _span_guard = span.enter();
 
-    let config = configuration::get_configuration()?;
-
-    debug!(?config, "Loaded config");
-
     let client = AuditorClientBuilder::new()
-        .address(&config.addr, config.port)
+        .address(&config.auditor.addr, config.auditor.port)
         .timeout(config.timeout)
         .build()?;
 
-    let records = match config.duration {
-        Some(duration) => client.get_stopped_since(&(Utc::now() - duration)).await?,
-        None => client.get().await?,
+    let request_metrics = PrometheusExporterConfig::build()?;
+
+    let cloned_request_metrics = request_metrics.clone();
+    let mut interval = tokio::time::interval(chrono::Duration::seconds(3600).to_std()?);
+    let mut enable_prometheus = false;
+    let mut prometheus_metrics = Vec::<PrometheusMetricsOptions>::new();
+
+    match config.prometheus.clone() {
+        Some(prometheus_settings) => {
+            let prometheus_addr = prometheus_settings.addr.clone();
+            let prometheus_port = prometheus_settings.port;
+            interval = tokio::time::interval(prometheus_settings.frequency.to_std()?);
+            enable_prometheus = prometheus_settings.enable;
+            let address = format!("{}:{}", prometheus_addr, prometheus_port);
+            prometheus_metrics = prometheus_settings.metrics;
+
+            // Create a TcpListener for a given address and port
+            let listener = TcpListener::bind(address)?;
+
+            if enable_prometheus {
+                tokio::spawn(run(listener, request_metrics).await?);
+            }
+        }
+        None => {
+            tracing::info!("Prometheus exporter is disabled");
+        }
     };
 
-    let resources = extract(records, &config);
+    let main_task = tokio::spawn(async move {
+        let configuration = config.clone();
 
-    let priorities = compute_priorities(&resources, &config);
+        loop {
+            tokio::select! {
+                _ = interval.tick() => {
 
-    set_priorities(&priorities, &resources, &config)?;
+                let records = match config.duration {
+                    Some(duration) => client
+                        .get_stopped_since(&(Utc::now() - duration))
+                        .await
+                        .unwrap(),
+                    None => client.get().await.unwrap(),
+                };
+
+                let resources = extract(records, &configuration);
+
+                let priorities = compute_priorities(&resources, &configuration);
+
+                let _ = set_priorities(&priorities, &resources, &configuration);
+
+
+                     if enable_prometheus{
+                         cloned_request_metrics
+                             .update_prometheus_metrics(
+                                 &resources,
+                                 &priorities,
+                                 &prometheus_metrics,
+                             )
+                             .await
+                                 .unwrap();
+                    }
+
+                }
+
+            }
+        }
+    });
+
+    tokio::select! {
+        _ = main_task => {
+            tracing::info!("starting main task");
+        }
+        _ = tokio::signal::ctrl_c() => {
+                    tracing::info!("CTRL-C received, shutting down priority plugin");
+                }
+
+    }
 
     Ok(())
 }
@@ -270,6 +340,7 @@ async fn main() -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::configuration::{AuditorSettings, PrometheusMetricsOptions, PrometheusSettings};
     use tracing_subscriber::filter::LevelFilter;
 
     #[test]
@@ -280,8 +351,10 @@ mod tests {
             ("blah2".to_string(), 3.0),
         ]);
         let config = Settings {
-            addr: "whatever".to_string(),
-            port: 1234,
+            auditor: AuditorSettings {
+                addr: "whatever".to_string(),
+                port: 1234,
+            },
             timeout: 30,
             components: HashMap::new(),
             min_priority: 1,
@@ -291,6 +364,16 @@ mod tests {
             duration: None,
             computation_mode: ComputationMode::FullSpread,
             log_level: LevelFilter::INFO,
+            prometheus: Some(PrometheusSettings {
+                enable: true,
+                addr: "whatever".to_string(),
+                port: 1234,
+                frequency: chrono::Duration::seconds(3600),
+                metrics: vec![
+                    PrometheusMetricsOptions::ResourceUsage,
+                    PrometheusMetricsOptions::Priority,
+                ],
+            }),
         };
 
         let prios = compute_priorities(&resources, &config);
@@ -308,8 +391,10 @@ mod tests {
             ("blah2".to_string(), 3.0),
         ]);
         let config = Settings {
-            addr: "whatever".to_string(),
-            port: 1234,
+            auditor: AuditorSettings {
+                addr: "whatever".to_string(),
+                port: 1234,
+            },
             timeout: 30,
             components: HashMap::new(),
             min_priority: 1,
@@ -319,6 +404,16 @@ mod tests {
             duration: None,
             computation_mode: ComputationMode::ScaledBySum,
             log_level: LevelFilter::INFO,
+            prometheus: Some(PrometheusSettings {
+                enable: true,
+                addr: "whatever".to_string(),
+                port: 1234,
+                frequency: chrono::Duration::seconds(3600),
+                metrics: vec![
+                    PrometheusMetricsOptions::ResourceUsage,
+                    PrometheusMetricsOptions::Priority,
+                ],
+            }),
         };
 
         let prios = compute_priorities(&resources, &config);

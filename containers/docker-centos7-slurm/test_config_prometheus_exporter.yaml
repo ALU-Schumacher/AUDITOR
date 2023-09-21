@@ -19,9 +19,9 @@ commands:
   - "echo '{group}: {priority}'"
 prometheus:
   enable: true
-  addr: 0.0.0.0
+  addr: "localhost"
   port: 9000
-  frequency: 3600
+  frequency: 5
   metrics:
     - ResourceUsage
     - Priority

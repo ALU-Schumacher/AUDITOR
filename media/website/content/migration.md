@@ -5,6 +5,63 @@ weight = 3
 +++
 
 # From 0.2.0 to unreleased
+## Priority plugin
+The config file must contain an 'auditor' field which comprises of addr and port number. 
+Prometheus configuration is optional. Metrics are exported according to the frequency specified (in seconds). 
+
+- Before 
+	```
+	addr: "localhost"
+	port: 8000
+	components:
+	  NumCPUs: "cpu-1"
+	min_priority: 1
+	max_priority: 65335
+	group_mapping:
+	  group1: 
+	    - "part-1"
+	  group2:
+	    - "part-2"
+	  group3:
+	    - "part-3"
+	  group4:
+	    - "part-4"
+	commands:
+	  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+	  - "echo '{group}: {priority}'"
+	```
+
+ - After
+	 ``` 
+	auditor:
+	   addr: "localhost"
+	   port: 8000
+	components:
+	   NumCPUs: "cpu-1"
+	min_priority: 1
+	max_priority: 65335
+	group_mapping:
+       group1: 
+	     - "part-1"
+	   group2:
+	     - "part-2"
+	   group3:
+	     - "part-3"
+	   group4:
+	     - "part-4"
+	commands:
+	   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+	   - "echo '{group}: {priority}'"
+	prometheus:
+	   enable: true
+	   addr: "localhost"
+	   port: 9000
+	   frequency: 3600
+	   metrics:
+	     - ResourceUsage
+	     - Priority
+	 ```
+
 
 ## Development
 ### Update to [sqlx 0.7.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)

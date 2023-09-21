@@ -20,11 +20,7 @@ pub enum ComputationMode {
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Settings {
-    #[serde(default = "default_addr")]
-    pub addr: String,
-    #[serde(deserialize_with = "deserialize_number_from_string")]
-    #[serde(default = "default_port")]
-    pub port: u16,
+    pub auditor: AuditorSettings,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     #[serde(default = "default_timeout")]
     pub timeout: i64,
@@ -45,6 +41,55 @@ pub struct Settings {
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
+    pub prometheus: Option<PrometheusSettings>,
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct AuditorSettings {
+    #[serde(default = "default_addr")]
+    pub addr: String,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    #[serde(default = "default_port")]
+    pub port: u16,
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct PrometheusSettings {
+    #[serde(default = "default_enable_option")]
+    pub enable: bool,
+    #[serde(default = "default_prometheus_addr")]
+    pub addr: String,
+    #[serde(default = "default_prometheus_port")]
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub port: u16,
+    #[serde(default = "default_prometheus_frequency")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
+    pub frequency: chrono::Duration,
+    pub metrics: Vec<PrometheusMetricsOptions>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrometheusMetricsOptions {
+    ResourceUsage,
+    Priority,
+}
+
+fn default_enable_option() -> bool {
+    true
+}
+
+fn default_prometheus_addr() -> String {
+    "0.0.0.0".to_string()
+}
+
+fn default_prometheus_port() -> u16 {
+    9090
+}
+
+fn default_prometheus_frequency() -> chrono::Duration {
+    chrono::Duration::seconds(3600)
 }
 
 fn default_log_level() -> LevelFilter {
