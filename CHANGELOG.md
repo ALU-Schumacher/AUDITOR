@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Breaking changes
+
+### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+
+## [0.2.0] - 2023-09-21
+
 ### Breaking changes
 - pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: `cpu_time_unit` has to be present in the config file. See [Documentation](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin) ([@dirksammel](https://github.com/dirksammel))
@@ -14,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - [RUSTSEC-2023-0052]: Update webpki from 0.22.0 to 0.22.1 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2022-35737]: Update libsqlite3-sys from 0.24.2 to 0.26.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - Auditor + Apel plugin: Add semver tags and edge tag for docker container ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -43,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Refactor code ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Remove encoding from logging ([@dirksammel](https://github.com/dirksammel))
 - Auditor: Fix default address in AuditorClientBuilder ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Update list of RUSTSEC ignores ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Handle `undefined` values from the batch system correctly ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Replace `datetime.utcfromtimestamp` with `datetime.fromtimestamp` ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Add option to allow for empty fields in `sacct` output ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -63,7 +79,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update docker/setup-buildx-action from 1 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.5.0 to 2.8.0 ([@stefan-k](https://github.com/stefan-k), [@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update itertools from 0.10.5 to 0.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update libsqlite3-sys from 0.24.2 to 0.26.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update maturin from 0.13 to 1.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.15 to 0.2.16 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update once_cell from 1.17.1 to 1.18.0 ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -86,7 +101,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update wiremock from 0.5.18 to 0.5.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
-- CI: RUSTSEC ignores ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.1.0] - 2023-04-19
 ### Added
@@ -264,7 +278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.2.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -273,3 +287,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.0.6]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.6
 [0.0.7]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.7
 [0.1.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.1.0
+[0.2.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.2.0
