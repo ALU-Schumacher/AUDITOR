@@ -611,7 +611,7 @@ In case the regex contains a group, the value is set to the (first) matching gro
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
 <p>The APEL plugin creates job summary records and sends them to APEL. It is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.
-Two CLI commands are available after the installation: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
+Two CLI commands are available after the installation via <code>pip</code>: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
 <p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
 </span><span>
@@ -701,6 +701,14 @@ Two CLI commands are available after the installation: <code>auditor-apel-publis
 </span><span>client_key = /etc/grid-security/hostkey.pem
 </span><span>ca_path = /etc/grid-security/certificates
 </span><span>verify_ca = True
+</span></code></pre>
+<p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
+</span></code></pre>
+<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.cfg</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The database <code>time.db</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>time_db_path = time.db
+</span><span>client_cert = hostcert.pem
+</span><span>client_key = hostkey.pem
 </span></code></pre>
 <h2 id="priority-plugin">Priority Plugin</h2>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
