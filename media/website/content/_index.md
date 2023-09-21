@@ -88,14 +88,16 @@ AUDITORs configuration can be adapted with environment variables.
 Use `docker run` to execute Auditor:
 
 ```bash
-docker run aluschumacher/auditor:main
+docker run aluschumacher/auditor:<version>
 ```
 
 The configuration parameters can be set by passing environment variables via `-e`:
 
 ```bash
-docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:main
+docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:<version>
 ```
+
+We offer versioned tags (starting from `0.2.0`) or the `edge` tag, which corresponds to the latest commit on the `main` branch.
 
 ## Configuration files
 

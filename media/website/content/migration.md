@@ -54,6 +54,10 @@ weight = 3
 
 - Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error
 
+## Docker containers
+
+- The `main` tag was replaced with the `edge` tag. In addition, we also now offer docker tags corresponding to releases, i.e., use the tag `0.2.0` for this release.
+
 ## HTCondor plugin
 
 - Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.

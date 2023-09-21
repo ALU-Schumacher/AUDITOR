@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: `cpu_time_unit` has to be present in the config file. See [Documentation](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin) ([@dirksammel](https://github.com/dirksammel))
 - Auditor: Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docker containers: The `main` tag was replaced with the `edge tag` ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pyo3 from 0.15.2 to 0.19 and pyo3-asyncio from 0.15 to 0.19 ([@QuantumDancer](https://github.com/QuantumDancer))
   - When creating a record with `pyauditor`, the timezone of the datetime object now needs to be converted to `datetime.timezone.utc` instead of `pytz.utc`
 
