@@ -135,7 +135,6 @@ def main():
     )
     logging.basicConfig(
         # filename="apel_plugin.log",
-        encoding="utf-8",
         level=log_level,
         format=log_format,
         datefmt="%Y-%m-%d %H:%M:%S",
