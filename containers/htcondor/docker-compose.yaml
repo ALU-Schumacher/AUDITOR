@@ -1,6 +1,6 @@
 services:
   auditor:
-    image: aluschumacher/auditor:main
+    image: aluschumacher/auditor:edge
     environment:
       - AUDITOR_DATABASE__REQUIRE_SSL=false
       - AUDITOR_DATABASE__HOST=postgres
