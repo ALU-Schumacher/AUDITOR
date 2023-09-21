@@ -226,3 +226,6 @@ jobs:
 
       - name: Run tests
         run: SKIP_COMPILATION=true ./scripts/test_auditor_prometheus_exporter.sh
+
+      - name: Run priority-plugin tests
+        run: SKIP_COMPILATION=true ./scripts/test_priority_plugin_prometheus_exporter.sh
