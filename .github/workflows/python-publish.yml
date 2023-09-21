@@ -29,10 +29,12 @@ jobs:
         run: python3 -m build --sdist --wheel --outdir dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: plugins/apel/dist/
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/*
+          files: plugins/apel/dist/*
           
   publish-htcondor-collector:
     runs-on: ubuntu-latest
@@ -57,7 +59,9 @@ jobs:
         run: python3 -m build --sdist --wheel --outdir dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: collectors/htcondor/dist/
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/*
+          files: collectors/htcondor/dist/*
