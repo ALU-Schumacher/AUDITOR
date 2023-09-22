@@ -275,11 +275,12 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
 </tbody></table>
 <p>Use <code>docker run</code> to execute Auditor:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:main
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
 </span></code></pre>
 <p>The configuration parameters can be set by passing environment variables via <code>-e</code>:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:main
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
 </span></code></pre>
+<p>We offer versioned tags (starting from <code>0.2.0</code>) or the <code>edge</code> tag, which corresponds to the latest commit on the <code>main</code> branch.</p>
 <h2 id="configuration-files">Configuration files</h2>
 <p>Besides environment variables, a YAML configuration file can be used:</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:

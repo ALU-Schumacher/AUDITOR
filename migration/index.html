@@ -92,6 +92,10 @@
                 </div>
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#docker-containers"><small>- Docker containers</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#htcondor-plugin"><small>- HTCondor plugin</small></a>
                 </div>
                 
@@ -162,6 +166,10 @@ when creating a new record:
 <h2 id="auditor-server">Auditor server</h2>
 <ul>
 <li>Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error</li>
+</ul>
+<h2 id="docker-containers">Docker containers</h2>
+<ul>
+<li>The <code>main</code> tag was replaced with the <code>edge</code> tag. In addition, we also now offer docker tags corresponding to releases, i.e., use the tag <code>0.2.0</code> for this release.</li>
 </ul>
 <h2 id="htcondor-plugin">HTCondor plugin</h2>
 <ul>
