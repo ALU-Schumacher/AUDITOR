@@ -40,7 +40,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 Now `sqlx` can be installed via `cargo`:
 
 ```bash
-cargo install --version=0.7.1 sqlx-cli --no-default-features --features postgres,rustls,sqlite
+cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 ```
 
 Clone the repository and `cd` into the directory.

@@ -4,6 +4,13 @@ description = "Migration Guide"
 weight = 3
 +++
 
+# From 0.2.0 to unreleased
+
+## Development
+### Update to [sqlx 0.7.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.7.2
+- `cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
+
 # From 0.1.0 to 0.2.0
 
 ## Apel plugin
