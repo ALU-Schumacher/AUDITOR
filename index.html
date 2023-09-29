@@ -273,6 +273,7 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_DATABASE__USERNAME</code></td><td>PostgreSQL database username (default <code>postgres</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__PASSWORD</code></td><td>PostgreSQL database password (default <code>password</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
+<tr><td><code>AUDITOR_LOG_LEVEL</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>)</td></tr>
 </tbody></table>
 <p>Use <code>docker run</code> to execute Auditor:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
@@ -301,6 +302,7 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span></code></pre>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
 <h2 id="metrics-exporter-for-prometheus">Metrics exporter for Prometheus</h2>
@@ -371,6 +373,7 @@ It can be installed from the provided RPM or can be built with this command:</p>
 <tr><td><code>sites</code></td><td>A list of potential sites that can be associated with a job. Each site has to have a <code>name</code> field. A site can be matched to a job based on the contents of a field in the job information using the <code>only_if</code> field. The <code>only_if</code> field needs to have a <code>key</code>, that corresponds to a field in the <code>sacct</code> output, and a <code>matches</code> field, used to match a certain value. Regular expressions are supported.</td></tr>
 <tr><td><code>meta</code></td><td>A list of meta objects that are added to the record. Each meta object needs to have a <code>name</code> that is used as the name of the meta object, and a <code>key</code>, that corresponds to a field in the job information. The type of the data can be specified with <code>key_type</code>. Possible values are <code>Integer</code> (default), <code>IntegerMega</code> (integer with a <code>M</code> behind the number), <code>Time</code>, <code>String</code>, <code>DateTime</code>, <code>Id</code>, <code>Json</code>. Per default, empty values are not allowed. This can be changed by setting <code>key_allow_empty</code> to <code>true</code>. Setting meta information can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above .</td></tr>
 <tr><td><code>components</code></td><td>A list of components that is added to the record. A component needs to have a <code>name</code>, <code>key</code>, and <code>key_type</code>, similar to the <code>meta</code> configuration. One or multiple scores can be added to a component with the <code>scores</code> option. Each score config needs to have a <code>name</code> and a <code>value</code>. Setting scores can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above.</td></tr>
+<tr><td><code>log_level</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>).</td></tr>
 </tbody></table>
 <h3 id="example-configuration">Example configuration</h3>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
@@ -416,6 +419,7 @@ It can be installed from the provided RPM or can be built with this command:</p>
 </span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">IntegerMega
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span></code></pre>
 <h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
 <p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
@@ -455,7 +459,8 @@ The <code>record_prefix</code> will be used to prefix the Slurm job id in the re
 The <code>site_name</code> is the <code>site_id</code> which will be attached to the meta field of every record.
 <code>components</code> defines how to extract accountable information from the call to <code>scontrol</code> and attaches <code>score</code>s to it.
 In the context of <code>components</code>, <code>name</code> indicates how this component will be identified in the final record and <code>key</code> indicates the <code>key</code> which is to be extracted from the <code>scontrol</code> output.
-<code>scores</code> are optional.</p>
+<code>scores</code> are optional.
+The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
 </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
@@ -468,6 +473,7 @@ In the context of <code>components</code>, <code>name</code> indicates how this 
 </span><span>        </span><span style="color:#00a33f;">value</span><span>: 1.0
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Mem&quot;
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span></code></pre>
 <p>Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
 The matching is performed on values associated with certain keys in the <code>scontrol</code> output.
@@ -740,6 +746,7 @@ In general, the priority plugin should be run on a regular basis (for instance a
 </span><span style="color:#00a33f;">min_priority</span><span>: 1
 </span><span style="color:#00a33f;">max_priority</span><span>: 65335
 </span><span style="color:#00a33f;">computation_mode</span><span>: </span><span style="color:#00a33f;">ScaledBySum
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span></code></pre>
 <p>The resources used for calculating the priorities can be configured via the <code>components</code> field.
 It defines which components to extract from the <code>components</code> field of the record (<code>NumCPUs</code> in this example), as well as the corresponding score (<code>HEPSPEC</code> in this example).
@@ -756,7 +763,8 @@ The <code>command</code> field in the configuration illustrates the usage of the
 This allows one to adapt the command for the various groups involved.
 In the <code>command</code> field one can also see a string <code>{priority}</code>, which will be replaced by the computed priority for the group.
 Another special string, <code>{resources}</code> is available, which is replaced by the computed provided resource per group.
-The command is executed for each group separately and multiple commands can be provided.</p>
+The command is executed for each group separately and multiple commands can be provided.
+The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.</p>
 <h3 id="priority-computation-modes">Priority computation modes</h3>
 <p>As stated above, the priorities are computed from the provided resources of each group.
 However, the computed resources and the priorities are in different units and span different ranges.
