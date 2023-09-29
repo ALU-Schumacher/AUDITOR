@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update sqlx from 0.7.1 to 0.7.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.48 to 1.0.49 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update time from 0.3.28 to 0.3.29 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.7 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
