@@ -75,15 +75,16 @@ After installing PostgreSQL, the database needs to be migrated with `sqlx`.
 
 AUDITORs configuration can be adapted with environment variables.
 
-| Variable                          | Description                                               |
-| --------                          | -----------                                               |
-| `AUDITOR_APPLICATION__ADDR`       | Address to bind to (default `0.0.0.0`)                    |
-| `AUDITOR_APPLICATION__PORT`       | Port to bind to (default `8000`)                          |
-| `AUDITOR_DATABASE__HOST`          | Host address of PostgreSQL database (default `localhost`) |
-| `AUDITOR_DATABASE__PORT`          | Port of PostgreSQL database (default `5432`)              |
-| `AUDITOR_DATABASE__USERNAME`      | PostgreSQL database username (default `postgres`)         |
-| `AUDITOR_DATABASE__PASSWORD`      | PostgreSQL database password (default `password`)         |
-| `AUDITOR_DATABASE__REQUIRE_SSL`   | Whether or not to use SSL (default `true`)                |
+| Variable                          | Description                                                                                               |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `AUDITOR_APPLICATION__ADDR`       | Address to bind to (default `0.0.0.0`)                                                                    |
+| `AUDITOR_APPLICATION__PORT`       | Port to bind to (default `8000`)                                                                          |
+| `AUDITOR_DATABASE__HOST`          | Host address of PostgreSQL database (default `localhost`)                                                 |
+| `AUDITOR_DATABASE__PORT`          | Port of PostgreSQL database (default `5432`)                                                              |
+| `AUDITOR_DATABASE__USERNAME`      | PostgreSQL database username (default `postgres`)                                                         |
+| `AUDITOR_DATABASE__PASSWORD`      | PostgreSQL database password (default `password`)                                                         |
+| `AUDITOR_DATABASE__REQUIRE_SSL`   | Whether or not to use SSL (default `true`)                                                                |
+| `AUDITOR_LOG_LEVEL`               | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`) |
 
 Use `docker run` to execute Auditor:
 
@@ -122,6 +123,7 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+log_level: info
 ```
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
@@ -221,6 +223,7 @@ The Slurm collector is configured using a yaml-file. Configuration parameters ar
 | `sites`            | A list of potential sites that can be associated with a job. Each site has to have a `name` field. A site can be matched to a job based on the contents of a field in the job information using the `only_if` field. The `only_if` field needs to have a `key`, that corresponds to a field in the `sacct` output, and a `matches` field, used to match a certain value. Regular expressions are supported.                                                                                                                                                                                                                                    |
 | `meta`             | A list of meta objects that are added to the record. Each meta object needs to have a `name` that is used as the name of the meta object, and a `key`, that corresponds to a field in the job information. The type of the data can be specified with `key_type`. Possible values are `Integer` (default), `IntegerMega` (integer with a `M` behind the number), `Time`, `String`, `DateTime`, `Id`, `Json`. Per default, empty values are not allowed. This can be changed by setting `key_allow_empty` to `true`. Setting meta information can optionally be limited to a subset of records using the `only_if` syntax, as described above . |
 | `components`       | A list of components that is added to the record. A component needs to have a `name`, `key`, and `key_type`, similar to the `meta` configuration. One or multiple scores can be added to a component with the `scores` option. Each score config needs to have a `name` and a `value`. Setting scores can optionally be limited to a subset of records using the `only_if` syntax, as described above.                                                                                                                                                                                                                                         |
+| `log_level`        | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ### Example configuration
 
@@ -268,6 +271,7 @@ components:
     key_type: IntegerMega
   - name: "NNodes"
     key: "NNodes"
+log_level: info
 ```
 
 ## SLURM Epilog Collector
@@ -324,6 +328,7 @@ The `site_name` is the `site_id` which will be attached to the meta field of eve
 `components` defines how to extract accountable information from the call to `scontrol` and attaches `score`s to it.
 In the context of `components`, `name` indicates how this component will be identified in the final record and `key` indicates the `key` which is to be extracted from the `scontrol` output.
 `scores` are optional.
+The verbosity of logging can be set with the `log_level` option. Possible values are `trace`, `debug`, `info` (default), `warn`, and `error`.
 
 ```yaml
 addr: "auditor_host_addr"
@@ -338,6 +343,7 @@ components:
         value: 1.0
   - name: "Memory"
     key: "Mem"
+log_level: info
 ```
 
 Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
@@ -662,6 +668,7 @@ command:
 min_priority: 1
 max_priority: 65335
 computation_mode: ScaledBySum
+log_level: info
 ```
 
 The resources used for calculating the priorities can be configured via the `components` field.
@@ -680,6 +687,7 @@ This allows one to adapt the command for the various groups involved.
 In the `command` field one can also see a string `{priority}`, which will be replaced by the computed priority for the group.
 Another special string, `{resources}` is available, which is replaced by the computed provided resource per group.
 The command is executed for each group separately and multiple commands can be provided.
+The verbosity of logging can be set with the `log_level` option. Possible values are `trace`, `debug`, `info` (default), `warn`, and `error`.
 
 ### Priority computation modes
 
