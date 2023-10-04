@@ -75,7 +75,6 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
     config
         .components
         .iter()
-        .cloned()
         .filter(|c| {
             c.only_if.is_none() || {
                 let only_if = c.only_if.as_ref().unwrap();
@@ -84,6 +83,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                 re.is_match(&job[&only_if.key])
             }
         })
+        .cloned()
         .map(|c| {
             Component::new(
                 make_string_valid(c.name),
