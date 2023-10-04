@@ -322,7 +322,6 @@ fn construct_components(job: &Job) -> Vec<Component> {
     CONFIG
         .components
         .iter()
-        .cloned()
         .filter(|c| {
             c.only_if.is_none() || {
                 let only_if = c.only_if.as_ref().unwrap();
@@ -333,6 +332,7 @@ fn construct_components(job: &Job) -> Vec<Component> {
                 }))
             }
         })
+        .cloned()
         .map(|c| {
             Component::new(
                 make_string_valid(c.name),
