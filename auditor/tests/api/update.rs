@@ -12,7 +12,7 @@ async fn update_returns_a_404_for_non_existing_record() {
     let body: RecordTest = Faker.fake();
 
     let response = client
-        .post(&format!("{}/update", &app.address))
+        .put(&format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()
@@ -35,7 +35,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     body.stop_time = None;
 
     let response = client
-        .post(&format!("{}/add", &app.address))
+        .post(&format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()
@@ -48,7 +48,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     let body = body.with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
-        .post(&format!("{}/update", &app.address))
+        .put(&format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()

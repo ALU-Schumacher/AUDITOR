@@ -6,7 +6,6 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::domain::{Component, Record, RecordDatabase};
-use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx;
 use sqlx::PgPool;
@@ -21,7 +20,7 @@ pub enum GetSinceError {
 debug_for_error!(GetSinceError);
 responseerror_for_error!(GetSinceError, UnexpectedError => INTERNAL_SERVER_ERROR;);
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum StartedStopped {
     Started,
@@ -34,29 +33,12 @@ impl fmt::Display for StartedStopped {
     }
 }
 
-#[tracing::instrument(
-    name = "Getting records since a timestamp",
-    skip(info, pool),
-    fields(
-        startedstopped = %info.0,
-        date = %info.1,
-    )
-)]
-pub async fn get_since(
-    info: web::Path<(StartedStopped, DateTime<Utc>)>,
-    pool: web::Data<PgPool>,
-) -> Result<HttpResponse, GetSinceError> {
-    let records = get_records_since(&info, &pool)
-        .await
-        .map_err(GetSinceError::UnexpectedError)?;
-    Ok(HttpResponse::Ok().json(records))
-}
-
 #[tracing::instrument(name = "Get all records since a given timepoint", skip(info, pool))]
 pub async fn get_records_since(
     info: &(StartedStopped, DateTime<Utc>),
     pool: &PgPool,
 ) -> Result<Vec<Record>, anyhow::Error> {
+    println!("testing get_records_since {}  -- {} ", &info.0, &info.1);
     match info.0 {
         StartedStopped::Started => {
             sqlx::query_as!(

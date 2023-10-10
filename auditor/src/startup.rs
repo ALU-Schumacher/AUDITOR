@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
-use crate::routes::{add, get, get_since, health_check, update};
+use crate::routes::{add, health_check, query_records, update};
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
 use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
@@ -40,10 +40,12 @@ pub fn run(
             )
             // Routes
             .route("/health_check", web::get().to(health_check))
-            .route("/add", web::post().to(add))
-            .route("/update", web::post().to(update))
-            .route("/get", web::get().to(get))
-            .route("/get/{startstop}/since/{date}", web::get().to(get_since))
+            .service(
+                web::resource("/record")
+                    .route(web::post().to(add))
+                    .route(web::put().to(update))
+                    .route(web::get().to(query_records)),
+            )
             // DB connection pool
             .app_data(db_pool.clone())
     })

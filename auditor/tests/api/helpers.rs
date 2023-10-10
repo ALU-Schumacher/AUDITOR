@@ -5,6 +5,7 @@ use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use tracing_subscriber::filter::LevelFilter;
+use urlencoding::encode;
 use uuid::Uuid;
 
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -35,7 +36,7 @@ impl TestApp {
 
     pub async fn add_record<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
         reqwest::Client::new()
-            .post(&format!("{}/add", &self.address))
+            .post(&format!("{}/record", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -45,7 +46,7 @@ impl TestApp {
 
     pub async fn get_records(&self) -> reqwest::Response {
         reqwest::Client::new()
-            .get(&format!("{}/get", &self.address))
+            .get(&format!("{}/record", &self.address))
             .send()
             .await
             .expect("Failed to execute request.")
@@ -55,11 +56,12 @@ impl TestApp {
         &self,
         timestamp: T,
     ) -> reqwest::Response {
+        let timestamp_str = timestamp.as_ref();
+        let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
             .get(&format!(
-                "{}/get/started/since/{}",
-                &self.address,
-                timestamp.as_ref()
+                "{}/record?state=started&since={}",
+                &self.address, encoded_since
             ))
             .send()
             .await
@@ -70,11 +72,12 @@ impl TestApp {
         &self,
         timestamp: T,
     ) -> reqwest::Response {
+        let timestamp_str = timestamp.as_ref();
+        let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
             .get(&format!(
-                "{}/get/stopped/since/{}",
-                &self.address,
-                timestamp.as_ref()
+                "{}/record?state=stopped&since={}",
+                &self.address, encoded_since
             ))
             .send()
             .await

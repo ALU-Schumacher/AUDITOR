@@ -6,7 +6,6 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::domain::{Component, Record, RecordDatabase};
-use actix_web::{web, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
 
@@ -18,14 +17,6 @@ pub enum GetError {
 
 debug_for_error!(GetError);
 responseerror_for_error!(GetError, UnexpectedError => INTERNAL_SERVER_ERROR;);
-
-#[tracing::instrument(name = "Getting all records from database", skip(pool))]
-pub async fn get(pool: web::Data<PgPool>) -> Result<HttpResponse, GetError> {
-    let records = get_records(&pool)
-        .await
-        .map_err(GetError::UnexpectedError)?;
-    Ok(HttpResponse::Ok().json(records))
-}
 
 #[tracing::instrument(name = "Retrieving records from database", skip(pool))]
 pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
