@@ -63,6 +63,19 @@ Prometheus configuration is optional. Metrics are exported according to the freq
 	 ```
 
 
+## AUDITOR
+### Standardized REST APIs
+
+Auditor REST APIs are changed as shown in the table below. 
+
+| Before                                                 	| After                                                            	|
+|--------------------------------------------------------	|------------------------------------------------------------------	|
+| /health_check (GET)                                    	| /health_check (GET)                                              	|
+| /add (POST) -> add record                              	| /record (POST) -> add record                                     	|
+| /update (POST) -> update record                        	| /record (PUT) -> update record                                   	|
+| /get (GET) -> get all records                          	| /record (GET) -> get all records                                 	|
+| /get/[started/stopped]/since/{date} (GET) -> get since 	| /record?state=[started/stopped]&since={date}  (GET) -> get since 	|
+
 ## Development
 ### Update to [sqlx 0.7.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
 Use this command to update the sqlx-cli to 0.7.2

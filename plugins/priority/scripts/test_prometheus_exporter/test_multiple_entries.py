@@ -30,7 +30,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record1_data)
+        requests.post("http://127.0.0.1:8000/record", json=record1_data)
 
         record11_data = {
             "record_id": "record-11",
@@ -50,7 +50,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record11_data)
+        requests.post("http://127.0.0.1:8000/record", json=record11_data)
 
         # add second record
         record2_data = {
@@ -71,7 +71,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record2_data)
+        requests.post("http://127.0.0.1:8000/record", json=record2_data)
 
         record22_data = {
             "record_id": "record-22",
@@ -91,7 +91,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record22_data)
+        requests.post("http://127.0.0.1:8000/record", json=record22_data)
 
         record3_data = {
             "record_id": "record-3",
@@ -111,7 +111,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record3_data)
+        requests.post("http://127.0.0.1:8000/record", json=record3_data)
 
         record33_data = {
             "record_id": "record-33",
@@ -131,7 +131,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record33_data)
+        requests.post("http://127.0.0.1:8000/record", json=record33_data)
 
         record4_data = {
             "record_id": "record-4",
@@ -151,7 +151,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record4_data)
+        requests.post("http://127.0.0.1:8000/record", json=record4_data)
 
         record44_data = {
             "record_id": "record-44",
@@ -171,7 +171,7 @@ class TestMultipleEntries(unittest.TestCase):
             "start_time": start_time,
             "stop_time": stop_time,
         }
-        requests.post("http://127.0.0.1:8000/add", json=record44_data)
+        requests.post("http://127.0.0.1:8000/record", json=record44_data)
 
         # wait for metrics recomputation
         time.sleep(10)
