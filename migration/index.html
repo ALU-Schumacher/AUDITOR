@@ -80,6 +80,10 @@
                 
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#priority-plugin"><small>- Priority plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development"><small>- Development</small></a>
                 </div>
                 
@@ -125,6 +129,64 @@
             
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-2-0-to-unreleased">From 0.2.0 to unreleased</h1>
+<h2 id="priority-plugin">Priority plugin</h2>
+<p>The config file must contain an 'auditor' field which comprises of addr and port number. 
+Prometheus configuration is optional. Metrics are exported according to the frequency specified (in seconds). </p>
+<ul>
+<li>
+<p>Before </p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>addr: &quot;localhost&quot;
+</span><span>port: 8000
+</span><span>components:
+</span><span>  NumCPUs: &quot;cpu-1&quot;
+</span><span>min_priority: 1
+</span><span>max_priority: 65335
+</span><span>group_mapping:
+</span><span>  group1: 
+</span><span>    - &quot;part-1&quot;
+</span><span>  group2:
+</span><span>    - &quot;part-2&quot;
+</span><span>  group3:
+</span><span>    - &quot;part-3&quot;
+</span><span>  group4:
+</span><span>    - &quot;part-4&quot;
+</span><span>commands:
+</span><span>  - &quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
+</span><span>  - &quot;echo &#39;{group}: {priority}&#39;&quot;
+</span></code></pre>
+</li>
+<li>
+<p>After</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>auditor:
+</span><span>  addr: &quot;localhost&quot;
+</span><span>  port: 8000
+</span><span>components:
+</span><span>  NumCPUs: &quot;cpu-1&quot;
+</span><span>min_priority: 1
+</span><span>max_priority: 65335
+</span><span>group_mapping:
+</span><span>  group1: 
+</span><span>    - &quot;part-1&quot;
+</span><span>  group2:
+</span><span>    - &quot;part-2&quot;
+</span><span>  group3:
+</span><span>    - &quot;part-3&quot;
+</span><span>  group4:
+</span><span>    - &quot;part-4&quot;
+</span><span>commands:
+</span><span>  - &quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
+</span><span>  - &quot;echo &#39;{group}: {priority}&#39;&quot;
+</span><span>prometheus:
+</span><span>  enable: true
+</span><span>  addr: &quot;localhost&quot;
+</span><span>  port: 9000
+</span><span>  frequency: 3600
+</span><span>  metrics:
+</span><span>    - ResourceUsage
+</span><span>    - Priority
+</span></code></pre>
+</li>
+</ul>
 <h2 id="development">Development</h2>
 <h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.2</p>
