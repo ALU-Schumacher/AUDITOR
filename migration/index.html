@@ -84,6 +84,10 @@
                 </div>
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#auditor"><small>- AUDITOR</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development"><small>- Development</small></a>
                 </div>
                 
@@ -187,6 +191,16 @@ Prometheus configuration is optional. Metrics are exported according to the freq
 </span></code></pre>
 </li>
 </ul>
+<h2 id="auditor">AUDITOR</h2>
+<h3 id="standardized-rest-apis">Standardized REST APIs</h3>
+<p>Auditor REST APIs are changed as shown in the table below. </p>
+<p>| Before                                                 	| After                                                            	|
+|--------------------------------------------------------	|------------------------------------------------------------------	|
+| /health_check (GET)                                    	| /health_check (GET)                                              	|
+| /add (POST) -&gt; add record                              	| /record (POST) -&gt; add record                                     	|
+| /update (POST) -&gt; update record                        	| /record (PUT) -&gt; update record                                   	|
+| /get (GET) -&gt; get all records                          	| /record (GET) -&gt; get all records                                 	|
+| /get/[started/stopped]/since/{date} (GET) -&gt; get since 	| /record?state=[started/stopped]&amp;since={date}  (GET) -&gt; get since 	|</p>
 <h2 id="development">Development</h2>
 <h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.2</p>
