@@ -20,14 +20,6 @@ jobs:
         with:
           prefix-key: cache-dependencies-linux
 
-      # We need to somehow get the SQLX_OFFLINE env variable into the container.
-      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
-      # via its configuration.
-      - name: Create fake .cargo/config.toml
-        run: |
-          mkdir -p .cargo
-          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
-
       - name: Maturin
         uses: messense/maturin-action@v1
         with:
@@ -59,21 +51,6 @@ jobs:
         with:
           prefix-key: cache-dependencies-windows
 
-      # We need to somehow get the SQLX_OFFLINE env variable into the container.
-      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
-      # via its configuration.
-      # I don't know how to script this on windows (and I don't care). Therefore
-      # I'll just copy the config.toml from the pyauditor directory. This may lead to 
-      # problems when there is a .cargo/config.toml, which will then be overwritten.
-      - name: Create fake .cargo\config.toml
-        run: |
-          copy pyauditor\.cargo\config.toml .cargo\config.toml
-          # echo "[env]" >> .cargo\config.toml
-          # Fails here, saying "echo." doesn't exist.
-          # echo. >> .cargo\config.toml
-          # echo "SQLX_OFFLINE = \"true\"" >> .cargo\config.toml
-          # type .cargo\config.toml
-
       - uses: messense/maturin-action@v1
         with:
           command: build
@@ -100,14 +77,6 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           prefix-key: cache-dependencies-macos
-
-      # We need to somehow get the SQLX_OFFLINE env variable into the container.
-      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
-      # via its configuration.
-      - name: Create fake .cargo/config.toml
-        run: |
-          mkdir -p .cargo
-          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
 
       - uses: messense/maturin-action@v1
         with:
@@ -216,8 +185,6 @@ jobs:
   docs:
     name: pyauditor docs
     runs-on: ubuntu-latest
-    env:
-      SQLX_OFFLINE: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

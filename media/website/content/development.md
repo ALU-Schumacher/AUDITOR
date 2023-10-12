@@ -59,12 +59,7 @@ cargo run
 
 Calling `./scripts/db_init.sh` will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
 If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling `db_init.sh` pass the correct settings to auditor via the configuration environment variables mentioned above.
-Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:
-
-```bash
-SQLX_OFFLINE=true cargo run
-```
-
+Building requires a running database, because database queries are checked against the database during runtime!
 For nicer logs pipe the output through `bunyan`:
 
 ```bash

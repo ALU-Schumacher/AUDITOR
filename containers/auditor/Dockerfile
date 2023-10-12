@@ -13,7 +13,6 @@ COPY --from=planner /auditor/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
 COPY . .
-ENV SQLX_OFFLINE true
 RUN cargo build --release --bin auditor
 
 # Runtime stage
