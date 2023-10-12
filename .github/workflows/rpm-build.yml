@@ -25,6 +25,7 @@ jobs:
           - auditor-priority-plugin
 
     env:
+      SQLX_OFFLINE: true
       CARGO_GET_VERSION: 0.3.3
     steps:
       - name: Checkout repository
