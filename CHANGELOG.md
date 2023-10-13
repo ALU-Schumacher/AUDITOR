@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
+- Dependencies: Update cargo-get from 0.3.3 to 1.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update regex from 1.9.5 to 1.10.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.20 to 0.11.22 ([@QuantumDancer](https://github.com/QuantumDancer))

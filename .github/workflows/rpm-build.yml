@@ -26,7 +26,7 @@ jobs:
 
     env:
       SQLX_OFFLINE: true 
-      CARGO_GET_VERSION: 0.3.3
+      CARGO_GET_VERSION: 1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
             ~/.cargo/bin/cargo-get
 
       - name: Install cargo-get
-        run: cargo install cargo-get --version=${{ env.CARGO_GET_VERSION }} --locked
+        run: cargo install cargo-get --version ~${{ env.CARGO_GET_VERSION }} --locked
 
       - name: Install musl and rpm
         run: |
