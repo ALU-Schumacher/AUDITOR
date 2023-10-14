@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update regex from 1.9.5 to 1.10.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.20 to 0.11.22 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde from 1.0.188 to 1.0.189 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update sqlx from 0.7.1 to 0.7.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.48 to 1.0.49 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update time from 0.3.28 to 0.3.29 ([@QuantumDancer](https://github.com/QuantumDancer))
