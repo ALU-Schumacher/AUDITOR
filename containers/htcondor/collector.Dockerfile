@@ -6,7 +6,6 @@ RUN yum update -y && \
     rm -rf /var/cache/yum/*
 
 RUN python3.9 -m pip install --upgrade pip pyyaml
-RUN python3.9 -m pip install python-auditor
 
 COPY ./condor_passwords /etc/condor/passwords-orig.d/
 COPY ./condor_passwords/POOL /home/submituser/POOL
