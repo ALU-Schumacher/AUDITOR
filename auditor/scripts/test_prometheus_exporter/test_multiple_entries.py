@@ -25,7 +25,7 @@ class TestMultipleEntries(unittest.TestCase):
             ],
             "start_time": "2023-09-18T15:33:00+00:00",
         }
-        requests.post("http://127.0.0.1:8000/record", json=record1_data)
+        requests.post("http://127.0.0.1:8000/add", json=record1_data)
 
         # add second record
         record2_data = {
@@ -45,7 +45,7 @@ class TestMultipleEntries(unittest.TestCase):
             ],
             "start_time": "2023-09-18T15:33:00+00:00",
         }
-        requests.post("http://127.0.0.1:8000/record", json=record2_data)
+        requests.post("http://127.0.0.1:8000/add", json=record2_data)
 
         record3_data = {
             "record_id": "record-3",
@@ -64,7 +64,7 @@ class TestMultipleEntries(unittest.TestCase):
             ],
             "start_time": "2023-09-18T15:33:00+00:00",
         }
-        requests.post("http://127.0.0.1:8000/record", json=record3_data)
+        requests.post("http://127.0.0.1:8000/add", json=record3_data)
 
         record4_data = {
             "record_id": "record-4",
@@ -83,7 +83,7 @@ class TestMultipleEntries(unittest.TestCase):
             ],
             "start_time": "2023-09-18T15:33:00+00:00",
         }
-        requests.post("http://127.0.0.1:8000/record", json=record4_data)
+        requests.post("http://127.0.0.1:8000/add", json=record4_data)
 
         # wait for metrics recomputation
         time.sleep(10)

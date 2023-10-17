@@ -9,12 +9,10 @@ mod add;
 mod get;
 mod get_since;
 mod health_check;
-mod record_handlers;
 mod update;
 
 pub use add::*;
 pub use get::*;
 pub use get_since::*;
 pub use health_check::*;
-pub use record_handlers::*;
 pub use update::*;

@@ -13,7 +13,6 @@ use crate::{
 };
 use chrono::{DateTime, Duration, Utc};
 use reqwest;
-use urlencoding::encode;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
@@ -214,7 +213,7 @@ impl AuditorClient {
     pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(&format!("{}/record", &self.address))
+            .post(&format!("{}/add", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -239,7 +238,7 @@ impl AuditorClient {
     )]
     pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
-            .put(&format!("{}/record", &self.address))
+            .post(&format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -257,7 +256,7 @@ impl AuditorClient {
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/record", &self.address))
+            .get(&format!("{}/get", &self.address))
             .send()
             .await?
             .error_for_status()?
@@ -280,13 +279,12 @@ impl AuditorClient {
         since: &DateTime<Utc>,
     ) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        let since_str = since.to_rfc3339();
-        let encoded_since = encode(&since_str);
         Ok(self
             .client
             .get(&format!(
-                "{}/record?state=started&since={}",
-                &self.address, encoded_since
+                "{}/get/started/since/{}",
+                &self.address,
+                since.to_rfc3339()
             ))
             .send()
             .await?
@@ -309,13 +307,12 @@ impl AuditorClient {
         &self,
         since: &DateTime<Utc>,
     ) -> Result<Vec<Record>, ClientError> {
-        let since_str = since.to_rfc3339();
-        let encoded_since = encode(&since_str);
         Ok(self
             .client
             .get(&format!(
-                "{}/record?state=stopped&since={}",
-                &self.address, encoded_since
+                "{}/get/stopped/since/{}",
+                &self.address,
+                since.to_rfc3339()
             ))
             .send()
             .await?
@@ -364,7 +361,7 @@ impl AuditorClientBlocking {
     pub fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(format!("{}/record", &self.address))
+            .post(format!("{}/add", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()?;
@@ -388,7 +385,7 @@ impl AuditorClientBlocking {
     )]
     pub fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
-            .put(format!("{}/record", &self.address))
+            .post(format!("{}/update", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()?
@@ -405,7 +402,7 @@ impl AuditorClientBlocking {
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(format!("{}/record", &self.address))
+            .get(format!("{}/get", &self.address))
             .send()?
             .error_for_status()?
             .json()?)
@@ -423,13 +420,12 @@ impl AuditorClientBlocking {
     )]
     pub fn get_started_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         dbg!(since.to_rfc3339());
-        let since_str = since.to_rfc3339();
-        let encoded_since = encode(&since_str);
         Ok(self
             .client
             .get(format!(
-                "{}/record?state=started&since={}",
-                &self.address, encoded_since
+                "{}/get/started/since/{}",
+                &self.address,
+                since.to_rfc3339()
             ))
             .send()?
             .error_for_status()?
@@ -447,13 +443,12 @@ impl AuditorClientBlocking {
         fields(started_since = %since)
     )]
     pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
-        let since_str = since.to_rfc3339();
-        let encoded_since = encode(&since_str);
         Ok(self
             .client
             .get(format!(
-                "{}/record?state=stopped&since={}",
-                &self.address, encoded_since
+                "{}/get/stopped/since/{}",
+                &self.address,
+                since.to_rfc3339()
             ))
             .send()?
             .error_for_status()?
@@ -468,7 +463,7 @@ mod tests {
     use chrono::TimeZone;
     use claim::assert_err;
     use fake::{Fake, Faker};
-    use wiremock::matchers::{any, body_json, header, method, path, query_param};
+    use wiremock::matchers::{any, body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     fn record<T: TryFrom<RecordTest>>() -> T
@@ -489,7 +484,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/get"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -520,7 +515,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/get"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -691,7 +686,7 @@ mod tests {
         let record: RecordAdd = record();
 
         Mock::given(method("POST"))
-            .and(path("/record"))
+            .and(path("/add"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(&record))
             .respond_with(ResponseTemplate::new(200))
@@ -718,7 +713,7 @@ mod tests {
         let record: RecordAdd = record();
 
         Mock::given(method("POST"))
-            .and(path("/record"))
+            .and(path("/add"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(&record))
             .respond_with(ResponseTemplate::new(200))
@@ -787,8 +782,8 @@ mod tests {
 
         let record: RecordUpdate = record();
 
-        Mock::given(method("PUT"))
-            .and(path("/record"))
+        Mock::given(method("POST"))
+            .and(path("/update"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(&record))
             .respond_with(ResponseTemplate::new(200))
@@ -814,8 +809,8 @@ mod tests {
 
         let record: RecordUpdate = record();
 
-        Mock::given(method("PUT"))
-            .and(path("/record"))
+        Mock::given(method("POST"))
+            .and(path("/update"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(&record))
             .respond_with(ResponseTemplate::new(200))
@@ -885,10 +880,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
-            .and(query_param("state", "started"))
-            .and(query_param("since", "2022-08-03T09:47:00+00:00"))
-            // .and(query_param("since", "2022-08-03T09:47:00+00:00"))
+            .and(path("/get/started/since/2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -922,9 +914,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
-            .and(query_param("state", "started"))
-            .and(query_param("since", "2022-08-03T09:47:00+00:00"))
+            .and(path("/get/started/since/2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -1004,9 +994,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
-            .and(query_param("state", "stopped"))
-            .and(query_param("since", "2022-08-03T09:47:00+00:00"))
+            .and(path("/get/stopped/since/2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -1040,9 +1028,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
-            .and(query_param("state", "stopped"))
-            .and(query_param("since", "2022-08-03T09:47:00+00:00"))
+            .and(path("/get/stopped/since/2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)

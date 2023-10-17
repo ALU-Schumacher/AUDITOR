@@ -24,7 +24,7 @@ class TestSingleEntry(unittest.TestCase):
             ],
             "start_time": "2023-09-18T15:33:00+00:00",
         }
-        requests.post("http://127.0.0.1:8000/record", json=record1_data)
+        requests.post("http://127.0.0.1:8000/add", json=record1_data)
         # wait for metrics recomputation
         time.sleep(10)
 

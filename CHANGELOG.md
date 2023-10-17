@@ -8,25 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 
 ### Security
 
 ### Added
 - Priority plugin: Add prometheus data exporter (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Auditor: Add records_handler module to routes to handle record queries  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update regex from 1.9.5 to 1.10.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.20 to 0.11.22 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update serde from 1.0.188 to 1.0.189 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update sqlx from 0.7.1 to 0.7.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.48 to 1.0.49 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update time from 0.3.28 to 0.3.29 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tokio from 1.32.0 to 1.33.0 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update tracing from 0.1.37 to 0.1.39 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.7 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
