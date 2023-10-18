@@ -8,28 +8,28 @@ on:
 jobs:
   build-pyauditor:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./pyauditor
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Build pyauditor wheel from repo
+      - name: Create fake .cargo/config.toml
         run: |
-          pip install --upgrade pip
-          pip wheel .
+          mkdir -p .cargo
+          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
+      - name: Maturin
+        uses: messense/maturin-action@v1
+        with:
+          target: x86_64
+          manylinux: auto
+          command: build
+          args: --release -o dist --interpreter python${{ matrix.python-version }} --manifest-path pyauditor/Cargo.toml
       - name: Upload pyauditor wheel
         uses: actions/upload-artifact@v3
         with:
           name: pyauditor-wheel-${{ matrix.python-version }}
-          path: pyauditor/*.whl
+          path: dist/*.whl
           retention-days: 7
 
   unit-tests-apel-plugin:
