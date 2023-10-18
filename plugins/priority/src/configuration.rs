@@ -38,6 +38,9 @@ pub struct Settings {
     pub duration: Option<Duration>,
     #[serde(default = "default_computation_mode")]
     pub computation_mode: ComputationMode,
+    #[serde(default = "default_prometheus_frequency")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
+    pub frequency: chrono::Duration,
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
@@ -64,9 +67,6 @@ pub struct PrometheusSettings {
     #[serde(default = "default_prometheus_port")]
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
-    #[serde(default = "default_prometheus_frequency")]
-    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
-    pub frequency: chrono::Duration,
     pub metrics: Vec<PrometheusMetricsOptions>,
 }
 

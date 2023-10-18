@@ -21,11 +21,11 @@ group_mapping:
     - "part6"
 command:
   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+frequency: 3600
 prometheus:
   enable: true
   addr: 0.0.0.0
   port: 9000
-  frequency: 3600
   metrics:
     - ResourceUsage
     - Priority

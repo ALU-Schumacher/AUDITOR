@@ -17,11 +17,11 @@ group_mapping:
 commands:
   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
   - "echo '{group}: {priority}'"
+frequency: 5
 prometheus:
   enable: true
   addr: "localhost"
   port: 9000
-  frequency: 5
   metrics:
     - ResourceUsage
     - Priority

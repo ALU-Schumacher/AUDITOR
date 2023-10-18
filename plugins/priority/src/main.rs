@@ -260,7 +260,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let request_metrics = PrometheusExporterConfig::build()?;
 
     let cloned_request_metrics = request_metrics.clone();
-    let mut interval = tokio::time::interval(chrono::Duration::seconds(3600).to_std()?);
+    let mut interval = tokio::time::interval(config.frequency.to_std()?);
     let mut enable_prometheus = false;
     let mut prometheus_metrics = Vec::<PrometheusMetricsOptions>::new();
 
@@ -268,7 +268,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Some(prometheus_settings) => {
             let prometheus_addr = prometheus_settings.addr.clone();
             let prometheus_port = prometheus_settings.port;
-            interval = tokio::time::interval(prometheus_settings.frequency.to_std()?);
             enable_prometheus = prometheus_settings.enable;
             let address = format!("{}:{}", prometheus_addr, prometheus_port);
             prometheus_metrics = prometheus_settings.metrics;
@@ -363,12 +362,12 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::FullSpread,
+            frequency: chrono::Duration::seconds(3600),
             log_level: LevelFilter::INFO,
             prometheus: Some(PrometheusSettings {
                 enable: true,
                 addr: "whatever".to_string(),
                 port: 1234,
-                frequency: chrono::Duration::seconds(3600),
                 metrics: vec![
                     PrometheusMetricsOptions::ResourceUsage,
                     PrometheusMetricsOptions::Priority,
@@ -403,12 +402,12 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::ScaledBySum,
+            frequency: chrono::Duration::seconds(3600),
             log_level: LevelFilter::INFO,
             prometheus: Some(PrometheusSettings {
                 enable: true,
                 addr: "whatever".to_string(),
                 port: 1234,
-                frequency: chrono::Duration::seconds(3600),
                 metrics: vec![
                     PrometheusMetricsOptions::ResourceUsage,
                     PrometheusMetricsOptions::Priority,
