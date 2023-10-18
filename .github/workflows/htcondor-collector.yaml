@@ -27,7 +27,7 @@ jobs:
         target: x86_64
         manylinux: auto
         command: build
-        args: --release --sdist -o dist --interpreter python3.9 --manifest-path pyauditor/Cargo.toml
+        args: --release -o dist --interpreter python3.9 --manifest-path pyauditor/Cargo.toml
     - name: Build collector package
       run: |
         python3.9 -m venv pvenv
