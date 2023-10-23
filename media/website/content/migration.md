@@ -5,30 +5,32 @@ weight = 3
 +++
 
 # From 0.2.0 to unreleased
+
 ## Priority plugin
-The config file must contain an 'auditor' field which comprises of addr and port number. 
-Prometheus configuration is optional. Metrics are exported according to the frequency specified (in seconds). 
+
+The priority plugin now supports exporting metrics for the amount of provided resources and the updated priority to Prometheus.
+The metrics can be accessed via a GET request to the `/metrics` endpoint.
+Because the metrics endpoint provided by the Prometheus exporter needs to be available all the time, the architecture of the
+priority plugin has been changed. It now will run continuously. In most cases, it should be started as a systemd service.
+
+The structure of the config file has changed. The `addr` and `port` options are now put under a common `auditor` section.
+The frequency of recalculation for the provided resources and priorities can now be controlled with the `frequency` field, which assumes that the number given is in seconds.
+It defaults to 1 hour (i.e. 3600s).
+
+The Prometheus exporter can be configured in the `prometheus` section.
+It can be enabled and disabled with the `enable` field.
+The address and port of the HTTP server that serves the metrics can be set with the `addr` and `port` fields.
+The `metrics` list specifies the metrics that are exported. Right now the values `ResourceUsage` (for the amount of provided resources in the given duration)
+and `Priority` (for the calculated priority value) are supported.
+The `prometheus` section is optional. If it is not present, it has the same effect as setting `enable` to `false`.
+
+Below, you find an example of the priority plugin configuration before and after the change.
 
 - Before 
 	```
 	addr: "localhost"
 	port: 8000
-	components:
-	  NumCPUs: "cpu-1"
-	min_priority: 1
-	max_priority: 65335
-	group_mapping:
-	  group1: 
-	    - "part-1"
-	  group2:
-	    - "part-2"
-	  group3:
-	    - "part-3"
-	  group4:
-	    - "part-4"
-	commands:
-	  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
-	  - "echo '{group}: {priority}'"
+	... (other options)
 	```
 
  - After
@@ -36,27 +38,12 @@ Prometheus configuration is optional. Metrics are exported according to the freq
 	auditor:
 	   addr: "localhost"
 	   port: 8000
-	components:
-	   NumCPUs: "cpu-1"
-	min_priority: 1
-	max_priority: 65335
-	group_mapping:
-       group1: 
-	     - "part-1"
-	   group2:
-	     - "part-2"
-	   group3:
-	     - "part-3"
-	   group4:
-	     - "part-4"
-	commands:
-	   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
-	   - "echo '{group}: {priority}'"
+	frequency: 3600
+	... (other options)
 	prometheus:
 	   enable: true
-	   addr: "localhost"
+	   addr: "0.0.0.0"
 	   port: 9000
-	   frequency: 3600
 	   metrics:
 	     - ResourceUsage
 	     - Priority
@@ -77,6 +64,7 @@ Auditor REST APIs are changed as shown in the table below.
 | /get/[started/stopped]/since/{date} (GET) -> get since 	| /record?state=[started/stopped]&since={date}  (GET) -> get since 	|
 
 ## Development
+
 ### Update to [sqlx 0.7.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
 Use this command to update the sqlx-cli to 0.7.2
 - `cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite`

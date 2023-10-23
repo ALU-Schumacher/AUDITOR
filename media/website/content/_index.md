@@ -632,7 +632,7 @@ client_key = hostkey.pem
 
 ## Priority Plugin
 
-The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
+The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on how many resources were provided.
 This allows one to transfer provided resources on one system to priorities in another system.
 The computed priorities are set via shelling out, and the executed commands can be defined as needed.
 
@@ -644,16 +644,18 @@ RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-m
 
 The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-priority-plugin` and is ideally placed on a node where the priorities should be set.
 
-One run of the priority plugin will update the priorities once.
-In general, the priority plugin should be run on a regular basis (for instance as a cron job), depending on how often the update should be performed.
+The priority plugin runs continuously. Ideally, it is installed as a systemd service.
+Priorities are updated at a frequency that can be set via the configuration.
 
 A typical configuration for the SLURM batch system may look like this:
 
 ```yaml
-addr: "auditor_host_address"
-port: 8000
+auditor:
+  addr: "auditor_host_address"
+  port: 8000
 timeout: 30 # in seconds
 duration: 1209600 # in seconds
+frequency: 3600 # in seconds
 components:
   NumCPUs: "HEPSPEC"
 group_mapping:
@@ -663,14 +665,24 @@ group_mapping:
     - "part2"
   group3:
     - "part3"
-command:
+commands:
+  - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> {group}.txt"'
   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
 min_priority: 1
 max_priority: 65335
 computation_mode: ScaledBySum
 log_level: info
+prometheus:
+  enable: true
+  addr: "0.0.0.0"
+  port: 9000
+  metrics:
+    - ResourceUsage
+    - Priority
 ```
 
+The Auditor instance that is providing the records can be configured with the `auditor` block.
+Here, `addr` refers to the address of the machine that hosts the Auditor instance. The port can be specified with `port`.
 The resources used for calculating the priorities can be configured via the `components` field.
 It defines which components to extract from the `components` field of the record (`NumCPUs` in this example), as well as the corresponding score (`HEPSPEC` in this example).
 Multiple components can be extracted.
@@ -678,16 +690,26 @@ The configured components and scores must be part of the records.
 The resources of each component will be multiplied by the corresponding score and the resulting provided resource per group is the sum of all these.
 The records considered in the computation can be limited to all records which finished in the past X seconds via the `duration` field (in seconds).
 Omitting this field takes all records in the database into account.
+The frequency of recalculating the priorities can be set via the `frequency` field.
 Via the `group_mapping` field, it is possible to attach certain additional information to the individual groups which are to be considered in the calculation.
 In the example configuration above are three groups `group{1,2,3}`, where each has a corresponding partition `part{1,2.3}`.
-These mappings can be accessed when constructing the `command`s which will be executed after computing the priorities by using `{N}` where `N` corresponds to number of the element in the list of the `group_mapping`.
+These mappings can be accessed when constructing the `commands` which will be executed after computing the priorities by using `{N}` where `N` corresponds to the number of the element in the list of the `group_mapping`.
 For instance, for `group1`, the string `{1}` indicates `part1` while for `group2` the same string `{1}` indicates `part2`.
-The `command` field in the configuration illustrates the usage of these mappings.
-This allows one to adapt the command for the various groups involved.
-In the `command` field one can also see a string `{priority}`, which will be replaced by the computed priority for the group.
+The group name can be accessed via the `{group}` string.
+The `commands` field in the configuration illustrates the usage of these mappings.
+This allows one to adapt the commands for the various groups involved.
+In the `commands` field one can also see a string `{priority}`, which will be replaced by the computed priority for the group.
 Another special string, `{resources}` is available, which is replaced by the computed provided resource per group.
-The command is executed for each group separately and multiple commands can be provided.
+The command is executed for each group separately and multiple commands can be provided with a list.
 The verbosity of logging can be set with the `log_level` option. Possible values are `trace`, `debug`, `info` (default), `warn`, and `error`.
+The priority plugin allows for real-time monitoring of the computed resources and priorities via a prometheus endpoint.
+Per default, the prometheus endpoint is disabled.
+It can be enabled by adding the `prometheus` block to the configuration or by setting the `enable` field of this block to `true`.
+Inside the `prometheus` block, the address and port of the HTTP server that provides the prometheus metrics can be specified via the `addr` and `port` fields.
+The metrics will then be available at `<addr>:<port>/metrics`
+The `metrics` list specifies the metrics that are exported.
+Right now the values `ResourceUsage` (for the amount of provided resources in the given duration)
+and `Priority` (for the calculated priority value) are supported.
 
 ### Priority computation modes
 
