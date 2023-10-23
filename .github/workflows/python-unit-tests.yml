@@ -1,40 +1,14 @@
 name: python-unit-tests
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [build-pyauditor]
+    types: [completed]
 
 jobs:
-  build-pyauditor:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
-      - name: Create fake .cargo/config.toml
-        run: |
-          mkdir -p .cargo
-          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
-      - name: Maturin
-        uses: messense/maturin-action@v1
-        with:
-          target: x86_64
-          manylinux: auto
-          command: build
-          args: --release -o dist --interpreter python${{ matrix.python-version }} --manifest-path pyauditor/Cargo.toml
-      - name: Upload pyauditor wheel
-        uses: actions/upload-artifact@v3
-        with:
-          name: pyauditor-wheel-${{ matrix.python-version }}
-          path: dist/*.whl
-          retention-days: 7
-
   unit-tests-apel-plugin:
     runs-on: ubuntu-latest
-    needs: build-pyauditor
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -44,15 +18,37 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Download pyauditor wheel
-        uses: actions/download-artifact@v3
+      - name: 'Download artifact'
+        uses: actions/github-script@v6
+        env:
+          WHEEL: linux-wheel-${{matrix.python-version}}
         with:
-          name: pyauditor-wheel-${{ matrix.python-version }}
-          path: ./plugins/apel
+          script: |
+            const { WHEEL } = process.env
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == `${WHEEL}`
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`./plugins/apel/linux-wheel.zip`, Buffer.from(download.data));
+      - name: 'Unzip artifact'
+        run: unzip linux-wheel.zip
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -76,6 +72,8 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
       - name: Download coverage artifact
         uses: actions/download-artifact@v3
         with:

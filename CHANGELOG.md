@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update uuid from 1.4.1 to 1.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor with maturin for Python unit tests ([@dirksammel](https://github.com/dirksammel))
+- CI: New workflows for building pyauditor, Auditor (+ Docker image), use output in other workflows ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
