@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update time from 0.3.28 to 0.3.29 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tokio from 1.32.0 to 1.33.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing from 0.1.37 to 0.1.40 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.7 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.8 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update uuid from 1.4.1 to 1.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor with maturin for Python unit tests ([@dirksammel](https://github.com/dirksammel))
