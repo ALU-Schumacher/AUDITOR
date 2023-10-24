@@ -14,7 +14,7 @@ function compile_auditor() {
 }
 
 function compile_pyauditor() {
-	python -m venv $ENV_DIR
+	python3 -m venv $ENV_DIR
 	source $ENV_DIR/bin/activate
   pip install maturin
   pip install tzlocal

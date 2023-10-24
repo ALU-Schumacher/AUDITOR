@@ -354,6 +354,7 @@ dependencies = [
  "secrecy",
  "serde",
  "serde-aux",
+ "serde_qs 0.11.0",
  "serde_with",
  "sqlx",
  "thiserror",
@@ -1331,7 +1332,7 @@ dependencies = [
  "rand 0.7.3",
  "serde",
  "serde_json",
- "serde_qs",
+ "serde_qs 0.8.5",
  "serde_urlencoded",
  "url",
 ]
@@ -2157,6 +2158,7 @@ dependencies = [
  "chrono",
  "pyo3",
  "pyo3-asyncio",
+ "serde",
  "serde_json",
  "tokio",
 ]
@@ -2565,6 +2567,19 @@ version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7715380eec75f029a4ef7de39a9200e0a63823176b759d055b613f5a87df6a6"
 dependencies = [
+ "percent-encoding",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "serde_qs"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c679fa27b429f2bb57fd4710257e643e86c966e716037259f8baa33de594a1b6"
+dependencies = [
+ "actix-web",
+ "futures",
  "percent-encoding",
  "serde",
  "thiserror",

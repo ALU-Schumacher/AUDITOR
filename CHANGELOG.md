@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Priority plugin: Add prometheus data exporter (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Add records_handler module to routes to handle record queries  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor: Add advanced records filtering using start_time, stop_time and runtime (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- pyauditor: Add rust bindings for advanced filtering (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- pyauditor: Add unit tests for advanced filtering (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))

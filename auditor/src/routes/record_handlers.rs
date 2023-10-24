@@ -1,6 +1,8 @@
-use crate::routes::{get_records, get_records_since, GetSinceError, StartedStopped};
+use crate::routes::{advanced_record_filtering, Filters};
+use crate::routes::{GetFilterError, StartedStopped};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
+use serde_qs::actix::QsQuery;
 use sqlx;
 use sqlx::PgPool;
 
@@ -10,27 +12,13 @@ pub struct RecordQuery {
     pub since: DateTime<Utc>,
 }
 
-#[tracing::instrument(name = "Getting records", skip(record_query, pool))]
+#[tracing::instrument(name = "Getting Records", skip(query, pool))]
 pub async fn query_records(
-    record_query: Option<web::Query<RecordQuery>>,
+    query: Option<QsQuery<Filters>>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, GetSinceError> {
-    match record_query {
-        Some(query) => {
-            // Handle "get since" with query parameters
-            let info = (query.state.clone(), query.since);
-            let records = get_records_since(&info, &pool)
-                .await
-                .map_err(GetSinceError::UnexpectedError)?;
-            Ok(HttpResponse::Ok().json(records))
-        }
-
-        _ => {
-            // Handle "get all records" (no query parameters)
-            let records = get_records(&pool)
-                .await
-                .map_err(GetSinceError::UnexpectedError)?;
-            Ok(HttpResponse::Ok().json(records))
-        }
-    }
+) -> Result<HttpResponse, GetFilterError> {
+    let records = advanced_record_filtering(query.as_ref(), &pool)
+        .await
+        .map_err(GetFilterError::UnexpectedError)?;
+    Ok(HttpResponse::Ok().json(records))
 }

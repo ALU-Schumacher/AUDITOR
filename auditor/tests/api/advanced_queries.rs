@@ -1,9 +1,11 @@
 use crate::helpers::spawn_app;
+use auditor::client::{QueryBuilder, TimeOperator};
 use auditor::domain::{Record, RecordTest};
+use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 
 #[tokio::test]
-async fn get_started_since_returns_a_200_and_list_of_records() {
+async fn get_advanced_queries_returns_a_200_and_list_of_records() {
     // Arange
     let app = spawn_app().await;
 
@@ -14,7 +16,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
                 .with_record_id(format!("r{i}"))
-                .with_start_time(format!("2022-03-0{i}T12:00:00-00:00"))
+                .with_start_time(format!("2022-10-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -26,9 +28,14 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
-            .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+        let query = QueryBuilder::new()
+            .with_start_time(
+                TimeOperator::default()
+                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
+            )
+            .build();
+
+        let response = app.advanced_queries(query).await;
         println!("{:?}", response);
 
         assert_eq!(200, response.status().as_u16());
@@ -40,7 +47,7 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 
         for (j, (record, received)) in test_cases
             .iter()
-            .skip(i - 1)
+            .skip(usize::try_from(i).unwrap() - 1)
             .zip(received_records.iter())
             .enumerate()
         {
@@ -67,7 +74,7 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
                 .with_record_id(format!("r{i}"))
-                .with_start_time(format!("2022-03-0{i}T12:00:00-00:00"))
+                .with_start_time(format!("2022-10-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -79,16 +86,25 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
-            .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+        let query = QueryBuilder::new()
+            .with_start_time(
+                TimeOperator::default()
+                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
+            )
+            .build();
+
+        let response = app.advanced_queries(query).await;
 
         assert_eq!(200, response.status().as_u16());
 
         let received_records = response.json::<Vec<Record>>().await.unwrap();
 
         // make sure the test cases are sorted by stop_time
-        let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
+        let mut tmp_test_cases = test_cases
+            .iter()
+            .skip(usize::try_from(i).unwrap() - 1)
+            .cloned()
+            .collect::<Vec<_>>();
         tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
 
         for (j, (record, received)) in tmp_test_cases
@@ -113,9 +129,14 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 async fn get_started_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
-    let response = app
-        .get_started_since_records("2022-03-01T13:00:00-00:00")
-        .await;
+    let query = QueryBuilder::new()
+        .with_start_time(
+            TimeOperator::default()
+                .gte(Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap().into()),
+        )
+        .build();
+
+    let response = app.advanced_queries(query).await;
 
     assert_eq!(200, response.status().as_u16());
 
@@ -136,7 +157,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
                 .with_record_id(format!("r{i}"))
-                .with_stop_time(format!("2022-03-0{i}T12:00:00-00:00"))
+                .with_stop_time(format!("2022-10-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -148,9 +169,15 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
-            .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+        let query = QueryBuilder::new()
+            .with_stop_time(
+                TimeOperator::default()
+                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
+            )
+            .build();
+
+        let response = app.advanced_queries(query).await;
+
         assert_eq!(200, response.status().as_u16());
 
         let mut received_records = response.json::<Vec<Record>>().await.unwrap();
@@ -160,7 +187,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
         for (j, (record, received)) in test_cases
             .iter()
-            .skip(i - 1)
+            .skip(usize::try_from(i).unwrap() - 1)
             .zip(received_records.iter())
             .enumerate()
         {
@@ -189,7 +216,7 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
                 .fake::<RecordTest>()
                 // Giving a name which is sorted the same as the time is useful for asserting later
                 .with_record_id(format!("r{i}"))
-                .with_stop_time(format!("2022-03-0{i}T12:00:00-00:00"))
+                .with_stop_time(format!("2022-10-0{i}T12:00:00-00:00"))
         })
         .collect::<Vec<_>>();
 
@@ -201,15 +228,25 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
-            .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+        let query = QueryBuilder::new()
+            .with_stop_time(
+                TimeOperator::default()
+                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
+            )
+            .build();
+
+        let response = app.advanced_queries(query).await;
+
         assert_eq!(200, response.status().as_u16());
 
         let received_records = response.json::<Vec<Record>>().await.unwrap();
 
         // make sure the test cases are sorted by stop_time
-        let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
+        let mut tmp_test_cases = test_cases
+            .iter()
+            .skip(usize::try_from(i).unwrap() - 1)
+            .cloned()
+            .collect::<Vec<_>>();
         tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
 
         for (j, (record, received)) in tmp_test_cases
@@ -234,27 +271,18 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 async fn get_stopped_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
-    let response = app
-        .get_stopped_since_records("2022-03-01T13:00:00-00:00")
-        .await;
+    let query = QueryBuilder::new()
+        .with_start_time(
+            TimeOperator::default()
+                .gte(Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap().into()),
+        )
+        .build();
+
+    let response = app.advanced_queries(query).await;
+
     assert_eq!(200, response.status().as_u16());
 
     let received_records = response.json::<Vec<Record>>().await.unwrap();
 
     assert!(received_records.is_empty());
-}
-
-#[tokio::test]
-async fn get_wrong_since_returns_a_404() {
-    let app = spawn_app().await;
-
-    let response = reqwest::Client::new()
-        .get(&format!(
-            "{}/get/wrong/since/2022-03-01T13:00:00-00:00",
-            &app.address
-        ))
-        .send()
-        .await
-        .expect("Failed to execute request.");
-    assert_eq!(404, response.status().as_u16());
 }

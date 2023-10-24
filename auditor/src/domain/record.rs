@@ -17,6 +17,7 @@ use fake::{Dummy, Fake, Faker, StringFaker};
 use quickcheck;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
+use sqlx;
 
 /// `RecordAdd` represents a single accountable unit that is added to Auditor.
 ///
@@ -225,7 +226,7 @@ pub struct Record {
 }
 
 #[doc(hidden)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, sqlx::FromRow)]
 pub struct RecordDatabase {
     pub record_id: String,
     pub meta: Option<Vec<(String, Vec<String>)>>,

@@ -19,6 +19,9 @@ mod domain;
 fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<crate::builder::AuditorClientBuilder>()?;
     m.add_class::<crate::client::AuditorClient>()?;
+    m.add_class::<crate::client::TimeValue>()?;
+    m.add_class::<crate::client::TimeOperator>()?;
+    m.add_class::<crate::client::QueryBuilder>()?;
     m.add_class::<crate::blocking_client::AuditorClientBlocking>()?;
     m.add_class::<crate::domain::Record>()?;
     m.add_class::<crate::domain::Meta>()?;
