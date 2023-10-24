@@ -134,29 +134,26 @@
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-2-0-to-unreleased">From 0.2.0 to unreleased</h1>
 <h2 id="priority-plugin">Priority plugin</h2>
-<p>The config file must contain an 'auditor' field which comprises of addr and port number. 
-Prometheus configuration is optional. Metrics are exported according to the frequency specified (in seconds). </p>
+<p>The priority plugin now supports exporting metrics for the amount of provided resources and the updated priority to Prometheus.
+The metrics can be accessed via a GET request to the <code>/metrics</code> endpoint.
+Because the metrics endpoint provided by the Prometheus exporter needs to be available all the time, the architecture of the
+priority plugin has been changed. It now will run continuously. In most cases, it should be started as a systemd service.</p>
+<p>The structure of the config file has changed. The <code>addr</code> and <code>port</code> options are now put under a common <code>auditor</code> section.
+The frequency of recalculation for the provided resources and priorities can now be controlled with the <code>frequency</code> field, which assumes that the number given is in seconds.
+It defaults to 1 hour (i.e. 3600s).</p>
+<p>The Prometheus exporter can be configured in the <code>prometheus</code> section.
+It can be enabled and disabled with the <code>enable</code> field.
+The address and port of the HTTP server that serves the metrics can be set with the <code>addr</code> and <code>port</code> fields.
+The <code>metrics</code> list specifies the metrics that are exported. Right now the values <code>ResourceUsage</code> (for the amount of provided resources in the given duration)
+and <code>Priority</code> (for the calculated priority value) are supported.
+The <code>prometheus</code> section is optional. If it is not present, it has the same effect as setting <code>enable</code> to <code>false</code>.</p>
+<p>Below, you find an example of the priority plugin configuration before and after the change.</p>
 <ul>
 <li>
 <p>Before </p>
 <pre style="background-color:#ffffff;color:#000000;"><code><span>addr: &quot;localhost&quot;
 </span><span>port: 8000
-</span><span>components:
-</span><span>  NumCPUs: &quot;cpu-1&quot;
-</span><span>min_priority: 1
-</span><span>max_priority: 65335
-</span><span>group_mapping:
-</span><span>  group1: 
-</span><span>    - &quot;part-1&quot;
-</span><span>  group2:
-</span><span>    - &quot;part-2&quot;
-</span><span>  group3:
-</span><span>    - &quot;part-3&quot;
-</span><span>  group4:
-</span><span>    - &quot;part-4&quot;
-</span><span>commands:
-</span><span>  - &quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
-</span><span>  - &quot;echo &#39;{group}: {priority}&#39;&quot;
+</span><span>... (other options)
 </span></code></pre>
 </li>
 <li>
@@ -164,27 +161,12 @@ Prometheus configuration is optional. Metrics are exported according to the freq
 <pre style="background-color:#ffffff;color:#000000;"><code><span>auditor:
 </span><span>  addr: &quot;localhost&quot;
 </span><span>  port: 8000
-</span><span>components:
-</span><span>  NumCPUs: &quot;cpu-1&quot;
-</span><span>min_priority: 1
-</span><span>max_priority: 65335
-</span><span>group_mapping:
-</span><span>  group1: 
-</span><span>    - &quot;part-1&quot;
-</span><span>  group2:
-</span><span>    - &quot;part-2&quot;
-</span><span>  group3:
-</span><span>    - &quot;part-3&quot;
-</span><span>  group4:
-</span><span>    - &quot;part-4&quot;
-</span><span>commands:
-</span><span>  - &quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
-</span><span>  - &quot;echo &#39;{group}: {priority}&#39;&quot;
+</span><span>frequency: 3600
+</span><span>... (other options)
 </span><span>prometheus:
 </span><span>  enable: true
-</span><span>  addr: &quot;localhost&quot;
+</span><span>  addr: &quot;0.0.0.0&quot;
 </span><span>  port: 9000
-</span><span>  frequency: 3600
 </span><span>  metrics:
 </span><span>    - ResourceUsage
 </span><span>    - Priority

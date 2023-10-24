@@ -718,20 +718,22 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 </span><span>client_key = hostkey.pem
 </span></code></pre>
 <h2 id="priority-plugin">Priority Plugin</h2>
-<p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on who many resources wer provided.
+<p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on how many resources were provided.
 This allows one to transfer provided resources on one system to priorities in another system.
 The computed priorities are set via shelling out, and the executed commands can be defined as needed.</p>
 <p>The priority plugin is available as RPM or can be built with the command:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-priority-plugin
 </span></code></pre>
 <p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-priority-plugin</code> and is ideally placed on a node where the priorities should be set.</p>
-<p>One run of the priority plugin will update the priorities once.
-In general, the priority plugin should be run on a regular basis (for instance as a cron job), depending on how often the update should be performed.</p>
+<p>The priority plugin runs continuously. Ideally, it is installed as a systemd service.
+Priorities are updated at a frequency that can be set via the configuration.</p>
 <p>A typical configuration for the SLURM batch system may look like this:</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_address&quot;
-</span><span style="color:#00a33f;">port</span><span>: 8000
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_address&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">timeout</span><span>: 30 </span><span style="color:#919191;"># in seconds
 </span><span style="color:#00a33f;">duration</span><span>: 1209600 </span><span style="color:#919191;"># in seconds
+</span><span style="color:#00a33f;">frequency</span><span>: 3600 </span><span style="color:#919191;"># in seconds
 </span><span style="color:#00a33f;">components</span><span>:
 </span><span>  </span><span style="color:#00a33f;">NumCPUs</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
 </span><span style="color:#00a33f;">group_mapping</span><span>:
@@ -741,30 +743,50 @@ In general, the priority plugin should be run on a regular basis (for instance a
 </span><span>    - </span><span style="color:#00a33f;">&quot;part2&quot;
 </span><span>  </span><span style="color:#00a33f;">group3</span><span>:
 </span><span>    - </span><span style="color:#00a33f;">&quot;part3&quot;
-</span><span style="color:#00a33f;">command</span><span>:
+</span><span style="color:#00a33f;">commands</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">&#39;/usr/bin/bash -c &quot;/usr/bin/echo \&quot;$(date --rfc-3339=sec --utc) | {resource} | {priority}\&quot; &gt;&gt; {group}.txt&quot;&#39;
 </span><span>  - </span><span style="color:#00a33f;">&quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
 </span><span style="color:#00a33f;">min_priority</span><span>: 1
 </span><span style="color:#00a33f;">max_priority</span><span>: 65335
 </span><span style="color:#00a33f;">computation_mode</span><span>: </span><span style="color:#00a33f;">ScaledBySum
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span><span style="color:#00a33f;">prometheus</span><span>:
+</span><span>  </span><span style="color:#00a33f;">enable</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;0.0.0.0&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 9000
+</span><span>  </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">ResourceUsage
+</span><span>    - </span><span style="color:#00a33f;">Priority
 </span></code></pre>
-<p>The resources used for calculating the priorities can be configured via the <code>components</code> field.
+<p>The Auditor instance that is providing the records can be configured with the <code>auditor</code> block.
+Here, <code>addr</code> refers to the address of the machine that hosts the Auditor instance. The port can be specified with <code>port</code>.
+The resources used for calculating the priorities can be configured via the <code>components</code> field.
 It defines which components to extract from the <code>components</code> field of the record (<code>NumCPUs</code> in this example), as well as the corresponding score (<code>HEPSPEC</code> in this example).
 Multiple components can be extracted.
 The configured components and scores must be part of the records.
 The resources of each component will be multiplied by the corresponding score and the resulting provided resource per group is the sum of all these.
 The records considered in the computation can be limited to all records which finished in the past X seconds via the <code>duration</code> field (in seconds).
 Omitting this field takes all records in the database into account.
+The frequency of recalculating the priorities can be set via the <code>frequency</code> field.
 Via the <code>group_mapping</code> field, it is possible to attach certain additional information to the individual groups which are to be considered in the calculation.
 In the example configuration above are three groups <code>group{1,2,3}</code>, where each has a corresponding partition <code>part{1,2.3}</code>.
-These mappings can be accessed when constructing the <code>command</code>s which will be executed after computing the priorities by using <code>{N}</code> where <code>N</code> corresponds to number of the element in the list of the <code>group_mapping</code>.
+These mappings can be accessed when constructing the <code>commands</code> which will be executed after computing the priorities by using <code>{N}</code> where <code>N</code> corresponds to the number of the element in the list of the <code>group_mapping</code>.
 For instance, for <code>group1</code>, the string <code>{1}</code> indicates <code>part1</code> while for <code>group2</code> the same string <code>{1}</code> indicates <code>part2</code>.
-The <code>command</code> field in the configuration illustrates the usage of these mappings.
-This allows one to adapt the command for the various groups involved.
-In the <code>command</code> field one can also see a string <code>{priority}</code>, which will be replaced by the computed priority for the group.
+The group name can be accessed via the <code>{group}</code> string.
+The <code>commands</code> field in the configuration illustrates the usage of these mappings.
+This allows one to adapt the commands for the various groups involved.
+In the <code>commands</code> field one can also see a string <code>{priority}</code>, which will be replaced by the computed priority for the group.
 Another special string, <code>{resources}</code> is available, which is replaced by the computed provided resource per group.
-The command is executed for each group separately and multiple commands can be provided.
-The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.</p>
+The command is executed for each group separately and multiple commands can be provided with a list.
+The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.
+The priority plugin allows for real-time monitoring of the computed resources and priorities via a prometheus endpoint.
+Per default, the prometheus endpoint is disabled.
+It can be enabled by adding the <code>prometheus</code> block to the configuration or by setting the <code>enable</code> field of this block to <code>true</code>.
+Inside the <code>prometheus</code> block, the address and port of the HTTP server that provides the prometheus metrics can be specified via the <code>addr</code> and <code>port</code> fields.
+The metrics will then be available at <code>&lt;addr&gt;:&lt;port&gt;/metrics</code>
+The <code>metrics</code> list specifies the metrics that are exported.
+Right now the values <code>ResourceUsage</code> (for the amount of provided resources in the given duration)
+and <code>Priority</code> (for the calculated priority value) are supported.</p>
 <h3 id="priority-computation-modes">Priority computation modes</h3>
 <p>As stated above, the priorities are computed from the provided resources of each group.
 However, the computed resources and the priorities are in different units and span different ranges.
