@@ -11,9 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Auditor+pyauditor: Added advanced filtering when querying records (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
-
+- Auditor+pyauditor: Deprecate `get_started_since()` and `get_stopped_since()` functions ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update sqlx from 0.7.2 to 0.7.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
@@ -54,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Priority plugin: Add prometheus data exporter (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: Add `default_value` option for component configuration (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+
 
 ### Changed
 - Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))

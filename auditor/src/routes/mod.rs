@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 mod add;
+mod advanced_record_filters;
 mod get;
 mod get_since;
 mod health_check;
@@ -13,6 +14,7 @@ mod record_handlers;
 mod update;
 
 pub use add::*;
+pub use advanced_record_filters::*;
 pub use get::*;
 pub use get_since::*;
 pub use health_check::*;

@@ -140,7 +140,10 @@
 //! # }
 //! ```
 //!
+//!
 //! ## Receiving all records started/stopped since a given timestamp
+//!
+//! (Deprecated: Use the `advanced_query` function instead)
 //!
 //! Instead of retrieving all records, the query can be limited to records
 //! that have been started or stopped since a given timestamp:
@@ -162,6 +165,319 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! ## Advanced Query
+//! Records can be queried using fields and operators.
+//!
+//! ### Template Query
+//!
+//! The table shows the fields and the corresponding operators available for each field with which a query can be built.
+//!
+//! ```text
+//! GET /records?<field>[<operator>]=<value>
+//! ```
+//!
+//! #### Operators
+//! - `gt` (greater than)
+//! - `gte` (greater than or equal to)
+//! - `lt` (less than)
+//! - `lte` (less than or equal to)
+//! - `equals` (equal to)
+//!
+//! #### Meta Operators
+//! - `c` (contains)
+//! - `dnc` (does not contains)
+//!
+//! #### SortBy Operators
+//! - `asc` (ascending order)
+//! - `desc` (descending order)
+//!
+//! #### SortBy Column names
+//! You can specify the column on which the sorting must happen
+//! The following columns are supported for sortby option
+//! - start_time
+//! - stop_time
+//! - runtime
+//! - record_id
+//!
+//! | Field        | Description                                                            | Operators                              | Examples (query representation)          |
+//! |--------------|------------------------------------------------------------------------|----------------------------------------|------------------------------------------|
+//! | `record_id`  | Retrieve the exact record using record_id                              |                                        | record_id-<record_id>                    |
+//! | `start_time` | Start time of the event (`DateTime<Utc>`)                              | `gt`, `gte`, `lt`, `lte`               | start_time[gt]=<timestamp>               |
+//! | `stop_time`  | Stop time of the event (`DateTime<Utc>`)                               | `gt`, `gte`, `lt`, `lte`               | stop_time[gt]=<timestamp>                |
+//! | `runtime`    | Runtime of the event (in seconds)                                      | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<u64>                        |
+//! | `meta`       | Meta information (<meta_key>, MetaOperator(<meta_value>))              | `d`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
+//! | `component`  | Component identifier (<component_name>, Operator(<component_amount>))  | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount> |
+//! | `sort_by`    | Sort query results (SortBy(<column_name>))                             | `asc`, `desc`                          | sort_by[desc]=<column_name>              |
+//! | `limit`      | limit query records (number)                                           |                                        | limit=5000                               |
+//!
+//! Meta field can be used to query records by specifying the meta key and [`MetaOperator`] must be used
+//! to specify meta values. The [`MetaOperator`] must be used to specify whether the value is
+//! contained or does not contained for the specific Metakey.
+//!
+//! Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
+//! to specify the amount.
+//!
+//! ''
+//!
+//! To query records based on a range, specify the field with two operators
+//! Either with gt or gte and lt or lte.
+//!
+//! For example,
+//! To query a records with start_time ranging between two timestamps.
+//!
+//! ```text
+//! Get records?start_time[gt]=timestamp1&start_time[lt]=timestamp2
+//! ```
+//!
+//! ## QueryBuilder
+//!
+//! Below are the examples to query records using QueryBuilder methods. It helps to build query string which can be passed
+//! as an argument to advanced_query function to get the records.
+//!
+//! ### Example 1:
+//!
+//! Constructs an empty [`QueryBuilder`] to query all records
+//!
+//! ```no_run
+//! # use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError};
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!                 .get(client)
+//!                 .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like
+//!
+//! ```text
+//! GET records
+//! ```
+//! ### Example 2:
+//!
+//! Constructs a QueryBuilder with a start time operator that specifies
+//! a range from `datetime_utc_gte` to `datetime_utc_lte`.
+//!
+//!
+//! ```no_run
+//! # use auditor::client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
+//! # use chrono::{Utc, TimeZone};
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! let datetime_utc_gte = Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap();
+//! let datetime_utc_lte = Utc.with_ymd_and_hms(2022, 8, 4, 9, 47, 0).unwrap();
+//!
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!     .with_start_time(
+//!        Operator::default()
+//!            .gte(datetime_utc_gte.into())
+//!            .lte(datetime_utc_lte.into()),
+//!    )
+//!    .get(client)
+//!    .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like:
+//!
+//! ```text
+//! GET records?start_time[lte]=datetime_utc_lte&start_time[gte]=datetime_utc_gte
+//! ```
+//!
+//! ### Example 3:
+//!
+//! Constructs a QueryBuilder with start time, stop time, and runtime operators,
+//! specifying ranges for each.
+//!
+//! ```no_run
+//! # use auditor::client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
+//! use chrono::{Utc, TimeZone};
+//!
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! let datetime_utc_gte = Utc.with_ymd_and_hms(2022, 8, 3, 9, 47, 0).unwrap();
+//! let datetime_utc_lte = Utc.with_ymd_and_hms(2022, 8, 4, 9, 47, 0).unwrap();
+//! let runtime_gte: u64 = 100000;
+//! let runtime_lte: u64 = 200000;
+//!
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!     .with_start_time(
+//!         Operator::default()
+//!             .gte(datetime_utc_gte.into())
+//!             .lte(datetime_utc_lte.into()),
+//!     )
+//!     .with_stop_time(
+//!         Operator::default()
+//!             .gte(datetime_utc_gte.into())
+//!             .lte(datetime_utc_lte.into()),
+//!     )
+//!     .with_runtime(
+//!         Operator::default()
+//!             .gte(runtime_gte.into())
+//!             .lte(runtime_lte.into()),
+//!     )
+//!     .get(client)
+//!     .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like
+//!
+//! ```text
+//! GET
+//! records?start_time[gte]=datetime_utc_gte&start_time[lte]=datetime_utc_lte&stop_time[gte]=datetime_utc_gte&stop_time[lte]=datetime_utc_lte&runtime[gte]=runtime_gte&runtime[lte]=runtime_lte
+//! ```
+//!
+//! ### Example 4:
+//!
+//! Constructs a QueryBuilder with a meta query specifying "site_id" should contain "site1" value
+//! and a start time operator specifying a maximum datetime.
+//!
+//! ```no_run
+//! # use auditor::client::{QueryBuilder, Operator, MetaQuery, MetaOperator, AuditorClientBuilder,
+//! ClientError};
+//! use chrono::{Utc, TimeZone};
+//!
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! let datetime_utc_lte = Utc.with_ymd_and_hms(2022, 8, 4, 9, 47, 0).unwrap();
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!     .with_meta_query(
+//!         MetaQuery::new().meta_operator(
+//!             "site_id".to_string(),
+//!             MetaOperator::default().contains("site1".to_string()),
+//!         )
+//!     )
+//!     .with_start_time(
+//!         Operator::default().lte(datetime_utc_lte.into())
+//!     )
+//!     .get(client)
+//!     .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like:
+//!
+//! ```text
+//! GET records?meta[site_id][c]=site1&start_time[lte]=datetime_utc_lte
+//! ```
+//!
+//! ### Example 5:
+//!
+//! Constructs a QueryBuilder with a component query specifying an equality condition for the "CPU" field.
+//!
+//! ```no_run
+//! use auditor::client::{QueryBuilder, Operator, ComponentQuery, AuditorClientBuilder, ClientError};
+//!
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! let count: u8 = 10; // querying records whose cpu amount is 10
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!     .with_component_query(
+//!         ComponentQuery::new().component_operator(
+//!             "CPU".to_string(),
+//!             Operator::default().equals(count.into()),
+//!         )
+//!     )
+//!     .get(client)
+//!     .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like
+//!
+//! ```text
+//! GET records?component[CPU][equals]=count
+//! ```
+//!
+//!//! ### Example 6:
+//!
+//! Constructs a QueryBuilder which sorts the record in descending order by stop_time and limits the query results by 500 records
+//!
+//! ```no_run
+//! use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError, SortBy};
+//!
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! let number: u64 = 500;
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let records = QueryBuilder::new()
+//!     .sort_by(SortBy::new().descending("stop_time".to_string()))
+//!     .limit(number)
+//!     .get(client)
+//!     .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like
+//!
+//! ```text
+//! GET records?sort_by[desc]=stop_time&limit=number
+//! ```
+//!
+//! ### Example 7:
+//!
+//! Constructs a QueryBuilder to retrieve one record using record id
+//!
+//! ```no_run
+//! use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError};
+//!
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), ClientError> {
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! let record_id = "record-1".to_string();
+//! let records = QueryBuilder::new()
+//!     .with_record_id(record_id)
+//!     .get(client)
+//!     .await?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! The query string would look like
+//!
+//! ```text
+//! GET records?record_id=record-1
+//! ```
+//!
+//! ## Warning
+//! `equals` operator is only available for querying components. It cannot be used for time based
+//! queries
+//!
+//! If the query is directly appended to the URL, please make sure that the datetime value is urlencoded
 //!
 //! ## Checking the health of Auditor
 //!

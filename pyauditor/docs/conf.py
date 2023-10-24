@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "pyauditor"
-copyright = "2023, Stefan Kroboth"
+copyright = "2023, Auditor"
 author = "Stefan Kroboth"
 
 # -- General configuration ---------------------------------------------------
