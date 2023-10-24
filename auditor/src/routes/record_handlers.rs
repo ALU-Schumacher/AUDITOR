@@ -1,36 +1,33 @@
-use crate::routes::{get_records, get_records_since, GetSinceError, StartedStopped};
+use crate::routes::GetFilterError;
+use crate::routes::{advanced_record_filtering, get_one_record, Filters};
 use actix_web::{web, HttpResponse};
-use chrono::{DateTime, Utc};
+use serde_qs::actix::QsQuery;
 use sqlx;
 use sqlx::PgPool;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct RecordQuery {
-    pub state: StartedStopped,
-    pub since: DateTime<Utc>,
+    pub record_id: String,
 }
 
-#[tracing::instrument(name = "Getting records", skip(record_query, pool))]
+#[tracing::instrument(name = "Getting records", skip(query, pool))]
 pub async fn query_records(
-    record_query: Option<web::Query<RecordQuery>>,
+    query: Option<QsQuery<Filters>>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, GetSinceError> {
-    match record_query {
-        Some(query) => {
-            // Handle "get since" with query parameters
-            let info = (query.state.clone(), query.since);
-            let records = get_records_since(&info, &pool)
-                .await
-                .map_err(GetSinceError::UnexpectedError)?;
-            Ok(HttpResponse::Ok().json(records))
-        }
+) -> Result<HttpResponse, GetFilterError> {
+    let records = advanced_record_filtering(query.as_ref(), &pool)
+        .await
+        .map_err(GetFilterError::UnexpectedError)?;
+    Ok(HttpResponse::Ok().json(records))
+}
 
-        _ => {
-            // Handle "get all records" (no query parameters)
-            let records = get_records(&pool)
-                .await
-                .map_err(GetSinceError::UnexpectedError)?;
-            Ok(HttpResponse::Ok().json(records))
-        }
-    }
+#[tracing::instrument(name = "Getting one record", skip(record_query, pool))]
+pub async fn query_one_record(
+    record_query: web::Path<String>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, GetFilterError> {
+    let record = get_one_record(record_query.to_string(), &pool)
+        .await
+        .map_err(GetFilterError::UnexpectedError)?;
+    Ok(HttpResponse::Ok().json(record))
 }

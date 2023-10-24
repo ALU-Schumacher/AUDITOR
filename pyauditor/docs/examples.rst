@@ -112,8 +112,8 @@ Fields other than the stop time cannot be updated.
    await client.add(record.with_stop_time(stop_time))
 
 
-Receiving all records from Auditor
-==================================
+Receiving all records from Auditor (Deprecated)
+===============================================
 
 Via ``get()`` all records can be retrieved from Auditor:
 
@@ -122,8 +122,8 @@ Via ``get()`` all records can be retrieved from Auditor:
    list_of_records = await client.get()
 
 
-Receiving all records started/stopped since a given timestamp
-=============================================================
+Receiving all records started/stopped since a given timestamp (Deprecated)
+==========================================================================
 
 The records to be retrieved can be limited to the ones started or stopped since a given timestamp.
 
@@ -132,6 +132,180 @@ The records to be retrieved can be limited to the ones started or stopped since 
    list_of_records_started_since = await client.get_started_since(timestamp)
    list_of_records_stopped_since = await client.get_stopped_since(timestamp)
 
+
+Advanced Query
+==============
+Records can be queried using fields and operators. 
+
+Template Query
+--------------
+
+```
+GET /records?<field>[<operator>]=<value>
+```
+
+This is how the query is structured and multiple fields and values can be queried together as shown below.
+
+
+Operators
+---------
+
+- `gt` (greater than)
+- `gte` (greater than or equal to)
+- `lt` (less than)
+- `lte` (less than or equal to)
+- `equals` (equal to)
+
+Meta Operators
+--------------
+
+- `c` (contains)
+- `dnc` (does not contains)
+
+SortBy Operators
+----------------
+ - `asc` (ascending order)
+ - `desc` (descending order)
+
+ 
+SortBy Column names
+-------------------
+You can specify the column on which the sorting must happen
+The following columns are supported for sortby option
+- `start_time`
+- `stop_time`
+- `runtime`
+- `record_id`
+
+Filter Fields and Operators
+---------------------------
+
+The table shows the fields and the corresponding operators available for each field with which a query can be built.
+
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| Field        | Description                                   | Operators                              | Examples (query representation)          |
++==============+===============================================+========================================+==========================================+
+| `record_id`  | Exact record to be retrieved using record_id  |                                        | record_id=<record_id>                    |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `start_time` | Start time of the event (`DateTime<Utc>`)     | `gt`, `gte`, `lt`, `lte`               | start_time[gt]=<timestamp>               |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `stop_time`  | Stop time of the event (`DateTime<Utc>`)      | `gt`, `gte`, `lt`, `lte`               | stop_time[gt]=<timestamp>                |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `runtime`    | Runtime of the event (in seconds)             | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<int>                        |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `meta`       | Meta information                              | `d`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `component`  | Component identifier                          | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount> |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `sort_by`    | Sort the records                              | `asc`, `desc`                          | sort_by[asc]=<column_name>               |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+| `limit`      | Limit the query results                       |                                        | limit=<number>                           |
++--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
+
+
+Meta field can be used to query records by specifying the meta key and MetaOperator must be used
+to specify meta values. The MetaOperator must be used to specify whether the value is
+contained or does not contained for the specific Metakey.
+
+Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
+to specify the amount. 
+
+To query records based on a range, specify the field with two operators
+Either with gt or gte and lt or lte.
+
+For example,
+To query a records with start_time ranging between two timestamps.
+
+```text
+Get records?start_time[gt]=timestamp1&start_time[lt]=timestamp2
+```
+
+
+QueryBuilder
+============
+Below are the examples to query records using QueryBuilder methods. It helps to build query string which can be passed
+as an argument to advanced_query function to get the records.
+
+Examples 1:
+-----------
+Query all records
+
+.. code-block:: python
+
+    from pyauditor import QueryBuilder
+
+    query_string = QueryBuilder().build()
+    records = await client.advanced_query(query_string)
+
+Example 2:
+----------
+Query records with start_time greater than the timestamp
+
+.. code-block:: python
+
+    from pyauditor import Value, Operator, QueryBuilder
+
+    # Set the datetime value in Utc using Value object
+    value = Value.set_datetime(timestamp)
+
+    # Set the operator using Value object created in the previous step
+    operator = Operator().gt(value)
+
+    # Build the query string using build method from QueryBuilder object
+    query_string = QueryBuilder().with_start_time(operator).build()
+
+    # Pass the query_string as an argument to advanced_query function
+    records = await client.advanced_query(query_string)
+
+Example 3:
+----------
+Query records with meta key = site_id and value = site1
+
+.. code-block:: python
+
+    from pyauditor import MetaOperator, MetaQuery, QueryBuilder
+
+    meta_operator = MetaOperator().contains("site1")
+    meta_query = MetaQuery().meta_operator("site_id", meta_operator)
+    query_string = QueryBuilder().with_meta_query(meta_query).build()
+    records = await client.advanced_query(query_string)
+
+Example 4:
+----------
+Query records with component name = CPU and amount = 10
+
+.. code-block:: python
+
+    from pyauditor import Operator, ComponentQuery, Value, QueryBuilder
+
+    value = Value.set_count(10)
+    component_operator = Operator().equals(value)
+    component_query = ComponentQuery().component_operator("CPU", component_operator)
+    query_string = QueryBuilder().with_component_query(component_query).build()
+    records = await client.advanced_query(query_string)
+
+Example 5:
+----------
+Query records sorted by stop_time in descending order and limit the query to 500 records
+
+.. code-block:: python
+
+    from pyauditor import QueryBuilder, SortBy
+
+    sort_by = SortBy().descending("stop_time")
+    query_string = QueryBuilder().sort_by(sort_by).limit(500).build()
+    records = await client.advanced_query(query_string)
+
+Example 5:
+----------
+Query records by exact record_id
+
+.. code-block:: python
+
+    from pyauditor import QueryBuilder
+
+    query_string = QueryBuilder().with_record_id("record-1").build()
+    records = await client.advanced_query(query_string)
 
 Checking the health of Auditor
 ==============================

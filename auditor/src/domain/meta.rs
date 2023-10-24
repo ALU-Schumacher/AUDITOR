@@ -11,6 +11,8 @@ use serde::{Deserialize, Serialize};
 
 use super::ValidName;
 
+use sqlx;
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct ValidMeta(pub HashMap<ValidName, Vec<ValidName>>);
 
@@ -101,7 +103,7 @@ impl TryFrom<Meta> for ValidMeta {
 /// meta.insert("site_id".to_string(), vec!["site1".to_string()]);
 /// meta.insert("features".to_string(), vec!["ssd".to_string(), "gpu".to_string()]);
 /// ```
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, sqlx::FromRow)]
 pub struct Meta(pub HashMap<String, Vec<String>>);
 
 impl Meta {

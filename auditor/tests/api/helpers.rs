@@ -60,7 +60,7 @@ impl TestApp {
         let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
             .get(&format!(
-                "{}/record?state=started&since={}",
+                "{}/record?start_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
@@ -76,12 +76,34 @@ impl TestApp {
         let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
             .get(&format!(
-                "{}/record?state=stopped&since={}",
+                "{}/record?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
             .await
             .expect("Failed to execute request.")
+    }
+
+    pub async fn advanced_queries<T: AsRef<str> + std::fmt::Display>(
+        &self,
+        query_string: T,
+    ) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(&format!("{}/record?{}", &self.address, query_string))
+            .send()
+            .await
+            .expect("Failed to execute queries.")
+    }
+
+    pub async fn get_single_record<T: AsRef<str> + std::fmt::Display>(
+        &self,
+        record_id: T,
+    ) -> reqwest::Response {
+        reqwest::Client::new()
+            .get(&format!("{}/record/{}", &self.address, record_id))
+            .send()
+            .await
+            .expect("Failed to execute queries.")
     }
 }
 

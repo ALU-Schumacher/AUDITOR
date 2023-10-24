@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::client::AuditorClientBuilder;
+use auditor::client::{AuditorClientBuilder, Operator, QueryBuilder};
 use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
@@ -465,8 +465,11 @@ async fn get_started_since_returns_a_list_of_records() {
         transaction.commit().await.unwrap();
     }
 
-    let mut received_records = client
-        .get_started_since(&Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap())
+    let date = Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap();
+
+    let mut received_records = QueryBuilder::new()
+        .with_start_time(Operator::default().gte(date.into()))
+        .get(client)
         .await
         .unwrap();
 
@@ -614,8 +617,10 @@ async fn get_stopped_since_returns_a_list_of_records() {
         transaction.commit().await.unwrap();
     }
 
-    let mut received_records = client
-        .get_stopped_since(&Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap())
+    let date = Utc.with_ymd_and_hms(2022, 3, 15, 0, 0, 0).unwrap();
+    let mut received_records = QueryBuilder::new()
+        .with_stop_time(Operator::default().gte(date.into()))
+        .get(client)
         .await
         .unwrap();
 

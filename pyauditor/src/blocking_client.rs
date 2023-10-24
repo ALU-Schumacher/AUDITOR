@@ -63,10 +63,13 @@ impl AuditorClientBlocking {
     ///     records = client.get_stopped_since(start_since)
     ///
     fn get_started_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
-        let timestamp: DateTime<Utc> = timestamp.extract()?;
+        let since: DateTime<Utc> = timestamp.extract()?;
+        let query_string = auditor::client::QueryBuilder::new()
+            .with_start_time(auditor::client::Operator::default().gte(since.into()))
+            .build();
         Ok(self_
             .inner
-            .get_started_since(&timestamp)
+            .advanced_query(query_string.to_string())
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
             .into_iter()
             .map(Record::from)
@@ -97,10 +100,13 @@ impl AuditorClientBlocking {
     ///     records = client.get_stopped_since(stop_since)
     ///
     fn get_stopped_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
-        let timestamp: DateTime<Utc> = timestamp.extract()?;
+        let since: DateTime<Utc> = timestamp.extract()?;
+        let query_string = auditor::client::QueryBuilder::new()
+            .with_stop_time(auditor::client::Operator::default().gte(since.into()))
+            .build();
         Ok(self_
             .inner
-            .get_stopped_since(&timestamp)
+            .advanced_query(query_string.to_string())
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
             .into_iter()
             .map(Record::from)
@@ -121,5 +127,13 @@ impl AuditorClientBlocking {
         self.inner
             .update(&auditor::domain::RecordUpdate::try_from(record.inner)?)
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
+    }
+
+    fn get_single_record(self_: PyRef<'_, Self>, record_id: String) -> PyResult<Record> {
+        self_
+            .inner
+            .get_single_record(&record_id)
+            .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
+            .map(Record::from)
     }
 }

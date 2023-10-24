@@ -19,6 +19,13 @@ mod domain;
 fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<crate::builder::AuditorClientBuilder>()?;
     m.add_class::<crate::client::AuditorClient>()?;
+    m.add_class::<crate::client::Value>()?;
+    m.add_class::<crate::client::Operator>()?;
+    m.add_class::<crate::client::QueryBuilder>()?;
+    m.add_class::<crate::client::MetaQuery>()?;
+    m.add_class::<crate::client::MetaOperator>()?;
+    m.add_class::<crate::client::ComponentQuery>()?;
+    m.add_class::<crate::client::SortBy>()?;
     m.add_class::<crate::blocking_client::AuditorClientBlocking>()?;
     m.add_class::<crate::domain::Record>()?;
     m.add_class::<crate::domain::Meta>()?;

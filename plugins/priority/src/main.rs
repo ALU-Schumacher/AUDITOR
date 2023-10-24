@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::client::AuditorClientBuilder;
+use auditor::client::{AuditorClientBuilder, Operator, QueryBuilder};
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use chrono::Utc;
@@ -292,8 +292,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 _ = interval.tick() => {
 
                 let records = match config.duration {
-                    Some(duration) => client
-                        .get_stopped_since(&(Utc::now() - duration))
+                    Some(duration) =>
+                        QueryBuilder::new()
+                        .with_start_time(Operator::default().gte((Utc::now() - duration).into()))
+                        .get(client.clone())
                         .await
                         .unwrap(),
                     None => client.get().await.unwrap(),
