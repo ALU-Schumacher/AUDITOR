@@ -9,7 +9,7 @@ requires-python = ">=3.8"
 dependencies = [
 	     "python-auditor==0.2.0",
 	     "requests==2.31.0",
-	     "cryptography==41.0.4",
+	     "cryptography==41.0.5",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
 readme = "README.md"
