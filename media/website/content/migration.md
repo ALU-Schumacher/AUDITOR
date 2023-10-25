@@ -6,6 +6,29 @@ weight = 3
 
 # From 0.2.0 to unreleased
 
+## Slurm collector
+
+New filter options for querying slurm jobs are available.
+Due to this, a new section `job_filter` has been introduced for the config file.
+The `job_status` field has been renamed to `status` and is now part of the `job_filter` section.
+
+Before:
+```yaml
+job_status:
+  - "completed"
+  - "failed"
+```
+
+After:
+```yaml
+job_filter:
+  status:
+    - "completed"
+    - "failed"
+```
+
+The new filter options are `partition`, `user`, `group`, and `account` and work similar to the `status` filter.
+
 ## Priority plugin
 
 The priority plugin now supports exporting metrics for the amount of provided resources and the updated priority to Prometheus.
