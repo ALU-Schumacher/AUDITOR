@@ -50,14 +50,14 @@ The `prometheus` section is optional. If it is not present, it has the same effe
 Below, you find an example of the priority plugin configuration before and after the change.
 
 - Before 
-	```
+	```yaml
 	addr: "localhost"
 	port: 8000
 	... (other options)
 	```
 
  - After
-	 ``` 
+	 ```yaml
 	auditor:
 	   addr: "localhost"
 	   port: 8000
@@ -78,13 +78,14 @@ Below, you find an example of the priority plugin configuration before and after
 
 Auditor REST APIs are changed as shown in the table below. 
 
-| Before                                                 	| After                                                            	|
-|--------------------------------------------------------	|------------------------------------------------------------------	|
-| /health_check (GET)                                    	| /health_check (GET)                                              	|
-| /add (POST) -> add record                              	| /record (POST) -> add record                                     	|
-| /update (POST) -> update record                        	| /record (PUT) -> update record                                   	|
-| /get (GET) -> get all records                          	| /record (GET) -> get all records                                 	|
-| /get/[started/stopped]/since/{date} (GET) -> get since 	| /record?state=[started/stopped]&since={date}  (GET) -> get since 	|
+| Action            | Before                                      | After                                                |
+| ----------------- | ------------------------------------------- | ---------------------------------------------------- |
+| Health check      | `/health_check` (GET)                       | `/health_check` (GET)                                |
+| Add record        | `/add` (POST)                               | `/record` (POST)                                     |
+| Update record     | `/update` (POST)                            | `/record` (PUT)                                      |
+| Get all records   | `/get` (GET)                                | `/record` (GET)                                      |
+| Get records since | `/get/[started/stopped]/since/{date}` (GET) | `/record?state=[started/stopped]&since={date}` (GET) |
+
 
 ## Development
 
