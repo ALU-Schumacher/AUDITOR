@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.8 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-log from 0.1.3 to 0.1.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update uuid from 1.4.1 to 1.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor with maturin for Python unit tests ([@dirksammel](https://github.com/dirksammel))
 - CI: New workflows for building pyauditor, Auditor (+ Docker image), use output in other workflows ([@dirksammel](https://github.com/dirksammel))
