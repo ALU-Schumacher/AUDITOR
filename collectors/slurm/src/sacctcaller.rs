@@ -19,7 +19,7 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, KeyConfig, ParsableType},
+    configuration::{AllowedTypes, KeyConfig, ParsableType, Settings},
     database::Database,
     shutdown::Shutdown,
     CONFIG, END, GROUP, JOBID, KEYS, START, USER,
@@ -142,110 +142,15 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let cmd_out = std::str::from_utf8(&cmd_out.stdout)?;
     tracing::debug!("Got: {}", cmd_out);
 
-    let sacct_rows = parse_sacct_output(cmd_out, KEYS.to_vec());
-
-    let records = sacct_rows
-        .keys()
-        .filter(|k| !BATCH_REGEX.is_match(k))
-        .filter(|k| !SUB_REGEX.is_match(k))
-        .map(|id| -> Result<HashMap<String, AllowedTypes>> {
-            let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
-            let map2 = sacct_rows.get(&format!("{id}.batch"));
-            Ok(KEYS.iter()
-                .cloned()
-                .filter_map(|KeyConfig {name: k, key_type: _, allow_empty: _}| {
-                    let val = match map1.get(&k) {
-                        Some(Some(v)) => Some(v.clone()),
-                        _ => {
-                            if let Some(map2) = map2 {
-                                match map2.get(&k) {
-                                    Some(Some(v)) => Some(v.clone()),
-                                    _ => {
-                                        tracing::error!("Something went wrong during parsing (map1, id: {id}, key: {k}, value: {:?})", map2.get(&k));
-                                        None
-                                    },
-                                }
-                            } else {
-                                tracing::error!("Something went wrong during parsing (map2, id: {id}, key: {k}, value: {:?})", map1.get(&k));
-                                None
-                            }
-                        },
-                    };
-                    val.map(|val| (k, val))
-                })
-                .collect::<HashMap<String, AllowedTypes>>())
-    }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()?
-    .iter()
-    .map(|map| -> Result<Option<RecordAdd>> {
-        let job_id = map[JOBID].extract_string()?;
-        let site = if let Some(site) = identify_site(map) {
-            site
-        } else {
-            tracing::warn!(
-                "No configured site matched for job {}! Ignoring job. Consider adding a match-all at the end of the sites configuration.",
-                job_id
-            );
-            return Ok(None);
-        };
-
-        let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
-        // We don't want this record, we have already seen it in a previous run.
-        if record_id == last_record_id {
-            return Ok(None);
-        }
-
-        let mut meta = if let Some(ref meta) = CONFIG.meta {
-            meta.iter().map(|m| -> Result<Vec<(String, Vec<String>)>> {
-                let map = if m.key_type == ParsableType::Json {
-                    if let Some(val) = map.get(&m.key) {
-                        val
-                            .extract_map()?
-                            .iter()
-                            .map(|(k, v)| -> Result<(String, Vec<String>)> {
-                                    Ok(
-                                        (
-                                            make_string_valid(k.extract_string()?),
-                                            vec![make_string_valid(v.extract_string()?)]
-                                        )
-                                    )
-                                }
-                            )
-                            .collect::<Result<Vec<(_, _)>>>()?
-                    } else {
-                        vec![]
-                    }
-                } else {
-                    vec![(m.name.clone(), vec![make_string_valid(map[&m.key].extract_as_string()?)])]
-                };
-                Ok(map)
-            })
-            .collect::<Result<Vec<_>>>()?
-            .into_iter()
-            .flat_map(|m| m.into_iter())
-            .collect::<HashMap<_, _>>()
-        } else {
-            HashMap::new()
-        };
-
-        meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
-        meta.insert("user_id".to_string(), vec![make_string_valid(map[USER].extract_string()?)]);
-        meta.insert("group_id".to_string(), vec![make_string_valid(map[GROUP].extract_string()?)]);
-
-        Ok(Some(
-           RecordAdd::new(
-               record_id,
-               meta,
-               construct_components(map),
-               map[START].extract_datetime()?
-           )
-           .expect("Could not construct record")
-           .with_stop_time(map[END].extract_datetime()?)
-        ))
-    })
-    .collect::<Result<Vec<Option<RecordAdd>>>>()?
-    .into_iter()
-    .flatten()
-    .collect::<Vec<_>>();
+    let sacct_rows = tokenize_sacct_output(cmd_out, KEYS.to_vec());
+    let parsed_sacct_rows = parse_sacct_rows(sacct_rows, KEYS.to_vec())?;
+    let records = parsed_sacct_rows
+        .iter()
+        .map(|map| construct_record(map, &last_record_id, &CONFIG))
+        .collect::<Result<Vec<Option<RecordAdd>>>>()?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
 
     let (nextcheck, rid) = if records.is_empty() {
         (lastcheck, last_record_id)
@@ -274,8 +179,8 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     Ok(records)
 }
 
-#[tracing::instrument(name = "Parsing sacct output", skip(keys))]
-fn parse_sacct_output(
+#[tracing::instrument(name = "Tokenizing sacct output", skip(keys))]
+fn tokenize_sacct_output(
     output: &str,
     keys: Vec<KeyConfig>,
 ) -> HashMap<String, HashMap<String, Option<AllowedTypes>>> {
@@ -310,6 +215,119 @@ fn parse_sacct_output(
         .collect::<HashMap<String, HashMap<String, Option<AllowedTypes>>>>()
 }
 
+#[tracing::instrument(name = "Parse sacct rows")]
+fn parse_sacct_rows(
+    sacct_rows: HashMap<String, HashMap<String, Option<AllowedTypes>>>,
+    keys: Vec<KeyConfig>,
+) -> Result<Vec<HashMap<String, AllowedTypes>>> {
+    sacct_rows
+        .keys()
+        .filter(|k| !BATCH_REGEX.is_match(k))
+        .filter(|k| !SUB_REGEX.is_match(k))
+        .map(|id| -> Result<HashMap<String, AllowedTypes>> {
+            let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
+            let map2 = sacct_rows.get(&format!("{id}.batch"));
+            Ok(keys.iter()
+                .cloned()
+                .filter_map(|KeyConfig {name: k, key_type: _, allow_empty: _}| {
+                    let val = match map1.get(&k) {
+                        Some(Some(v)) => Some(v.clone()),
+                        _ => {
+                            if let Some(map2) = map2 {
+                                match map2.get(&k) {
+                                    Some(Some(v)) => Some(v.clone()),
+                                    _ => {
+                                        tracing::error!("Something went wrong during parsing (map1, id: {id}, key: {k}, value: {:?})", map2.get(&k));
+                                        None
+                                    },
+                                }
+                            } else {
+                                tracing::error!("Something went wrong during parsing (map2, id: {id}, key: {k}, value: {:?})", map1.get(&k));
+                                None
+                            }
+                        },
+                    };
+                    val.map(|val| (k, val))
+                })
+                .collect::<HashMap<String, AllowedTypes>>())
+        }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()
+}
+
+#[tracing::instrument(name = "Construct record", level = "debug")]
+fn construct_record(
+    map: &HashMap<String, AllowedTypes>,
+    last_record_id: &str,
+    config: &Settings,
+) -> Result<Option<RecordAdd>> {
+    let job_id = map[JOBID].extract_string()?;
+    let site = if let Some(site) = identify_site(map) {
+        site
+    } else {
+        tracing::warn!(
+                "No configured site matched for job {}! Ignoring job. Consider adding a match-all at the end of the sites configuration.",
+                job_id
+            );
+        return Ok(None);
+    };
+
+    let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
+    // We don't want this record, we have already seen it in a previous run.
+    if record_id == last_record_id {
+        return Ok(None);
+    }
+
+    let mut meta = if let Some(ref meta) = CONFIG.meta {
+        meta.iter()
+            .map(|m| -> Result<Vec<(String, Vec<String>)>> {
+                let map = if m.key_type == ParsableType::Json {
+                    if let Some(val) = map.get(&m.key) {
+                        val.extract_map()?
+                            .iter()
+                            .map(|(k, v)| -> Result<(String, Vec<String>)> {
+                                Ok((
+                                    make_string_valid(k.extract_string()?),
+                                    vec![make_string_valid(v.extract_string()?)],
+                                ))
+                            })
+                            .collect::<Result<Vec<(_, _)>>>()?
+                    } else {
+                        vec![]
+                    }
+                } else {
+                    vec![(
+                        m.name.clone(),
+                        vec![make_string_valid(map[&m.key].extract_as_string()?)],
+                    )]
+                };
+                Ok(map)
+            })
+            .collect::<Result<Vec<_>>>()?
+            .into_iter()
+            .flat_map(|m| m.into_iter())
+            .collect::<HashMap<_, _>>()
+    } else {
+        HashMap::new()
+    };
+
+    meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
+    meta.insert(
+        "user_id".to_string(),
+        vec![make_string_valid(map[USER].extract_string()?)],
+    );
+    meta.insert(
+        "group_id".to_string(),
+        vec![make_string_valid(map[GROUP].extract_string()?)],
+    );
+
+    let components = construct_components(map, config);
+
+    Ok(Some(
+        RecordAdd::new(record_id, meta, components, map[START].extract_datetime()?)
+            .expect("Could not construct record")
+            .with_stop_time(map[END].extract_datetime()?),
+    ))
+}
+
 #[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
 fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
     input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
@@ -341,8 +359,8 @@ fn identify_site(job: &Job) -> Option<String> {
     name = "Construct components from job info and configuration",
     level = "debug"
 )]
-fn construct_components(job: &Job) -> Vec<Component> {
-    CONFIG
+fn construct_components(job: &Job, config: &Settings) -> Vec<Component> {
+    config
         .components
         .iter()
         .filter(|c| {
@@ -405,7 +423,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sacct_output_json_empty_string_allow() {
+    fn tokenize_sacct_output_json_empty_string_allow() {
         let keys = vec![
             KeyConfig {
                 name: JOBID.to_owned(),
@@ -424,7 +442,7 @@ mod tests {
             },
         ];
         let sacct_output = "100||COMPLETED";
-        let sacct_rows = parse_sacct_output(sacct_output, keys);
+        let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
         let expected = HashMap::from([(
             "100".to_owned(),
@@ -445,7 +463,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sacct_output_json_empty_string_disallow() {
+    fn tokenize_sacct_output_json_empty_string_disallow() {
         let keys = vec![
             KeyConfig {
                 name: JOBID.to_owned(),
@@ -464,7 +482,7 @@ mod tests {
             },
         ];
         let sacct_output = "100||COMPLETED";
-        let sacct_rows = parse_sacct_output(sacct_output, keys);
+        let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
         let expected = HashMap::from([(
             "100".to_owned(),
@@ -484,7 +502,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sacct_output_json_empty_json() {
+    fn tokenize_sacct_output_json_empty_json() {
         let keys = vec![
             KeyConfig {
                 name: JOBID.to_owned(),
@@ -503,7 +521,7 @@ mod tests {
             },
         ];
         let sacct_output = "100|{}|COMPLETED";
-        let sacct_rows = parse_sacct_output(sacct_output, keys);
+        let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
         let expected = HashMap::from([(
             "100".to_owned(),
@@ -524,7 +542,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sacct_output_json_full_json() {
+    fn tokenize_sacct_output_json_full_json() {
         let keys = vec![
             KeyConfig {
                 name: JOBID.to_owned(),
@@ -543,7 +561,7 @@ mod tests {
             },
         ];
         let sacct_output = "100|{ 'key': 'value' }|COMPLETED";
-        let sacct_rows = parse_sacct_output(sacct_output, keys);
+        let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
         let expected = HashMap::from([(
             "100".to_owned(),
