@@ -96,7 +96,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let (lastcheck, last_record_id) = database.get_lastcheck().await?;
 
     let binary = "/usr/bin/sacct";
-    let args = vec![
+    let mut args = vec![
         "-a".to_string(),
         "--format".to_string(),
         KEYS.iter().map(|k| k.name.clone()).join(","),
@@ -106,10 +106,33 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         format!("{}", lastcheck.format("%Y-%m-%dT%H:%M:%S")),
         "-E".to_string(),
         "now".to_string(),
-        "-s".to_string(),
-        CONFIG.job_status.join(","),
         "-P".to_string(),
     ];
+
+    if !CONFIG.job_filter.status.is_empty() {
+        args.push("-s".to_string());
+        args.push(CONFIG.job_filter.status.join(","));
+    }
+
+    if !CONFIG.job_filter.partition.is_empty() {
+        args.push("-r".to_string());
+        args.push(CONFIG.job_filter.partition.join(","));
+    }
+
+    if !CONFIG.job_filter.user.is_empty() {
+        args.push("-u".to_string());
+        args.push(CONFIG.job_filter.user.join(","));
+    }
+
+    if !CONFIG.job_filter.group.is_empty() {
+        args.push("-g".to_string());
+        args.push(CONFIG.job_filter.group.join(","));
+    }
+
+    if !CONFIG.job_filter.account.is_empty() {
+        args.push("-A".to_string());
+        args.push(CONFIG.job_filter.account.join(","));
+    }
 
     let cmd = binary.to_owned() + " " + &args.join(" ");
     tracing::debug!("Executing the following command: {}", cmd);

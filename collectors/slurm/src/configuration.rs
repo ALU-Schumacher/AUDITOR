@@ -47,9 +47,8 @@ pub struct Settings {
     pub sender_frequency: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
-    /// Potentially interesting: completed, failed, node_fail
-    #[serde(default = "default_job_status")]
-    pub job_status: Vec<String>,
+    #[serde(default = "default_job_filter_settings")]
+    pub job_filter: JobFilterSettings,
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
@@ -153,6 +152,21 @@ impl OnlyIf {
     }
 }
 
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct JobFilterSettings {
+    /// Potentially interesting: completed, failed, node_fail
+    #[serde(default = "default_job_filter_status")]
+    pub status: Vec<String>,
+    #[serde(default = "default_job_filter_partition")]
+    pub partition: Vec<String>,
+    #[serde(default = "default_job_filter_user")]
+    pub user: Vec<String>,
+    #[serde(default = "default_job_filter_group")]
+    pub group: Vec<String>,
+    #[serde(default = "default_job_filter_account")]
+    pub account: Vec<String>,
+}
+
 fn default_addr() -> String {
     "127.0.0.1".to_string()
 }
@@ -208,8 +222,34 @@ fn default_database_path() -> String {
     "sqlite://testdb.db".into()
 }
 
-fn default_job_status() -> Vec<String> {
+fn default_job_filter_settings() -> JobFilterSettings {
+    JobFilterSettings {
+        status: default_job_filter_status(),
+        partition: vec![],
+        user: vec![],
+        group: vec![],
+        account: vec![],
+    }
+}
+
+fn default_job_filter_status() -> Vec<String> {
     vec!["completed".into()]
+}
+
+fn default_job_filter_partition() -> Vec<String> {
+    vec![]
+}
+
+fn default_job_filter_user() -> Vec<String> {
+    vec![]
+}
+
+fn default_job_filter_group() -> Vec<String> {
+    vec![]
+}
+
+fn default_job_filter_account() -> Vec<String> {
+    vec![]
 }
 
 fn default_components() -> Vec<ComponentConfig> {

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 - Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- Slurm collector: New filter options to filter slurm jobs are added. The `job_status` key in the config is moved to the `job_filter` section and is renamed to `status` (#472) ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Security
 

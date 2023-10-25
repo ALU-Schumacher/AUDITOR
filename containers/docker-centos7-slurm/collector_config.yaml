@@ -1,8 +1,9 @@
 addr: "host.docker.internal"
 port: 8000
 record_prefix: "slurm"
-job_status:  # A list of acceptable job statuses
-  - "completed"
+job_filter:
+  status:  # A list of acceptable job statuses
+    - "completed"
 sacct_frequency: 2 # in seconds
 sender_frequency: 1 # in seconds
 sites:
