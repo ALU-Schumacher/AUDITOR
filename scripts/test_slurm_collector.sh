@@ -5,6 +5,7 @@ set -eo pipefail
 # Docker
 DOCKER_COMPOSE_FILE=${DOCKER_COMPOSE_FILE:="containers/docker-centos7-slurm/docker-compose.yml"}
 DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR:="."}
+COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:="auditor"}
 # Collector build
 RELEASE_MODE=${RELEASE_MODE:=false}
 TARGET_ARCH=${TARGET_ARCH:="x86_64-unknown-linux-musl"}
@@ -17,6 +18,7 @@ function stop_container () {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		down
 }
 
@@ -24,16 +26,19 @@ function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		up -d
 	# Copy slurm.conf to container
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		cp ./containers/docker-centos7-slurm/slurm.conf slurm:/etc/slurm/slurm.conf
 	# Copy Slurm collector to container
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		cp \
 		./target/${TARGET_ARCH}/debug/auditor-slurm-collector \
 		slurm:/auditor-slurm-collector
@@ -41,26 +46,28 @@ function start_container() {
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		cp ./containers/docker-centos7-slurm/collector_config.yaml slurm:/collector_config.yaml
 	# Copy basic batch script
 	docker compose \
 		--file $DOCKER_COMPOSE_FILE \
 		--project-directory=$DOCKER_PROJECT_DIR \
+    --project-name="$COMPOSE_PROJECT_NAME" \
 		cp ./containers/docker-centos7-slurm/batch5.sh slurm:/batch.sh
 
-	# docker exec auditor-slurm-1 chown slurm:slurm /auditor-slurm-collector /collector_config.yaml
-	docker exec auditor-slurm-1 mkdir -p /collector_logs
-	docker exec auditor-slurm-1 chown slurm:slurm /collector_logs
+	# docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" chown slurm:slurm /auditor-slurm-collector /collector_config.yaml
+	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" mkdir -p /collector_logs
+	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" chown slurm:slurm /collector_logs
 
 	COUNTER=0
-	until docker exec auditor-slurm-1 scontrol ping; do
+	until docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" scontrol ping; do
 		>&2 echo "Slurm container is still unavailable - sleeping"
 		let COUNTER=COUNTER+1
 		if [ "$COUNTER" -gt "30" ]; then
 			echo >&2 "Docker container did not come up in time."
 			echo >&2 "Docker logs:"
-			docker logs auditor-slurm-1
-			docker exec auditor-slurm-1 cat /var/log/slurm/slurmctld.log
+			docker logs "${COMPOSE_PROJECT_NAME}-slurm-1"
+			docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" cat /var/log/slurm/slurmctld.log
 			stop_container
 			echo >&2 "Exiting."
 			exit 1
@@ -123,7 +130,7 @@ function start_slurm_collector() {
 	then
 		compile_collector
 	fi
-	docker exec auditor-slurm-1 /auditor-slurm-collector /collector_config.yaml &
+	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" /auditor-slurm-collector /collector_config.yaml &
 }
 
 function stop_auditor() {
@@ -133,7 +140,7 @@ function stop_auditor() {
 
 function test_collector() {
 	# Run on partition1
-	docker exec auditor-slurm-1 sh -c "sbatch --job-name=test_part1 --partition=part1 --comment=\"$COMMENT\" /batch.sh" 
+	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" sh -c "sbatch --job-name=test_part1 --partition=part1 --comment=\"$COMMENT\" /batch.sh" 
 	sleep 20
 
 	TEST1=$(curl -X GET http://localhost:8000/record | jq)
@@ -183,7 +190,7 @@ function test_collector() {
 	fi
 
 	# Run on partition2
-	docker exec auditor-slurm-1 sh -c "sbatch --job-name=test_part2 --partition=part2 /batch.sh"
+	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" sh -c "sbatch --job-name=test_part2 --partition=part2 /batch.sh"
 	sleep 20
 
 	TEST2=$(curl -X GET http://localhost:8000/record | jq)
@@ -219,7 +226,7 @@ SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
 
 cleanup_exit() {
   setsid nohup bash -c "
-		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR down
+		docker compose --file $DOCKER_COMPOSE_FILE --project-directory=$DOCKER_PROJECT_DIR --project-name=$COMPOSE_PROJECT_NAME down
     kill $AUDITOR_SERVER_PID
   "
 }
