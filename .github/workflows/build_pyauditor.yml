@@ -1,12 +1,7 @@
 name: build-pyauditor
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
+  workflow_call:
 
 jobs:
   linux:
@@ -42,7 +37,7 @@ jobs:
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
-          name: linux-wheel-${{ matrix.python-version }}
+          name: linux-wheel-${{ matrix.python-version }}-${{github.sha}}
           path: dist
 
   windows:
