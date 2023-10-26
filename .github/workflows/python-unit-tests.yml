@@ -6,9 +6,12 @@ on:
     branches: [main]
 
 jobs:
-  unit-tests-apel-plugin:
-    runs-on: ubuntu-latest
+  run-build-pyauditor:
     uses: ./.github/workflows/build_pyauditor.yml
+    
+  unit-tests-apel-plugin:
+    needs: run-build-pyauditor
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -44,8 +47,8 @@ jobs:
           retention-days: 7
 
   upload-coverage:
-    runs-on: ubuntu-latest
     needs: unit-tests-apel-plugin
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
