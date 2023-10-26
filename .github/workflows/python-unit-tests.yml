@@ -31,7 +31,7 @@ jobs:
           name: linux-wheel-${{ matrix.python-version }}-${{github.sha}}
           path: ./plugins/apel/linux-wheel.zip
       - name: Unzip artifact
-        run: unzip linux-wheel.zip
+        run: unzip ./plugins/apel/linux-wheel.zip
       - name: Install dependencies
         run: |
           pip install --upgrade pip
