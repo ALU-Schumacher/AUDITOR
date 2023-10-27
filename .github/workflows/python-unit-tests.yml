@@ -18,9 +18,9 @@ jobs:
       - name: Wait on build job
         uses: lewagon/wait-on-check-action@v1.3.1
         with:
-          ref: "${{ github.sha }}"
+          ref: "$${{ github.ref }}/commits/{{ github.sha }}"
 #          check-name: "Build pyauditor linux (${{ matrix.python-version }})"
-          check-name: "black"
+          check-name: 'black'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
       - name: Check out repo
