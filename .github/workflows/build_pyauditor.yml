@@ -32,7 +32,7 @@ jobs:
           mkdir -p .cargo
           echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
 
-      - name: Maturin test
+      - name: Maturin
         uses: messense/maturin-action@v1
         with:
           target: x86_64

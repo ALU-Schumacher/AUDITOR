@@ -20,7 +20,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 #          check-name: "Build pyauditor linux (${{ matrix.python-version }})"
-          check-name: "Maturin test"
+          check-name: "Mein Test Job"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
       - name: Check out repo
