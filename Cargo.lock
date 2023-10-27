@@ -399,6 +399,7 @@ dependencies = [
 name = "auditor-slurm-collector"
 version = "0.2.0"
 dependencies = [
+ "anyhow",
  "auditor",
  "bincode",
  "chrono",

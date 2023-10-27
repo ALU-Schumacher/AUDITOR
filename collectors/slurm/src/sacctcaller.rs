@@ -7,6 +7,7 @@
 
 use std::{collections::HashMap, fmt};
 
+use anyhow::anyhow;
 use auditor::{
     constants::FORBIDDEN_CHARACTERS,
     domain::{Component, RecordAdd, Score},
@@ -19,7 +20,7 @@ use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
-    configuration::{AllowedTypes, KeyConfig, ParsableType, Settings},
+    configuration::{AllowedTypes, ComponentConfig, KeyConfig, ParsableType, Settings},
     database::Database,
     shutdown::Shutdown,
     CONFIG, END, GROUP, JOBID, KEYS, START, USER,
@@ -319,7 +320,15 @@ fn construct_record(
         vec![make_string_valid(map[GROUP].extract_string()?)],
     );
 
-    let components = construct_components(map, config);
+    let components = if let Ok(components) = construct_components(map, &config.components) {
+        components
+    } else {
+        tracing::warn!(
+            "Could not construct components for job {}. This job will be ignored.",
+            job_id
+        );
+        return Ok(None);
+    };
 
     Ok(Some(
         RecordAdd::new(record_id, meta, components, map[START].extract_datetime()?)
@@ -359,9 +368,11 @@ fn identify_site(job: &Job) -> Option<String> {
     name = "Construct components from job info and configuration",
     level = "debug"
 )]
-fn construct_components(job: &Job, config: &Settings) -> Vec<Component> {
-    config
-        .components
+fn construct_components(
+    job: &Job,
+    components_config: &[ComponentConfig],
+) -> Result<Vec<Component>, anyhow::Error> {
+    components_config
         .iter()
         .filter(|c| {
             c.only_if.is_none() || {
@@ -375,44 +386,52 @@ fn construct_components(job: &Job, config: &Settings) -> Vec<Component> {
         })
         .cloned()
         .map(|c| {
-            Component::new(
-                make_string_valid(c.name),
-                job[&c.key].extract_i64().unwrap_or_else(|_| {
-                    panic!(
-                        "Cannot parse key {} (value: {:?}) into i64.",
-                        c.key, job[&c.key]
-                    )
-                }),
-            )
-            .expect("Cannot construct component. Please check your configuration!")
-            .with_scores(
-                c.scores
-                    .iter()
-                    .filter(|s| {
-                        s.only_if.is_none() || {
-                            let only_if = s.only_if.as_ref().unwrap();
-                            let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
-                                panic!("Invalid regex expression: {}", &only_if.matches)
-                            });
-                            re.is_match(
-                                &job[&only_if.key]
-                                    .extract_string()
-                                    .unwrap_or_else(|_| panic!("Error extracting string.")),
-                            )
-                        }
-                    })
-                    .map(|s| {
-                        Score::new(s.name.clone(), s.value)
-                            .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
-                    })
-                    .collect(),
-            )
+            if !job.contains_key(&c.key) {
+                // TODO we should probably create our own error type (enum) and return it here
+                // maybe this error type can also be used in other parts of this function
+                Err(anyhow!("Job information does not contain key {}", &c.key))
+            } else {
+                Ok(Component::new(
+                    make_string_valid(c.name),
+                    job[&c.key].extract_i64().unwrap_or_else(|_| {
+                        panic!(
+                            "Cannot parse key {} (value: {:?}) into i64.",
+                            c.key, job[&c.key]
+                        )
+                    }),
+                )
+                .expect("Cannot construct component.")
+                .with_scores(
+                    c.scores
+                        .iter()
+                        .filter(|s| {
+                            s.only_if.is_none() || {
+                                let only_if = s.only_if.as_ref().unwrap();
+                                let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
+                                    panic!("Invalid regex expression: {}", &only_if.matches)
+                                });
+                                re.is_match(
+                                    &job[&only_if.key]
+                                        .extract_string()
+                                        .unwrap_or_else(|_| panic!("Error extracting string.")),
+                                )
+                            }
+                        })
+                        .map(|s| {
+                            Score::new(s.name.clone(), s.value)
+                                .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
+                        })
+                        .collect(),
+                ))
+            }
         })
         .collect()
 }
 
 #[cfg(test)]
 mod tests {
+    use auditor::domain::{ValidAmount, ValidName};
+
     use super::*;
     use crate::STATE;
 
@@ -585,5 +604,66 @@ mod tests {
         )]);
 
         assert_eq!(sacct_rows, expected);
+    }
+
+    #[test]
+    fn construct_components_empty_config_succeeds() {
+        let job = Job::from([(
+            "JobID".to_owned(),
+            AllowedTypes::String("6776554".to_owned()),
+        )]);
+        let components_config = vec![];
+        let components = construct_components(&job, &components_config).unwrap();
+
+        let expected: Vec<Component> = vec![];
+
+        assert_eq!(components, expected);
+    }
+
+    #[test]
+    fn construct_components_succeeds() {
+        let job = Job::from([
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("6776554".to_owned()),
+            ),
+            ("MaxRSS".to_owned(), AllowedTypes::Integer(1024)),
+        ]);
+        let components_config = vec![ComponentConfig {
+            name: "MaxRSS".to_owned(),
+            key: "MaxRSS".to_owned(),
+            key_type: ParsableType::Integer,
+            key_allow_empty: false,
+            scores: vec![],
+            only_if: None,
+        }];
+        let components = construct_components(&job, &components_config).unwrap();
+
+        let expected = vec![Component {
+            name: ValidName::parse("MaxRSS".to_owned()).unwrap(),
+            amount: ValidAmount::parse(1024).unwrap(),
+            scores: vec![],
+        }];
+
+        assert_eq!(components, expected);
+    }
+
+    #[test]
+    fn construct_components_missing_key_fails() {
+        let job = Job::from([(
+            "JobID".to_owned(),
+            AllowedTypes::String("6776554".to_owned()),
+        )]);
+        let components_config = vec![ComponentConfig {
+            name: "MaxRSS".to_owned(),
+            key: "MaxRSS".to_owned(),
+            key_type: ParsableType::Integer,
+            key_allow_empty: false,
+            scores: vec![],
+            only_if: None,
+        }];
+        // TODO we should probably test for the specific error
+        // see https://zhauniarovich.com/post/2021/2021-01-testing-errors-in-rust/
+        assert!(construct_components(&job, &components_config).is_err());
     }
 }
