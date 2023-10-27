@@ -34,10 +34,12 @@ jobs:
       #     name: linux-wheel-${{ matrix.python-version }}
       #     path: ./plugins/apel
       - name: Get cached wheel
-        uses: action/cache@v3
+        uses: actions/cache@v3
         with:
-          key: linux-wheel-${{ matrix.python-version }}-${{ github.sha }}
           path: ./plugins/apel
+          key: pyauditor-linux-wheel-${{ matrix.python-version }}-${{ github.run_id }}
+          restore_keys: |
+            pyauditor-linux-wheel-${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           ls

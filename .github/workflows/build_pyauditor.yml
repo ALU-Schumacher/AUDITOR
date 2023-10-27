@@ -43,12 +43,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: dist
-          key: linux-wheel-${{ matrix.python-version }}-${{ github.sha }}
-      # - name: Upload wheel
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: linux-wheel-${{ matrix.python-version }}
-      #     path: dist
+          key: pyauditor-linux-wheel-${{ matrix.python-version }}-${{ github.run_id }}
+      - name: Upload wheel
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist
+          name: linux-wheel-${{ matrix.python-version }}
 
   windows:
     runs-on: windows-latest
