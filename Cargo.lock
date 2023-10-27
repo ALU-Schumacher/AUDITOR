@@ -361,7 +361,7 @@ dependencies = [
  "tracing",
  "tracing-actix-web",
  "tracing-bunyan-formatter",
- "tracing-log",
+ "tracing-log 0.2.0",
  "tracing-subscriber",
  "unicode-segmentation",
  "urlencoding",
@@ -3231,7 +3231,7 @@ dependencies = [
  "time",
  "tracing",
  "tracing-core",
- "tracing-log",
+ "tracing-log 0.1.4",
  "tracing-subscriber",
 ]
 
@@ -3267,6 +3267,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tracing-log"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee855f1f400bd0e5c02d150ae5de3840039a3f54b025156404e34c23c03f47c3"
+dependencies = [
+ "log",
+ "once_cell",
+ "tracing-core",
+]
+
+[[package]]
 name = "tracing-subscriber"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3281,7 +3292,7 @@ dependencies = [
  "thread_local",
  "tracing",
  "tracing-core",
- "tracing-log",
+ "tracing-log 0.1.4",
 ]
 
 [[package]]
