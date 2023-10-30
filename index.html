@@ -365,7 +365,7 @@ It can be installed from the provided RPM or can be built with this command:</p>
 <tr><td><code>addr</code></td><td>Host name or IP address of the Auditor instance.</td></tr>
 <tr><td><code>port</code></td><td>Port of the Auditor instance.</td></tr>
 <tr><td><code>record_prefix</code></td><td>Prefix for the record identifier. The full record identifier is then <code>&lt;record_prefix&gt;-&lt;slurm-job-id&gt;</code>.</td></tr>
-<tr><td><code>job_status</code></td><td>A list of acceptable job states that is used to filter the slurm jobs when calling the <code>sacct</code> command. See <a href="https://slurm.schedmd.com/sacct.html#SECTION_JOB-STATE-CODES">SLURM JOB STATE CODES</a> for a list of allowed values.</td></tr>
+<tr><td><code>job_filter</code></td><td>Filter jobs based on certain properties. See the <strong>Job filter</strong> section below.</td></tr>
 <tr><td><code>sacct_frequency</code></td><td>Frequency of executing the <code>sacct</code> command  (in seconds). Resulting records are first placed in a queue (based on a SQLite database) and later sent to the Auditor instance.</td></tr>
 <tr><td><code>sender_frequency</code></td><td>Frequency of sending new records from the sending queue to the Auditor instance.</td></tr>
 <tr><td><code>earliest_datetime</code></td><td>After starting the collector for the first time, only query jobs that started later than <code>earliest_datetime</code>. Has to follow the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> standard</td></tr>
@@ -375,13 +375,24 @@ It can be installed from the provided RPM or can be built with this command:</p>
 <tr><td><code>components</code></td><td>A list of components that is added to the record. A component needs to have a <code>name</code>, <code>key</code>, and <code>key_type</code>, similar to the <code>meta</code> configuration. One or multiple scores can be added to a component with the <code>scores</code> option. Each score config needs to have a <code>name</code> and a <code>value</code>. Setting scores can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above.</td></tr>
 <tr><td><code>log_level</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>).</td></tr>
 </tbody></table>
+<h4 id="job-filter">Job filter</h4>
+<p>Job filters can be used to filter the slurm jobs when calling the <code>sacct</code> command.
+The following filters are supported:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>status</code></td><td>A list of acceptable job states. See <a href="https://slurm.schedmd.com/sacct.html#SECTION_JOB-STATE-CODES">SLURM JOB STATE CODES</a> for a list of allowed values. Per default jobs with the <code>completed</code> state are queried.</td></tr>
+<tr><td><code>partition</code></td><td>A list of partition names. Per default no filter is applied.</td></tr>
+<tr><td><code>user</code></td><td>A list of users. Per default no filter is applied.</td></tr>
+<tr><td><code>group</code></td><td>A list of groups. Per default no filter is applied.</td></tr>
+<tr><td><code>account</code></td><td>A list of accounts. Per default no filter is applied.</td></tr>
+</tbody></table>
 <h3 id="example-configuration">Example configuration</h3>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
 </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
-</span><span style="color:#00a33f;">job_status</span><span>:
-</span><span>  - </span><span style="color:#00a33f;">&quot;completed&quot;
-</span><span>  - </span><span style="color:#00a33f;">&quot;failed&quot;
+</span><span style="color:#00a33f;">job_filter</span><span>:
+</span><span>  </span><span style="color:#00a33f;">status</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;completed&quot;
+</span><span>    - </span><span style="color:#00a33f;">&quot;failed&quot;
 </span><span style="color:#00a33f;">sacct_frequency</span><span>: 300
 </span><span style="color:#00a33f;">sender_frequency</span><span>: 60
 </span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2023-09-15T12:00:00+00:00&quot;
