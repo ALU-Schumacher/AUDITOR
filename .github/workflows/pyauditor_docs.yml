@@ -1,0 +1,40 @@
+name: pyauditor-docs
+
+on:
+  workflow_call:
+
+jobs:
+  pyauditor-docs:
+    runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Download wheel
+        uses: actions/download-artifact@v3
+        with:
+          name: pyauditor-wheels
+
+      - name: Install pyauditor
+        run: |
+          pip install --upgrade pip
+          ls | grep manylinux | grep 39 | xargs pip install
+
+      - name: Build pyauditor docs
+        run: CI_MODE=true SKIP_COMPILATION=true ./scripts/docs_pyauditor.sh
+
+      - name: Deploy pyauditor docs
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: pyauditor/docs/_build/html
+          target-folder: pyauditor
+          token: ${{ secrets.GITHUB_TOKEN }}
+          clean: false

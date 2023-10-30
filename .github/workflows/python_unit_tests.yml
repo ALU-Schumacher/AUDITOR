@@ -1,0 +1,40 @@
+name: python-unit-tests
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+        
+jobs:
+  unit-tests-apel-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/apel
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Download wheel
+        uses: actions/download-artifact@v3
+        with:
+          path: ./plugins/apel
+          name: pyauditor-wheels
+      - name: Install dependencies
+        run: |
+          PYVER=${{ inputs.python-version }}
+          pip install --upgrade pip
+          ls | grep manylinux | grep ${PYVER//.} | xargs pip install
+          pip install -e .[tests]
+      - name: Run pytest
+        run: pytest
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./plugins/apel/lcov.info
+          fail_ci_if_error: true
