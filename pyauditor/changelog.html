@@ -150,6 +150,7 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <ul class="simple">
 <li><p>Priority plugin: ‘auditor’ configuration has to be present in the config file. ‘prometheus’ configuration is optional (#456) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
 <li><p>Auditor: Standardize REST APIs. Routes have changed to single endpoint ‘/record’ with methods such as ‘GET’, ‘PUT’, ‘POST’ (#465) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Slurm collector: New filter options to filter slurm jobs are added. The <code class="docutils literal notranslate"><span class="pre">job_status</span></code> key in the config is moved to the <code class="docutils literal notranslate"><span class="pre">job_filter</span></code> section and is renamed to <code class="docutils literal notranslate"><span class="pre">status</span></code> (#472) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
 </ul>
 </section>
 <section id="security">
