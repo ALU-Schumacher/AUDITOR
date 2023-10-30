@@ -1,0 +1,62 @@
+name: Build and Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  build-auditor:
+    uses: ./.github/workflows/build_auditor.yml
+
+  sqlx:
+    uses: ./.github/workflows/sqlx.yml
+
+  build-pyauditor-linux:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    uses: ./.github/workflows/build_pyauditor_linux.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+
+  build-pyauditor-windows:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    uses: ./.github/workflows/build_pyauditor_windows.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+
+  build-pyauditor-macos:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    uses: ./.github/workflows/build_pyauditor_macos.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      
+  python-unit-tests:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    needs: build-pyauditor-linux
+    uses: ./.github/workflows/python_unit_tests.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+
+  pyauditor-docs:
+    needs: build-pyauditor-linux
+    uses: ./.github/workflows/pyauditor_docs.yml
+
+  pyauditor-integration-tests:
+    needs: [build-pyauditor-linux, sqlx]
+    uses: ./.github/workflows/pyauditor_integration_tests.yml
+
+  release:
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: [build-pyauditor-linux, build-pyauditor-windows, build-pyauditor-macos]
+    uses: ./.github/workflows/release.yml

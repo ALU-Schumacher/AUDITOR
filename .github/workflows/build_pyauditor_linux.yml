@@ -1,0 +1,42 @@
+name: build-pyauditor-linux
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  build-pyauditor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cache-dependencies-pyauditor
+
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      - name: Create fake .cargo/config.toml
+        run: |
+          mkdir -p .cargo
+          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
+
+      - name: Maturin
+        uses: messense/maturin-action@v1
+        with:
+          target: x86_64
+          manylinux: auto
+          command: build
+          args: --release --sdist -o dist --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist
+          name: pyauditor-wheels

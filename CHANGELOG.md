@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor with maturin for Python unit tests ([@dirksammel](https://github.com/dirksammel))
-- CI: New workflows for building pyauditor, Auditor (+ Docker image), use output in other workflows ([@dirksammel](https://github.com/dirksammel))
+- CI: New workflow structure ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 

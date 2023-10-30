@@ -1,0 +1,47 @@
+name: build-pyauditor-windows
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  build-pyauditor:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cache-dependencies-pyauditor
+
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      # I don't know how to script this on windows (and I don't care). Therefore
+      # I'll just copy the config.toml from the pyauditor directory. This may lead to 
+      # problems when there is a .cargo/config.toml, which will then be overwritten.
+      - name: Create fake .cargo\config.toml
+        run: |
+          copy pyauditor\.cargo\config.toml .cargo\config.toml
+          # echo "[env]" >> .cargo\config.toml
+          # Fails here, saying "echo." doesn't exist.
+          # echo. >> .cargo\config.toml
+          # echo "SQLX_OFFLINE = \"true\"" >> .cargo\config.toml
+          # type .cargo\config.toml
+
+      - name: Maturin
+        uses: messense/maturin-action@v1
+        with:
+          command: build
+          args: --release -o dist --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist
+          name: pyauditor-wheels

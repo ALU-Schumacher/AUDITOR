@@ -1,0 +1,31 @@
+name: sqlx
+
+on:
+  workflow_call:
+
+jobs:
+  sqlx:
+    runs-on: ubuntu-latest
+    env:
+      SQLX_VERSION: 0.7.2
+      SQLX_FEATURES: postgres,rustls,sqlite
+      RUSTFLAGS: -C link-arg=-s
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
+
+      - name: Cache sqlx
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cache-dependencies-sqlx
+          cache-directories: |
+            ~/.cargo/bin/sqlx
+            ~/.cargo/bin/cargo-sqlx
+
+      - name: Install sqlx-cli 
+        run: cargo install sqlx-cli --version=${{ env.SQLX_VERSION }} --features=${{ env.SQLX_FEATURES }} --no-default-features --locked
