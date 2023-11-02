@@ -8,7 +8,7 @@
 use std::str::FromStr;
 
 use auditor::domain::RecordAdd;
-use chrono::{offset::Local, offset::TimeZone, DateTime, NaiveDateTime};
+use chrono::{offset::Local, offset::TimeZone, DateTime, LocalResult, NaiveDateTime};
 use color_eyre::eyre::{eyre, Result};
 use sqlx::{sqlite::SqliteJournalMode, SqlitePool};
 
@@ -90,7 +90,23 @@ impl Database {
             .await?
         {
             Some(Row { lastcheck, jobid }) => {
-                Ok((Local.from_local_datetime(&lastcheck).unwrap(), jobid))
+                //Ok((Local.from_local_datetime(&lastcheck).unwrap(), jobid))
+
+                match Local.from_local_datetime(&lastcheck) {
+                    LocalResult::Single(datetime) => Ok((datetime, jobid)),
+                    LocalResult::Ambiguous(datetime1, datetime2) => {
+                        tracing::info!("Ambiguous local time, ranging from t1 = {:?} to t2 = {:?} . Choosing t1 as timestamp", datetime1, datetime2);
+                        Ok((datetime1, jobid))
+                    }
+                    LocalResult::None => {
+                        let datetime = CONFIG.earliest_datetime;
+                        tracing::info!(
+                            "Last check date is Null. Assuming {}",
+                            datetime.format("%FT%T")
+                        );
+                        Ok((datetime, String::new()))
+                    }
+                }
             }
             None => {
                 let datetime = CONFIG.earliest_datetime;
