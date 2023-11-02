@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
+- Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update cargo-get from 0.3.3 to 1.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.8.0 to 2.9.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
