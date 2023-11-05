@@ -26,6 +26,8 @@ use crate::{
     CONFIG, END, GROUP, JOBID, KEYS, START, USER,
 };
 
+type SacctRow = HashMap<String, Option<AllowedTypes>>;
+type SacctRows = HashMap<String, SacctRow>;
 type Job = HashMap<String, AllowedTypes>;
 
 static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
@@ -181,10 +183,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
 }
 
 #[tracing::instrument(name = "Tokenizing sacct output", skip(keys))]
-fn tokenize_sacct_output(
-    output: &str,
-    keys: Vec<KeyConfig>,
-) -> HashMap<String, HashMap<String, Option<AllowedTypes>>> {
+fn tokenize_sacct_output(output: &str, keys: Vec<KeyConfig>) -> SacctRows {
     output
         .lines()
         .map(|l| {
@@ -210,22 +209,19 @@ fn tokenize_sacct_output(
                     };
                     (kc.name, v)
                 })
-                .collect::<HashMap<String, Option<AllowedTypes>>>()
+                .collect::<SacctRow>()
         })
         .map(|hm| (hm[JOBID].as_ref().unwrap().extract_string().unwrap(), hm))
-        .collect::<HashMap<String, HashMap<String, Option<AllowedTypes>>>>()
+        .collect::<SacctRows>()
 }
 
 #[tracing::instrument(name = "Parse sacct rows")]
-fn parse_sacct_rows(
-    sacct_rows: HashMap<String, HashMap<String, Option<AllowedTypes>>>,
-    keys: Vec<KeyConfig>,
-) -> Result<Vec<HashMap<String, AllowedTypes>>> {
+fn parse_sacct_rows(sacct_rows: SacctRows, keys: Vec<KeyConfig>) -> Result<Vec<Job>> {
     sacct_rows
         .keys()
         .filter(|k| !BATCH_REGEX.is_match(k))
         .filter(|k| !SUB_REGEX.is_match(k))
-        .map(|id| -> Result<HashMap<String, AllowedTypes>> {
+        .map(|id| -> Result<Job> {
             let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
             let map2 = sacct_rows.get(&format!("{id}.batch"));
             Ok(keys.iter()
@@ -250,13 +246,13 @@ fn parse_sacct_rows(
                     };
                     val.map(|val| (k, val))
                 })
-                .collect::<HashMap<String, AllowedTypes>>())
-        }).collect::<Result<Vec<HashMap<String, AllowedTypes>>>>()
+                .collect::<Job>())
+        }).collect::<Result<Vec<Job>>>()
 }
 
 #[tracing::instrument(name = "Construct record", level = "debug")]
 fn construct_record(
-    map: &HashMap<String, AllowedTypes>,
+    map: &Job,
     last_record_id: &str,
     config: &Settings,
 ) -> Result<Option<RecordAdd>> {
@@ -463,9 +459,9 @@ mod tests {
         let sacct_output = "100||COMPLETED";
         let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from([(
+        let expected = SacctRows::from([(
             "100".to_owned(),
-            HashMap::from([
+            SacctRow::from([
                 (
                     JOBID.to_owned(),
                     Some(AllowedTypes::String("100".to_owned())),
@@ -503,9 +499,9 @@ mod tests {
         let sacct_output = "100||COMPLETED";
         let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from([(
+        let expected = SacctRows::from([(
             "100".to_owned(),
-            HashMap::from([
+            SacctRow::from([
                 (
                     JOBID.to_owned(),
                     Some(AllowedTypes::String("100".to_owned())),
@@ -542,9 +538,9 @@ mod tests {
         let sacct_output = "100|{}|COMPLETED";
         let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from([(
+        let expected = SacctRows::from([(
             "100".to_owned(),
-            HashMap::from([
+            SacctRow::from([
                 (
                     JOBID.to_owned(),
                     Some(AllowedTypes::String("100".to_owned())),
@@ -582,9 +578,9 @@ mod tests {
         let sacct_output = "100|{ 'key': 'value' }|COMPLETED";
         let sacct_rows = tokenize_sacct_output(sacct_output, keys);
 
-        let expected = HashMap::from([(
+        let expected = SacctRows::from([(
             "100".to_owned(),
-            HashMap::from([
+            SacctRow::from([
                 (
                     JOBID.to_owned(),
                     Some(AllowedTypes::String("100".to_owned())),
