@@ -18,7 +18,7 @@ It comes with a well-defined REST API which allows for the implementation of app
 </p>
 
 Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
-database and o ers these records to plugins which take an action based on the records.
+database and offers these records to plugins which take an action based on the records.
 
 ## Features
 
