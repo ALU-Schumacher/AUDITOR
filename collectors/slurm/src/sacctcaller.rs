@@ -384,9 +384,15 @@ fn construct_components(
         .cloned()
         .map(|c| {
             if !job.contains_key(&c.key) {
-                // TODO we should probably create our own error type (enum) and return it here
-                // maybe this error type can also be used in other parts of this function
-                Err(anyhow!("Job information does not contain key {}", &c.key))
+                if let Some(default_value) = c.default_value {
+                    Ok(Component::new(make_string_valid(&c.name), default_value)
+                        .expect("Cannot construct component")
+                        .with_scores(construct_component_scores(job, &c)))
+                } else {
+                    // TODO we should probably create our own error type (enum) and return it here
+                    // maybe this error type can also be used in other parts of this function
+                    Err(anyhow!("Job information does not contain key {}", &c.key))
+                }
             } else {
                 Ok(Component::new(
                     make_string_valid(&c.name),
@@ -991,6 +997,7 @@ mod tests {
             key: "MaxRSS".to_owned(),
             key_type: ParsableType::Integer,
             key_allow_empty: false,
+            default_value: None,
             scores: vec![],
             only_if: None,
         }];
@@ -1016,12 +1023,39 @@ mod tests {
             key: "MaxRSS".to_owned(),
             key_type: ParsableType::Integer,
             key_allow_empty: false,
+            default_value: None,
             scores: vec![],
             only_if: None,
         }];
         // TODO we should probably test for the specific error
         // see https://zhauniarovich.com/post/2021/2021-01-testing-errors-in-rust/
         assert!(construct_components(&job, &components_config).is_err());
+    }
+
+    #[test]
+    fn construct_components_default_value_is_used() {
+        let job = Job::from([(
+            "JobID".to_owned(),
+            AllowedTypes::String("6776554".to_owned()),
+        )]);
+        let components_config = vec![ComponentConfig {
+            name: "MaxRSS".to_owned(),
+            key: "MaxRSS".to_owned(),
+            key_type: ParsableType::Integer,
+            key_allow_empty: false,
+            default_value: Some(0),
+            scores: vec![],
+            only_if: None,
+        }];
+        let components = construct_components(&job, &components_config).unwrap();
+
+        let expected = vec![Component {
+            name: ValidName::parse("MaxRSS".to_owned()).unwrap(),
+            amount: ValidAmount::parse(0).unwrap(),
+            scores: vec![],
+        }];
+
+        assert_eq!(components, expected);
     }
 
     #[test]
@@ -1039,6 +1073,7 @@ mod tests {
             key: "NCPUS".to_owned(),
             key_type: ParsableType::Integer,
             key_allow_empty: false,
+            default_value: None,
             scores: vec![
                 ScoreConfig {
                     name: "HEPSPEC06".to_owned(),
@@ -1100,6 +1135,7 @@ mod tests {
             key: "NCPUS".to_owned(),
             key_type: ParsableType::Integer,
             key_allow_empty: false,
+            default_value: None,
             scores: vec![
                 ScoreConfig {
                     name: "Score1".to_owned(),
