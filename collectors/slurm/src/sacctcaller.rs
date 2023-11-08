@@ -362,7 +362,8 @@ fn identify_site(job: &Job) -> Option<String> {
 
 #[tracing::instrument(
     name = "Construct components from job info and configuration",
-    level = "debug"
+    level = "debug",
+    skip(components_config)
 )]
 fn construct_components(
     job: &Job,
@@ -388,7 +389,7 @@ fn construct_components(
                 Err(anyhow!("Job information does not contain key {}", &c.key))
             } else {
                 Ok(Component::new(
-                    make_string_valid(c.name),
+                    make_string_valid(&c.name),
                     job[&c.key].extract_i64().unwrap_or_else(|_| {
                         panic!(
                             "Cannot parse key {} (value: {:?}) into i64.",
@@ -397,40 +398,45 @@ fn construct_components(
                     }),
                 )
                 .expect("Cannot construct component.")
-                .with_scores(
-                    c.scores
-                        .iter()
-                        .filter(|s| {
-                            s.only_if.is_none() || {
-                                let only_if = s.only_if.as_ref().unwrap();
-                                let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
-                                    panic!("Invalid regex expression: {}", &only_if.matches)
-                                });
-                                re.is_match(
-                                    &job[&only_if.key]
-                                        .extract_string()
-                                        .unwrap_or_else(|_| panic!("Error extracting string.")),
-                                )
-                            }
-                        })
-                        .map(|s| {
-                            Score::new(s.name.clone(), s.value)
-                                .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
-                        })
-                        .collect(),
-                ))
+                .with_scores(construct_component_scores(job, &c)))
             }
+        })
+        .collect()
+}
+
+fn construct_component_scores(job: &Job, component_config: &ComponentConfig) -> Vec<Score> {
+    component_config
+        .scores
+        .iter()
+        .filter(|s| {
+            s.only_if.is_none() || {
+                let only_if = s.only_if.as_ref().unwrap();
+                let re = Regex::new(&only_if.matches)
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                re.is_match(
+                    &job[&only_if.key]
+                        .extract_string()
+                        .unwrap_or_else(|_| panic!("Error extracting string.")),
+                )
+            }
+        })
+        .map(|s| {
+            Score::new(s.name.clone(), s.value)
+                .unwrap_or_else(|_| panic!("Cannot construct score from {s:?}"))
         })
         .collect()
 }
 
 #[cfg(test)]
 mod tests {
-    use auditor::domain::{ValidAmount, ValidName};
+    use auditor::domain::{ValidAmount, ValidName, ValidValue};
     use chrono::NaiveDateTime;
 
     use super::*;
-    use crate::STATE;
+    use crate::{
+        configuration::{OnlyIf, ScoreConfig},
+        STATE,
+    };
 
     #[test]
     fn match_job_ids() {
@@ -1016,5 +1022,122 @@ mod tests {
         // TODO we should probably test for the specific error
         // see https://zhauniarovich.com/post/2021/2021-01-testing-errors-in-rust/
         assert!(construct_components(&job, &components_config).is_err());
+    }
+
+    #[test]
+    fn construct_component_scores_multiple_scores_succeeds() {
+        let job = Job::from([
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("1234567".to_owned()),
+            ),
+            ("NCPUS".to_owned(), AllowedTypes::Integer(8)),
+        ]);
+
+        let component_config = ComponentConfig {
+            name: "NCPUS".to_owned(),
+            key: "NCPUS".to_owned(),
+            key_type: ParsableType::Integer,
+            key_allow_empty: false,
+            scores: vec![
+                ScoreConfig {
+                    name: "HEPSPEC06".to_owned(),
+                    value: 10.0,
+                    only_if: None,
+                },
+                ScoreConfig {
+                    name: "hepscore23".to_owned(),
+                    value: 10.0,
+                    only_if: None,
+                },
+            ],
+            only_if: None,
+        };
+
+        let component_scores = construct_component_scores(&job, &component_config);
+
+        let expected = vec![
+            Score {
+                name: ValidName::parse("HEPSPEC06".to_owned()).unwrap(),
+                value: ValidValue::parse(10.0).unwrap(),
+            },
+            Score {
+                name: ValidName::parse("hepscore23".to_owned()).unwrap(),
+                value: ValidValue::parse(10.0).unwrap(),
+            },
+        ];
+
+        assert_eq!(component_scores, expected);
+    }
+
+    #[test]
+    fn construct_component_scores_with_only_if_succeeds() {
+        let job_1 = Job::from([
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("1234567".to_owned()),
+            ),
+            ("NCPUS".to_owned(), AllowedTypes::Integer(8)),
+            (
+                "Partition".to_owned(),
+                AllowedTypes::String("partition1".to_owned()),
+            ),
+        ]);
+        let job_2 = Job::from([
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("1234567".to_owned()),
+            ),
+            ("NCPUS".to_owned(), AllowedTypes::Integer(8)),
+            (
+                "Partition".to_owned(),
+                AllowedTypes::String("partition2".to_owned()),
+            ),
+        ]);
+
+        let component_config = ComponentConfig {
+            name: "NCPUS".to_owned(),
+            key: "NCPUS".to_owned(),
+            key_type: ParsableType::Integer,
+            key_allow_empty: false,
+            scores: vec![
+                ScoreConfig {
+                    name: "Score1".to_owned(),
+                    value: 1.0,
+                    only_if: None,
+                },
+                ScoreConfig {
+                    name: "Score2".to_owned(),
+                    value: 2.0,
+                    only_if: Some(OnlyIf {
+                        key: "Partition".to_owned(),
+                        matches: ".*1".to_owned(),
+                    }),
+                },
+            ],
+            only_if: None,
+        };
+
+        let component_scores_1 = construct_component_scores(&job_1, &component_config);
+        let component_scores_2 = construct_component_scores(&job_2, &component_config);
+
+        let expected_1 = vec![
+            Score {
+                name: ValidName::parse("Score1".to_owned()).unwrap(),
+                value: ValidValue::parse(1.0).unwrap(),
+            },
+            Score {
+                name: ValidName::parse("Score2".to_owned()).unwrap(),
+                value: ValidValue::parse(2.0).unwrap(),
+            },
+        ];
+
+        let expected_2 = vec![Score {
+            name: ValidName::parse("Score1".to_owned()).unwrap(),
+            value: ValidValue::parse(1.0).unwrap(),
+        }];
+
+        assert_eq!(component_scores_1, expected_1);
+        assert_eq!(component_scores_2, expected_2);
     }
 }
