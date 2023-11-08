@@ -146,7 +146,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     tracing::debug!("Got: {}", cmd_out);
 
     let sacct_rows = tokenize_sacct_output(cmd_out, KEYS.to_vec());
-    let parsed_sacct_rows = parse_sacct_rows(sacct_rows, KEYS.to_vec())?;
+    let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &KEYS.to_vec())?;
     let records = parsed_sacct_rows
         .iter()
         .map(|map| construct_record(map, &last_record_id, &CONFIG))
@@ -216,7 +216,7 @@ fn tokenize_sacct_output(output: &str, keys: Vec<KeyConfig>) -> SacctRows {
 }
 
 #[tracing::instrument(name = "Parse sacct rows")]
-fn parse_sacct_rows(sacct_rows: SacctRows, keys: Vec<KeyConfig>) -> Result<Vec<Job>> {
+fn parse_sacct_rows(sacct_rows: SacctRows, keys: &Vec<KeyConfig>) -> Result<Vec<Job>> {
     sacct_rows
         .keys()
         .filter(|k| !BATCH_REGEX.is_match(k))
@@ -427,6 +427,7 @@ fn construct_components(
 #[cfg(test)]
 mod tests {
     use auditor::domain::{ValidAmount, ValidName};
+    use chrono::NaiveDateTime;
 
     use super::*;
     use crate::STATE;
@@ -435,6 +436,119 @@ mod tests {
     fn match_job_ids() {
         assert!(BATCH_REGEX.is_match("1234.batch"));
         assert!(BATCH_REGEX.is_match("1234_10.batch"));
+        assert!(SUB_REGEX.is_match("123.456"));
+    }
+
+    #[test]
+    fn tokenize_sacct_output_common_usecase_succeeds() {
+        let keys = vec![
+            KeyConfig {
+                name: "Partition".to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "NCPUS".to_owned(),
+                key_type: ParsableType::Integer,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "ReqMem".to_owned(),
+                key_type: ParsableType::IntegerMega,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "NNodes".to_owned(),
+                key_type: ParsableType::Integer,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: START.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: END.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: GROUP.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: USER.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+        let sacct_output = "partition|1|2000M|1|1234567|2023-11-07T10:14:01|2023-11-07T11:39:09|group|user|COMPLETED";
+        let sacct_rows = tokenize_sacct_output(sacct_output, keys);
+        let expected = SacctRows::from([(
+            "1234567".to_owned(),
+            SacctRow::from([
+                (
+                    "Partition".to_owned(),
+                    Some(AllowedTypes::String("partition".to_owned())),
+                ),
+                ("NCPUS".to_owned(), Some(AllowedTypes::Integer(1))),
+                ("ReqMem".to_owned(), Some(AllowedTypes::Integer(2000))),
+                ("NNodes".to_owned(), Some(AllowedTypes::Integer(1))),
+                (
+                    JOBID.to_owned(),
+                    Some(AllowedTypes::String("1234567".to_owned())),
+                ),
+                (
+                    START.to_owned(),
+                    Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                        NaiveDateTime::parse_from_str("2023-11-07T10:14:01", "%Y-%m-%dT%H:%M:%S")
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                    ))),
+                ),
+                (
+                    END.to_owned(),
+                    Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                        NaiveDateTime::parse_from_str("2023-11-07T11:39:09", "%Y-%m-%dT%H:%M:%S")
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                    ))),
+                ),
+                (
+                    USER.to_owned(),
+                    Some(AllowedTypes::String("user".to_owned())),
+                ),
+                (
+                    GROUP.to_owned(),
+                    Some(AllowedTypes::String("group".to_owned())),
+                ),
+                (
+                    STATE.to_owned(),
+                    Some(AllowedTypes::String("COMPLETED".to_owned())),
+                ),
+            ]),
+        )]);
+
+        assert_eq!(sacct_rows, expected);
     }
 
     #[test]
@@ -600,6 +714,247 @@ mod tests {
         )]);
 
         assert_eq!(sacct_rows, expected);
+    }
+
+    #[test]
+    fn parse_sacct_rows_empty_succeeds() {
+        let keys = vec![
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+
+        let sacct_rows = SacctRows::from([]);
+        let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &keys).unwrap();
+
+        let expected = vec![];
+        assert_eq!(parsed_sacct_rows, expected);
+    }
+
+    #[test]
+    fn parse_sacct_rows_default_usecase_succeeds() {
+        let keys = vec![
+            KeyConfig {
+                name: "Partition".to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "NCPUS".to_owned(),
+                key_type: ParsableType::Integer,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "ReqMem".to_owned(),
+                key_type: ParsableType::IntegerMega,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "NNodes".to_owned(),
+                key_type: ParsableType::Integer,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: "MaxRSS".to_owned(),
+                key_type: ParsableType::Integer,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: START.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: END.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: GROUP.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: USER.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+
+        // Slurm always returns two rows for each job.
+        // The first line contains the normal job ID and most information
+        // The second line contains the "<jobid>.batch" job id.
+        // Here, the some information like user, group, partition, or ReqMem is missing.
+        // However, the second line contains information such as MaxRSS
+        let sacct_rows = SacctRows::from([
+            (
+                "1234567".to_owned(),
+                SacctRow::from([
+                    (
+                        "Partition".to_owned(),
+                        Some(AllowedTypes::String("partition".to_owned())),
+                    ),
+                    ("NCPUS".to_owned(), Some(AllowedTypes::Integer(1))),
+                    ("ReqMem".to_owned(), Some(AllowedTypes::Integer(2000))),
+                    ("NNodes".to_owned(), Some(AllowedTypes::Integer(1))),
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        USER.to_owned(),
+                        Some(AllowedTypes::String("user".to_owned())),
+                    ),
+                    (
+                        GROUP.to_owned(),
+                        Some(AllowedTypes::String("group".to_owned())),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("COMPLETED".to_owned())),
+                    ),
+                ]),
+            ),
+            (
+                "1234567.batch".to_owned(),
+                SacctRow::from([
+                    ("NCPUS".to_owned(), Some(AllowedTypes::Integer(1))),
+                    ("NNodes".to_owned(), Some(AllowedTypes::Integer(1))),
+                    ("MaxRSS".to_owned(), Some(AllowedTypes::Integer(1_000_000))),
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.batch".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("COMPLETED".to_owned())),
+                    ),
+                ]),
+            ),
+        ]);
+
+        let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &keys).unwrap();
+
+        let expected = vec![Job::from([
+            (
+                "Partition".to_owned(),
+                AllowedTypes::String("partition".to_owned()),
+            ),
+            ("NCPUS".to_owned(), AllowedTypes::Integer(1)),
+            ("ReqMem".to_owned(), AllowedTypes::Integer(2000)),
+            ("MaxRSS".to_owned(), AllowedTypes::Integer(1_000_000)),
+            ("NNodes".to_owned(), AllowedTypes::Integer(1)),
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("1234567".to_owned()),
+            ),
+            (
+                START.to_owned(),
+                AllowedTypes::DateTime(DateTime::<Utc>::from(
+                    NaiveDateTime::parse_from_str("2023-11-07T10:14:01", "%Y-%m-%dT%H:%M:%S")
+                        .unwrap()
+                        .and_local_timezone(
+                            FixedOffset::east_opt(Local::now().offset().local_minus_utc()).unwrap(),
+                        )
+                        .unwrap(),
+                )),
+            ),
+            (
+                END.to_owned(),
+                AllowedTypes::DateTime(DateTime::<Utc>::from(
+                    NaiveDateTime::parse_from_str("2023-11-07T11:39:09", "%Y-%m-%dT%H:%M:%S")
+                        .unwrap()
+                        .and_local_timezone(
+                            FixedOffset::east_opt(Local::now().offset().local_minus_utc()).unwrap(),
+                        )
+                        .unwrap(),
+                )),
+            ),
+            (USER.to_owned(), AllowedTypes::String("user".to_owned())),
+            (GROUP.to_owned(), AllowedTypes::String("group".to_owned())),
+            (
+                STATE.to_owned(),
+                AllowedTypes::String("COMPLETED".to_owned()),
+            ),
+        ])];
+        assert_eq!(parsed_sacct_rows, expected);
     }
 
     #[test]
