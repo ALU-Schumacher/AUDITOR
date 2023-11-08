@@ -103,6 +103,7 @@ pub struct ComponentConfig {
     pub key_type: ParsableType,
     #[serde(default = "default_key_allow_empty")]
     pub key_allow_empty: bool,
+    pub default_value: Option<i64>,
     #[serde(default = "default_score")]
     pub scores: Vec<ScoreConfig>,
     pub only_if: Option<OnlyIf>,
@@ -258,6 +259,7 @@ fn default_components() -> Vec<ComponentConfig> {
         key: "NCPUS".into(),
         key_type: ParsableType::default(),
         key_allow_empty: false,
+        default_value: None,
         scores: vec![],
         only_if: None,
     }]
