@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update sqlx from 0.7.1 to 0.7.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.48 to 1.0.50 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update time from 0.3.28 to 0.3.29 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update tokio from 1.32.0 to 1.33.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tokio from 1.32.0 to 1.34.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing from 0.1.37 to 0.1.40 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.8 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-log from 0.1.3 to 0.2.0 ([@QuantumDancer](https://github.com/QuantumDancer))
