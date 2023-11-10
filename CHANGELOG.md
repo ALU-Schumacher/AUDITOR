@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Add records_handler module to routes to handle record queries  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: Add `default_value` option for component configuration (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add instructions for developers for building the Rust and Python documentation locally ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed
 - Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
