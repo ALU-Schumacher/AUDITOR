@@ -56,7 +56,7 @@ reqwest = { version = "0.11.22", default-features = false, features = ["json", "
 anyhow = "1"
 regex = "1"
 num-traits = "^0.2"
-opentelemetry-prometheus = "0.13"
+opentelemetry-prometheus = "0.14"
 opentelemetry = "0.20"
 actix-web-opentelemetry = { version = "0.15", features = ["metrics", "metrics-prometheus"] }
 opentelemetry_api = "0.20.0"
