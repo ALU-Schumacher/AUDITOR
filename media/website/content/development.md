@@ -126,7 +126,9 @@ The resulting binaries will be placed in `target/x86_64-unknown-linux-musl/relea
 
 TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)
 
-# Github pages
+# Documentation
+
+## Github pages
 
 This webpage is based on the [Zola](https://www.getzola.org/) framework.
 
@@ -138,3 +140,24 @@ For local development, [install](https://www.getzola.org/documentation/getting-s
 in the root directory of the Auditor repo.
 
 The local version of the webpage is now available at [http://127.0.0.1:1111/](http://127.0.0.1:1111/).
+
+## Rust documentation
+
+A local version of the Rust documentation can be built with
+
+```bash
+cargo doc
+```
+
+Use the`--open` flag to directly open the documentation in your browser.
+
+## Python client
+
+The documentation of the python client is based on the [Sphinx](https://www.sphinx-doc.org/) framework.
+A local version of the documentation can be built with
+
+```bash
+scripts/docs_pyauditor.sh
+```
+
+The documentation can then be found in `pyauditor/docs/_build/html/`.
