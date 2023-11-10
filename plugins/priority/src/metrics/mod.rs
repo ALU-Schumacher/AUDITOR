@@ -1,5 +1,5 @@
 use crate::configuration::PrometheusMetricsOptions;
-use opentelemetry::sdk::metrics::MeterProvider;
+use opentelemetry_sdk::metrics::MeterProvider;
 use prometheus::Registry;
 use prometheus::{IntGaugeVec, Opts};
 use std::collections::HashMap;

@@ -383,6 +383,7 @@ dependencies = [
  "opentelemetry",
  "opentelemetry-prometheus",
  "opentelemetry_api",
+ "opentelemetry_sdk",
  "prometheus",
  "serde",
  "serde-aux",

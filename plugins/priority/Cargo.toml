@@ -47,6 +47,7 @@ shell-words = "^1"
 actix-web-opentelemetry = { version = "0.16", features = ["metrics", "metrics-prometheus"] }
 opentelemetry = "0.21"
 opentelemetry_api = "0.20.0"
+opentelemetry_sdk = "0.21.0"
 tracing-actix-web = "0.7"
 prometheus = "0.13"
 opentelemetry-prometheus = "0.14"

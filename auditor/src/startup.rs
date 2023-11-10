@@ -10,7 +10,7 @@ use crate::routes::{add, health_check, query_records, update};
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
 use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
-use opentelemetry_api::global;
+use opentelemetry::global;
 use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
