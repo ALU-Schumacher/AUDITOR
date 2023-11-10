@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: Fix panic during component construction when job info is missing data for component (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update opentelemetry from 0.20.0 to 0.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update opentelemetry-prometheus from 0.13.0 to 0.14.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update actix-web-opentelemetry 0.15.0 to 0.16.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update opentelemetry_sdk from 0.20.0 to 0.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update cargo-get from 0.3.3 to 1.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.8.0 to 2.9.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
