@@ -107,8 +107,22 @@
                 
                 
                 <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#github-pages">Github pages</a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#documentation">Documentation</a>
                 </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#github-pages"><small>- Github pages</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#rust-documentation"><small>- Rust documentation</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#python-client"><small>- Python client</small></a>
+                </div>
+                
                 
                 
             </div>
@@ -190,13 +204,25 @@ Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be 
 <p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
 <h1 id="adding-new-plugins-and-collectors">Adding new plugins and collectors</h1>
 <p>TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)</p>
-<h1 id="github-pages">Github pages</h1>
+<h1 id="documentation">Documentation</h1>
+<h2 id="github-pages">Github pages</h2>
 <p>This webpage is based on the <a href="https://www.getzola.org/">Zola</a> framework.</p>
 <p>For local development, <a href="https://www.getzola.org/documentation/getting-started/installation/">install</a> the <code>zola</code> CLI program and run</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span> zola -r media/website serve
 </span></code></pre>
 <p>in the root directory of the Auditor repo.</p>
 <p>The local version of the webpage is now available at <a href="http://127.0.0.1:1111/">http://127.0.0.1:1111/</a>.</p>
+<h2 id="rust-documentation">Rust documentation</h2>
+<p>A local version of the Rust documentation can be built with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo doc
+</span></code></pre>
+<p>Use the<code>--open</code> flag to directly open the documentation in your browser.</p>
+<h2 id="python-client">Python client</h2>
+<p>The documentation of the python client is based on the <a href="https://www.sphinx-doc.org/">Sphinx</a> framework.
+A local version of the documentation can be built with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>scripts/docs_pyauditor.sh
+</span></code></pre>
+<p>The documentation can then be found in <code>pyauditor/docs/_build/html/</code>.</p>
 
 
         </div>
