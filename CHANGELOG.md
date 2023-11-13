@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tracing from 0.1.37 to 0.1.40 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.9 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-log from 0.1.3 to 0.2.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update uuid from 1.4.1 to 1.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.19 to 0.5.21 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
