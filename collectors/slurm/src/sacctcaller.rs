@@ -356,7 +356,7 @@ fn identify_site(job: &Job) -> Option<String> {
         .cloned()
         .map(|s| make_string_valid(s.name))
         .collect::<Vec<_>>()
-        .get(0)
+        .first()
         .cloned()
 }
 
