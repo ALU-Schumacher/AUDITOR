@@ -4,7 +4,7 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.2.0 to unreleased
+# From 0.2.0 to 0.3.0
 
 ## Slurm collector
 

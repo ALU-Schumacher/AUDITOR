@@ -1,6 +1,6 @@
 [package]
 name = "auditor-priority-plugin"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -30,7 +30,7 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-auditor = { path = "../../auditor", version = "0.2.0" }
+auditor = { path = "../../auditor", version = "0.3.0" }
 actix-web = "4.4.0"
 config = "0.13"
 tracing = { version = "0.1", features = ["log"] }
