@@ -7,30 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
-- Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+
+### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.3.0] - 2023-11-17
+
+### Breaking changes
 - Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: New filter options to filter slurm jobs are added. The `job_status` key in the config is moved to the `job_filter` section and is renamed to `status` (#472) ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Security
 
 ### Added
-- Priority plugin: Add prometheus data exporter (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Add records_handler module to routes to handle record queries  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Slurm collector: Add `default_value` option for component configuration (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Docs: Add instructions for developers for building the Rust and Python documentation locally ([@QuantumDancer](https://github.com/QuantumDancer))
+- Priority plugin: Add prometheus data exporter (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Slurm collector: Add `default_value` option for component configuration (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: Fix panic during component construction when job info is missing data for component (#510) ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update opentelemetry from 0.20.0 to 0.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update opentelemetry-prometheus from 0.13.0 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update actix-web-opentelemetry 0.15.0 to 0.16.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update opentelemetry_sdk from 0.20.0 to 0.21.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update cargo-get from 0.3.3 to 1.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.8.0 to 2.9.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update itertools from 0.11.0 to 0.12.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update opentelemetry from 0.20.0 to 0.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update opentelemetry-prometheus from 0.13.0 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update opentelemetry_sdk from 0.20.0 to 0.21.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update regex from 1.9.5 to 1.10.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.20 to 0.11.22 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update rustix from 0.38.14 to 0.38.20 ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -47,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update uuid from 1.4.1 to 1.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.19 to 0.5.21 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test ([@dirksammel](https://github.com/dirksammel))
 - CI: Build pyauditor with maturin for Python unit tests ([@dirksammel](https://github.com/dirksammel))
 - CI: New workflow structure ([@dirksammel](https://github.com/dirksammel))
@@ -317,7 +329,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.3.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -327,3 +339,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.0.7]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.7
 [0.1.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.1.0
 [0.2.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.2.0
+[0.3.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.0
