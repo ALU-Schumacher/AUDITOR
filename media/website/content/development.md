@@ -161,3 +161,46 @@ scripts/docs_pyauditor.sh
 ```
 
 The documentation can then be found in `pyauditor/docs/_build/html/`.
+
+# Creating a new release
+
+Follow the steps below in order to create a new release.
+
+Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.com/ALU-Schumacher/AUDITOR/pull/547)
+
+- Update the version number in all `Cargo.toml` files
+- Run `cargo update` to update dependencies in `Cargo.lock`
+- Update the version number in all `pyproject.toml` files
+- Finalize the [changelog](https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md)
+  - Rename `Unreleased` to version number, add date
+  - Add new `Unreleased` section with all subsections (Breaking changes, Security, Added, Changed, Removed)
+  - At the bottom: Add link target for new version
+  - At the bottom: Update link target for unreleased version
+- Finalize the [migration guide](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/migration.md)
+  - Rename `Unreleased` to version number
+- Update changelog in [RPM `.spec` files](https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm)
+- Create PR and wait for approval from other team member
+- Publish `auditor` crate first (you will need a [crates.io API token](https://crates.io/settings/tokens))
+  ```bash
+  cd auditor
+  cargo publish --dry-run
+  cargo publish
+  ```
+- Then run the publish workflow for all rust-based collectors/plugins (`cd` into corresponding dirs)
+  - `plugins/priority`
+  -  `collectors/slurm` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
+  - `collectors/slurm_epilog`
+- Merge PR
+- Create tag for version
+  ```bash
+  git fetch upstream
+  git checkout upstream/main
+  git tag <version>  # e.g. v0.1.0
+  git push upstream <version>
+  ```
+  - This triggers the build of the pyauditor package and the python-based collectors/plugins
+  - This triggers the build of the docker containers and pushes them to DockerHub and GHCR
+  - This triggers a GitHub release
+    - Update the release notes by editing the release and pressing the auto-generate button
+- Announce in Mattermost AUDITOR channel
+- Update the `pyauditor` version number in [tardis](https://github.com/MatterMiners/tardis) (and update the code of the AUDITOR plugin if the release introduced breaking changes)

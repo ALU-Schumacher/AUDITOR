@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed
 - Dependencies: Update pytest from 7.4.2 to 7.4.3 ([@dirksammel](https://github.com/dirksammel))
