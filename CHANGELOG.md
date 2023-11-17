@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor+pyauditor: Added advanced filtering when querying records (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor-pyauditor: Added bulk_insert option to insert list of records using auditor client and pyauditor (#580) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
+- Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer)
 
 ### Changed
 - Auditor+pyauditor: Deprecate `get_started_since()` and `get_stopped_since()` functions ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
