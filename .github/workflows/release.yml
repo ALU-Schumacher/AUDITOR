@@ -6,21 +6,25 @@ on:
 jobs:
   release-pyauditor:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - name: Download pyauditor wheels
         uses: actions/download-artifact@v3
         with:
           name: pyauditor-wheels
+          path: dist
 
       - name: Setup python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
-      - name: Publish to PyPi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: |
-          pip install --upgrade twine
-          twine upload --skip-existing *
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist\*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
