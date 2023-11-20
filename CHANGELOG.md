@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update pytest from 7.4.2 to 7.4.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update uuid from 1.5.0 to 1.6.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
