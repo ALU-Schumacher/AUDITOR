@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update pytest from 7.4.2 to 7.4.3 ([@dirksammel](https://github.com/dirksammel))
