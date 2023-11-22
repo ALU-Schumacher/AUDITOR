@@ -125,6 +125,11 @@
                 
                 
                 
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/development/#creating-a-new-release">Creating a new release</a>
+                </div>
+                
+                
             </div>
         </div>
         
@@ -223,6 +228,59 @@ A local version of the documentation can be built with</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>scripts/docs_pyauditor.sh
 </span></code></pre>
 <p>The documentation can then be found in <code>pyauditor/docs/_build/html/</code>.</p>
+<h1 id="creating-a-new-release">Creating a new release</h1>
+<p>Follow the steps below in order to create a new release.</p>
+<p>Example PR: <a href="https://github.com/ALU-Schumacher/AUDITOR/pull/547">https://github.com/ALU-Schumacher/AUDITOR/pull/547</a></p>
+<ul>
+<li>Update the version number in all <code>Cargo.toml</code> files</li>
+<li>Run <code>cargo update</code> to update dependencies in <code>Cargo.lock</code></li>
+<li>Update the version number in all <code>pyproject.toml</code> files</li>
+<li>Finalize the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a>
+<ul>
+<li>Rename <code>Unreleased</code> to version number, add date</li>
+<li>Add new <code>Unreleased</code> section with all subsections (Breaking changes, Security, Added, Changed, Removed)</li>
+<li>At the bottom: Add link target for new version</li>
+<li>At the bottom: Update link target for unreleased version</li>
+</ul>
+</li>
+<li>Finalize the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/migration.md">migration guide</a>
+<ul>
+<li>Rename <code>Unreleased</code> to version number</li>
+</ul>
+</li>
+<li>Update changelog in <a href="https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm">RPM <code>.spec</code> files</a></li>
+<li>Create PR and wait for approval from other team member</li>
+<li>Publish <code>auditor</code> crate first (you will need a <a href="https://crates.io/settings/tokens">crates.io API token</a>)<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a535ae;">cd</span><span> auditor
+</span><span>cargo publish --dry-run
+</span><span>cargo publish
+</span></code></pre>
+</li>
+<li>Then run the publish workflow for all rust-based collectors/plugins (<code>cd</code> into corresponding dirs)
+<ul>
+<li><code>plugins/priority</code></li>
+<li><code>collectors/slurm</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
+<li><code>collectors/slurm_epilog</code></li>
+</ul>
+</li>
+<li>Merge PR</li>
+<li>Create tag for version<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git fetch upstream
+</span><span>git checkout upstream/main
+</span><span>git tag </span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;  </span><span style="color:#919191;"># e.g. v0.1.0
+</span><span>git push upstream </span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
+</span></code></pre>
+<ul>
+<li>This triggers the build of the pyauditor package and the python-based collectors/plugins</li>
+<li>This triggers the build of the docker containers and pushes them to DockerHub and GHCR</li>
+<li>This triggers a GitHub release
+<ul>
+<li>Update the release notes by editing the release and pressing the auto-generate button</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Announce in Mattermost AUDITOR channel</li>
+<li>Update the <code>pyauditor</code> version number in <a href="https://github.com/MatterMiners/tardis">tardis</a> (and update the code of the AUDITOR plugin if the release introduced breaking changes)</li>
+</ul>
 
 
         </div>
