@@ -30,6 +30,7 @@ jobs:
       - name: Maturin
         uses: messense/maturin-action@v1
         with:
+          maturin-version: v1.2.3
           target: x86_64
           manylinux: auto
           command: build

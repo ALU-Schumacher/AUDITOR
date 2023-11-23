@@ -37,6 +37,7 @@ jobs:
       - name: Maturin
         uses: messense/maturin-action@v1
         with:
+          maturin-version: v1.2.3
           command: build
           args: --release -o dist --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
 
