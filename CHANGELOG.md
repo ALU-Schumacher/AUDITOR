@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.192 to 1.0.193 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 68.2.2 to 69.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update uuid from 1.5.0 to 1.6.1 ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Fix maturin version to v1.2.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
