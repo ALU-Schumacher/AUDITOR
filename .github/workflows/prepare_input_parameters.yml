@@ -1,0 +1,20 @@
+name: prepare-input-parameters
+
+on:
+  workflow_call:
+    outputs:
+      python_version:
+        description: "python version for setup"
+        value: ${{ jobs.parameters.outputs.python-version }}
+
+env:
+  PYTHON_VERSION: "python-version=3.9"
+        
+jobs:
+  parameters:
+    runs-on: ubuntu-latest
+    outputs:
+      python-version: ${{ steps.set-parameters.outputs.python-version }}
+    steps:
+      - id: set-parameters
+        run: echo $PYTHON_VERSION >> $GITHUB_OUTPUT

@@ -2,6 +2,10 @@ name: pyauditor-integration-tests
 
 on:
   workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
 
 jobs:
   pyauditor-integration-test:
@@ -26,7 +30,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: ${{ inputs.python-version }}
 
       - name: Set up toolchain
         uses: dtolnay/rust-toolchain@stable

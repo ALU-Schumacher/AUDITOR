@@ -2,6 +2,10 @@ name: pyauditor-docs
 
 on:
   workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
 
 jobs:
   pyauditor-docs:
@@ -15,7 +19,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: ${{ inputs.python-version }}
 
       - name: Download wheel
         uses: actions/download-artifact@v3
