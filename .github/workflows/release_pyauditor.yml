@@ -2,6 +2,10 @@ name: release-pyauditor
 
 on:
   workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
 
 jobs:
   release-pyauditor:
@@ -19,7 +23,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: ${{ inputs.python-version }}
 
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v1

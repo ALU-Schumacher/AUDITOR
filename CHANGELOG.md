@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Auditor+pyauditor: Added advanced filtering when querying records (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor-pyauditor: Added bulk_insert option to insert list of records using auditor client and pyauditor (#580) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Auditor+pyauditor: Deprecate `get_started_since()` and `get_stopped_since()` functions ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update sqlx from 0.7.2 to 0.7.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.21 to 0.5.22 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
