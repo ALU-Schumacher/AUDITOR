@@ -75,6 +75,17 @@
             <div class="toc-sticky">
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#from-0-3-0-0-3-1-to-unreleased">From 0.3.0&#x2F;0.3.1 to unreleased</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development"><small>- Development</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</a>
                 </div>
                 
@@ -92,7 +103,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development"><small>- Development</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development-1"><small>- Development</small></a>
                 </div>
                 
                 
@@ -123,7 +134,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development-1"><small>- Development</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/migration/#development-2"><small>- Development</small></a>
                 </div>
                 
                 
@@ -136,6 +147,13 @@
         <div class="content text">
             
 <div class="heading-text">Migration Guide</div>
+<h1 id="from-0-3-0-0-3-1-to-unreleased">From 0.3.0/0.3.1 to unreleased</h1>
+<h2 id="development">Development</h2>
+<h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.3</p>
+<ul>
+<li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
 <h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
 <h2 id="slurm-collector">Slurm collector</h2>
 <p>New filter options for querying slurm jobs are available.
@@ -203,7 +221,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <tr><td>Get all records</td><td><code>/get</code> (GET)</td><td><code>/record</code> (GET)</td></tr>
 <tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/record?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
 </tbody></table>
-<h2 id="development">Development</h2>
+<h2 id="development-1">Development</h2>
 <h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.2</p>
 <ul>
@@ -271,7 +289,7 @@ when creating a new record:
 <ul>
 <li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
 </ul>
-<h2 id="development-1">Development</h2>
+<h2 id="development-2">Development</h2>
 <h3 id="update-to-sqlx-0-7-1">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.1</p>
 <ul>
