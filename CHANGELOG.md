@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [0.3.1] - 2023-11-24
+
+### Breaking changes
+
+### Security
+
+### Added
 - Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
 
@@ -337,7 +349,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.3.1...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -348,3 +360,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.1.0
 [0.2.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.2.0
 [0.3.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.0
+[0.3.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1
