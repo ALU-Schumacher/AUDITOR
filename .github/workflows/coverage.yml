@@ -19,7 +19,7 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.7.2
+      SQLX_VERSION: 0.7.3
       SQLX_FEATURES: postgres,rustls,sqlite
       CARGO_TERM_COLOR: always
 
