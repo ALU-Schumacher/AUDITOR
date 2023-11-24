@@ -1,4 +1,4 @@
-name: Release
+name: release-pyauditor
 
 on:
   workflow_call:
