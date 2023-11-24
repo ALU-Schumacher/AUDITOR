@@ -56,7 +56,12 @@ jobs:
     needs: [build-pyauditor-linux, sqlx]
     uses: ./.github/workflows/pyauditor_integration_tests.yml
 
-  release:
+  release-pyauditor:
     if: "startsWith(github.ref, 'refs/tags/')"
     needs: [build-pyauditor-linux, build-pyauditor-windows, build-pyauditor-macos]
-    uses: ./.github/workflows/release.yml
+    uses: ./.github/workflows/release_pyauditor.yml
+
+  release-python-packages:
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: release-pyauditor
+    uses: ./.github/workflows/release_python_packages.yml
