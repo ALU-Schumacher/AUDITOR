@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Dependencies: Update cryptography from 41.0.5 to 41.0.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update config from 0.13.3 to 0.13.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pytest from 7.4.2 to 7.4.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.192 to 1.0.193 ([@QuantumDancer](https://github.com/QuantumDancer))
