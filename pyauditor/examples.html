@@ -52,8 +52,26 @@
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-auditor">Connecting to Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pushing-records-to-auditor">Pushing records to Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updating-records-in-auditor">Updating records in Auditor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-from-auditor">Receiving all records from Auditor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-started-stopped-since-a-given-timestamp">Receiving all records started/stopped since a given timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-from-auditor-deprecated">Receiving all records from Auditor (Deprecated)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-started-stopped-since-a-given-timestamp-deprecated">Receiving all records started/stopped since a given timestamp (Deprecated)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-query">Advanced Query</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#template-query">Template Query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#operators">Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#meta-operators">Meta Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sortby-operators">SortBy Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sortby-column-names">SortBy Column names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-fields-and-operators">Filter Fields and Operators</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#querybuilder">QueryBuilder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples-1">Examples 1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2">Example 2:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3">Example 3:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-4">Example 4:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-5">Example 5:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Example 5:</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#checking-the-health-of-auditor">Checking the health of Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-utc-timestamps">Creating UTC timestamps</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#timestamp-already-in-utc">Timestamp already in UTC</a></li>
@@ -182,20 +200,213 @@ Fields other than the stop time cannot be updated.</p>
 </pre></div>
 </div>
 </section>
-<section id="receiving-all-records-from-auditor">
-<h2>Receiving all records from Auditor<a class="headerlink" href="#receiving-all-records-from-auditor" title="Link to this heading"></a></h2>
+<section id="receiving-all-records-from-auditor-deprecated">
+<h2>Receiving all records from Auditor (Deprecated)<a class="headerlink" href="#receiving-all-records-from-auditor-deprecated" title="Link to this heading"></a></h2>
 <p>Via <code class="docutils literal notranslate"><span class="pre">get()</span></code> all records can be retrieved from Auditor:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_of_records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
-<section id="receiving-all-records-started-stopped-since-a-given-timestamp">
-<h2>Receiving all records started/stopped since a given timestamp<a class="headerlink" href="#receiving-all-records-started-stopped-since-a-given-timestamp" title="Link to this heading"></a></h2>
+<section id="receiving-all-records-started-stopped-since-a-given-timestamp-deprecated">
+<h2>Receiving all records started/stopped since a given timestamp (Deprecated)<a class="headerlink" href="#receiving-all-records-started-stopped-since-a-given-timestamp-deprecated" title="Link to this heading"></a></h2>
 <p>The records to be retrieved can be limited to the ones started or stopped since a given timestamp.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_of_records_started_since</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_started_since</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
 <span class="n">list_of_records_stopped_since</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="advanced-query">
+<h2>Advanced Query<a class="headerlink" href="#advanced-query" title="Link to this heading"></a></h2>
+<p>Records can be queried using fields and operators.</p>
+<section id="template-query">
+<h3>Template Query<a class="headerlink" href="#template-query" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">GET</span> <span class="pre">/records?&lt;field&gt;[&lt;operator&gt;]=&lt;value&gt;</span>
+<span class="pre">`</span></code></p>
+<p>This is how the query is structured and multiple fields and values can be queried together as shown below.</p>
+</section>
+<section id="operators">
+<h3>Operators<a class="headerlink" href="#operators" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>gt</cite> (greater than)</p></li>
+<li><p><cite>gte</cite> (greater than or equal to)</p></li>
+<li><p><cite>lt</cite> (less than)</p></li>
+<li><p><cite>lte</cite> (less than or equal to)</p></li>
+<li><p><cite>equals</cite> (equal to)</p></li>
+</ul>
+</section>
+<section id="meta-operators">
+<h3>Meta Operators<a class="headerlink" href="#meta-operators" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>c</cite> (contains)</p></li>
+<li><p><cite>dnc</cite> (does not contains)</p></li>
+</ul>
+</section>
+<section id="sortby-operators">
+<h3>SortBy Operators<a class="headerlink" href="#sortby-operators" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>asc</cite> (ascending order)</p></li>
+<li><p><cite>desc</cite> (descending order)</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="sortby-column-names">
+<h3>SortBy Column names<a class="headerlink" href="#sortby-column-names" title="Link to this heading"></a></h3>
+<p>You can specify the column on which the sorting must happen
+The following columns are supported for sortby option
+- <cite>start_time</cite>
+- <cite>stop_time</cite>
+- <cite>runtime</cite>
+- <cite>record_id</cite></p>
+</section>
+<section id="filter-fields-and-operators">
+<h3>Filter Fields and Operators<a class="headerlink" href="#filter-fields-and-operators" title="Link to this heading"></a></h3>
+<p>The table shows the fields and the corresponding operators available for each field with which a query can be built.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Operators</p></th>
+<th class="head"><p>Examples (query representation)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>record_id</cite></p></td>
+<td><p>Exact record to be retrieved using record_id</p></td>
+<td></td>
+<td><p>record_id=&lt;record_id&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>start_time</cite></p></td>
+<td><p>Start time of the event (<cite>DateTime&lt;Utc&gt;</cite>)</p></td>
+<td><p><cite>gt</cite>, <cite>gte</cite>, <cite>lt</cite>, <cite>lte</cite></p></td>
+<td><p>start_time[gt]=&lt;timestamp&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>stop_time</cite></p></td>
+<td><p>Stop time of the event (<cite>DateTime&lt;Utc&gt;</cite>)</p></td>
+<td><p><cite>gt</cite>, <cite>gte</cite>, <cite>lt</cite>, <cite>lte</cite></p></td>
+<td><p>stop_time[gt]=&lt;timestamp&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>runtime</cite></p></td>
+<td><p>Runtime of the event (in seconds)</p></td>
+<td><p><cite>gt</cite>, <cite>gte</cite>, <cite>lt</cite>, <cite>lte</cite></p></td>
+<td><p>runtime[gt]=&lt;int&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>meta</cite></p></td>
+<td><p>Meta information</p></td>
+<td><p><cite>d</cite>, <cite>dnc</cite></p></td>
+<td><p>meta[&lt;meta_key&gt;][c]=&lt;meta_value&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>component</cite></p></td>
+<td><p>Component identifier</p></td>
+<td><p><cite>gt</cite>, <cite>gte</cite>, <cite>lt</cite>, <cite>lte</cite>, <cite>equals</cite></p></td>
+<td><p>component[&lt;component_name&gt;][gt]=&lt;amount&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>sort_by</cite></p></td>
+<td><p>Sort the records</p></td>
+<td><p><cite>asc</cite>, <cite>desc</cite></p></td>
+<td><p>sort_by[asc]=&lt;column_name&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>limit</cite></p></td>
+<td><p>Limit the query results</p></td>
+<td></td>
+<td><p>limit=&lt;number&gt;</p></td>
+</tr>
+</tbody>
+</table>
+<p>Meta field can be used to query records by specifying the meta key and MetaOperator must be used
+to specify meta values. The MetaOperator must be used to specify whether the value is
+contained or does not contained for the specific Metakey.</p>
+<p>Component field can be used to query records by specifying the component name (CPU) and [‘Operator’] must be used
+to specify the amount.</p>
+<p>To query records based on a range, specify the field with two operators
+Either with gt or gte and lt or lte.</p>
+<p>For example,
+To query a records with start_time ranging between two timestamps.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`text</span>
+<span class="pre">Get</span> <span class="pre">records?start_time[gt]=timestamp1&amp;start_time[lt]=timestamp2</span>
+<span class="pre">`</span></code></p>
+</section>
+</section>
+<section id="querybuilder">
+<h2>QueryBuilder<a class="headerlink" href="#querybuilder" title="Link to this heading"></a></h2>
+<p>Below are the examples to query records using QueryBuilder methods. It helps to build query string which can be passed
+as an argument to advanced_query function to get the records.</p>
+<section id="examples-1">
+<h3>Examples 1:<a class="headerlink" href="#examples-1" title="Link to this heading"></a></h3>
+<p>Query all records</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span>
+
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2">
+<h3>Example 2:<a class="headerlink" href="#example-2" title="Link to this heading"></a></h3>
+<p>Query records with start_time greater than the timestamp</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+
+<span class="c1"># Set the datetime value in Utc using Value object</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+
+<span class="c1"># Set the operator using Value object created in the previous step</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># Build the query string using build method from QueryBuilder object</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="c1"># Pass the query_string as an argument to advanced_query function</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3">
+<h3>Example 3:<a class="headerlink" href="#example-3" title="Link to this heading"></a></h3>
+<p>Query records with meta key = site_id and value = site1</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">MetaOperator</span><span class="p">,</span> <span class="n">MetaQuery</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+
+<span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;site1&quot;</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_meta_query</span><span class="p">(</span><span class="n">meta_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-4">
+<h3>Example 4:<a class="headerlink" href="#example-4" title="Link to this heading"></a></h3>
+<p>Query records with component name = CPU and amount = 10</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">ComponentQuery</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_component_query</span><span class="p">(</span><span class="n">component_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-5">
+<h3>Example 5:<a class="headerlink" href="#example-5" title="Link to this heading"></a></h3>
+<p>Query records sorted by stop_time in descending order and limit the query to 500 records</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span><span class="p">,</span> <span class="n">SortBy</span>
+
+<span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">&quot;stop_time&quot;</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Example 5:<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Query records by exact record_id</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span>
+
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="s2">&quot;record-1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="checking-the-health-of-auditor">
 <h2>Checking the health of Auditor<a class="headerlink" href="#checking-the-health-of-auditor" title="Link to this heading"></a></h2>
@@ -256,7 +467,7 @@ Only the actual numbers for hours, minutes, and so on matter.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Stefan Kroboth.</p>
+    <p>&#169; Copyright 2023, Auditor.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -79,12 +79,17 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -104,9 +109,13 @@
       </ul></li>
       <li><a href="api.html#pyauditor.AuditorClientBuilder.address">address() (pyauditor.AuditorClientBuilder method)</a>
 </li>
+      <li><a href="api.html#pyauditor.AuditorClient.advanced_query">advanced_query() (pyauditor.AuditorClient method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.Component.amount">amount (pyauditor.Component attribute)</a>
+</li>
+      <li><a href="api.html#pyauditor.SortBy.ascending">ascending() (pyauditor.SortBy method)</a>
 </li>
       <li><a href="api.html#pyauditor.AuditorClient">AuditorClient (class in pyauditor)</a>
 </li>
@@ -121,7 +130,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.AuditorClientBuilder.build">build() (pyauditor.AuditorClientBuilder method)</a>
+
+      <ul>
+        <li><a href="api.html#pyauditor.QueryBuilder.build">(pyauditor.QueryBuilder method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.AuditorClientBuilder.build_blocking">build_blocking() (pyauditor.AuditorClientBuilder method)</a>
@@ -134,11 +147,37 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.Component">Component (class in pyauditor)</a>
 </li>
+      <li><a href="api.html#pyauditor.ComponentQuery.component_operator">component_operator() (pyauditor.ComponentQuery method)</a>
+</li>
+      <li><a href="api.html#pyauditor.ComponentQuery">ComponentQuery (class in pyauditor)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.Record.components">components (pyauditor.Record attribute)</a>
 </li>
       <li><a href="api.html#pyauditor.AuditorClientBuilder.connection_string">connection_string() (pyauditor.AuditorClientBuilder method)</a>
+</li>
+      <li><a href="api.html#pyauditor.MetaOperator.contains">contains() (pyauditor.MetaOperator method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.SortBy.descending">descending() (pyauditor.SortBy method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.MetaOperator.does_not_contains">does_not_contains() (pyauditor.MetaOperator method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.Operator.equals">equals() (pyauditor.Operator method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -152,6 +191,12 @@
         <li><a href="api.html#pyauditor.AuditorClientBlocking.get">(pyauditor.AuditorClientBlocking method)</a>
 </li>
         <li><a href="api.html#pyauditor.Meta.get">(pyauditor.Meta method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#pyauditor.AuditorClient.get_single_record">get_single_record() (pyauditor.AuditorClient method)</a>
+
+      <ul>
+        <li><a href="api.html#pyauditor.AuditorClientBlocking.get_single_record">(pyauditor.AuditorClientBlocking method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -168,6 +213,10 @@
         <li><a href="api.html#pyauditor.AuditorClientBlocking.get_stopped_since">(pyauditor.AuditorClientBlocking method)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#pyauditor.Operator.gt">gt() (pyauditor.Operator method)</a>
+</li>
+      <li><a href="api.html#pyauditor.Operator.gte">gte() (pyauditor.Operator method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -191,6 +240,20 @@
   </ul></td>
 </tr></table>
 
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.QueryBuilder.limit">limit() (pyauditor.QueryBuilder method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.Operator.lt">lt() (pyauditor.Operator method)</a>
+</li>
+      <li><a href="api.html#pyauditor.Operator.lte">lte() (pyauditor.Operator method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -198,8 +261,14 @@
 </li>
       <li><a href="api.html#pyauditor.Record.meta">meta (pyauditor.Record attribute)</a>
 </li>
+      <li><a href="api.html#pyauditor.MetaQuery.meta_operator">meta_operator() (pyauditor.MetaQuery method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.MetaOperator">MetaOperator (class in pyauditor)</a>
+</li>
+      <li><a href="api.html#pyauditor.MetaQuery">MetaQuery (class in pyauditor)</a>
+</li>
       <li>
     module
 
@@ -222,6 +291,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.Operator">Operator (class in pyauditor)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -232,6 +309,14 @@
         <li><a href="api.html#module-pyauditor">module</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.QueryBuilder">QueryBuilder (class in pyauditor)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -256,8 +341,18 @@
 </li>
       <li><a href="api.html#pyauditor.Component.scores">scores (pyauditor.Component attribute)</a>
 </li>
+      <li><a href="api.html#pyauditor.Value.set_count">set_count() (pyauditor.Value static method)</a>
+</li>
+      <li><a href="api.html#pyauditor.Value.set_datetime">set_datetime() (pyauditor.Value static method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.Value.set_runtime">set_runtime() (pyauditor.Value static method)</a>
+</li>
+      <li><a href="api.html#pyauditor.QueryBuilder.sort_by">sort_by() (pyauditor.QueryBuilder method)</a>
+</li>
+      <li><a href="api.html#pyauditor.SortBy">SortBy (class in pyauditor)</a>
+</li>
       <li><a href="api.html#pyauditor.Record.start_time">start_time (pyauditor.Record attribute)</a>
 </li>
       <li><a href="api.html#pyauditor.Record.stop_time">stop_time (pyauditor.Record attribute)</a>
@@ -292,6 +387,10 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.Value">Value (class in pyauditor)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.Score.value">value (pyauditor.Score attribute)</a>
 </li>
   </ul></td>
@@ -302,14 +401,28 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#pyauditor.Record.with_component">with_component() (pyauditor.Record method)</a>
 </li>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_component_query">with_component_query() (pyauditor.QueryBuilder method)</a>
+</li>
       <li><a href="api.html#pyauditor.Record.with_meta">with_meta() (pyauditor.Record method)</a>
+</li>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_meta_query">with_meta_query() (pyauditor.QueryBuilder method)</a>
+</li>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_record_id">with_record_id() (pyauditor.QueryBuilder method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_runtime">with_runtime() (pyauditor.QueryBuilder method)</a>
+</li>
       <li><a href="api.html#pyauditor.Component.with_score">with_score() (pyauditor.Component method)</a>
 </li>
-      <li><a href="api.html#pyauditor.Record.with_stop_time">with_stop_time() (pyauditor.Record method)</a>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_start_time">with_start_time() (pyauditor.QueryBuilder method)</a>
 </li>
+      <li><a href="api.html#pyauditor.QueryBuilder.with_stop_time">with_stop_time() (pyauditor.QueryBuilder method)</a>
+
+      <ul>
+        <li><a href="api.html#pyauditor.Record.with_stop_time">(pyauditor.Record method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -322,7 +435,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Stefan Kroboth.</p>
+    <p>&#169; Copyright 2023, Auditor.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
