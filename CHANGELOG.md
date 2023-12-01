@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer)
 
 ### Added
 - Auditor+pyauditor: Added advanced filtering when querying records (#466) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
