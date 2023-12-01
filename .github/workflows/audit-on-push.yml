@@ -12,3 +12,10 @@ jobs:
       - uses: rustsec/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # RUSTSEC-2023-0071 - Marvin Attack: potential key recovery through timing sidechannels (rsa crate)
+          # Reason for ignore: Vulnerable code is not actually used
+          # Explanation:
+          # The 'rsa' crate is pulled in by the 'sqlx-mysql' crate. The 'sqlx-mysql' crate
+          # is only pulled in because we use the `migrate` feature of `sqlx`. However, we
+          # only use the postgres and sqlite DB drivers.
+          ignore: RUSTSEC-2023-0071
