@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO accounting (\n            record_id, start_time, stop_time, runtime, updated_at\n        )\n        SELECT * FROM UNNEST($1::text[], $2::timestamptz[], $3::timestamptz[], $4::bigint[], $5::timestamptz[])\n        RETURNING id;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "TextArray",
+        "TimestamptzArray",
+        "TimestamptzArray",
+        "Int8Array",
+        "TimestamptzArray"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "520d88dec0363b824ca4af064510c2e837819eb7877850ff8077643a5bdbe3e2"
+}

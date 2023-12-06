@@ -73,7 +73,7 @@
 //! # }
 //! ```
 //!
-//! ## Pushing records to Auditor
+//! ## Pushing one record to Auditor
 //!
 //! Assuming that a record and a client were already created,
 //! the record can be pushed to Auditor with
@@ -95,6 +95,29 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//!  ## Pushing multiple records to AuditorClientBuilder
+//!
+//!  Assuming that list of records and a client were already created,
+//!  the records can be pushed to Auditor with_ymd_and_hms
+//!
+//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor::domain::RecordAdd;
+//! # use chrono::{DateTime, TimeZone, Utc};
+//! # use std::collections::HashMap;
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), anyhow::Error> {
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .build()?;
+//! # let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+//! # let records: Vec<RecordAdd> = (0..5)
+//! #    .map(|i| RecordAdd::new(&format!("record-{}", i), HashMap::new(), vec![], start_time))
+//! #    .collect();
+//! client.bulk_insert(&records).await?;
+//! # Ok(())
+//! # }
 //!
 //! ## Updating records in Auditor
 //!
