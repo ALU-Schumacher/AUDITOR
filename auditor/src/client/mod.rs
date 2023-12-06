@@ -662,6 +662,32 @@ impl AuditorClient {
         }
     }
 
+    /// Push multiple record to the Auditor instance as a vec.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
+    #[tracing::instrument(
+        name = "Sending multiple records to AUDITOR server.",
+        skip(self, records)
+    )]
+    pub async fn bulk_insert(&self, records: &Vec<RecordAdd>) -> Result<(), ClientError> {
+        let response = self
+            .client
+            .post(&format!("{}/records", &self.address))
+            .header("Content-Type", "application/json")
+            .json(records)
+            .send()
+            .await?;
+
+        if response.text().await? == ERR_RECORD_EXISTS {
+            Err(ClientError::RecordExists)
+        } else {
+            Ok(())
+        }
+    }
+
     /// Update an existing record in the Auditor instance.
     ///
     ///
@@ -854,6 +880,30 @@ impl AuditorClientBlocking {
         }
     }
 
+    /// Push multiple records to the Auditor instance as vec.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::RecordExists`] - If the record already exists in the database.
+    /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
+    #[tracing::instrument(
+        name = "Sending multiple records to AUDITOR server.",
+        skip(self, records)
+    )]
+    pub fn bulk_insert(&self, records: &Vec<RecordAdd>) -> Result<(), ClientError> {
+        let response = self
+            .client
+            .post(format!("{}/records", &self.address))
+            .header("Content-Type", "application/json")
+            .json(records)
+            .send()?;
+
+        if response.text()? == ERR_RECORD_EXISTS {
+            Err(ClientError::RecordExists)
+        } else {
+            Ok(())
+        }
+    }
     /// Update an existing record in the Auditor instance.
     ///
     /// # Errors
@@ -1949,6 +1999,103 @@ mod tests {
             .await;
 
         let res = tokio::task::spawn_blocking(move || client.get_single_record(record_id))
+            .await
+            .unwrap();
+        assert_err!(res);
+    }
+
+    #[tokio::test]
+    async fn bulk_insert_succeeds() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
+
+        let records: Vec<RecordAdd> = (0..10).map(|_| record()).collect();
+
+        Mock::given(method("POST"))
+            .and(path("/records"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&records))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = client.bulk_insert(&records).await;
+    }
+
+    #[tokio::test]
+    async fn blocking_bulk_insert_succeeds() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
+        })
+        .await
+        .unwrap();
+
+        let records: Vec<RecordAdd> = (0..10).map(|_| record()).collect();
+
+        Mock::given(method("POST"))
+            .and(path("/records"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&records))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = tokio::task::spawn_blocking(move || client.bulk_insert(&records))
+            .await
+            .unwrap();
+    }
+
+    #[tokio::test]
+    async fn bulk_insert_fails_on_existing_record() {
+        let mock_server = MockServer::start().await;
+        let client = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri())
+            .build()
+            .unwrap();
+
+        let records: Vec<RecordAdd> = (0..10).map(|_| record()).collect();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500).set_body_string(ERR_RECORD_EXISTS))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        assert_err!(client.bulk_insert(&records).await);
+    }
+
+    #[tokio::test]
+    async fn blocking_bulk_insert_fails_on_existing_record() {
+        let mock_server = MockServer::start().await;
+        let uri = mock_server.uri();
+        let client = tokio::task::spawn_blocking(move || {
+            AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap()
+        })
+        .await
+        .unwrap();
+
+        let records: Vec<RecordAdd> = (0..10).map(|_| record()).collect();
+
+        Mock::given(any())
+            .respond_with(ResponseTemplate::new(500).set_body_string(ERR_RECORD_EXISTS))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = tokio::task::spawn_blocking(move || client.bulk_insert(&records))
             .await
             .unwrap();
         assert_err!(res);

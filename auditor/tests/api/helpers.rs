@@ -44,6 +44,16 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
+    pub async fn bulk_insert<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
+        reqwest::Client::new()
+            .post(&format!("{}/records", &self.address))
+            .header("Content-Type", "application/json")
+            .json(record)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
     pub async fn get_records(&self) -> reqwest::Response {
         reqwest::Client::new()
             .get(&format!("{}/record", &self.address))

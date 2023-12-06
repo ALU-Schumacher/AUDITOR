@@ -797,6 +797,25 @@ impl AuditorClient {
         })
     }
 
+    /// add(record: Record)
+    /// Push a list of records to the Auditor instance
+    fn bulk_insert<'a>(&self, records: Vec<Record>, py: Python<'a>) -> PyResult<&'a PyAny> {
+        let inner = self.inner.clone();
+
+        let bulk_insert_records: Result<Vec<auditor::domain::RecordAdd>, anyhow::Error> = records
+            .into_iter()
+            .map(|r| auditor::domain::RecordAdd::try_from(r.inner))
+            .collect();
+
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            let bul = bulk_insert_records?;
+            inner
+                .bulk_insert(&bul)
+                .await
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
+        })
+    }
+
     /// update(record: Record)
     /// Update an existing record in the Auditor instance
     fn update<'a>(&self, record: Record, py: Python<'a>) -> PyResult<&'a PyAny> {

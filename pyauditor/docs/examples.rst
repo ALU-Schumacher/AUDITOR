@@ -98,6 +98,14 @@ Assuming that a record and a client were already created, the record can be push
 
    await client.add(record)
 
+Pushing a list of records to Auditor
+==================================
+
+Assuming that a list of records and a client were already created, the record can be pushed to Auditor like this:
+
+.. code-block:: python
+
+   await client.bulk_insert(records)
 
 Updating records in Auditor
 ===========================

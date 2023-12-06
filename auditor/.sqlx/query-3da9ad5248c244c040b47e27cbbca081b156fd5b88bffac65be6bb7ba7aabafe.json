@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO meta (record_id, key, value)\n                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "TextArray",
+        "TextArray",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3da9ad5248c244c040b47e27cbbca081b156fd5b88bffac65be6bb7ba7aabafe"
+}

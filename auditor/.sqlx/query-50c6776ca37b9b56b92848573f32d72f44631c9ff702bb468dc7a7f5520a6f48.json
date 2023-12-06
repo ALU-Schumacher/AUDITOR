@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                WITH insert_components AS (\n                    INSERT INTO components (name, amount)\n                    VALUES ($1, $2)\n                    RETURNING id\n                ),\n                insert_scores AS (\n                    INSERT INTO scores (name, value)\n                    SELECT * FROM UNNEST($3::text[], $4::double precision[])\n                    -- Update if already in table. This isn't great, but \n                    -- otherwise RETURNING won't return anything.\n                    ON CONFLICT (name, value) DO UPDATE\n                    SET value = EXCLUDED.value, name = EXCLUDED.name\n                    RETURNING id\n                ),\n                insert_components_scores AS (\n                    INSERT INTO components_scores (component_id, score_id)\n                    SELECT (SELECT id FROM insert_components), id\n                    FROM insert_scores\n                )\n                INSERT INTO records_components (record_id, component_id)\n                SELECT $5, (SELECT id from insert_components) \n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8",
+        "TextArray",
+        "Float8Array",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "50c6776ca37b9b56b92848573f32d72f44631c9ff702bb468dc7a7f5520a6f48"
+}

@@ -121,6 +121,19 @@ impl AuditorClientBlocking {
             .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
     }
 
+    /// add(record: Record)
+    /// Push a list of records to the Auditor instance
+    fn bulk_insert(&self, records: Vec<Record>) -> PyResult<()> {
+        let bulk_insert_records: Result<Vec<auditor::domain::RecordAdd>, anyhow::Error> = records
+            .into_iter()
+            .map(|r| auditor::domain::RecordAdd::try_from(r.inner))
+            .collect();
+
+        self.inner
+            .bulk_insert(&bulk_insert_records?)
+            .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))
+    }
+
     /// update(record: Record)
     /// Update an existing record in the Auditor instance
     fn update(&self, record: Record) -> PyResult<()> {
