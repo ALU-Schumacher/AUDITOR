@@ -60,6 +60,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClient"><code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.add"><code class="docutils literal notranslate"><span class="pre">AuditorClient.add()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.advanced_query"><code class="docutils literal notranslate"><span class="pre">AuditorClient.advanced_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.bulk_insert"><code class="docutils literal notranslate"><span class="pre">AuditorClient.bulk_insert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_single_record"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_single_record()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_started_since"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_started_since()</span></code></a></li>
@@ -114,6 +115,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClientBlocking"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.add"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.bulk_insert"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.bulk_insert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_single_record"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_single_record()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_started_since"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_started_since()</span></code></a></li>
@@ -284,6 +286,13 @@ database.</p>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
 </dd></dl>
 
 <dl class="py method">
@@ -832,6 +841,13 @@ database. In contrast to <cite>AuditorClient</cite>, no async runtime is needed 
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.add" title="Link to this definition"></a></dt>
 <dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
 </dd></dl>
 
 <dl class="py method">

@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-record">Creating a Record</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-auditor">Connecting to Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pushing-records-to-auditor">Pushing records to Auditor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pushing-a-list-of-records-to-auditor">Pushing a list of records to Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updating-records-in-auditor">Updating records in Auditor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-from-auditor-deprecated">Receiving all records from Auditor (Deprecated)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#receiving-all-records-started-stopped-since-a-given-timestamp-deprecated">Receiving all records started/stopped since a given timestamp (Deprecated)</a></li>
@@ -188,6 +189,13 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <h2>Pushing records to Auditor<a class="headerlink" href="#pushing-records-to-auditor" title="Link to this heading"></a></h2>
 <p>Assuming that a record and a client were already created, the record can be pushed to Auditor like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pushing-a-list-of-records-to-auditor">
+<h2>Pushing a list of records to Auditor<a class="headerlink" href="#pushing-a-list-of-records-to-auditor" title="Link to this heading"></a></h2>
+<p>Assuming that a list of records and a client were already created, the record can be pushed to Auditor like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
