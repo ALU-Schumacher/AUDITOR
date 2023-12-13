@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Development | Auditor </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/juice.css">
+    
+    
+</head>
+
+<body>
+    
+<header class="box-shadow">
+    
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;v0.3.0&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR/v0.3.0/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;v0.3.0&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;v0.3.0&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;v0.3.0&#x2F;development&#x2F;">Development</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;v0.3.0&#x2F;migration&#x2F;">Migration</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+</header>
+
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#compiling-auditor-from-source">Compiling Auditor from source</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#prerequisites"><small>- Prerequisites</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#running-auditor-via-cargo"><small>- Running Auditor via cargo</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#running-the-tests"><small>- Running the tests</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#building-binaries"><small>- Building binaries</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#static-linking-and-cross-compiling"><small>- Static linking and cross compiling</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#adding-new-plugins-and-collectors">Adding new plugins and collectors</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#documentation">Documentation</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#github-pages"><small>- Github pages</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#rust-documentation"><small>- Rust documentation</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR/v0.3.0/development/#python-client"><small>- Python client</small></a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+<div class="heading-text">Instructions for developers</div>
+<p>This document covers instructions for developers of Auditor and its plugins/collectors.</p>
+<h1 id="compiling-auditor-from-source">Compiling Auditor from source</h1>
+<p>This section describes how to set up the required development environment in order to compile Auditor from source.
+It also covers cross compiling and static linking against <code>musl</code> instead of <code>glibc</code> in order to obtain a maximally portable binary.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Compiling Auditor requires</p>
+<ul>
+<li>Rust (see below)</li>
+<li>Docker</li>
+<li>sqlx-cli (see below)</li>
+<li>PostgreSQL client (<code>psql</code>)</li>
+<li>bunyan (optional, see below)</li>
+</ul>
+<h3 id="rust">Rust</h3>
+<p>Requires a recent Rust version (MSRV 1.56.1) and cargo.</p>
+<p>Ideally installed via rustup:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>curl --proto </span><span style="color:#00a33f;">&#39;=https&#39;</span><span> --tlsv1.2 -sSf https://sh.rustup.rs </span><span style="color:#ff5600;">| </span><span>sh
+</span></code></pre>
+<h3 id="sqlx">sqlx</h3>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo install --version</span><span style="color:#ff5600;">=</span><span>0.7.2 sqlx-cli --no-default-features --features postgres,rustls
+</span></code></pre>
+<h3 id="bunyan">bunyan</h3>
+<p>For nicer logs install bunyan:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo install bunyan
+</span></code></pre>
+<h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git clone git@github.com:ALU-Schumacher/AUDITOR.git
+</span><span style="color:#a535ae;">cd</span><span> AUDITOR
+</span><span>./scripts/init_db.sh
+</span><span>./scripts/init_slurm_collector_sqlite.sh
+</span><span>cargo run
+</span></code></pre>
+<p>Calling <code>./scripts/db_init.sh</code> will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
+If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling <code>db_init.sh</code> pass the correct settings to auditor via the configuration environment variables mentioned above.
+Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo run
+</span></code></pre>
+<p>For nicer logs pipe the output through <code>bunyan</code>:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo run </span><span style="color:#ff5600;">| </span><span>bunyan
+</span></code></pre>
+<p>Note that this will be a debug build which will not pass all optimizations during compilation.
+For maximum performance a <code>release</code> build is necessary:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo run --release
+</span></code></pre>
+<h2 id="running-the-tests">Running the tests</h2>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo test
+</span></code></pre>
+<p>Output logs while running the tests:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>TEST_LOG</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo test
+</span></code></pre>
+<h2 id="building-binaries">Building binaries</h2>
+<p>Binaries used in production should be built in release mode:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo build --release
+</span></code></pre>
+<p>The binary can then be found in <code>target/release/auditor</code>.</p>
+<p>Make sure a database is up and running when starting Auditor.</p>
+<h2 id="static-linking-and-cross-compiling">Static linking and cross compiling</h2>
+<p>The binary will only link to the system <code>glibc</code>.
+Fully statically linked binaries can be obtained by statically linking against <code>musl</code> instead auf <code>glibc</code>.
+This can be beneficial when cross compiling, in particular for older targets (e.g. CentOS7).
+This requires the <code>musl</code> dev tools to be installed on the system where Auditor is compiled.
+The exact packages needed depends on your Linux distribution.
+Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be installed (once):</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>rustup target add x86_64-unknown-linux-musl
+</span></code></pre>
+<p>Then cross-compilation with static linking can be done via</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl
+</span></code></pre>
+<p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
+<h1 id="adding-new-plugins-and-collectors">Adding new plugins and collectors</h1>
+<p>TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)</p>
+<h1 id="documentation">Documentation</h1>
+<h2 id="github-pages">Github pages</h2>
+<p>This webpage is based on the <a href="https://www.getzola.org/">Zola</a> framework.</p>
+<p>For local development, <a href="https://www.getzola.org/documentation/getting-started/installation/">install</a> the <code>zola</code> CLI program and run</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span> zola -r media/website serve
+</span></code></pre>
+<p>in the root directory of the Auditor repo.</p>
+<p>The local version of the webpage is now available at <a href="http://127.0.0.1:1111/">http://127.0.0.1:1111/</a>.</p>
+<h2 id="rust-documentation">Rust documentation</h2>
+<p>A local version of the Rust documentation can be built with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo doc
+</span></code></pre>
+<p>Use the<code>--open</code> flag to directly open the documentation in your browser.</p>
+<h2 id="python-client">Python client</h2>
+<p>The documentation of the python client is based on the <a href="https://www.sphinx-doc.org/">Sphinx</a> framework.
+A local version of the documentation can be built with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>scripts/docs_pyauditor.sh
+</span></code></pre>
+<p>The documentation can then be found in <code>pyauditor/docs/_build/html/</code>.</p>
+
+
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
