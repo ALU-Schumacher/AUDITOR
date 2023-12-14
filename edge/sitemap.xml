@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://alu-schumacher.github.io/AUDITOR/</loc>
+        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/</loc>
     </url>
     <url>
-        <loc>https://alu-schumacher.github.io/AUDITOR/about/</loc>
+        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/about/</loc>
     </url>
     <url>
-        <loc>https://alu-schumacher.github.io/AUDITOR/changelog/</loc>
+        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/changelog/</loc>
     </url>
     <url>
-        <loc>https://alu-schumacher.github.io/AUDITOR/development/</loc>
+        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/development/</loc>
     </url>
     <url>
-        <loc>https://alu-schumacher.github.io/AUDITOR/migration/</loc>
+        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/migration/</loc>
     </url>
 </urlset>
