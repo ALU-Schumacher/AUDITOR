@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/</loc>
+        <loc>https://alu-schumacher.github.io/AUDITOR//edge/</loc>
     </url>
     <url>
-        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/about/</loc>
+        <loc>https://alu-schumacher.github.io/AUDITOR//edge/about/</loc>
     </url>
     <url>
-        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/changelog/</loc>
+        <loc>https://alu-schumacher.github.io/AUDITOR//edge/changelog/</loc>
     </url>
     <url>
-        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/development/</loc>
+        <loc>https://alu-schumacher.github.io/AUDITOR//edge/development/</loc>
     </url>
     <url>
-        <loc>$GITHUB_PAGES_URL/$RELEASE_VERSION/migration/</loc>
+        <loc>https://alu-schumacher.github.io/AUDITOR//edge/migration/</loc>
     </url>
 </urlset>

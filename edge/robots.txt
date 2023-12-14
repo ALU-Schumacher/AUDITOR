@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: $GITHUB_PAGES_URL/$RELEASE_VERSION/sitemap.xml
+Sitemap: https://alu-schumacher.github.io/AUDITOR//edge/sitemap.xml
