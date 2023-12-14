@@ -31,7 +31,7 @@ jobs:
         env:
           BUILD_DIR: media/website
           BUILD_ONLY: true
-          BUILD_FLAGS: "--base-url $GITHUB_PAGES_URL/$RELEASE_VERSION"
+          BUILD_FLAGS: "--base-url ${{ env.GITHUB_PAGES_URL }}/${{ env.RELEASE_VERSION }}"
           OUT_DIR: public
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
