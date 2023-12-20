@@ -24,12 +24,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./plugins/apel
-          name: pyauditor-wheels
+          name: pyauditor-wheels-linux-${{ inputs.python-version }}
       - name: Install dependencies
         run: |
-          PYVER=${{ inputs.python-version }}
           pip install --upgrade pip
-          ls | grep manylinux | grep ${PYVER//.} | xargs pip install
+          pip install *.whl
           pip install -e .[tests]
       - name: Run pytest
         run: pytest
