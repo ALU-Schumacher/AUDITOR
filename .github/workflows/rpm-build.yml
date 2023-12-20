@@ -63,7 +63,7 @@ jobs:
         run: |
           BINARY=${{ matrix.binary }} ./scripts/build_rpm.sh
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.binary }}
           path: target/rpm/${{ matrix.binary }}/rpmbuild/RPMS/x86_64/*.rpm

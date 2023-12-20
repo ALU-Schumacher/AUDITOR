@@ -61,7 +61,7 @@ jobs:
       - name: Download pyauditor wheel
         uses: actions/download-artifact@v4
         with:
-          name: pyauditor-wheels
+          name: pyauditor-wheels-linux-${{ inputs.python-version }}
 
       - name: Build auditor
         run: SQLX_OFFLINE=true cargo build --bin auditor
@@ -69,7 +69,7 @@ jobs:
       - name: Install pyauditor and dependencies
         run: |
           pip install --upgrade pip
-          ls | grep manylinux | grep 39 | xargs pip install
+          pip install *.whl
           pip install tzlocal
 
       - name: Run integration tests
