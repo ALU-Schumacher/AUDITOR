@@ -577,8 +577,22 @@ def group_sync_db(sync_db):
     return grouped_sync_list
 
 
-def create_summary(grouped_summary_list):
-    summary = "APEL-summary-job-message: v0.3\n"
+def create_summary(config, grouped_summary_list):
+    apel_style = config["site"].get("apel_style", "Test")
+
+    if apel_style == "APEL-v0.2":
+        summary = "APEL-summary-job-message: v0.2\n"
+    elif apel_style == "APEL-v0.3":
+        summary = "APEL-summary-job-message: v0.3\n"
+    elif apel_style == "ARC":
+        summary = "APEL-summary-job-message: v0.2\n"
+    elif apel_style == "Test":
+        summary = "APEL-summary-job-message: v0.3\n"
+    else:
+        logging.critical(
+            f"No such style: {apel_style}, please fix apel_style in the config"
+        )
+        raise ValueError
 
     for entry in grouped_summary_list:
         summary += f"Site: {entry['site']}\n"
@@ -587,23 +601,29 @@ def create_summary(grouped_summary_list):
         if entry["user"] is not None:
             summary += f"GlobalUserName: {entry['user']}\n"
         if entry["vo"] is not None:
-            summary += f"VO: {entry['vo']}\n"
+            if apel_style == "APEL-v0.2":
+                summary += f"Group: {entry['vo']}\n"
+            else:
+                summary += f"VO: {entry['vo']}\n"
         if entry["vogroup"] is not None:
             summary += f"VOGroup: {entry['vogroup']}\n"
         if entry["vorole"] is not None:
             summary += f"VORole: {entry['vorole']}\n"
-        summary += f"SubmitHost: {entry['submithost']}\n"
-        summary += f"Infrastructure: {entry['infrastructure']}\n"
-        summary += f"Processors: {entry['cpucount']}\n"
-        summary += f"NodeCount: {entry['nodecount']}\n"
+        if apel_style != "APEL-v0.2":
+            summary += f"SubmitHost: {entry['submithost']}\n"
+            summary += f"Infrastructure: {entry['infrastructure']}\n"
+            summary += f"Processors: {entry['cpucount']}\n"
+            summary += f"NodeCount: {entry['nodecount']}\n"
         summary += f"EarliestEndTime: {entry['min_stoptime']}\n"
         summary += f"LatestEndTime: {entry['max_stoptime']}\n"
         summary += f"WallDuration : {int(entry['runtime'])}\n"
         summary += f"CpuDuration: {int(entry['cputime'])}\n"
-        summary += f"NormalisedWallDuration: {int(entry['norm_runtime'])}\n"
-        summary += f"NormalisedCpuDuration: {int(entry['norm_cputime'])}\n"
-        summary += f"ServiceLevelType: {entry['benchmarktype']}\n"
-        summary += f"ServiceLevel: {entry['benchmarkvalue']}\n"
+        if apel_style != "ARC":
+            summary += f"NormalisedWallDuration: {int(entry['norm_runtime'])}\n"
+            summary += f"NormalisedCpuDuration: {int(entry['norm_cputime'])}\n"
+        if apel_style in ["ARC", "Test"]:
+            summary += f"ServiceLevelType: {entry['benchmarktype']}\n"
+            summary += f"ServiceLevel: {entry['benchmarkvalue']}\n"
         summary += f"NumberOfJobs: {entry['jobcount']}\n"
         summary += "%%\n"
 
