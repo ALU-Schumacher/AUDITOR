@@ -84,7 +84,7 @@ def run(config, client):
         logging.debug(f"Latest stop time is {latest_stop_time}")
         summary_db = create_summary_db(config, records_summary)
         grouped_summary_list = group_summary_db(summary_db)
-        summary = create_summary(grouped_summary_list)
+        summary = create_summary(config, grouped_summary_list)
         logging.debug(summary)
         signed_summary = sign_msg(config, summary)
         logging.debug(signed_summary)

@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Return correct status code for errors during querying of records (#620) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer)
+- Apel plugin: Add optional config setting for style of summary message ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Auditor+pyauditor: Deprecate `get_started_since()` and `get_stopped_since()` functions ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
