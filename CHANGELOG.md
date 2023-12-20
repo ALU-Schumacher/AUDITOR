@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Apel plugin: Add optional config setting for style of summary message ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 
