@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actions/setup-python from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update anyhow from 1.0.75 to 1.0.76 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update cryptography from 41.0.5 to 41.0.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.9.1 to 2.9.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update once_cell from 1.18.0 to 1.19.0 ([@QuantumDancer](https://github.com/QuantumDancer))
