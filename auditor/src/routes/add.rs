@@ -203,7 +203,7 @@ pub async fn bulk_add(
 }
 
 #[tracing::instrument(name = "Inserting bulk records into database", skip(records, pool))]
-pub async fn bulk_insert(records: &Vec<RecordAdd>, pool: &PgPool) -> Result<(), AddRecordError> {
+pub async fn bulk_insert(records: &[RecordAdd], pool: &PgPool) -> Result<(), AddRecordError> {
     let mut transaction = match pool.begin().await {
         Ok(transaction) => transaction,
         Err(e) => return Err(AddRecordError(e)),
