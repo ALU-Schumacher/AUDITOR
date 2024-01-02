@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update once_cell from 1.18.0 to 1.19.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.22 to 0.11.23 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.2.0 to 4.3.1 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde_json from 1.0.108 to 1.0.109 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_qs from 0.11.0 to 0.12.0 ([@QuantumDancer](https://github.com/QuantumDancer)
 - Dependencies: Update sqlx from 0.7.2 to 0.7.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.50 to 1.0.52 ([@QuantumDancer](https://github.com/QuantumDancer))
