@@ -1,7 +1,6 @@
 use crate::routes::GetFilterError;
 use crate::routes::{advanced_record_filtering, get_one_record, Filters};
-use actix_web::{web, HttpResponse};
-use serde_qs::actix::QsQuery;
+use actix_web::{web, HttpRequest, HttpResponse};
 use sqlx;
 use sqlx::PgPool;
 
@@ -12,10 +11,28 @@ pub struct RecordQuery {
 
 #[tracing::instrument(name = "Getting records", skip(query, pool))]
 pub async fn query_records(
-    query: Option<QsQuery<Filters>>,
+    query: HttpRequest,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, GetFilterError> {
-    let records = advanced_record_filtering(query.as_ref(), &pool)
+    let query_string = query.query_string();
+
+    let filters: Filters = serde_qs::from_str(query_string).unwrap();
+
+    if query_string.is_empty() {
+        // This case explicitly checks if the query is empty. Then it returns all records.
+        let records = advanced_record_filtering(filters, &pool)
+            .await
+            .map_err(GetFilterError::UnexpectedError)?;
+        return Ok(HttpResponse::Ok().json(records));
+    }
+
+    if filters.is_all_none() {
+        return Err(GetFilterError::UnexpectedError(anyhow::Error::msg(
+            "Query is incorrect, please check the query string",
+        )));
+    }
+
+    let records = advanced_record_filtering(filters, &pool)
         .await
         .map_err(GetFilterError::UnexpectedError)?;
     Ok(HttpResponse::Ok().json(records))

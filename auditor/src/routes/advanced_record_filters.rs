@@ -8,7 +8,6 @@
 use crate::domain::{Component, Record, RecordDatabase, ValidName};
 use chrono::{DateTime, Utc};
 use core::fmt::Debug;
-use serde_qs::actix::QsQuery;
 use sqlx;
 use sqlx::{PgPool, QueryBuilder, Row};
 use std::collections::HashMap;
@@ -32,6 +31,19 @@ pub struct Filters {
     pub component: Option<HashMap<String, Operator<u8>>>,
     pub sort_by: Option<SortOption>,
     pub limit: Option<u64>,
+}
+
+impl Filters {
+    pub fn is_all_none(&self) -> bool {
+        self.record_id.is_none()
+            && self.start_time.is_none()
+            && self.stop_time.is_none()
+            && self.runtime.is_none()
+            && self.meta.is_none()
+            && self.component.is_none()
+            && self.sort_by.is_none()
+            && self.limit.is_none()
+    }
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -82,7 +94,7 @@ impl ToString for SortField {
 
 #[tracing::instrument(name = "Getting records using custom query", skip(filters, pool))]
 pub async fn advanced_record_filtering(
-    filters: Option<&QsQuery<Filters>>,
+    filters: Filters,
     pool: &PgPool,
 ) -> Result<Vec<Record>, anyhow::Error> {
     let mut query = QueryBuilder::new("SELECT a.record_id,
@@ -124,106 +136,105 @@ pub async fn advanced_record_filtering(
                    ) css ON css.id = a.id
                ");
 
-    if let Some(filters) = &filters {
-        if filters.start_time.is_some()
-            || filters.stop_time.is_some()
-            || filters.runtime.is_some()
-            || filters.record_id.is_some()
-        {
-            query.push(" WHERE ".to_string());
-            if let Some(record_id) = &filters.record_id {
-                let is_valid_record_id = ValidName::parse(record_id.clone().to_string());
-                if is_valid_record_id.is_ok() {
-                    query.push(format!("a.record_id = '{}' and ", &record_id));
+    if filters.start_time.is_some()
+        || filters.stop_time.is_some()
+        || filters.runtime.is_some()
+        || filters.record_id.is_some()
+    {
+        query.push(" WHERE ".to_string());
+        if let Some(record_id) = &filters.record_id {
+            let is_valid_record_id = ValidName::parse(record_id.clone().to_string());
+            if is_valid_record_id.is_ok() {
+                query.push(format!("a.record_id = '{}' and ", &record_id));
+            }
+        }
+
+        if let Some(start_time_filters) = &filters.start_time {
+            if let Some(operators) = get_operator(start_time_filters) {
+                for operator in operators {
+                    let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
+                    query.push(format!(
+                        "a.start_time {} '{}' and ",
+                        operator.0, &formatted_datetime
+                    ));
                 }
             }
+        }
 
-            if let Some(start_time_filters) = &filters.start_time {
-                if let Some(operators) = get_operator(start_time_filters) {
+        if let Some(stop_time_filters) = &filters.stop_time {
+            if let Some(operators) = get_operator(stop_time_filters) {
+                for operator in operators {
+                    let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
+                    query.push(format!(
+                        "a.stop_time {} '{}' and ",
+                        operator.0, &formatted_datetime
+                    ));
+                }
+            }
+        }
+
+        if let Some(meta_filters) = &filters.meta {
+            for (key, meta_operator) in meta_filters {
+                if let Some(c) = &meta_operator.c {
+                    let meta_value = ValidName::parse(c.clone().to_string());
+                    if meta_value.is_ok() {
+                        query.push(format!("Array['{}'] = ANY(SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}') and ", &c, &key));
+                    } else {
+                        println!("meta value validation Failed")
+                    }
+                }
+                if let Some(dnc) = &meta_operator.dnc {
+                    let meta_value = ValidName::parse(dnc.clone().to_string());
+                    if meta_value.is_ok() {
+                        query.push(format!(" (NOT EXISTS (SELECT r.values FROM unnest(css.components) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and ", &key, &dnc));
+                    } else {
+                        println!("meta value verification failed");
+                    }
+                }
+            }
+        }
+
+        if let Some(component_filters) = &filters.component {
+            for (key, component_operator) in component_filters {
+                if let Some(operators) = get_operator(component_operator) {
                     for operator in operators {
-                        let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
                         query.push(format!(
-                            "a.start_time {} '{}' and ",
-                            operator.0, &formatted_datetime
+                            "css.components[1].name = '{}' AND css.components[2].amount {} {} and ",
+                            &key, &operator.0, &operator.1
                         ));
                     }
                 }
             }
+        }
 
-            if let Some(stop_time_filters) = &filters.stop_time {
-                if let Some(operators) = get_operator(stop_time_filters) {
-                    for operator in operators {
-                        let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
-                        query.push(format!(
-                            "a.stop_time {} '{}' and ",
-                            operator.0, &formatted_datetime
-                        ));
-                    }
+        // The previous implementation of get and get_since is replicated. Getting all records also includes
+        // the records whose runtime IS NOT NULL. But while querying with the start_time or stop_time,
+        // we also specify the query to only include the records whose runtime is NOT NULL
+
+        if let Some(runtime_filters) = &filters.runtime {
+            if let Some(operators) = get_operator(runtime_filters) {
+                for operator in operators {
+                    query.push(format!("a.runtime {} {} and ", operator.0, operator.1));
                 }
             }
-
-            if let Some(meta_filters) = &filters.meta {
-                for (key, meta_operator) in meta_filters {
-                    if let Some(c) = &meta_operator.c {
-                        let meta_value = ValidName::parse(c.clone().to_string());
-                        if meta_value.is_ok() {
-                            query.push(format!("Array['{}'] = ANY(SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}') and ", &c, &key));
-                        } else {
-                            println!("meta value validation Failed")
-                        }
-                    }
-                    if let Some(dnc) = &meta_operator.dnc {
-                        let meta_value = ValidName::parse(dnc.clone().to_string());
-                        if meta_value.is_ok() {
-                            query.push(format!(" (NOT EXISTS (SELECT r.values FROM unnest(css.components) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and ", &key, &dnc));
-                        } else {
-                            println!("meta value verification failed");
-                        }
-                    }
-                }
-            }
-
-            if let Some(component_filters) = &filters.component {
-                for (key, component_operator) in component_filters {
-                    if let Some(operators) = get_operator(component_operator) {
-                        for operator in operators {
-                            query.push(format!("css.components[1].name = '{}' AND css.components[2].amount {} {} and ", &key, &operator.0, &operator.1));
-                        }
-                    }
-                }
-            }
-
-            // The previous implementation of get and get_since is replicated. Getting all records also includes
-            // the records whose runtime IS NOT NULL. But while querying with the start_time or stop_time,
-            // we also specify the query to only include the records whose runtime is NOT NULL
-
-            if let Some(runtime_filters) = &filters.runtime {
-                if let Some(operators) = get_operator(runtime_filters) {
-                    for operator in operators {
-                        query.push(format!("a.runtime {} {} and ", operator.0, operator.1));
-                    }
-                }
-            } else {
-                query.push("a.runtime IS NOT NULL".to_string());
-            }
+        } else {
+            query.push("a.runtime IS NOT NULL".to_string());
         }
     }
 
-    if let Some(filters) = &filters {
-        if let Some(sort_by) = &filters.sort_by {
-            if let SortOption::ASC(asc) = sort_by {
-                query.push(format!("ORDER BY a.{} ASC", &asc.to_string()));
-            }
-            if let SortOption::DESC(desc) = sort_by {
-                query.push(format!("ORDER BY a.{} DESC", &desc.to_string()));
-            }
-        } else {
-            query.push(" ORDER BY a.stop_time ".to_string());
+    if let Some(sort_by) = &filters.sort_by {
+        if let SortOption::ASC(asc) = sort_by {
+            query.push(format!("ORDER BY a.{} ASC", &asc.to_string()));
         }
+        if let SortOption::DESC(desc) = sort_by {
+            query.push(format!("ORDER BY a.{} DESC", &desc.to_string()));
+        }
+    } else {
+        query.push(" ORDER BY a.stop_time ".to_string());
+    }
 
-        if let Some(limit) = &filters.limit {
-            query.push(format!(" LIMIT {}", &limit));
-        }
+    if let Some(limit) = &filters.limit {
+        query.push(format!(" LIMIT {}", &limit));
     }
 
     fn get_operator<T>(operator: &Operator<T>) -> Option<Vec<(&str, &T)>>
