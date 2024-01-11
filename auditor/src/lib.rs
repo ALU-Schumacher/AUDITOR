@@ -101,6 +101,7 @@
 //!  Assuming that list of records and a client were already created,
 //!  the records can be pushed to Auditor with_ymd_and_hms
 //!
+//! ```no_run
 //! # use auditor::client::{AuditorClientBuilder, ClientError};
 //! # use auditor::domain::RecordAdd;
 //! # use chrono::{DateTime, TimeZone, Utc};
@@ -114,10 +115,11 @@
 //! # let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
 //! # let records: Vec<RecordAdd> = (0..5)
 //! #    .map(|i| RecordAdd::new(&format!("record-{}", i), HashMap::new(), vec![], start_time))
-//! #    .collect();
+//! #    .collect::<Result<_, _>>()?;
 //! client.bulk_insert(&records).await?;
 //! # Ok(())
 //! # }
+//! ```
 //!
 //! ## Updating records in Auditor
 //!
@@ -223,34 +225,31 @@
 //! - runtime
 //! - record_id
 //!
-//! | Field        | Description                                                            | Operators                              | Examples (query representation)          |
-//! |--------------|------------------------------------------------------------------------|----------------------------------------|------------------------------------------|
-//! | `record_id`  | Retrieve the exact record using record_id                              |                                        | record_id-<record_id>                    |
-//! | `start_time` | Start time of the event (`DateTime<Utc>`)                              | `gt`, `gte`, `lt`, `lte`               | start_time[gt]=<timestamp>               |
-//! | `stop_time`  | Stop time of the event (`DateTime<Utc>`)                               | `gt`, `gte`, `lt`, `lte`               | stop_time[gt]=<timestamp>                |
-//! | `runtime`    | Runtime of the event (in seconds)                                      | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<u64>                        |
-//! | `meta`       | Meta information (<meta_key>, MetaOperator(<meta_value>))              | `d`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
-//! | `component`  | Component identifier (<component_name>, Operator(<component_amount>))  | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount> |
-//! | `sort_by`    | Sort query results (SortBy(<column_name>))                             | `asc`, `desc`                          | sort_by[desc]=<column_name>              |
-//! | `limit`      | limit query records (number)                                           |                                        | limit=5000                               |
+//!| Field        | Description                                                            | Operators                              | Examples (query representation)            |
+//!|--------------|------------------------------------------------------------------------|----------------------------------------|--------------------------------------------|
+//!| `record_id`  | Retrieve the exact record using `record_id`                            |                                        | `record_id-<record_id>`                    |
+//!| `start_time` | Start time of the event (`DateTime<Utc>`)                              | `gt`, `gte`, `lt`, `lte`               | `start_time[gt]=<timestamp>`               |
+//!| `stop_time`  | Stop time of the event (`DateTime<Utc>`)                               | `gt`, `gte`, `lt`, `lte`               | `stop_time[gt]=<timestamp>`                |
+//!| `runtime`    | Runtime of the event (in seconds)                                      | `gt`, `gte`, `lt`, `lte`               | `runtime[gt]=<u64>`                        |
+//!| `meta`       | Meta information (<meta_key>, MetaOperator(<meta_value>))              | `d`, `dnc`                             | `meta[<meta_key>][c]=<meta_value>`         |
+//!| `component`  | Component identifier (<component_name>, Operator(<component_amount>))  | `gt`, `gte`, `lt`, `lte`, `equals`     | `component[<component_name>][gt]=<amount>` |
+//!| `sort_by`    | Sort query results (SortBy(<column_name>))                             | `asc`, `desc`                          | `sort_by[desc]=<column_name>`              |
+//!| `limit`      | limit query records (number)                                           |                                        | `limit=5000`                               |
 //!
-//! Meta field can be used to query records by specifying the meta key and [`MetaOperator`] must be used
-//! to specify meta values. The [`MetaOperator`] must be used to specify whether the value is
+//! Meta field can be used to query records by specifying the meta key and [`MetaOperator`](`crate::client::MetaOperator`)  must be used
+//! to specify meta values. The [`MetaOperator`](`crate::client::MetaOperator`) must be used to specify whether the value is
 //! contained or does not contained for the specific Metakey.
 //!
 //! Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
 //! to specify the amount.
 //!
-//! ''
-//!
 //! To query records based on a range, specify the field with two operators
 //! Either with gt or gte and lt or lte.
 //!
-//! For example,
-//! To query a records with start_time ranging between two timestamps.
+//! For example, to query a records with start_time ranging between two timestamps:
 //!
 //! ```text
-//! Get records?start_time[gt]=timestamp1&start_time[lt]=timestamp2
+//! GET records?start_time[gt]=timestamp1&start_time[lt]=timestamp2
 //! ```
 //!
 //! ## QueryBuilder
@@ -260,7 +259,7 @@
 //!
 //! ### Example 1:
 //!
-//! Constructs an empty [`QueryBuilder`] to query all records
+//! Constructs an empty [`QueryBuilder`](`crate::client::QueryBuilder`) to query all records
 //!
 //! ```no_run
 //! # use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError};
