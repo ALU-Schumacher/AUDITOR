@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add optional config setting for style of summary message ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
