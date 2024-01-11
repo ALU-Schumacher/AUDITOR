@@ -12,6 +12,7 @@ from time import sleep
 import json
 import sys
 import requests
+import urllib
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
@@ -154,7 +155,7 @@ def update_time_db(conn, stop_time, report_time):
 
 
 def replace_record_string(string):
-    updated_string = string.replace("%2F", "/")
+    updated_string = urllib.parse.unquote(string)
 
     return updated_string
 
