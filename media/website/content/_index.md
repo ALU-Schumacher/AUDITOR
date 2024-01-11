@@ -22,7 +22,6 @@ database and offers these records to plugins which take an action based on the r
 
 ## Features
 
-
 # Running Auditor
 
 Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
@@ -153,7 +152,6 @@ How often the database metrics are computed is defined by the `frequency` config
 Note that computing the database metrics is a potentially expensive operation.
 Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
 The frequency setting should be somewhat in accordance with the Prometheus scraping interval.
-
 
 # Compiling Auditor
 
@@ -408,6 +406,7 @@ python -m collectors.htcondor -c CONFIG_FILE
 
 `-c/--config CONFIG_FILE` is required to be set and of the form as stated below.
 Further, optional arguments are
+
 ```
 -h, --help            show this help message and exit
 -c CONFIG_FILE, --config CONFIG_FILE
@@ -424,9 +423,11 @@ Further, optional arguments are
                       Interval in seconds between queries. Defaults to 900.
 -1, --one-shot        Run once and exit.
 ```
+
 Command line arguments override the values set in the config file.
 
 ### Configuration
+
 The collector is configured using a yaml-file. Configuration parameters are as follows:
 
 | Parameter       | Description                                                                                                                                                                                                                                                                                                                                           |
@@ -449,6 +450,7 @@ The following parameters are optional:
 | `timeout` | `30`               | Timeout in seconds for the connection to the AUDITOR-instance.                  |
 
 ### `entry`
+
 An `entry` describes how to get the value for a meta-var or component from the job.
 Unlike meta-variables, components contain a `name`-field, which is used as the name of the component.
 If the entry has a `key`-field, the value is taken from the corresponding ClassAd.
@@ -588,7 +590,6 @@ The following fields need to be present in the config file:
 | `client_key`          | Path of the host key.                                                                                                                                                     |
 | `ca_path`             | Path of the local certificate folder.                                                                                                                                     |
 | `verify_ca`           | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                   |
-
 
 Example config:
 
@@ -744,6 +745,41 @@ Via `min_priority` and `max_priority`, lower and upper limits on the computed pr
 To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
 For details please consult the respective documentation pages for [the Rust client](https://docs.rs/auditor/) and [the Python client](https://ALU-Schumacher.github.io/AUDITOR/pyauditor/).
 
+# API
+
+While the client libraries provide an interface to communicate with the Auditor server, it is also possible to directly use the REST API provided by the Auditor server.
+The following table provides an overview of the different API endpoints that are provided.
+The individual endpoints are further detailed down below.
+
+| Action                           | Endpoint                     |
+| -------------------------------- | ---------------------------- |
+| Health check                     | `GET /health_check`          |
+| Get Prometheus metrics           | `GET /metrics`               |
+| Add single record                | `POST /record`               |
+| Add multiple records             | `POST /records`              |
+| Update record                    | `PUT /record`                |
+| Get single record by `record_id` | `GET /record/<record_id>`    |
+| Get all records                  | `GET /record`                |
+| Get subset of records            | `GET /record?<query_string>` |
+
+- Health check: This endpoint is used to check the health status of the Auditor server.
+  A successful response (`200 OK`) indicates that the server is running and reachable.
+- Add single record: This endpoint is used to add a single record to the database.
+  The record data should be included in the request body in JSON format and needs to be serializable into the [RecordAdd](https://docs.rs/auditor/latest/auditor/domain/struct.RecordAdd.html) struct.
+- Add multiple records: Similar to the previous endpoint, but it's used to add multiple records at once.
+  The request body should contain an array of records in JSON format.
+- Update record: This endpoint is used to update an existing record.
+  The record data should be included in the request body in JSON format and needs to be serializable into the [RecordUpdate](https://docs.rs/auditor/latest/auditor/domain/struct.RecordUpdate.html) struct.
+  Currently, only the `stop_time` of a record is updateable.
+- Get single record by `record_id`: This endpoint is used to retrieve a single record by its `record_id`.
+- Get all records: This endpoint is used to retrieve all records from the database.
+  Consider using the filter options (see the next item below) instead of querying the complete set of records, as this method can take a long time if there are large amounts of records stored in the database.
+- Get subset of records: This endpoint is used to retrieve a subset of records with filters applied on the server side.
+  The filter options need to be provided as query string and are detailed in the [client tutorial](https://docs.rs/auditor/latest/auditor/index.html#advanced-query).
+  In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (`400 BAD REQUEST`).
+
+In the event of unforeseen errors, the server will respond with a `500 INTERNAL SERVER ERROR`.
+
 # License
 
 Licensed under either of
@@ -756,4 +792,3 @@ at your option.
 ## Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
-
