@@ -900,12 +900,16 @@ class TestAuditorApelPlugin:
     def test_replace_record_string(self):
         test_str_1 = "abcd"
         test_str_2 = "%2Fa%2Fb%2Fc%2Fd%2F"
+        test_str_3 = "El%20Ni%C3%B1o"
 
         result = replace_record_string(test_str_1)
         assert result == "abcd"
 
         result = replace_record_string(test_str_2)
         assert result == "/a/b/c/d/"
+
+        result = replace_record_string(test_str_3)
+        assert result == "El Niño"
 
     def test_get_records(self):
         client = FakeAuditorClient("pass")
