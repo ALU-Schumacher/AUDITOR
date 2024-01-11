@@ -12,15 +12,6 @@ use sqlx;
 use sqlx::{PgPool, QueryBuilder, Row};
 use std::collections::HashMap;
 
-#[derive(thiserror::Error)]
-pub enum GetFilterError {
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-debug_for_error!(GetFilterError);
-responseerror_for_error!(GetFilterError, UnexpectedError => INTERNAL_SERVER_ERROR;);
-
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Filters {
     pub record_id: Option<String>,
