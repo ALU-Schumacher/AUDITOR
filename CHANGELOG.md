@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Incorrect query string returns an error (#598) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Return correct status code for errors during querying of records (#620) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Remove get_since.rs and clean up dead code (#624) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- pyauditor: Add string representation to python Record Object (#596) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer)
 - Docs: Add overview of API endpoints (#597) ([@QuantumDancer](https://github.com/QuantumDancer)

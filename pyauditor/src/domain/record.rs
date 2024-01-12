@@ -178,6 +178,10 @@ impl Record {
             _ => py.NotImplemented(),
         }
     }
+
+    fn __repr__(&self) -> String {
+        format!("{:?}", self.inner)
+    }
 }
 
 impl From<auditor::domain::Record> for Record {
