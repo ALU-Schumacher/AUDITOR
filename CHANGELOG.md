@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- API: Deprecate get_[started/stopped]_since endpoint (#525) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Security
 - [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer)
