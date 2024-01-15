@@ -201,6 +201,11 @@
                 
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#api">API</a>
+                </div>
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#license">License</a>
                 </div>
                 
@@ -814,6 +819,38 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <h1 id="auditor-clients">Auditor Clients</h1>
 <p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
 For details please consult the respective documentation pages for <a href="https://docs.rs/auditor/">the Rust client</a> and <a href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
+<h1 id="api">API</h1>
+<p>While the client libraries provide an interface to communicate with the Auditor server, it is also possible to directly use the REST API provided by the Auditor server.
+The following table provides an overview of the different API endpoints that are provided.
+The individual endpoints are further detailed down below.</p>
+<table><thead><tr><th>Action</th><th>Endpoint</th></tr></thead><tbody>
+<tr><td>Health check</td><td><code>GET /health_check</code></td></tr>
+<tr><td>Get Prometheus metrics</td><td><code>GET /metrics</code></td></tr>
+<tr><td>Add single record</td><td><code>POST /record</code></td></tr>
+<tr><td>Add multiple records</td><td><code>POST /records</code></td></tr>
+<tr><td>Update record</td><td><code>PUT /record</code></td></tr>
+<tr><td>Get single record by <code>record_id</code></td><td><code>GET /record/&lt;record_id&gt;</code></td></tr>
+<tr><td>Get all records</td><td><code>GET /record</code></td></tr>
+<tr><td>Get subset of records</td><td><code>GET /record?&lt;query_string&gt;</code></td></tr>
+</tbody></table>
+<ul>
+<li>Health check: This endpoint is used to check the health status of the Auditor server.
+A successful response (<code>200 OK</code>) indicates that the server is running and reachable.</li>
+<li>Add single record: This endpoint is used to add a single record to the database.
+The record data should be included in the request body in JSON format and needs to be serializable into the <a href="https://docs.rs/auditor/latest/auditor/domain/struct.RecordAdd.html">RecordAdd</a> struct.</li>
+<li>Add multiple records: Similar to the previous endpoint, but it's used to add multiple records at once.
+The request body should contain an array of records in JSON format.</li>
+<li>Update record: This endpoint is used to update an existing record.
+The record data should be included in the request body in JSON format and needs to be serializable into the <a href="https://docs.rs/auditor/latest/auditor/domain/struct.RecordUpdate.html">RecordUpdate</a> struct.
+Currently, only the <code>stop_time</code> of a record is updateable.</li>
+<li>Get single record by <code>record_id</code>: This endpoint is used to retrieve a single record by its <code>record_id</code>.</li>
+<li>Get all records: This endpoint is used to retrieve all records from the database.
+Consider using the filter options (see the next item below) instead of querying the complete set of records, as this method can take a long time if there are large amounts of records stored in the database.</li>
+<li>Get subset of records: This endpoint is used to retrieve a subset of records with filters applied on the server side.
+The filter options need to be provided as query string and are detailed in the <a href="https://docs.rs/auditor/latest/auditor/index.html#advanced-query">client tutorial</a>.
+In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (<code>400 BAD REQUEST</code>).</li>
+</ul>
+<p>In the event of unforeseen errors, the server will respond with a <code>500 INTERNAL SERVER ERROR</code>.</p>
 <h1 id="license">License</h1>
 <p>Licensed under either of</p>
 <ul>
