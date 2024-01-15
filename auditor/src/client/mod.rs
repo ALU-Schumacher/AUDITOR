@@ -719,7 +719,7 @@ impl AuditorClient {
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/record", &self.address))
+            .get(&format!("{}/records", &self.address))
             .send()
             .await?
             .error_for_status()?
@@ -748,7 +748,7 @@ impl AuditorClient {
         Ok(self
             .client
             .get(&format!(
-                "{}/record?start_time[gte]={}",
+                "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
@@ -778,7 +778,7 @@ impl AuditorClient {
         Ok(self
             .client
             .get(&format!(
-                "{}/record?stop_time[gte]={}",
+                "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
@@ -800,7 +800,7 @@ impl AuditorClient {
     pub async fn advanced_query(&self, query_string: String) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/record?{}", &self.address, query_string))
+            .get(&format!("{}/records?{}", &self.address, query_string))
             .send()
             .await?
             .error_for_status()?
@@ -933,7 +933,7 @@ impl AuditorClientBlocking {
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(format!("{}/record", &self.address))
+            .get(format!("{}/records", &self.address))
             .send()?
             .error_for_status()?
             .json()?)
@@ -957,7 +957,7 @@ impl AuditorClientBlocking {
         Ok(self
             .client
             .get(format!(
-                "{}/record?start_time[gte]={}",
+                "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()?
@@ -982,7 +982,7 @@ impl AuditorClientBlocking {
         Ok(self
             .client
             .get(format!(
-                "{}/record?stop_time[gte]={}",
+                "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()?
@@ -998,7 +998,7 @@ impl AuditorClientBlocking {
     pub fn advanced_query(&self, query_params: String) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(format!("{}/record?{}", &self.address, query_params))
+            .get(format!("{}/records?{}", &self.address, query_params))
             .send()?
             .error_for_status()?
             .json()?)
@@ -1051,7 +1051,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -1082,7 +1082,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -1447,7 +1447,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("start_time[gte]", "2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1479,7 +1479,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("start_time[gte]", "2022-08-03T09:47:00+00:00"))
             .and(query_param("stop_time[gte]", "2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
@@ -1513,7 +1513,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("start_time[gte]", "2022-08-03T09:47:00+00:00"))
             .and(query_param("start_time[lte]", "2022-08-04T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
@@ -1551,7 +1551,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("start_time[gte]", "2022-08-03T09:47:00+00:00"))
             .and(query_param("start_time[lte]", "2022-08-04T09:47:00+00:00"))
             .and(query_param("runtime[gte]", "100000"))
@@ -1592,7 +1592,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("start_time[gte]", "2022-08-03T09:47:00+00:00"))
             .and(query_param("start_time[lte]", "2022-08-04T09:47:00+00:00"))
             .and(query_param("runtime[gte]", "100000"))
@@ -1667,7 +1667,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("meta[site_id][c]", "group_1"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1701,7 +1701,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("meta[site_id][c]", "group_1"))
             .and(query_param("start_time[lte]", "2022-08-04T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
@@ -1738,7 +1738,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("component[cpu][equals]", "4"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1779,7 +1779,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("stop_time[gte]", "2022-08-03T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1815,7 +1815,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("sort_by[asc]", "start_time"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1846,7 +1846,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("limit", "500"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -1879,7 +1879,7 @@ mod tests {
         let body: Vec<Record> = vec![record()];
 
         Mock::given(method("GET"))
-            .and(path("/record"))
+            .and(path("/records"))
             .and(query_param("record_id", "r1"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)

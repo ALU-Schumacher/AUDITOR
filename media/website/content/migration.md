@@ -12,6 +12,23 @@ weight = 3
 Use this command to update the sqlx-cli to 0.7.3
 - `cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
 
+## AUDITOR
+### REST APIs
+
+Auditor REST APIs are changed as shown in the table below. 
+
+| Action              | Before                                      | After                                                 |
+| ------------------- | ------------------------------------------- | ----------------------------------------------------- |
+| Health check        | `/health_check` (GET)                       | `/health_check` (GET)                                 |
+| Add record          | `/add` (POST)                               | `/record` (POST)                                      |
+| Update record       | `/update` (POST)                            | `/record` (PUT)                                       |
+| Insert Bulk records | Did not exist                               | `/records` (PUT)                                      |
+| Get all records     | `/get` (GET)                                | `/records` (GET)                                      |
+| Get records since   | `/get/[started/stopped]/since/{date}` (GET) | `/records?state=[started/stopped]&since={date}` (GET) |
+
+`/record` endpoint handles single record operations such as adding one record, updating one record and querying one record.
+
+`/records` endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.
 
 # From 0.2.0 to 0.3.0
 

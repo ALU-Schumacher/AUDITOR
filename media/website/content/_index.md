@@ -751,16 +751,16 @@ While the client libraries provide an interface to communicate with the Auditor 
 The following table provides an overview of the different API endpoints that are provided.
 The individual endpoints are further detailed down below.
 
-| Action                           | Endpoint                     |
-| -------------------------------- | ---------------------------- |
-| Health check                     | `GET /health_check`          |
-| Get Prometheus metrics           | `GET /metrics`               |
-| Add single record                | `POST /record`               |
-| Add multiple records             | `POST /records`              |
-| Update record                    | `PUT /record`                |
-| Get single record by `record_id` | `GET /record/<record_id>`    |
-| Get all records                  | `GET /record`                |
-| Get subset of records            | `GET /record?<query_string>` |
+| Action                           | Endpoint                      |
+| -------------------------------- | ----------------------------- |
+| Health check                     | `GET /health_check`           |
+| Get Prometheus metrics           | `GET /metrics`                |
+| Add single record                | `POST /record`                |
+| Add multiple records             | `POST /records`               |
+| Update record                    | `PUT /record`                 |
+| Get single record by `record_id` | `GET /record/<record_id>`     |
+| Get all records                  | `GET /records`                |
+| Get subset of records            | `GET /records?<query_string>` |
 
 - Health check: This endpoint is used to check the health status of the Auditor server.
   A successful response (`200 OK`) indicates that the server is running and reachable.
