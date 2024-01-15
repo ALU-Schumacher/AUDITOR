@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Auditor+pyauditor: Deprecate `get_started_since()` and `get_stopped_since()` functions ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor: Restructure `/record` endpoint to handle single record operations and `/records` endpoint to handle multiple records operations (#629) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actions/setup-python from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))

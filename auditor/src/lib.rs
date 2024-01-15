@@ -481,10 +481,7 @@
 //! #     .timeout(20)
 //! #     .build()?;
 //! let record_id = "record-1".to_string();
-//! let records = QueryBuilder::new()
-//!     .with_record_id(record_id)
-//!     .get(client)
-//!     .await?;
+//! let records = client.get_single_record(record_id).await?;
 //! # Ok(())
 //! # }
 //! ```
@@ -492,7 +489,7 @@
 //! The query string would look like
 //!
 //! ```text
-//! GET records?record_id=record-1
+//! GET record/record-1
 //! ```
 //!
 //! ## Warning

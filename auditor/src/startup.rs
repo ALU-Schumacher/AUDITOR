@@ -43,12 +43,15 @@ pub fn run(
             .service(
                 web::resource("/record")
                     .route(web::post().to(add))
-                    .route(web::put().to(update))
-                    .route(web::get().to(query_records)),
+                    .route(web::put().to(update)),
             )
             .route("/record/{record_id}", web::get().to(query_one_record))
             // DB connection pool
-            .service(web::resource("/records").route(web::post().to(bulk_add)))
+            .service(
+                web::resource("/records")
+                    .route(web::post().to(bulk_add))
+                    .route(web::get().to(query_records)),
+            )
             .app_data(db_pool.clone())
     })
     .listen(listener)?
