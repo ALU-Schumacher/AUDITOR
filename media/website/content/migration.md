@@ -30,6 +30,10 @@ Auditor REST APIs are changed as shown in the table below.
 
 `/records` endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.
 
+## Removed
+`/get_[started/stopped]_since` endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
+functions but throws a deprecated warning if used. 
+
 # From 0.2.0 to 0.3.0
 
 ## Slurm collector
