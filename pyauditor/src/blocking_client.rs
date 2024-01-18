@@ -113,6 +113,32 @@ impl AuditorClientBlocking {
             .collect::<Vec<_>>())
     }
 
+    /// advanced_query(query_string: string)
+    /// Get records from the database depending on the query parameters
+    ///
+    /// :param query_string: query_string constructed with QueryBuilder using .build() method
+    /// :type query_string: string
+    ///
+    /// **Example**
+    ///
+    /// .. code-block:: python
+    ///
+    ///     value1 = Value.set_datetime(start_time)
+    ///     value2 = Value.set_datetime(stop_time)
+    ///     operator1 = Operator().gt(value1)
+    ///     operator2 = Operator().gt(value2)
+    ///     query_string = QueryBuilder().with_start_time(operator1).with_stop_time(operator2).build()
+    ///     records = client.advanced_query(record)
+    fn advanced_query(self_: PyRef<'_, Self>, query_string: String) -> PyResult<Vec<Record>> {
+        Ok(self_
+            .inner
+            .advanced_query(query_string)
+            .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?
+            .into_iter()
+            .map(Record::from)
+            .collect::<Vec<_>>())
+    }
+
     /// add(record: Record)
     /// Push a record to the Auditor instance
     fn add(&self, record: Record) -> PyResult<()> {
