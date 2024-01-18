@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update thiserror from 1.0.50 to 1.0.56 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tokio from 1.34.0 to 1.35.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.21 to 0.5.22 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update h2 from 0.3.22 to 0.3.24 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
