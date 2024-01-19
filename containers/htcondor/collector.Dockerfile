@@ -1,7 +1,6 @@
 FROM htcondor/submit:10.9.0-el8
 
-RUN yum update -y && \
-    yum install -y python39 python39-pip && \
+RUN yum install -y python39 python39-pip && \
     yum clean all && \
     rm -rf /var/cache/yum/*
 
