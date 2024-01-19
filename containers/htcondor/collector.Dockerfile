@@ -1,4 +1,4 @@
-FROM htcondor/submit:10.3.1-el8
+FROM htcondor/submit:10.9.0-el8
 
 RUN yum update -y && \
     yum install -y python39 python39-pip && \
