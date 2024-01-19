@@ -19,7 +19,7 @@ services:
       - ./../../migrations:/docker-entrypoint-initdb.d/
 
   centralmanager:
-    image: htcondor/cm:10.3.1-el8
+    image: htcondor/cm:10.9.0-el8
     hostname: centralmanager
     environment:
       - USE_POOL_PASSWORD=yes
@@ -27,7 +27,7 @@ services:
       - ./condor_passwords:/etc/condor/passwords-orig.d/
 
   execute:
-    image: htcondor/execute:10.3.1-el8
+    image: htcondor/execute:10.9.0-el8
     hostname: execute
     environment:
       - CONDOR_HOST=centralmanager
@@ -39,7 +39,7 @@ services:
       - centralmanager
 
   submit:
-    image: htcondor/submit:10.3.1-el8
+    image: htcondor/submit:10.9.0-el8
     hostname: submit
     environment:
       - CONDOR_HOST=centralmanager
