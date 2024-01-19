@@ -113,9 +113,9 @@ async def main():
 
     meta_operator = MetaOperator().contains("group_1")
     meta_query = MetaQuery().meta_operator("group_id", meta_operator)
-    records = QueryBuilder().with_meta_query(meta_query).build()
+    query_string = QueryBuilder().with_meta_query(meta_query).build()
 
-    records = await client.advanced_query(records)
+    records = await client.advanced_query(query_string)
     record = records[0]
     assert record.meta.get("group_id") == ["group_1"]
     assert len(records) == 24
