@@ -115,6 +115,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClientBlocking"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.add"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.advanced_query"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.advanced_query()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.bulk_insert"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.bulk_insert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_single_record"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_single_record()</span></code></a></li>
@@ -841,6 +842,26 @@ database. In contrast to <cite>AuditorClient</cite>, no async runtime is needed 
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.add" title="Link to this definition"></a></dt>
 <dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.advanced_query">
+<span class="sig-name descname"><span class="pre">advanced_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.advanced_query" title="Link to this definition"></a></dt>
+<dd><p>Get records from the database depending on the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_string</strong> (<em>string</em>) – query_string constructed with QueryBuilder using .build() method</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value1</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">value2</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
+<span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
