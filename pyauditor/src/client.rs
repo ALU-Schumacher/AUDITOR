@@ -740,7 +740,7 @@ impl AuditorClient {
     ///     operator1 = Operator().gt(value1)
     ///     operator2 = Operator().gt(value2)
     ///     query_string = QueryBuilder().with_start_time(operator1).with_stop_time(operator2).build()
-    ///     records = await client.advanced_query(record)
+    ///     records = await client.advanced_query(query_string)
     fn advanced_query<'a>(
         self_: PyRef<'a, Self>,
         query_string: String,

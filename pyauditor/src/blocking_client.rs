@@ -128,7 +128,7 @@ impl AuditorClientBlocking {
     ///     operator1 = Operator().gt(value1)
     ///     operator2 = Operator().gt(value2)
     ///     query_string = QueryBuilder().with_start_time(operator1).with_stop_time(operator2).build()
-    ///     records = client.advanced_query(record)
+    ///     records = client.advanced_query(query_string)
     fn advanced_query(self_: PyRef<'_, Self>, query_string: String) -> PyResult<Vec<Record>> {
         Ok(self_
             .inner
