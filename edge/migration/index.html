@@ -83,6 +83,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development"><small>- Development</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#auditor"><small>- AUDITOR</small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -99,7 +103,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#auditor"><small>- AUDITOR</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#auditor-1"><small>- AUDITOR</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -154,6 +158,19 @@
 <ul>
 <li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
+<h2 id="auditor">AUDITOR</h2>
+<h3 id="rest-apis">REST APIs</h3>
+<p>Auditor REST APIs are changed as shown in the table below. </p>
+<table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>Health check</td><td><code>/health_check</code> (GET)</td><td><code>/health_check</code> (GET)</td></tr>
+<tr><td>Add record</td><td><code>/add</code> (POST)</td><td><code>/record</code> (POST)</td></tr>
+<tr><td>Update record</td><td><code>/update</code> (POST)</td><td><code>/record</code> (PUT)</td></tr>
+<tr><td>Insert Bulk records</td><td>Did not exist</td><td><code>/records</code> (PUT)</td></tr>
+<tr><td>Get all records</td><td><code>/get</code> (GET)</td><td><code>/records</code> (GET)</td></tr>
+<tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/records?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
+</tbody></table>
+<p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
+<p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
 <h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
 <h2 id="slurm-collector">Slurm collector</h2>
 <p>New filter options for querying slurm jobs are available.
@@ -211,7 +228,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 </span></code></pre>
 </li>
 </ul>
-<h2 id="auditor">AUDITOR</h2>
+<h2 id="auditor-1">AUDITOR</h2>
 <h3 id="standardized-rest-apis">Standardized REST APIs</h3>
 <p>Auditor REST APIs are changed as shown in the table below. </p>
 <table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
