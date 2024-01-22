@@ -284,7 +284,7 @@ database.</p>
 <span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
 <span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -859,7 +859,7 @@ database. In contrast to <cite>AuditorClient</cite>, no async runtime is needed 
 <span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
 <span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
