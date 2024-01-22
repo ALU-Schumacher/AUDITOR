@@ -37,7 +37,7 @@ color-eyre = "0.6.2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "process"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3" }
-uuid = { version = "1.6", features = ["v4"] }
+uuid = { version = "1.7", features = ["v4"] }
 fake = { version = "2.9", features = ["chrono"] }
 config = "0.13.4"
 serde = { version = "1.0.195", features = ["derive"] }
