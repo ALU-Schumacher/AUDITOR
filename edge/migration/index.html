@@ -87,6 +87,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#auditor"><small>- AUDITOR</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#removed"><small>- Removed</small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -171,6 +175,9 @@
 </tbody></table>
 <p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
 <p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
+<h2 id="removed">Removed</h2>
+<p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
+functions but throws a deprecated warning if used. </p>
 <h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
 <h2 id="slurm-collector">Slurm collector</h2>
 <p>New filter options for querying slurm jobs are available.
