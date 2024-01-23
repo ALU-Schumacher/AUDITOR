@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update once_cell from 1.18.0 to 1.19.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update opentelemetry_sdk from 0.21.1 to 0.21.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pytest from 7.4.3 to 7.4.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update regex from 1.10.2 to 1.10.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.22 to 0.11.23 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde from 1.0.193 to 1.0.195 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.2.0 to 4.4.0 ([@QuantumDancer](https://github.com/QuantumDancer))
