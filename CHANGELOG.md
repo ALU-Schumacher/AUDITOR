@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde-aux from 4.2.0 to 4.4.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.108 to 1.0.111 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_qs from 0.11.0 to 0.12.0 ([@QuantumDancer](https://github.com/QuantumDancer)
-- Dependencies: Update serde_with from 3.4.0 to 3.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde_with from 3.4.0 to 3.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.2 to 69.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.2 to 0.7.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.50 to 1.0.56 ([@QuantumDancer](https://github.com/QuantumDancer))
