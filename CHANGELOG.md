@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
+- Docs: Pyauditor- Fix pyauditor tutorial for creating new records (#631) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
@@ -66,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
-
+ 
 ### Added
 - Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
