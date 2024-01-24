@@ -130,6 +130,8 @@ pub async fn advanced_record_filtering(
     if filters.start_time.is_some()
         || filters.stop_time.is_some()
         || filters.runtime.is_some()
+        || filters.meta.is_some()
+        || filters.component.is_some()
         || filters.record_id.is_some()
     {
         query.push(" WHERE ".to_string());
@@ -177,7 +179,7 @@ pub async fn advanced_record_filtering(
                 if let Some(dnc) = &meta_operator.dnc {
                     let meta_value = ValidName::parse(dnc.clone().to_string());
                     if meta_value.is_ok() {
-                        query.push(format!(" (NOT EXISTS (SELECT r.values FROM unnest(css.components) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and ", &key, &dnc));
+                        query.push(format!(" (NOT EXISTS (SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and ", &key, &dnc));
                     } else {
                         println!("meta value verification failed");
                     }
@@ -190,7 +192,8 @@ pub async fn advanced_record_filtering(
                 if let Some(operators) = get_operator(component_operator) {
                     for operator in operators {
                         query.push(format!(
-                            "css.components[1].name = '{}' AND css.components[2].amount {} {} and ",
+                            " EXISTS ( SELECT * 
+    FROM unnest(components) AS r WHERE r.name = '{}' and r.amount {} '{}' ) and ",
                             &key, &operator.0, &operator.1
                         ));
                     }
