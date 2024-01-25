@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::domain::{Component, Record, RecordDatabase, ValidName};
+use crate::domain::{Component, Record, RecordDatabase, ValidAmount, ValidName};
 use chrono::{DateTime, Utc};
 use core::fmt::Debug;
 use sqlx;
@@ -14,14 +14,14 @@ use std::collections::HashMap;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Filters {
-    pub record_id: Option<String>,
+    pub record_id: Option<ValidName>,
     pub start_time: Option<Operator<DateTime<Utc>>>,
     pub stop_time: Option<Operator<DateTime<Utc>>>,
-    pub runtime: Option<Operator<String>>,
-    pub meta: Option<HashMap<String, MetaOperator>>,
-    pub component: Option<HashMap<String, Operator<u8>>>,
+    pub runtime: Option<Operator<ValidAmount>>,
+    pub meta: Option<HashMap<ValidName, MetaOperator>>,
+    pub component: Option<HashMap<ValidName, Operator<ValidAmount>>>,
     pub sort_by: Option<SortOption>,
-    pub limit: Option<u64>,
+    pub limit: Option<ValidAmount>,
 }
 
 impl Filters {
@@ -48,8 +48,8 @@ pub struct Operator<T> {
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct MetaOperator {
-    pub c: Option<String>,
-    pub dnc: Option<String>,
+    pub c: Option<ValidName>,
+    pub dnc: Option<ValidName>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -136,20 +136,19 @@ pub async fn advanced_record_filtering(
     {
         query.push(" WHERE ".to_string());
         if let Some(record_id) = &filters.record_id {
-            let is_valid_record_id = ValidName::parse(record_id.clone().to_string());
-            if is_valid_record_id.is_ok() {
-                query.push(format!("a.record_id = '{}' and ", &record_id));
-            }
+            // query string -> a.record_id = '{}' and
+            query.push(" a.record_id = ".to_string());
+            query.push_bind(record_id);
+            query.push(" and ".to_string());
         }
 
         if let Some(start_time_filters) = &filters.start_time {
             if let Some(operators) = get_operator(start_time_filters) {
                 for operator in operators {
-                    let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
-                    query.push(format!(
-                        "a.start_time {} '{}' and ",
-                        operator.0, &formatted_datetime
-                    ));
+                    // query string -> a.start_time {} '{}' and
+                    query.push(format!(" a.start_time {} ", operator.0));
+                    query.push_bind(operator.1);
+                    query.push(" and ".to_string());
                 }
             }
         }
@@ -157,11 +156,10 @@ pub async fn advanced_record_filtering(
         if let Some(stop_time_filters) = &filters.stop_time {
             if let Some(operators) = get_operator(stop_time_filters) {
                 for operator in operators {
-                    let formatted_datetime = operator.1.format("%Y-%m-%d %H:%M:%S").to_string();
-                    query.push(format!(
-                        "a.stop_time {} '{}' and ",
-                        operator.0, &formatted_datetime
-                    ));
+                    // query string -> a.stop_time {} '{}' and
+                    query.push(format!(" a.stop_time {} ", operator.0));
+                    query.push_bind(operator.1);
+                    query.push(" and ".to_string());
                 }
             }
         }
@@ -169,20 +167,21 @@ pub async fn advanced_record_filtering(
         if let Some(meta_filters) = &filters.meta {
             for (key, meta_operator) in meta_filters {
                 if let Some(c) = &meta_operator.c {
-                    let meta_value = ValidName::parse(c.clone().to_string());
-                    if meta_value.is_ok() {
-                        query.push(format!("Array['{}'] = ANY(SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}') and ", &c, &key));
-                    } else {
-                        println!("meta value validation Failed")
-                    }
+                    // query string -> Array['{}'] = ANY(SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}') and
+                    query.push(" Array[".to_string());
+                    query.push_bind(c);
+                    query.push("] = ANY(SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = ".to_string());
+                    query.push_bind(key);
+                    query.push(" ) ".to_string());
+                    query.push(" and ".to_string());
                 }
                 if let Some(dnc) = &meta_operator.dnc {
-                    let meta_value = ValidName::parse(dnc.clone().to_string());
-                    if meta_value.is_ok() {
-                        query.push(format!(" (NOT EXISTS (SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and ", &key, &dnc));
-                    } else {
-                        println!("meta value verification failed");
-                    }
+                    // query string -> (NOT EXISTS (SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = '{}' AND Array['{}'] @> r.values)) and
+                    query.push(" (NOT EXISTS (SELECT r.values FROM unnest(m.meta) AS r(key text, values text[]) WHERE r.key = ".to_string());
+                    query.push_bind(key);
+                    query.push(" AND Array[".to_string());
+                    query.push_bind(dnc);
+                    query.push("] @> r.values)) and ");
                 }
             }
         }
@@ -191,11 +190,15 @@ pub async fn advanced_record_filtering(
             for (key, component_operator) in component_filters {
                 if let Some(operators) = get_operator(component_operator) {
                     for operator in operators {
-                        query.push(format!(
-                            " EXISTS ( SELECT * 
-    FROM unnest(components) AS r WHERE r.name = '{}' and r.amount {} '{}' ) and ",
-                            &key, &operator.0, &operator.1
-                        ));
+                        // query string -> EXISTS ( SELECT * FROM unnest(components) AS r WHERE r.name = '{}' and r.amount {} '{}' ) and
+                        query.push(
+                            " EXISTS ( SELECT * FROM unnest(components) AS r WHERE r.name = "
+                                .to_string(),
+                        );
+                        query.push_bind(key);
+                        query.push(format!(" and r.amount {} ", &operator.0));
+                        query.push_bind(operator.1);
+                        query.push(" ) and ".to_string());
                     }
                 }
             }
@@ -208,27 +211,31 @@ pub async fn advanced_record_filtering(
         if let Some(runtime_filters) = &filters.runtime {
             if let Some(operators) = get_operator(runtime_filters) {
                 for operator in operators {
-                    query.push(format!("a.runtime {} {} and ", operator.0, operator.1));
+                    // query string ->  a.runtime {} {} and
+                    query.push(format!(" a.runtime {} ", operator.0));
+                    query.push_bind(operator.1);
+                    query.push(" and ".to_string());
                 }
             }
         } else {
-            query.push("a.runtime IS NOT NULL".to_string());
+            query.push(" a.runtime IS NOT NULL".to_string());
         }
     }
 
     if let Some(sort_by) = &filters.sort_by {
         if let SortOption::ASC(asc) = sort_by {
-            query.push(format!("ORDER BY a.{} ASC", &asc.to_string()));
+            query.push(format!(" ORDER BY a.{} ASC", &asc.to_string()));
         }
         if let SortOption::DESC(desc) = sort_by {
-            query.push(format!("ORDER BY a.{} DESC", &desc.to_string()));
+            query.push(format!(" ORDER BY a.{} DESC", &desc.to_string()));
         }
     } else {
         query.push(" ORDER BY a.stop_time ".to_string());
     }
 
     if let Some(limit) = &filters.limit {
-        query.push(format!(" LIMIT {}", &limit));
+        query.push(" LIMIT ".to_string());
+        query.push_bind(limit);
     }
 
     fn get_operator<T>(operator: &Operator<T>) -> Option<Vec<(&str, &T)>>
