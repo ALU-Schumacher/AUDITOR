@@ -129,13 +129,13 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <p>pyauditor is an async library and as such requires an event loop.</p>
 <section id="creating-a-record">
 <h2>Creating a Record<a class="headerlink" href="#creating-a-record" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">score</span>
 
 <span class="c1"># Define meta information</span>
 <span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span> <span class="c1"># Must be unique for all records in Auditor!</span>
 
 <span class="c1"># Time when the resource became available</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">79043</span><span class="p">)</span> <span class="c1"># in UTC</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">79043</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="c1"># in UTC</span>
 
 <span class="c1"># Create record</span>
 <span class="n">record</span> <span class="o">=</span> <span class="n">Record</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
@@ -162,7 +162,8 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">with_meta</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 
 <span class="c1"># Resource stopped being available</span>
-<span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">79043</span><span class="p">)</span> <span class="c1"># in UTC</span>
+<span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">79043</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="c1"># in UTC</span>
+
 <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -434,8 +435,8 @@ The <cite>actual</cite> timezone assigned to the <cite>datetime</cite> object is
 Only the actual numbers for hours, minutes, and so on matter.</p>
 <section id="timestamp-already-in-utc">
 <h3>Timestamp already in UTC<a class="headerlink" href="#timestamp-already-in-utc" title="Link to this heading"></a></h3>
-<p>When the timestamps you are using are already in UTC, they can be used without further processing.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">48942</span><span class="p">)</span>
+<p>Even if the timestamps you are using are already in UTC, timezone information should be explicitly specified.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">79043</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="c1"># in UTC</span>
 </pre></div>
 </div>
 </section>

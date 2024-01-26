@@ -29,13 +29,13 @@ Creating a Record
 
 .. code-block:: python
 
-   from pyauditor import Record, Meta, Component, Score
+   from pyauditor import Record, Meta, Component, score
 
    # Define meta information
    record_id = "record-1" # Must be unique for all records in Auditor!
 
    # Time when the resource became available
-   start = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043) # in UTC
+   start = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043, tzinfo=datetime.timezone.utc) # in UTC
 
    # Create record
    record = Record(record_id, start)
@@ -62,7 +62,8 @@ Creating a Record
    record = record.with_meta(meta)
 
    # Resource stopped being available
-   stop = datetime.datetime(2021, 12, 6, 18, 0, 0, 79043) # in UTC
+   stop = datetime.datetime(2021, 12, 6, 18, 0, 0, 79043, tzinfo=datetime.timezone.utc) # in UTC
+   
    record = record.with_stop_time(stop)
 
 
@@ -340,11 +341,12 @@ Only the actual numbers for hours, minutes, and so on matter.
 Timestamp already in UTC
 ------------------------
 
-When the timestamps you are using are already in UTC, they can be used without further processing.
+Even if the timestamps you are using are already in UTC, timezone information should be explicitly specified.
 
 .. code-block:: python
 
-   timestamp = datetime.datetime(2022, 8, 16, 12, 00, 43, 48942)
+   timestamp = datetime.datetime(2021, 12, 6, 16, 29, 43, 79043, tzinfo=datetime.timezone.utc) # in UTC
+
 
 
 Timestamp in local time
