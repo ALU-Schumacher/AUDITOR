@@ -30,6 +30,21 @@ Auditor REST APIs are changed as shown in the table below.
 
 `/records` endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.
 
+## Apel plugin
+
+The config parameter `site_name_mapping` is removed and the structure of the config parameter `sites_to_report` is changed. `sites_to_report` is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.
+
+Before:
+```python
+sites_to_report = ["site_id_1", "site_id_2", "site_id_3"]
+site_name_mapping = {"site_id_1": "SITE_A", "site_id_2": "SITE_A", "site_id_3": "SITE_B"}
+```
+
+After:
+```python
+sites_to_report = {"SITE_A": ["site_id_1", "site_id_2"], "SITE_B": ["site_id_3"]}
+```
+
 ## Removed
 `/get_[started/stopped]_since` endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
 functions but throws a deprecated warning if used. 

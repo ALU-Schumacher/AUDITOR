@@ -53,7 +53,7 @@ def run(config, client):
         start_time = get_start_time(time_db_conn)
         logging.info(f"Getting records since {start_time}")
 
-        records_summary = get_records(client, start_time, 30)
+        records_summary = get_records(config, client, start_time, 30)
 
         if len(records_summary) == 0:
             logging.info("No new records, do nothing for now")
@@ -66,18 +66,7 @@ def run(config, client):
             continue
 
         sites_to_report = check_sites_in_records(config, records_summary)
-
-        if not sites_to_report:
-            logging.info("No sites to report in the records, do nothing for now")
-            time_db_conn.close()
-            logging.info(
-                "Next report scheduled for "
-                f"{datetime.now() + timedelta(seconds=report_interval)}"
-            )
-            sleep(report_interval)
-            continue
-        else:
-            logging.info(f"Create reports for {sites_to_report}")
+        logging.info(f"Create reports for {sites_to_report}")
 
         latest_stop_time = records_summary[-1].stop_time.replace(tzinfo=timezone.utc)
 
@@ -96,7 +85,7 @@ def run(config, client):
         logging.debug(post_summary.status_code)
 
         begin_previous_month = get_begin_previous_month(current_time)
-        records_sync = get_records(client, begin_previous_month, 30)
+        records_sync = get_records(config, client, begin_previous_month, 30)
         sync_db = create_sync_db(config, records_sync)
         grouped_sync_list = group_sync_db(sync_db)
         sync = create_sync(grouped_sync_list)
