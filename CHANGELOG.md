@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 41.0.5 to 41.0.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.9.1 to 2.9.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update h2 from 0.3.22 to 0.3.24 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update itertools from 0.12.0 to 0.12.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update once_cell from 1.18.0 to 1.19.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update opentelemetry_sdk from 0.21.1 to 0.21.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pytest from 7.4.3 to 7.4.4 ([@dirksammel](https://github.com/dirksammel))
