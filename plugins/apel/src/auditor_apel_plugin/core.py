@@ -16,16 +16,46 @@ import urllib
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
+from pyauditor import Value, Operator, MetaOperator, MetaQuery, QueryBuilder
 
 
-def get_records(client, start_time, delay_time):
+def get_records(config, client, start_time, delay_time, site=None, end_time=None):
+    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    meta_key_site = config["auditor"].get("meta_key_site")
+
+    site_ids = []
+
+    if site is not None:
+        site_ids = sites_to_report[site]
+        logging.info(f"Getting records for site {site} with site_ids: {site_ids}")
+    else:
+        for k, v in sites_to_report.items():
+            site_ids.extend(v)
+
+        logging.info(
+            f"Getting records for sites {list(sites_to_report.keys())} "
+            f"with site_ids: {list(sites_to_report.values())}"
+        )
+
     timeout_counter = 0
+    records = []
 
     while timeout_counter < 2:
         try:
-            records = client.get_stopped_since(start_time)
+            start_time_value = Value.set_datetime(start_time)
+            get_since_operator = Operator().gt(start_time_value)
+            stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
+            if end_time is not None:
+                end_time_value = Value.set_datetime(end_time)
+                get_range_operator = get_since_operator.lt(end_time_value)
+                stop_time_query = stop_time_query.with_stop_time(get_range_operator)
+            for site in site_ids:
+                site_operator = MetaOperator().contains(site)
+                site_query = MetaQuery().meta_operator(meta_key_site, site_operator)
+                query_string = stop_time_query.with_meta_query(site_query).build()
+                records.extend(client.advanced_query(query_string))
             return records
-        except RuntimeError as e:
+        except Exception as e:
             if "timed" in str(e):
                 timeout_counter += 1
                 logging.warning(
@@ -310,8 +340,7 @@ def create_summary_db(config, records):
         logging.critical(e)
         raise
 
-    site_name_mapping = json.loads(config["site"].get("site_name_mapping"))
-    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
+    sites_to_report = json.loads(config["site"].get("sites_to_report"))
     infrastructure = config["site"].get("infrastructure_type")
     benchmark_type = config["site"].get("benchmark_type")
     benchmark_name = config["auditor"].get("benchmark_name")
@@ -323,14 +352,10 @@ def create_summary_db(config, records):
     for r in records:
         site_id = get_site_id(config, r)
 
-        if site_id not in sites_to_report:
-            continue
-
-        try:
-            site_name = site_name_mapping[site_id]
-        except KeyError:
-            logging.critical(f"No site name mapping defined for site {site_id}")
-            raise
+        for k, v in sites_to_report.items():
+            if site_id in v:
+                site_name = k
+                break
 
         submit_host = get_submit_host(config, r)
 
@@ -454,20 +479,15 @@ def create_sync_db(config, records):
         logging.critical(e)
         raise
 
-    site_name_mapping = json.loads(config["site"].get("site_name_mapping"))
-    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
+    sites_to_report = json.loads(config["site"].get("sites_to_report"))
 
     for r in records:
         site_id = get_site_id(config, r)
 
-        if site_id not in sites_to_report:
-            continue
-
-        try:
-            site_name = site_name_mapping[site_id]
-        except KeyError:
-            logging.critical(f"No site name mapping defined for site {site_id}")
-            raise
+        for k, v in sites_to_report.items():
+            if site_id in v:
+                site_name = k
+                break
 
         submit_host = get_submit_host(config, r)
 
@@ -497,16 +517,8 @@ def create_sync_db(config, records):
     return conn
 
 
-def group_summary_db(summary_db, filter_by: (int, int, str) = None):
-    filter = ""
-    if filter_by is not None:
-        filter = f"""
-                  WHERE month IS {filter_by[0]}
-                  AND year IS {filter_by[1]}
-                  AND site IS '{filter_by[2]}'
-                  """
-
-    group_sql = f"""
+def group_summary_db(summary_db):
+    group_sql = """
                  SELECT site,
                         submithost,
                         vo,
@@ -528,7 +540,6 @@ def group_summary_db(summary_db, filter_by: (int, int, str) = None):
                         benchmarktype,
                         benchmarkvalue
                  FROM records
-                 {filter}
                  GROUP BY site,
                           submithost,
                           vo,
@@ -542,7 +553,7 @@ def group_summary_db(summary_db, filter_by: (int, int, str) = None):
                           user,
                           benchmarktype,
                           benchmarkvalue
-                 """
+                """
 
     summary_db.row_factory = sqlite3.Row
     cur = summary_db.cursor()
@@ -729,11 +740,19 @@ def convert_to_seconds(config, cpu_time):
 
 
 def check_sites_in_records(config, records):
-    sites_to_report = set(json.loads(config["site"].get("sites_to_report")))
+    sites_to_report = json.loads(config["site"].get("sites_to_report"))
 
-    logging.debug(f"Sites to report from config: {sites_to_report}")
+    logging.debug(f"Sites to report from config: {list(sites_to_report.keys())}")
 
     sites_in_records = {get_site_id(config, r) for r in records}
-    logging.debug(f"Sites found in records: {sites_in_records}")
+    sites = []
 
-    return sites_to_report.intersection(sites_in_records)
+    for site_id in sites_in_records:
+        for k, v in sites_to_report.items():
+            if site_id in v:
+                sites.append(k)
+                break
+
+    logging.debug(f"Sites found in records: {sites}")
+
+    return sites

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - API: Deprecate get_[started/stopped]_since endpoint (#525) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Apel plugin: Remove `site_name_mapping` config parameter and change structure of `sites_to_report` config parameter ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 - [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer)
@@ -59,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Use advanced querying for filtering records ([@dirksammel](https://github.com/dirksammel))
 - Docs: Pyauditor- Fix pyauditor tutorial for creating new records (#631) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed

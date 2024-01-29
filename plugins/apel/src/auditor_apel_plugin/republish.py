@@ -9,6 +9,7 @@ import configparser
 import argparse
 from datetime import datetime, timezone
 import base64
+import sys
 from auditor_apel_plugin.core import (
     get_token,
     create_summary_db,
@@ -27,13 +28,22 @@ def run(config, client, args):
     site = args.site
 
     begin_month = datetime(year, month, 1).replace(tzinfo=timezone.utc)
+    if month == 12:
+        end_month = datetime(year + 1, 1, 1).replace(tzinfo=timezone.utc)
+    else:
+        end_month = datetime(year, month + 1, 1).replace(tzinfo=timezone.utc)
 
-    records = get_records(client, begin_month, 30)
+    records = get_records(config, client, begin_month, 30, site, end_month)
+
+    if len(records) == 0:
+        logging.critical("No records found!")
+        sys.exit(1)
+
     token = get_token(config)
     logging.debug(token)
 
     summary_db = create_summary_db(config, records)
-    grouped_summary_list = group_summary_db(summary_db, filter_by=(month, year, site))
+    grouped_summary_list = group_summary_db(summary_db)
     summary = create_summary(config, grouped_summary_list)
     logging.debug(summary)
     signed_summary = sign_msg(config, summary)

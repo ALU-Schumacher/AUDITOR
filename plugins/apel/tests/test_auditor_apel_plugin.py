@@ -33,7 +33,7 @@ class FakeAuditorClient:
     def __init__(self, test_case=""):
         self.test_case = test_case
 
-    def get_stopped_since(self, start_time):
+    def advanced_query(self, start_time):
         if self.test_case == "pass":
             return "good"
         if self.test_case == "fail_timeout":
@@ -357,10 +357,9 @@ class TestAuditorApelPlugin:
         time_db.close()
 
     def test_create_summary_db(self):
-        site_name_mapping = (
-            '{"test-site-1": "TEST_SITE_1", "test-site-2": "TEST_SITE_2"}'
+        sites_to_report = (
+            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
         )
-        sites_to_report = '["test-site-1", "test-site-2"]'
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -376,7 +375,6 @@ class TestAuditorApelPlugin:
 
         conf = configparser.ConfigParser()
         conf["site"] = {
-            "site_name_mapping": site_name_mapping,
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
             "infrastructure_type": infrastructure_type,
@@ -448,8 +446,7 @@ class TestAuditorApelPlugin:
 
         for idx, rec_values in enumerate(rec_value_list):
             assert (
-                content[idx][0]
-                == ast.literal_eval(site_name_mapping)[rec_values["site"]]
+                content[idx][0] == list(ast.literal_eval(sites_to_report).keys())[idx]
             )
             assert content[idx][1] == replace_record_string(rec_values["submit_host"])
             assert (
@@ -502,35 +499,10 @@ class TestAuditorApelPlugin:
         cur.close()
         result.close()
 
-        rec_2_values["site"] = "test-site-3"
-        records = []
-
-        with patch(
-            "pyauditor.Record.runtime", new_callable=PropertyMock
-        ) as mocked_runtime:
-            mocked_runtime.return_value = runtime
-
-            for r_values in rec_value_list:
-                rec = create_rec(r_values, conf["auditor"])
-                records.append(rec)
-
-            result = create_summary_db(conf, records)
-
-        cur = result.cursor()
-
-        cur.execute("SELECT * FROM records")
-        content = cur.fetchall()
-
-        assert len(content) == 1
-
-        cur.close()
-        result.close()
-
     def test_create_summary_db_fail(self):
-        site_name_mapping = (
-            '{"test-site-1": "TEST_SITE_1", "test-site-2": "TEST_SITE_2"}'
+        sites_to_report = (
+            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
         )
-        sites_to_report = '["test-site-1", "test-site-2"]'
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -546,7 +518,6 @@ class TestAuditorApelPlugin:
 
         conf = configparser.ConfigParser()
         conf["site"] = {
-            "site_name_mapping": site_name_mapping,
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
             "infrastructure_type": infrastructure_type,
@@ -625,12 +596,6 @@ class TestAuditorApelPlugin:
 
             conf["auditor"]["cores_name"] = "Cores"
             conf["auditor"]["benchmark_name"] = "fail"
-            with pytest.raises(Exception) as pytest_error:
-                create_summary_db(conf, records)
-            assert pytest_error.type == KeyError
-
-            conf["auditor"]["benchmark_name"] = "hepscore"
-            conf["site"]["site_name_mapping"] = '{"test-site-2": "TEST_SITE_2"}'
             with pytest.raises(Exception) as pytest_error:
                 create_summary_db(conf, records)
             assert pytest_error.type == KeyError
@@ -914,27 +879,58 @@ class TestAuditorApelPlugin:
     def test_get_records(self):
         client = FakeAuditorClient("pass")
 
-        result = get_records(client, 42, 1)
-        assert result == "good"
+        sites_to_report = '{"TEST_SITE_1": ["test-site-1"]}'
+        meta_key_site = "site_id"
+
+        conf = configparser.ConfigParser()
+        conf["site"] = {
+            "sites_to_report": sites_to_report,
+        }
+        conf["auditor"] = {
+            "meta_key_site": meta_key_site,
+        }
+
+        start_time_str = "2022-12-17 20:20:20+01:00"
+        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S%z").replace(
+            tzinfo=timezone.utc
+        )
+
+        result = get_records(conf, client, start_time, 1)
+        assert "".join(result) == "good"
 
     def test_get_records_fail(self):
+        sites_to_report = '{"TEST_SITE_1": ["test-site-1"]}'
+        meta_key_site = "site_id"
+
+        conf = configparser.ConfigParser()
+        conf["site"] = {
+            "sites_to_report": sites_to_report,
+        }
+        conf["auditor"] = {
+            "meta_key_site": meta_key_site,
+        }
+
+        start_time_str = "2022-12-17 20:20:20+01:00"
+        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S%z").replace(
+            tzinfo=timezone.utc
+        )
+
         client = FakeAuditorClient("fail_timeout")
 
         with pytest.raises(SystemExit) as pytest_error:
-            get_records(client, 42, 1)
+            get_records(conf, client, start_time, 1)
         assert pytest_error.type == SystemExit
 
         client = FakeAuditorClient("fail_else")
 
         with pytest.raises(Exception) as pytest_error:
-            get_records(client, 42, 1)
+            get_records(conf, client, start_time, 1)
         assert pytest_error.type == RuntimeError
 
     def test_get_site_id(self):
-        site_name_mapping = (
-            '{"test-site-1": "TEST_SITE_1", "test-site-2": "TEST_SITE_2"}'
+        sites_to_report = (
+            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
         )
-        sites_to_report = '["test-site-1", "test-site-2"]'
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -948,7 +944,6 @@ class TestAuditorApelPlugin:
 
         conf = configparser.ConfigParser()
         conf["site"] = {
-            "site_name_mapping": site_name_mapping,
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
             "infrastructure_type": infrastructure_type,
@@ -1002,10 +997,9 @@ class TestAuditorApelPlugin:
         assert result == rec_2_values["site"]
 
     def test_get_site_id_fail(self):
-        site_name_mapping = (
-            '{"test-site-1": "TEST_SITE_1", "test-site-2": "TEST_SITE_2"}'
+        sites_to_report = (
+            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
         )
-        sites_to_report = '["test-site-1", "test-site-2"]'
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -1019,7 +1013,6 @@ class TestAuditorApelPlugin:
 
         conf = configparser.ConfigParser()
         conf["site"] = {
-            "site_name_mapping": site_name_mapping,
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
             "infrastructure_type": infrastructure_type,
@@ -1113,7 +1106,9 @@ class TestAuditorApelPlugin:
         assert pytest_error.type == ValueError
 
     def test_check_sites_in_records(self):
-        sites_to_report = '["test-site-1", "test-site-2"]'
+        sites_to_report = (
+            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
+        )
         benchmark_name = "hepscore"
         cores_name = "Cores"
         cpu_time_name = "TotalCPU"
@@ -1183,12 +1178,12 @@ class TestAuditorApelPlugin:
             result = check_sites_in_records(conf, records)
             assert len(result) == 2
 
-            conf["site"]["sites_to_report"] = '["test-site-1"]'
+            conf["site"]["sites_to_report"] = '{"TEST_SITE_1": ["test-site-1"]}'
 
             result = check_sites_in_records(conf, records)
             assert len(result) == 1
 
-            conf["site"]["sites_to_report"] = '["test-site-3"]'
+            conf["site"]["sites_to_report"] = '{"TEST_SITE_3": ["test-site-3"]}'
 
             result = check_sites_in_records(conf, records)
             assert len(result) == 0
