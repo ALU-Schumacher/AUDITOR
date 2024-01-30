@@ -88,6 +88,10 @@
                 </div>
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#removed"><small>- Removed</small></a>
                 </div>
                 
@@ -122,7 +126,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -175,6 +179,15 @@
 </tbody></table>
 <p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
 <p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
+<h2 id="apel-plugin">Apel plugin</h2>
+<p>The config parameter <code>site_name_mapping</code> is removed and the structure of the config parameter <code>sites_to_report</code> is changed. <code>sites_to_report</code> is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.</p>
+<p>Before:</p>
+<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>[</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
+</span><span>site_name_mapping </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>}
+</span></code></pre>
+<p>After:</p>
+<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>], </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]}
+</span></code></pre>
 <h2 id="removed">Removed</h2>
 <p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
 functions but throws a deprecated warning if used. </p>
@@ -252,7 +265,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <li><code>cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 <h1 id="from-0-1-0-to-0-2-0">From 0.1.0 to 0.2.0</h1>
-<h2 id="apel-plugin">Apel plugin</h2>
+<h2 id="apel-plugin-1">Apel plugin</h2>
 <ul>
 <li>The config file now needs to have a field <code>cpu_time_unit</code> present, which describes the unit of total CPU time in the AUDITOR records.
 Possible values are <code>seconds</code> or <code>milliseconds</code>.</li>

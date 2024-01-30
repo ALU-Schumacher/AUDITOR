@@ -664,8 +664,7 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 <tr><td><code>time_db_path</code></td><td>Path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>publish_since</code></td><td>Date and time (UTC) after which jobs will be published. Only relevant for first run when no <code>time.db</code> is present yet.</td></tr>
-<tr><td><code>sites_to_report</code></td><td>List of sites that will be reported. Uses the site name as stored in the AUDITOR records.</td></tr>
-<tr><td><code>site_name_mapping</code></td><td>Maps the site name as stored in the AUDITOR record to the name of the site in the GOCDB.</td></tr>
+<tr><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
 <tr><td><code>default_submit_host</code></td><td>Default submit host if this information is missing in the AUDITOR record.</td></tr>
 <tr><td><code>infrastructure_type</code></td><td>Origin of the job, can be set to <code>grid</code> or <code>local</code>.</td></tr>
 <tr><td><code>benchmark_type</code></td><td>Name of the benchmark that will be reported to APEL.</td></tr>
@@ -700,8 +699,7 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 </span><span>
 </span><span>[site]
 </span><span>publish_since = 2023-01-01 13:37:42+00:00
-</span><span>sites_to_report = [&quot;site1&quot;, &quot;site2&quot;]
-</span><span>site_name_mapping = {&quot;site1&quot;: &quot;SITE-2-GOCDB&quot;, &quot;site2&quot;: &quot;SITE-2-GOCDB&quot;}
+</span><span>sites_to_report = {&quot;SITE_A&quot;: [&quot;site_id_1&quot;, &quot;site_id_2&quot;], &quot;SITE_B&quot;: [&quot;site_id_3&quot;]}
 </span><span>default_submit_host = gsiftp://accounting.grid_site.de:1337/jobs
 </span><span>infrastructure_type = grid
 </span><span>benchmark_type = hepscore23
