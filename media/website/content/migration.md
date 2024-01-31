@@ -4,7 +4,7 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.3.0/0.3.1 to unreleased
+# From 0.3.0/0.3.1 to 0.4.0
 
 ## Development
 
