@@ -1,4 +1,5 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.68.0 as chef
+# Note: If you update the rust version below, make sure that the debian version which is used there matches the one in the runtime stage
+FROM lukemathwalker/cargo-chef:latest-rust-1.75-slim-bookworm as chef
 WORKDIR /auditor
 RUN apt update && apt install lld clang -y
 
@@ -17,7 +18,7 @@ ENV SQLX_OFFLINE true
 RUN cargo build --release --bin auditor
 
 # Runtime stage
-FROM debian:bullseye-slim AS runtime
+FROM debian:bookworm-slim AS runtime
 
 WORKDIR /auditor
 

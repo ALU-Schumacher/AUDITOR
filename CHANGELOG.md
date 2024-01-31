@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Restructure `/record` endpoint to handle single record operations and `/records` endpoint to handle multiple records operations (#629) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Incorrect meta and component query returns an empty vector and implement more edge case testing for advanced queries (#638) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Implement prepared SQL queries using push_bind for advanced filtering (#637) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor container: Update Rust from 1.68 to 1.75 and Debian from 11 (Bullseye) to 12 (Bookworm) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update actions/setup-python from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
