@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+### Security
+### Added
+### Changed
+### Removed
+
+## [0.4.0] - 2024-01-31
+
+### Breaking changes
 - API: Deprecate get_[started/stopped]_since endpoint (#525) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Remove `site_name_mapping` config parameter and change structure of `sites_to_report` config parameter ([@dirksammel](https://github.com/dirksammel))
 
@@ -400,7 +408,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.4.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -412,3 +420,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.2.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.2.0
 [0.3.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.0
 [0.3.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1
+[0.4.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0
