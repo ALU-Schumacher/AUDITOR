@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>About | Auditor </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR//v0.4.0/juice.css">
+    
+    
+</head>
+
+<body>
+    
+<header class="box-shadow">
+    
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.4.0&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR//v0.4.0/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.4.0&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.4.0&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.4.0&#x2F;development&#x2F;">Development</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.4.0&#x2F;migration&#x2F;">Migration</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+</header>
+
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.4.0/about/#auditor">AUDITOR</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.4.0/about/#funding">Funding</a>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+<div class="heading-text">About</div>
+<h1 id="auditor">AUDITOR</h1>
+<p><strong>AUDITOR</strong> is a modular accounting ecosystem that is able to cover
+a wide range of use cases and infrastructures. Accounting data is gathered via so-called col-
+lectors which are designed to monitor batch systems, COBalD/TARDIS, cloud schedulers or
+other sources of information. The data is stored in a database and the access to the data
+is handled by the core component of AUDITOR which provides a REST API, and both
+a Rust and a Python client. So-called plugins can take action based on accounting records.</p>
+<h1 id="funding">Funding</h1>
+<p>This work was supported by the Federal Ministry of Education and Research (BMBF) within the project
+05H18VFRC1 - &quot;Entwicklung und Optimierung der Nutzung heterogener Rechenressourcen (Pilotmanahme ErUM-Data)&quot;
+and 05H21VFRC2: &quot;Weiterentwicklung, Integration und Optimierung
+von föderierten digitalen Infrastrukturen für ErUM (Verbundprojekt FIDIUM)&quot;.</p>
+
+
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
