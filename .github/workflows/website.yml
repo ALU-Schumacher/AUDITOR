@@ -46,6 +46,11 @@ jobs:
 
       # Only for tag push: Update latest to new release version
 
+      # The "cleanup old checkout" step is needed because of this bug: https://github.com/actions/checkout/issues/1014
+      - name: Cleanup old checkout
+        if: startsWith(github.ref, 'refs/tags/')
+        run: chmod +w -R ${GITHUB_WORKSPACE}; rm -rf ${GITHUB_WORKSPACE}/*;
+
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         if: startsWith(github.ref, 'refs/tags/')
@@ -56,11 +61,18 @@ jobs:
       - name: Redirect latest to new release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-            echo "Redirecting latest to newly released version " $RELEASE_VERSION
+            echo "Redirecting latest to newly released version ${{ env.RELEASE_VERSION }}"
             rm -rf latest
             ln -s $RELEASE_VERSION latest
-            git add latest
-            git commit -m "CI: Redirect latest to new version $RELEASE_VERSION"
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          add: "latest"
+          message: "CI: Redirect latest to new version ${{ env.RELEASE_VERSION }}"
+          default_author: "github_actions"
+          pathspec_error_handling: exitAtEnd
 
       - name: Push changes
         if: startsWith(github.ref, 'refs/tags/')

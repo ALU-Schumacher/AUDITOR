@@ -58,11 +58,19 @@ jobs:
       - name: Redirect latest to new release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-            echo "Redirecting latest to newly released version " $RELEASE_VERSION
+            echo "Redirecting latest to newly released version ${{ env.RELEASE_VERSION}}"
             rm -rf pyauditor/latest
             ln -s pyauditor/$RELEASE_VERSION pyauditor/latest
-            git add pyauditor/latest
-            git commit -m "CI: Redirect latest to new version $RELEASE_VERSION (pyauditor)"
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          add: "pyauditor/latest"
+          message: "CI: Redirect latest to new version ${{ env.RELEASE_VERSION }} (pyauditor)"
+          default_author: "github_actions"
+          pathspec_error_handling: exitAtEnd
+
       - name: Push changes
         if: startsWith(github.ref, 'refs/tags/')
         uses: ad-m/github-push-action@master
