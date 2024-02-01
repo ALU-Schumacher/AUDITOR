@@ -61,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Use advanced querying for filtering records ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Rename summary record field `Infrastructure` to `InfrastructureType` ([@dirksammel](https://github.com/dirksammel))
 - Docs: Pyauditor- Fix pyauditor tutorial for creating new records (#631) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed

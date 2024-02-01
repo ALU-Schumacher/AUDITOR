@@ -623,7 +623,7 @@ def create_summary(config, grouped_summary_list):
             summary += f"VORole: {entry['vorole']}\n"
         if apel_style != "APEL-v0.2":
             summary += f"SubmitHost: {entry['submithost']}\n"
-            summary += f"Infrastructure: {entry['infrastructure']}\n"
+            summary += f"InfrastructureType: {entry['infrastructure']}\n"
             summary += f"Processors: {entry['cpucount']}\n"
             summary += f"NodeCount: {entry['nodecount']}\n"
         summary += f"EarliestEndTime: {entry['min_stoptime']}\n"
