@@ -54,7 +54,7 @@ jobs:
     - name: Start collector
       run: |
         docker exec -d -u submituser -w /home/submituser htcondor-auditor-collector-1 \
-          bash -l -c "auditor-htcondor-collector -c /configs/collector.yaml -i 5"
+          bash -l -c "auditor-htcondor-collector -c /configs/collector.yaml -i 5 2>&1 | tee auditor-htcondor-collector.log"
     - name: Submit test job
       run: |
         docker exec -u submituser -w /home/submituser htcondor-submit-1 \
@@ -75,7 +75,12 @@ jobs:
         done
         echo "Waiting for collector..."
         sleep 10
-      
+    - name: "Collector logs"
+      run: |
+        docker exec -u submituser -w /home/submituser htcondor-auditor-collector-1 bash -l -c "cat auditor-htcondor-collector.log"
+    - name: "Auditor logs"
+      run: |
+        docker logs htcondor-auditor-1
     - name: Query accounting table
       id: table
       run: |
