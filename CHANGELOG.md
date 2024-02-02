@@ -68,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update wiremock from 0.5.21 to 0.5.22 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Introduce dependency between pyauditor release and release of python packages ([@dirksammel](https://github.com/dirksammel))
+- CI: Add extra workflow for building the pyaudtitor source distribution ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Use advanced querying for filtering records ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Rename summary record field `Infrastructure` to `InfrastructureType` ([@dirksammel](https://github.com/dirksammel))

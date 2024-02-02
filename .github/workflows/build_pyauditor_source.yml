@@ -1,11 +1,7 @@
-name: build-pyauditor-linux
+name: build-pyauditor-source
 
 on:
   workflow_call:
-    inputs:
-      python-version:
-        required: true
-        type: string
 
 jobs:
   build-pyauditor:
@@ -34,10 +30,10 @@ jobs:
           target: x86_64
           manylinux: auto
           command: build
-          args: --release -o dist --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
+          args: --release --sdist -o dist --interpreter --manifest-path pyauditor/Cargo.toml
 
-      - name: Upload wheel
+      - name: Upload sdist wheel
         uses: actions/upload-artifact@v4
         with:
-          path: dist
-          name: pyauditor-wheels-linux-${{ inputs.python-version }}
+          path: dist/*.gz
+          name: pyauditor-wheels-source
