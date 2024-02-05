@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  pyauditor-docs:
+  build_and_push:
     runs-on: ubuntu-latest
     env:
       SQLX_OFFLINE: true
@@ -48,15 +48,21 @@ jobs:
 
       # Only for tag push: Update latest to new release version
 
+  update_latest:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" | sed "s/main/edge/" >> $GITHUB_ENV
+
       - name: Checkout gh-pages
         uses: actions/checkout@v4
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           ref: gh-pages
           fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
       - name: Redirect latest to new release
-        if: startsWith(github.ref, 'refs/tags/')
         working-directory: pyauditor
         run: |
             echo "Redirecting latest to newly released version ${{ env.RELEASE_VERSION}}"
@@ -65,7 +71,6 @@ jobs:
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           add: "pyauditor/latest"
           message: "CI: Redirect latest to new version ${{ env.RELEASE_VERSION }} (pyauditor)"
@@ -73,7 +78,6 @@ jobs:
           pathspec_error_handling: exitAtEnd
 
       - name: Push changes
-        if: startsWith(github.ref, 'refs/tags/')
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
