@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add extra workflow for building the pyaudtitor source distribution ([@dirksammel](https://github.com/dirksammel))
 - CI: Fix setting symlink to latest pyauditor tag ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Split webpage building and symlink creation into two jobs ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Use tagged version instead of master branch for zola deploy action ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Replace all URL encodings in meta fields with single-character equivalent ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Use advanced querying for filtering records ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Rename summary record field `Infrastructure` to `InfrastructureType` ([@dirksammel](https://github.com/dirksammel))
