@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
@@ -129,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 41.0.4 to 41.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update fake from 2.8.0 to 2.9.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update itertools from 0.11.0 to 0.12.0 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update num-traits from 0.2.16 to 0.2.27 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update num-traits from 0.2.16 to 0.2.17 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update opentelemetry from 0.20.0 to 0.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update opentelemetry-prometheus from 0.13.0 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update opentelemetry_sdk from 0.20.0 to 0.21.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@QuantumDancer](https://github.com/QuantumDancer))
