@@ -13,8 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
