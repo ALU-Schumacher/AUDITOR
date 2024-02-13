@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
 ### Security
+
 ### Added
+
 ### Changed
+- Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+
 ### Removed
 
 ## [0.4.0] - 2024-01-31
