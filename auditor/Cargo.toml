@@ -87,7 +87,7 @@ claim = { package = "claims", version = "0.7" }
 quickcheck = "1"
 quickcheck_macros = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
-wiremock = "0.5"
+wiremock = "0.6"
 
 [features]
 default = ["client", "server"]
