@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update chrono from 0.4.33 to 0.4.34 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.6.0 to 3.6.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update thiserror from 1.0.56 to 1.0.57 ([@QuantumDancer](https://github.com/QuantumDancer))
