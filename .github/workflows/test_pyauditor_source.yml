@@ -1,0 +1,28 @@
+name: test-pyauditor-source
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  test-pyauditor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download pyauditor source
+        uses: actions/download-artifact@v4
+        with:
+          name: pyauditor-wheels-source
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install and test pyauditor
+        run: |
+          pip install --upgrade pip
+          pip install *.gz
+          python -c "from pyauditor import Record, Meta, AuditorClientBuilder"
