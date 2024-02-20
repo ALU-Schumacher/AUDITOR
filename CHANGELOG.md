@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 42.0.2 to 42.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pytest from 8.0.0 to 8.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde_json from 1.0.113 to 1.0.114 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.6.0 to 3.6.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.3 to 69.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from 1.0.56 to 1.0.57 ([@QuantumDancer](https://github.com/QuantumDancer))
