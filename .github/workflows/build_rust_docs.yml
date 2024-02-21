@@ -1,0 +1,28 @@
+name: build-rust-docs
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-rust-docs:
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: -D warnings
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cache-dependencies-rustdocs
+        
+      - name: Build docs
+        run: |
+          SQLX_OFFLINE=true cargo doc --no-deps --workspace
