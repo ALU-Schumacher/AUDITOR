@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - CI: Add workflow for testing the pyaudtitor source distribution ([@dirksammel](https://github.com/dirksammel))
+- CI: Add workflow for building the Rust documentation ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
