@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update chrono from 0.4.33 to 0.4.34 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update cryptography from 42.0.2 to 42.0.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update pyo3 from 0.19 to 0.20 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3 from 0.19.2 to 0.20.3 ([@dirksammel](https://github.com/dirksammel), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pyo3-asyncio from 0.19 to 0.20 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.0.0 to 8.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
