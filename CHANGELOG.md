@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3-asyncio from 0.19 to 0.20 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.0.0 to 8.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.114 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.6.0 to 3.6.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.3 to 69.1.1 ([@dirksammel](https://github.com/dirksammel))
