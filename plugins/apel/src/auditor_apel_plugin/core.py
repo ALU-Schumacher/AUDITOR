@@ -84,6 +84,14 @@ def get_begin_previous_month(current_time):
     return begin_previous_month_utc
 
 
+def get_begin_current_month(current_time):
+    first_current_month = current_time.replace(day=1)
+    begin_current_month = datetime.combine(first_current_month, time())
+    begin_current_month_utc = begin_current_month.replace(tzinfo=timezone.utc)
+
+    return begin_current_month_utc
+
+
 def get_time_db(config):
     time_db_path = config["paths"].get("time_db_path")
     publish_since = config["site"].get("publish_since")

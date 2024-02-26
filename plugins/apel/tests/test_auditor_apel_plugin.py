@@ -1,6 +1,7 @@
 import pytest
 from auditor_apel_plugin.core import (
     get_begin_previous_month,
+    get_begin_current_month,
     create_time_db,
     get_time_db,
     sign_msg,
@@ -95,6 +96,16 @@ class TestAuditorApelPlugin:
 
         result = get_begin_previous_month(time_b)
         assert result == datetime(1969, 12, 1, 00, 00, 00, tzinfo=timezone.utc)
+
+    def test_get_begin_current_month(self):
+        time_a = datetime(2022, 10, 23, 12, 23, 55)
+        time_b = datetime(1970, 1, 1, 00, 00, 00)
+
+        result = get_begin_current_month(time_a)
+        assert result == datetime(2022, 10, 1, 00, 00, 00, tzinfo=timezone.utc)
+
+        result = get_begin_current_month(time_b)
+        assert result == datetime(1970, 1, 1, 00, 00, 00, tzinfo=timezone.utc)
 
     def test_create_time_db(self):
         path = ":memory:"
