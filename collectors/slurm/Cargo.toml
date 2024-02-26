@@ -41,7 +41,7 @@ uuid = { version = "1.7", features = ["v4"] }
 fake = { version = "2.9", features = ["chrono"] }
 config = "0.13.4"
 serde = { version = "1.0.197", features = ["derive"] }
-serde-aux = "4.4.0"
+serde-aux = "4.5.0"
 itertools = "0.12.1"
 regex = "1.10.3"
 chrono = { version = "0.4.34", default-features = false }
