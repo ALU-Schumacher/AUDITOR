@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add workflow for building the Rust documentation ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Apel plugin: Reduce unnecessary high number of records for sync messages ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update anyhow from 1.0.79 to 1.0.80 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update chrono from 0.4.33 to 0.4.34 ([@QuantumDancer](https://github.com/QuantumDancer))

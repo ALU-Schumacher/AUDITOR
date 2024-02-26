@@ -23,6 +23,7 @@ from auditor_apel_plugin.core import (
     send_payload,
     update_time_db,
     get_begin_previous_month,
+    get_begin_current_month,
     create_sync_db,
     group_sync_db,
     create_sync,
@@ -84,8 +85,12 @@ def run(config, client):
         post_summary = send_payload(config, token, payload_summary)
         logging.debug(post_summary.status_code)
 
-        begin_previous_month = get_begin_previous_month(current_time)
-        records_sync = get_records(config, client, begin_previous_month, 30)
+        if current_time.day == 1:
+            begin_month = get_begin_previous_month(current_time)
+        else:
+            begin_month = get_begin_current_month(current_time)
+
+        records_sync = get_records(config, client, begin_month, 30)
         sync_db = create_sync_db(config, records_sync)
         grouped_sync_list = group_sync_db(sync_db)
         sync = create_sync(grouped_sync_list)
