@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pyo3 from 0.19.2 to 0.20.3 ([@dirksammel](https://github.com/dirksammel), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pyo3-asyncio from 0.19 to 0.20 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pytest from 8.0.0 to 8.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest from 8.0.0 to 8.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.114 ([@QuantumDancer](https://github.com/QuantumDancer))
