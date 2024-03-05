@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [RUSTSEC-2024-0019]: Update mio from 0.8.10 to 0.8.11 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Added
 - CI: Add workflow for testing the pyaudtitor source distribution ([@dirksammel](https://github.com/dirksammel))
