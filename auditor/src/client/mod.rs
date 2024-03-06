@@ -95,7 +95,7 @@ impl AuditorClientBuilder {
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
             address: "http://127.0.0.1:8080".into(),
-            timeout: Duration::seconds(30),
+            timeout: Duration::try_seconds(30).expect("This should never fail"),
         }
     }
 
@@ -129,7 +129,8 @@ impl AuditorClientBuilder {
     /// * `timeout` - Timeout in seconds.
     #[must_use]
     pub fn timeout(mut self, timeout: i64) -> Self {
-        self.timeout = Duration::seconds(timeout);
+        self.timeout = Duration::try_seconds(timeout)
+            .unwrap_or_else(|| panic!("Could not convert {} to duration", timeout));
         self
     }
 
@@ -1156,7 +1157,12 @@ mod tests {
         Mock::given(method("GET"))
             .and(path("/health_check"))
             .respond_with(
-                ResponseTemplate::new(200).set_delay(Duration::seconds(180).to_std().unwrap()),
+                ResponseTemplate::new(200).set_delay(
+                    Duration::try_seconds(180)
+                        .expect("This should never fail")
+                        .to_std()
+                        .expect("This should never fail"),
+                ),
             )
             .expect(1)
             .mount(&mock_server)
@@ -1182,7 +1188,12 @@ mod tests {
         Mock::given(method("GET"))
             .and(path("/health_check"))
             .respond_with(
-                ResponseTemplate::new(200).set_delay(Duration::seconds(180).to_std().unwrap()),
+                ResponseTemplate::new(200).set_delay(
+                    Duration::try_seconds(180)
+                        .expect("This should never fail")
+                        .to_std()
+                        .expect("This should never fail"),
+                ),
             )
             .expect(1)
             .mount(&mock_server)

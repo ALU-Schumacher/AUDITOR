@@ -454,14 +454,14 @@ impl PartialEq<Record> for RecordTest {
         let stop = match (s_stop, o_stop) {
             (Some(s), Some(o)) => {
                 let stop_diff = if s > o { *s - *o } else { *o - *s };
-                stop_diff < chrono::Duration::milliseconds(1)
+                stop_diff < chrono::Duration::try_milliseconds(1).expect("This should never fail")
             }
             (None, None) => true,
             _ => false,
         };
 
         s_rid.as_ref().unwrap() == o_rid
-            && start_diff < chrono::Duration::milliseconds(1)
+            && start_diff < chrono::Duration::try_milliseconds(1).expect("This should never fail")
             && stop
             && ((s_comp.is_none() && o_comp.is_none())
                 || (

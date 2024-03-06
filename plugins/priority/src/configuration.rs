@@ -89,7 +89,7 @@ fn default_prometheus_port() -> u16 {
 }
 
 fn default_prometheus_frequency() -> chrono::Duration {
-    chrono::Duration::seconds(3600)
+    chrono::Duration::try_seconds(3600).expect("This should never fail")
 }
 
 fn default_log_level() -> LevelFilter {
