@@ -65,7 +65,7 @@ pub struct DatabaseMetricsSettings {
 }
 
 fn default_db_metrics_frequency() -> chrono::Duration {
-    chrono::Duration::seconds(30)
+    chrono::Duration::try_seconds(30).expect("This should never fail")
 }
 
 fn default_metrics() -> MetricsSettings {

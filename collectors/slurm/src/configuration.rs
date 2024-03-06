@@ -212,11 +212,11 @@ fn default_earliest_datetime() -> DateTime<Local> {
 }
 
 fn default_sacct_frequency() -> Duration {
-    Duration::seconds(10)
+    Duration::try_seconds(10).expect("This should never fail")
 }
 
 fn default_sender_frequency() -> Duration {
-    Duration::seconds(1)
+    Duration::try_seconds(1).expect("This should never fail")
 }
 
 fn default_database_path() -> String {

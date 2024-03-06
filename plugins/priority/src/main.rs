@@ -364,7 +364,7 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::FullSpread,
-            frequency: chrono::Duration::seconds(3600),
+            frequency: chrono::Duration::try_seconds(3600).expect("This should never fail"),
             log_level: LevelFilter::INFO,
             prometheus: Some(PrometheusSettings {
                 enable: true,
@@ -404,7 +404,7 @@ mod tests {
             commands: vec!["whatever".to_string()],
             duration: None,
             computation_mode: ComputationMode::ScaledBySum,
-            frequency: chrono::Duration::seconds(3600),
+            frequency: chrono::Duration::try_seconds(3600).expect("This should never fail"),
             log_level: LevelFilter::INFO,
             prometheus: Some(PrometheusSettings {
                 enable: true,
