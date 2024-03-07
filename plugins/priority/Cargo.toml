@@ -50,6 +50,6 @@ opentelemetry_api = "0.20.0"
 opentelemetry_sdk = "0.21.2"
 tracing-actix-web = "0.7"
 prometheus = "0.13"
-opentelemetry-prometheus = "0.14"
+opentelemetry-prometheus = "0.15"
 
 [dev-dependencies]
