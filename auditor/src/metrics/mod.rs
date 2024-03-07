@@ -5,14 +5,14 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use opentelemetry_sdk::metrics::MeterProvider;
+use opentelemetry_sdk::metrics::SdkMeterProvider;
 use prometheus::Registry;
 
 mod database;
 pub use database::*;
 
 pub struct PrometheusExporterConfig {
-    pub provider: MeterProvider,
+    pub provider: SdkMeterProvider,
     pub prom_registry: Registry,
 }
 
@@ -42,7 +42,7 @@ impl PrometheusExporterBuilder {
             .with_registry(prom_registry.clone())
             .build()?;
 
-        let provider = MeterProvider::builder()
+        let provider = SdkMeterProvider::builder()
             .with_reader(metrics_exporter)
             .build();
 
