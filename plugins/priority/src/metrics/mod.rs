@@ -1,12 +1,12 @@
 use crate::configuration::PrometheusMetricsOptions;
-use opentelemetry_sdk::metrics::MeterProvider;
+use opentelemetry_sdk::metrics::SdkMeterProvider;
 use prometheus::Registry;
 use prometheus::{IntGaugeVec, Opts};
 use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct PrometheusExporterConfig {
-    pub provider: MeterProvider,
+    pub provider: SdkMeterProvider,
     pub prom_registry: Registry,
     pub resource_metric: IntGaugeVec,
     pub priority_metric: IntGaugeVec,
@@ -32,7 +32,7 @@ impl PrometheusExporterConfig {
         prom_registry.register(Box::new(resource_metric.clone()))?;
         prom_registry.register(Box::new(priority_metric.clone()))?;
 
-        let provider = MeterProvider::builder()
+        let provider = SdkMeterProvider::builder()
             .with_reader(metrics_exporter)
             .build();
 
