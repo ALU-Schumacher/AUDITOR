@@ -34,7 +34,7 @@ jobs:
         with:
           packages-dir: plugins/apel/dist/
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: plugins/apel/dist/*
           
@@ -64,6 +64,6 @@ jobs:
         with:
           packages-dir: collectors/htcondor/dist/
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: collectors/htcondor/dist/*
