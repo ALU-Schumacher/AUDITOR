@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Apel plugin: Reduce unnecessary high number of records for sync messages ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update actix-web-opentelemetry 0.16.0 to 0.17.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update anyhow from 1.0.79 to 1.0.80 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update build from 1.0.3 to 1.1.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update chrono from 0.4.33 to 0.4.35 ([@QuantumDancer](https://github.com/QuantumDancer))
