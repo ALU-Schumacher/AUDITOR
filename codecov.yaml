@@ -30,3 +30,4 @@ component_management:
 
 codecov:
   token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
+  #${{ secrets.CODECOV_TOKEN }} doesn't work for PRs from forks
