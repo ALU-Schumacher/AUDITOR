@@ -71,7 +71,7 @@ impl<'a> AuditorSender {
         Ok(())
     }
 
-    #[tracing::instrument(name = "Handling new record", skip(self))]
+    #[tracing::instrument(name = "Handling new record", skip(self, record), level = "debug")]
     async fn handle_record(&self, record: RecordAdd) -> Result<()> {
         tracing::debug!("Handling record: {:?}", record);
         self.sender.add_record(record).await
@@ -155,17 +155,18 @@ impl QueuedSender {
     }
 }
 
+#[tracing::instrument(name = "Processing queue", skip(database, client))]
 async fn process_queue(database: &Database, client: &AuditorClient) -> Result<()> {
     let entries = database.get_records().await?;
     for (id, record) in entries {
         tracing::info!("Sending record {}", id);
         match client.add(&record).await {
             Ok(_) => {
-                tracing::info!("Successfully sent record {}", id);
+                tracing::debug!("Successfully sent record {}", id);
                 database.delete(id).await?;
             }
             Err(ClientError::RecordExists) => {
-                tracing::warn!(
+                tracing::debug!(
                     "Failed sending record {} to Auditor instance. Record already exists.",
                     id
                 );

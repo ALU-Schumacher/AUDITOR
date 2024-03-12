@@ -97,6 +97,11 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
 #[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
     let (lastcheck, last_record_id) = database.get_lastcheck().await?;
+    tracing::debug!("Last check: {:?}", lastcheck);
+    tracing::debug!("Last record id: {:?}", last_record_id);
+
+    tracing::debug!("Using CONFIG = {:?}", CONFIG);
+    tracing::debug!("Using KEYS = {:?}", KEYS);
 
     let binary = "/usr/bin/sacct";
     let mut args = vec![
@@ -154,6 +159,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         .into_iter()
         .flatten()
         .collect::<Vec<_>>();
+    tracing::debug!("Constructed these records: {:?}", records);
 
     let (nextcheck, rid) = if records.is_empty() {
         (lastcheck, last_record_id)
@@ -177,12 +183,15 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         )
     };
 
+    tracing::debug!("Next check: {:?}", nextcheck);
+    tracing::debug!("New last record id: {:?}", rid);
+
     database.set_lastcheck(rid, nextcheck).await?;
 
     Ok(records)
 }
 
-#[tracing::instrument(name = "Tokenizing sacct output", skip(keys))]
+#[tracing::instrument(name = "Tokenizing sacct output", skip(output, keys))]
 fn tokenize_sacct_output(output: &str, keys: Vec<KeyConfig>) -> SacctRows {
     output
         .lines()
@@ -215,8 +224,9 @@ fn tokenize_sacct_output(output: &str, keys: Vec<KeyConfig>) -> SacctRows {
         .collect::<SacctRows>()
 }
 
-#[tracing::instrument(name = "Parse sacct rows")]
-fn parse_sacct_rows(sacct_rows: SacctRows, keys: &Vec<KeyConfig>) -> Result<Vec<Job>> {
+#[tracing::instrument(name = "Parse sacct rows", skip(sacct_rows, keys))]
+fn parse_sacct_rows(sacct_rows: SacctRows, keys: &[KeyConfig]) -> Result<Vec<Job>> {
+    tracing::debug!("sacct_rows = {:?}", sacct_rows);
     sacct_rows
         .keys()
         .filter(|k| !BATCH_REGEX.is_match(k))
@@ -250,7 +260,11 @@ fn parse_sacct_rows(sacct_rows: SacctRows, keys: &Vec<KeyConfig>) -> Result<Vec<
         }).collect::<Result<Vec<Job>>>()
 }
 
-#[tracing::instrument(name = "Construct record", level = "debug")]
+#[tracing::instrument(
+    name = "Construct record",
+    skip(last_record_id, config),
+    level = "debug"
+)]
 fn construct_record(
     map: &Job,
     last_record_id: &str,
