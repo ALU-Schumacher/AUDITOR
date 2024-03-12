@@ -644,7 +644,8 @@ impl AuditorClient {
     #[tracing::instrument(
         name = "Sending a record to AUDITOR server.",
         skip(self, record),
-        fields(record_id = %record.record_id)
+        fields(record_id = %record.record_id),
+        level = "debug"
     )]
     pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
