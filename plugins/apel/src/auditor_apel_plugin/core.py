@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import logging
-from pathlib import Path
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime, timedelta, time, timezone
@@ -92,103 +91,64 @@ def get_begin_current_month(current_time):
     return begin_current_month_utc
 
 
-def get_time_db(config):
-    time_db_path = config["paths"].get("time_db_path")
+def get_time_json(config):
+    time_json_path = config["paths"].get("time_json_path")
+
+    try:
+        with open(time_json_path, "r", encoding="utf-8") as f:
+            time_dict = json.load(f)
+    except FileNotFoundError:
+        logging.warning(f"Path {time_json_path} not found, creating new time json")
+        time_dict = create_time_json(time_json_path)
+
+    return time_dict
+
+
+def create_time_json(time_json_path):
+    initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
+    time_dict = {
+        "last_report_time": initial_report_time.isoformat(),
+        "site_end_times": {},
+    }
+
+    try:
+        with open(time_json_path, "w", encoding="utf-8") as f:
+            json.dump(time_dict, f)
+    except FileNotFoundError:
+        logging.critical(f"Path {time_json_path} not found, could not create time json")
+        raise
+
+    return time_dict
+
+
+def get_start_time(config, time_dict, site):
     publish_since = config["site"].get("publish_since")
 
-    if Path(time_db_path).is_file():
-        conn = sqlite3.connect(
-            time_db_path,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
-        )
-    else:
-        conn = create_time_db(publish_since, time_db_path)
+    try:
+        start_time = datetime.fromisoformat(time_dict["site_end_times"][site])
+    except KeyError:
+        start_time = datetime.fromisoformat(publish_since)
 
-    return conn
+    return start_time
 
 
-def create_time_db(publish_since, time_db_path):
-    create_table_sql = """
-                       CREATE TABLE IF NOT EXISTS times(
-                           last_end_time INTEGER NOT NULL,
-                           last_report_time timestamp NOT NULL
-                       )
-                       """
+def get_report_time(time_dict):
+    report_time = datetime.fromisoformat(time_dict["last_report_time"])
 
-    insert_sql = """
-                 INSERT INTO times(
-                     last_end_time,
-                     last_report_time
-                 )
-                 VALUES(
-                     ?, ?
-                 )
-                 """
+    return report_time
 
-    initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
-    publish_since_datetime = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-    data_tuple = (
-        publish_since_datetime.replace(tzinfo=timezone.utc).timestamp(),
-        initial_report_time,
-    )
+
+def update_time_json(config, time_dict, site, stop_time, report_time):
+    time_json_path = config["paths"].get("time_json_path")
+
+    time_dict["last_report_time"] = report_time.isoformat()
+    time_dict["site_end_times"][site] = stop_time.isoformat()
 
     try:
-        conn = sqlite3.connect(
-            time_db_path,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
-        )
-        cur = conn.cursor()
-        cur.execute(create_table_sql)
-        cur.execute(insert_sql, data_tuple)
-        conn.commit()
-        cur.close()
-        return conn
-    except Error as e:
-        logging.critical(e)
-        raise
-
-
-def get_start_time(conn):
-    try:
-        cur = conn.cursor()
-        cur.row_factory = lambda cursor, row: row[0]
-        cur.execute("SELECT last_end_time FROM times")
-        start_time_row = cur.fetchall()
-        start_time = datetime.fromtimestamp(start_time_row[0], tz=timezone.utc)
-        cur.close()
-        return start_time
-    except Error as e:
-        logging.critical(e)
-        raise
-
-
-def get_report_time(conn):
-    try:
-        cur = conn.cursor()
-        cur.row_factory = lambda cursor, row: row[0]
-        cur.execute("SELECT last_report_time FROM times")
-        report_time_row = cur.fetchall()
-        report_time = report_time_row[0]
-        cur.close()
-        return report_time
-    except Error as e:
-        logging.critical(e)
-        raise
-
-
-def update_time_db(conn, stop_time, report_time):
-    update_sql = """
-                 UPDATE times
-                 SET last_end_time = ?,
-                     last_report_time = ?
-                 """
-    try:
-        cur = conn.cursor()
-        cur.execute(update_sql, (stop_time, report_time))
-        conn.commit()
-        cur.close()
-    except Error as e:
-        logging.critical(e)
+        with open(time_json_path, "w", encoding="utf-8") as f:
+            json.dump(time_dict, f)
+    except FileNotFoundError:
+        logging.critical(f"Path {time_json_path} not found, could not update time json")
         raise
 
 
@@ -703,7 +663,7 @@ def sign_msg(config, msg):
 
 
 def build_payload(msg):
-    current_time = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    current_time = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     empaid = f"{current_time[:8]}/{current_time}"
 
     payload = {"messages": [{"attributes": {"empaid": empaid}, "data": msg}]}

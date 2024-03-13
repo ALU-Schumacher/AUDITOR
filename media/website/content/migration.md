@@ -6,6 +6,22 @@ weight = 3
 
 # From 0.4.0 to 0.5.0
 
+## Apel plugin
+
+The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter `time_db_path` has to be changed to `time_json_path`.
+To migrate an existing database to a JSON file, run `migration-0_4_0-to-0_5_0.py` located in the `scripts` folder:
+
+```bash
+usage: migration-0_4_0-to-0_5_0.py [-h] -c CONFIG -d DB -j JSON
+
+options:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        Path to the config file
+  -d DB, --db DB        Path to the time database file
+  -j JSON, --json JSON  Path to the time JSON file
+```
+
 ## Development
 
 ### Update to [sqlx 0.7.4](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
