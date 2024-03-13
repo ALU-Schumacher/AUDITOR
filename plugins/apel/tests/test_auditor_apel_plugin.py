@@ -2,12 +2,12 @@ import pytest
 from auditor_apel_plugin.core import (
     get_begin_previous_month,
     get_begin_current_month,
-    create_time_db,
-    get_time_db,
+    create_time_json,
+    get_time_json,
     sign_msg,
     get_start_time,
     get_report_time,
-    update_time_db,
+    update_time_json,
     create_summary_db,
     get_submit_host,
     get_voms_info,
@@ -18,8 +18,8 @@ from auditor_apel_plugin.core import (
     check_sites_in_records,
 )
 from datetime import datetime, timezone
-import sqlite3
 import os
+import json
 import subprocess
 import configparser
 import pyauditor
@@ -107,81 +107,48 @@ class TestAuditorApelPlugin:
         result = get_begin_current_month(time_b)
         assert result == datetime(1970, 1, 1, 00, 00, 00, tzinfo=timezone.utc)
 
-    def test_create_time_db(self):
-        path = ":memory:"
-        publish_since_list = [
-            "1970-01-01 00:00:00+00:00",
-            "2020-01-01 17:23:00+00:00",
-            "2022-12-17 20:20:20+01:00",
-        ]
+    def test_create_time_json(self):
+        path = "/tmp/test.json"
 
-        for publish_since in publish_since_list:
-            time_db = create_time_db(publish_since, path)
-            cur = time_db.cursor()
-            cur.execute("SELECT * FROM times")
-            result = cur.fetchall()
-            cur.close()
-            time_db.close()
-            time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
+        result = create_time_json(path)
 
-            assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
+        assert result["site_end_times"] == {}
+        assert result["last_report_time"] == "1970-01-01T00:00:00"
 
-    def test_create_time_db_fail(self):
+        with open("/tmp/test.json", "r", encoding="utf-8") as f:
+            result = json.load(f)
+
+        os.remove(path)
+
+        assert result["site_end_times"] == {}
+        assert result["last_report_time"] == "1970-01-01T00:00:00"
+
+    def test_create_time_json_fail(self):
         path = "/home/nonexistent/55/abc/time.db"
-        publish_since = "1970-01-01 00:00:00+00:00"
 
         with pytest.raises(Exception) as pytest_error:
-            create_time_db(publish_since, path)
-        assert pytest_error.type == sqlite3.OperationalError
+            create_time_json(path)
 
-        publish_since = "1970-01-01"
+        assert pytest_error.type == FileNotFoundError
 
-        with pytest.raises(Exception) as pytest_error:
-            create_time_db(publish_since, path)
-        assert pytest_error.type == ValueError
-
-    def test_get_time_db(self):
+    def test_get_time_json(self):
         path = "/tmp/nonexistent_55_abc_time.db"
-        publish_since_list = [
-            "1970-01-01 00:00:00+00:00",
-            "2020-01-01 17:23:00+00:00",
-            "2022-12-17 20:20:20+01:00",
-        ]
 
         conf = configparser.ConfigParser()
-        conf["paths"] = {"time_db_path": path}
-        conf["site"] = {}
+        conf["paths"] = {"time_json_path": path}
 
-        for publish_since in publish_since_list:
-            conf["site"]["publish_since"] = publish_since
-            time_db = get_time_db(conf)
-            cur = time_db.cursor()
-            cur.execute("SELECT * FROM times")
-            result = cur.fetchall()
-            cur.close()
-            time_db.close()
-            time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
-            os.remove(path)
+        result = get_time_json(conf)
+        os.remove(path)
 
-            assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
+        assert result["site_end_times"] == {}
+        assert result["last_report_time"] == "1970-01-01T00:00:00"
 
-        for publish_since in publish_since_list:
-            conf["site"]["publish_since"] = publish_since
-            time_db = create_time_db(publish_since, path)
-            time_db.close()
-            time_db = get_time_db(conf)
-            cur = time_db.cursor()
-            cur.execute("SELECT * FROM times")
-            result = cur.fetchall()
-            cur.close()
-            time_db.close()
-            time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_stamp = time_dt.replace(tzinfo=timezone.utc).timestamp()
-            os.remove(path)
+        create_time_json(path)
+        result = get_time_json(conf)
+        os.remove(path)
 
-            assert result == [(time_stamp, datetime(1970, 1, 1, 0, 0, 0))]
+        assert result["site_end_times"] == {}
+        assert result["last_report_time"] == "1970-01-01T00:00:00"
 
     def test_sign_msg(self):
         conf = configparser.ConfigParser()
@@ -236,75 +203,88 @@ class TestAuditorApelPlugin:
         assert process.returncode == 4
 
     def test_get_start_time(self):
-        path = ":memory:"
+        path = "/tmp/test.json"
+
+        conf = configparser.ConfigParser()
+        conf["site"] = {}
+        conf["paths"] = {"time_json_path": path}
+
         publish_since_list = [
             "1970-01-01 00:00:00+00:00",
             "2020-01-01 17:23:00+00:00",
-            "2022-12-17 20:20:20+01:00",
         ]
 
+        time_dict = create_time_json(path)
+
         for publish_since in publish_since_list:
-            time_db = create_time_db(publish_since, path)
-            result = get_start_time(time_db)
-            time_db.close()
-            time_dt = datetime.strptime(publish_since, "%Y-%m-%d %H:%M:%S%z")
-            time_dt_utc = time_dt.replace(tzinfo=timezone.utc)
+            conf["site"]["publish_since"] = publish_since
+            result = get_start_time(conf, time_dict, "TEST")
+            time_dt = datetime.fromisoformat(publish_since)
 
-            assert result == time_dt_utc
+            assert result == time_dt
 
-    def test_get_start_time_fail(self):
-        path = ":memory:"
-        publish_since = "1970-01-01 00:00:00+00:00"
+        stop_time = datetime(1984, 3, 3, 0, 0, 0, tzinfo=timezone.utc)
+        update_time_json(
+            conf,
+            time_dict,
+            "TEST",
+            stop_time,
+            datetime(1970, 1, 1, 0, 0, 0),
+        )
+        result = get_start_time(conf, time_dict, "TEST")
 
-        time_db = create_time_db(publish_since, path)
-        drop_column = "ALTER TABLE times DROP last_end_time"
+        assert result == stop_time
 
-        cur = time_db.cursor()
-        cur.execute(drop_column)
-        time_db.commit()
-        cur.close()
-        with pytest.raises(Exception) as pytest_error:
-            get_start_time(time_db)
-        time_db.close()
+        stop_time = datetime(2002, 12, 3, 0, 45, 0, tzinfo=timezone.utc)
+        update_time_json(
+            conf,
+            time_dict,
+            "TEST-2",
+            stop_time,
+            datetime(1970, 1, 1, 0, 0, 0),
+        )
+        result = get_start_time(conf, time_dict, "TEST-2")
 
-        assert pytest_error.type == sqlite3.OperationalError
+        os.remove(path)
+
+        assert result == stop_time
 
     def test_get_report_time(self):
-        path = ":memory:"
-        publish_since = "1970-01-01 00:00:00+00:00"
+        path = "/tmp/test.json"
 
-        time_db = create_time_db(publish_since, path)
-        result = get_report_time(time_db)
-        time_db.close()
+        conf = configparser.ConfigParser()
+        conf["paths"] = {"time_json_path": path}
+
+        time_dict = create_time_json(path)
+
+        result = get_report_time(time_dict)
 
         initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
 
         assert result == initial_report_time
 
-    def test_get_report_time_fail(self):
-        path = ":memory:"
-        publish_since = "1970-01-01 00:00:00+00:00"
+        new_report_time = datetime(2023, 2, 10, 11, 13, 45)
+        stop_time = datetime(2002, 12, 3, 0, 45, 0, tzinfo=timezone.utc)
 
-        time_db = create_time_db(publish_since, path)
-        drop_column = "ALTER TABLE times DROP last_report_time"
+        update_time_json(
+            conf,
+            time_dict,
+            "TEST-2",
+            stop_time,
+            new_report_time,
+        )
 
-        cur = time_db.cursor()
-        cur.execute(drop_column)
-        time_db.commit()
-        cur.close()
-        with pytest.raises(Exception) as pytest_error:
-            get_report_time(time_db)
-        time_db.close()
+        result = get_report_time(time_dict)
+        os.remove(path)
+        assert result == new_report_time
 
-        assert pytest_error.type == sqlite3.OperationalError
+    def test_update_time_json(self):
+        path = "/tmp/test.json"
 
-    def test_update_time_db(self):
-        path = ":memory:"
-        publish_since = "1970-01-01 00:00:00+00:00"
+        conf = configparser.ConfigParser()
+        conf["paths"] = {"time_json_path": path}
 
-        time_db = create_time_db(publish_since, path)
-        cur = time_db.cursor()
-        cur.row_factory = lambda cursor, row: row[0]
+        time_dict = create_time_json(path)
 
         stop_time_list = [
             datetime(1984, 3, 3, 0, 0, 0),
@@ -316,56 +296,44 @@ class TestAuditorApelPlugin:
             datetime(2100, 8, 19, 14, 16, 11),
             datetime(1887, 2, 27, 0, 11, 31),
         ]
+        site_list = ["SITE_A", "SITE_B"]
 
         for stop_time in stop_time_list:
             for report_time in report_time_list:
-                update_time_db(time_db, stop_time, report_time)
+                for site in site_list:
+                    update_time_json(conf, time_dict, site, stop_time, report_time)
 
-                cur.execute("SELECT last_end_time FROM times")
-                last_end_time_row = cur.fetchall()
-                last_end_time = last_end_time_row[0]
+                    with open(path, "r", encoding="utf-8") as f:
+                        time_dict_test = json.load(f)
+                        last_end_time = time_dict_test["site_end_times"][site]
+                        last_report_time = time_dict_test["last_report_time"]
 
-                assert last_end_time == stop_time.strftime("%Y-%m-%d %H:%M:%S")
+                    assert last_end_time == stop_time.isoformat()
+                    assert last_report_time == report_time.isoformat()
 
-                cur.execute("SELECT last_report_time FROM times")
-                last_report_time_row = cur.fetchall()
-                last_report_time = last_report_time_row[0]
-
-                assert last_report_time == report_time
-
-                update_time_db(time_db, stop_time.timestamp(), report_time)
-
-                cur.execute("SELECT last_end_time FROM times")
-                last_end_time_row = cur.fetchall()
-                last_end_time = last_end_time_row[0]
-
-                assert last_end_time == stop_time.timestamp()
-
-        cur.close()
-        time_db.close()
+        os.remove(path)
 
     def test_update_time_db_fail(self):
-        path = ":memory:"
-        publish_since = "1970-01-01 00:00:00+00:00"
+        path = "/tmp/test.json"
 
-        time_db = create_time_db(publish_since, path)
-        cur = time_db.cursor()
-        cur.row_factory = lambda cursor, row: row[0]
+        conf = configparser.ConfigParser()
+        conf["paths"] = {"time_json_path": path}
+
+        time_dict = create_time_json(path)
 
         stop_time = datetime(1984, 3, 3, 0, 0, 0)
-        report_time = datetime(2032, 11, 5, 12, 12, 15)
+        report_time = datetime(1993, 4, 4, 0, 0, 0)
+        site = "SITE_A"
 
-        drop_column = "ALTER TABLE times DROP last_report_time"
-        cur.execute(drop_column)
-        time_db.commit()
+        os.remove(path)
+
+        path_new = "/dfghdfh/test.json"
+        conf["paths"] = {"time_json_path": path_new}
 
         with pytest.raises(Exception) as pytest_error:
-            update_time_db(time_db, stop_time, report_time)
+            update_time_json(conf, time_dict, site, stop_time, report_time)
 
-        assert pytest_error.type == sqlite3.OperationalError
-
-        cur.close()
-        time_db.close()
+        assert pytest_error.type == FileNotFoundError
 
     def test_create_summary_db(self):
         sites_to_report = (
@@ -902,9 +870,7 @@ class TestAuditorApelPlugin:
         }
 
         start_time_str = "2022-12-17 20:20:20+01:00"
-        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S%z").replace(
-            tzinfo=timezone.utc
-        )
+        start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
         result = get_records(conf, client, start_time, 1)
         assert "".join(result) == "good"
@@ -922,9 +888,7 @@ class TestAuditorApelPlugin:
         }
 
         start_time_str = "2022-12-17 20:20:20+01:00"
-        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S%z").replace(
-            tzinfo=timezone.utc
-        )
+        start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
         client = FakeAuditorClient("fail_timeout")
 

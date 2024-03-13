@@ -27,11 +27,11 @@ def run(config, client, args):
     year = args.year
     site = args.site
 
-    begin_month = datetime(year, month, 1).replace(tzinfo=timezone.utc)
+    begin_month = datetime(year, month, 1, tzinfo=timezone.utc)
     if month == 12:
-        end_month = datetime(year + 1, 1, 1).replace(tzinfo=timezone.utc)
+        end_month = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
     else:
-        end_month = datetime(year, month + 1, 1).replace(tzinfo=timezone.utc)
+        end_month = datetime(year, month + 1, 1, tzinfo=timezone.utc)
 
     records = get_records(config, client, begin_month, 30, site, end_month)
 

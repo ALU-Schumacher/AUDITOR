@@ -561,34 +561,34 @@ options:
 
 The following fields need to be present in the config file:
 
-| Parameter             | Description                                                                                                                                                                   |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `log_level`           | Can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                 |
-| `time_db_path`        | Path of the `time.db`. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.     |
-| `report_interval`     | Time in seconds between reports to APEL.                                                                                                                                      |
-| `publish_since`       | Date and time (UTC) after which jobs will be published. Only relevant for first run when no `time.db` is present yet.                                                         |
-| `sites_to_report`     | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records. |
-| `default_submit_host` | Default submit host if this information is missing in the AUDITOR record.                                                                                                     |
-| `infrastructure_type` | Origin of the job, can be set to `grid` or `local`.                                                                                                                           |
-| `benchmark_type`      | Name of the benchmark that will be reported to APEL.                                                                                                                          |
-| `auditor_ip`          | IP of the AUDITOR instance.                                                                                                                                                   |
-| `auditor_port`        | Port of the AUDITOR instance.                                                                                                                                                 |
-| `auditor_timeout`     | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                 |
-| `benchmark_name`      | Name of the `benchmark` field in the AUDITOR records.                                                                                                                         |
-| `cores_name`          | Name of the `cores` field in the AUDITOR records.                                                                                                                             |
-| `cpu_time_name`       | Name of the field that stores the total CPU time in the AUDITOR records.                                                                                                      |
-| `cpu_time_unit`       | Unit of total CPU time in the AUDITOR records, can be `seconds` or `milliseconds`.                                                                                            |
-| `nnodes_name`         | Name of the field that stores the number of nodes in the AUDITOR records.                                                                                                     |
-| `meta_key_site`       | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                    |
-| `meta_key_submithost` | Name of the field that stores the submithost in the AUDITOR records.                                                                                                          |
-| `meta_key_voms`       | Name of the field that stores the VOMS information in the AUDITOR records.                                                                                                    |
-| `meta_key_user`       | Name of the field that stores the GlobalUserName in the AUDITOR records.                                                                                                      |
-| `auth_url`            | URL from which the APEL authentication token is received.                                                                                                                     |
-| `ams_url`             | URL to which the reports are sent.                                                                                                                                            |
-| `client_cert`         | Path of the host certificate.                                                                                                                                                 |
-| `client_key`          | Path of the host key.                                                                                                                                                         |
-| `ca_path`             | Path of the local certificate folder.                                                                                                                                         |
-| `verify_ca`           | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                       |
+| Parameter             | Description                                                                                                                                                                                  |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `log_level`           | Can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                                |
+| `time_json_path`      | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
+| `report_interval`     | Time in seconds between reports to APEL.                                                                                                                                                     |
+| `publish_since`       | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                              |
+| `sites_to_report`     | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
+| `default_submit_host` | Default submit host if this information is missing in the AUDITOR record.                                                                                                                    |
+| `infrastructure_type` | Origin of the job, can be set to `grid` or `local`.                                                                                                                                          |
+| `benchmark_type`      | Name of the benchmark that will be reported to APEL.                                                                                                                                         |
+| `auditor_ip`          | IP of the AUDITOR instance.                                                                                                                                                                  |
+| `auditor_port`        | Port of the AUDITOR instance.                                                                                                                                                                |
+| `auditor_timeout`     | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
+| `benchmark_name`      | Name of the `benchmark` field in the AUDITOR records.                                                                                                                                        |
+| `cores_name`          | Name of the `cores` field in the AUDITOR records.                                                                                                                                            |
+| `cpu_time_name`       | Name of the field that stores the total CPU time in the AUDITOR records.                                                                                                                     |
+| `cpu_time_unit`       | Unit of total CPU time in the AUDITOR records, can be `seconds` or `milliseconds`.                                                                                                           |
+| `nnodes_name`         | Name of the field that stores the number of nodes in the AUDITOR records.                                                                                                                    |
+| `meta_key_site`       | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
+| `meta_key_submithost` | Name of the field that stores the submithost in the AUDITOR records.                                                                                                                         |
+| `meta_key_voms`       | Name of the field that stores the VOMS information in the AUDITOR records.                                                                                                                   |
+| `meta_key_user`       | Name of the field that stores the GlobalUserName in the AUDITOR records.                                                                                                                     |
+| `auth_url`            | URL from which the APEL authentication token is received.                                                                                                                                    |
+| `ams_url`             | URL to which the reports are sent.                                                                                                                                                           |
+| `client_cert`         | Path of the host certificate.                                                                                                                                                                |
+| `client_key`          | Path of the host key.                                                                                                                                                                        |
+| `ca_path`             | Path of the local certificate folder.                                                                                                                                                        |
+| `verify_ca`           | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                                      |
 
 Example config:
 
@@ -597,7 +597,7 @@ Example config:
 log_level = INFO
 
 [paths]
-time_db_path = /etc/auditor_apel_plugin/time.db
+time_json_path = /etc/auditor_apel_plugin/time.json
 
 [intervals]
 report_interval = 86400
@@ -638,10 +638,10 @@ When using the Docker container, `auditor-apel-publish` for example can be start
 docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
 ```
 
-In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.cfg`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The database `time.db` will also be written in `config_folder`. The corresponding entries in the config file would be:
+In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.cfg`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The JSON file `time.json` will also be written in `config_folder`. The corresponding entries in the config file would be:
 
 ```
-time_db_path = time.db
+time_json_path = time.json
 client_cert = hostcert.pem
 client_key = hostkey.pem
 ```
