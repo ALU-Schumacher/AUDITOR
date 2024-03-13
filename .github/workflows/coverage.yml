@@ -71,9 +71,9 @@ jobs:
         run: cargo +nightly llvm-cov --doctests --all-features --workspace --lcov --output-path lcov.info
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v3
         with:
           files: lcov.info
           fail_ci_if_error: true
-          token: 0da88fa3-3a98-4f8b-ad19-9d0785b46db
+          token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
           #${{ secrets.CODECOV_TOKEN }} doesn't work for PRs from forks
