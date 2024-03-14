@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update anyhow from 1.0.79 to 1.0.81 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update build from 1.0.3 to 1.1.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update chrono from 0.4.33 to 0.4.35 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update color-eyre from 0.6.2 to 0.6.3 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update cryptography from 42.0.2 to 42.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update iana-time-zone from 0.1.59 to 0.1.60 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update num-traits from 0.2.17 to 0.2.18 ([@QuantumDancer](https://github.com/QuantumDancer))
