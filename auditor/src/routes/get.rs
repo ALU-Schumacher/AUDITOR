@@ -6,7 +6,6 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::domain::{Component, Record, RecordDatabase};
-use sqlx;
 use sqlx::PgPool;
 
 #[derive(thiserror::Error)]

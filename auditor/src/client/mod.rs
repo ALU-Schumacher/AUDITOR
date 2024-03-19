@@ -12,7 +12,6 @@ use crate::{
     domain::{Record, RecordAdd, RecordUpdate},
 };
 use chrono::{DateTime, Duration, Utc};
-use reqwest;
 use serde::Serialize;
 use std::collections::HashMap;
 use urlencoding::encode;

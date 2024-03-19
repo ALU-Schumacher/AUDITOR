@@ -341,7 +341,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::configuration::{AuditorSettings, PrometheusMetricsOptions, PrometheusSettings};
+    use crate::configuration::{AuditorSettings, PrometheusSettings};
     use tracing_subscriber::filter::LevelFilter;
 
     #[test]
