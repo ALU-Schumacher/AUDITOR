@@ -11,7 +11,6 @@ use chrono::{DateTime, Utc};
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 use std::collections::HashMap;
-use std::convert::From;
 
 /// The `QueryBuilder` is used to construct `QueryParameters` using the builder pattern.
 #[pyclass]

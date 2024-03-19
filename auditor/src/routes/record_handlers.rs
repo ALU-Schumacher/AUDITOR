@@ -1,7 +1,6 @@
 use crate::routes::{advanced_record_filtering, get_one_record, Filters};
 use actix_web::{web, HttpRequest, HttpResponse, ResponseError};
 use serde_json::json;
-use sqlx;
 use sqlx::PgPool;
 use thiserror::Error;
 

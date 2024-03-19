@@ -11,8 +11,6 @@ use serde::{Deserialize, Serialize};
 
 use super::ValidName;
 
-use sqlx;
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 pub struct ValidMeta(pub HashMap<ValidName, Vec<ValidName>>);
 

@@ -8,9 +8,9 @@
 use crate::domain::{Component, Record, RecordDatabase, ValidAmount, ValidName};
 use chrono::{DateTime, Utc};
 use core::fmt::Debug;
-use sqlx;
 use sqlx::{PgPool, QueryBuilder, Row};
 use std::collections::HashMap;
+use std::fmt::Display;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Filters {
@@ -72,13 +72,13 @@ pub enum SortField {
     RecordId,
 }
 
-impl ToString for SortField {
-    fn to_string(&self) -> String {
+impl Display for SortField {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SortField::StartTime => String::from("start_time"),
-            SortField::StopTime => String::from("stop_time"),
-            SortField::Runtime => String::from("runtime"),
-            SortField::RecordId => String::from("record_id"),
+            SortField::StartTime => write!(f, "start_time"),
+            SortField::StopTime => write!(f, "stop_time"),
+            SortField::Runtime => write!(f, "runtime"),
+            SortField::RecordId => write!(f, "record_id"),
         }
     }
 }

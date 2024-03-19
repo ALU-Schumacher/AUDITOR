@@ -13,11 +13,8 @@ use super::{Component, ComponentTest, Meta, ScoreTest, ValidMeta, ValidName};
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use fake::{Dummy, Fake, Faker, StringFaker};
-#[cfg(test)]
-use quickcheck;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use sqlx;
 
 /// `RecordAdd` represents a single accountable unit that is added to Auditor.
 ///

@@ -8,7 +8,6 @@
 use crate::domain::RecordUpdate;
 use actix_web::{web, HttpResponse};
 use chrono::Utc;
-use sqlx;
 use sqlx::PgPool;
 
 #[derive(thiserror::Error)]
