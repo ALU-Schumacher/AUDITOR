@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tokio from 1.35.1 to 1.36.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-actix-web from 0.7.9 to 0.7.10 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update uuid from 1.7.0 to 1.8.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.22 to 0.6.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Remove deprecated options from cargo.deny (#709) ([@QuantumDancer](https://github.com/QuantumDancer))
 
