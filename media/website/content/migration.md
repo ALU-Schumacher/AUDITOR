@@ -4,13 +4,16 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.3.0/0.3.1 to 0.4.0
+# From 0.4.0 to 0.5.0
 
 ## Development
 
-### Update to [sqlx 0.7.3](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
-Use this command to update the sqlx-cli to 0.7.3
-- `cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
+### Update to [sqlx 0.7.4](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.7.4
+- `cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
+
+
+# From 0.3.0/0.3.1 to 0.4.0
 
 ## AUDITOR
 ### REST APIs
@@ -48,6 +51,12 @@ sites_to_report = {"SITE_A": ["site_id_1", "site_id_2"], "SITE_B": ["site_id_3"]
 ## Removed
 `/get_[started/stopped]_since` endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
 functions but throws a deprecated warning if used. 
+
+## Development
+
+### Update to [sqlx 0.7.3](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.7.3
+- `cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
 
 # From 0.2.0 to 0.3.0
 
