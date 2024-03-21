@@ -5,8 +5,12 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use actix_web::HttpResponse;
+use actix_web::{web, HttpResponse};
+use sqlx::PgPool;
 
-pub async fn health_check() -> HttpResponse {
+pub async fn health_check(pool: web::Data<PgPool>) -> HttpResponse {
+    if pool.acquire().await.is_err() {
+        return HttpResponse::InternalServerError().finish();
+    }
     HttpResponse::Ok().finish()
 }
