@@ -75,13 +75,20 @@
             <div class="toc-sticky">
                 
                 <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-3-0-0-3-1-to-0-4-0">From 0.3.0&#x2F;0.3.1 to 0.4.0</a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</a>
                 </div>
                 
                 
                 <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development"><small>- Development</small></a>
                 </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-3-0-0-3-1-to-0-4-0">From 0.3.0&#x2F;0.3.1 to 0.4.0</a>
+                </div>
+                
                 
                 <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#auditor"><small>- AUDITOR</small></a>
@@ -93,6 +100,10 @@
                 
                 <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#removed"><small>- Removed</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development-1"><small>- Development</small></a>
                 </div>
                 
                 
@@ -115,7 +126,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development-1"><small>- Development</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development-2"><small>- Development</small></a>
                 </div>
                 
                 
@@ -146,7 +157,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development-2"><small>- Development</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development-3"><small>- Development</small></a>
                 </div>
                 
                 
@@ -159,13 +170,14 @@
         <div class="content text">
             
 <div class="heading-text">Migration Guide</div>
-<h1 id="from-0-3-0-0-3-1-to-0-4-0">From 0.3.0/0.3.1 to 0.4.0</h1>
+<h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
 <h2 id="development">Development</h2>
-<h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
-<p>Use this command to update the sqlx-cli to 0.7.3</p>
+<h3 id="update-to-sqlx-0-7-4">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.4</p>
 <ul>
-<li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+<li><code>cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
+<h1 id="from-0-3-0-0-3-1-to-0-4-0">From 0.3.0/0.3.1 to 0.4.0</h1>
 <h2 id="auditor">AUDITOR</h2>
 <h3 id="rest-apis">REST APIs</h3>
 <p>Auditor REST APIs are changed as shown in the table below. </p>
@@ -191,6 +203,12 @@
 <h2 id="removed">Removed</h2>
 <p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
 functions but throws a deprecated warning if used. </p>
+<h2 id="development-1">Development</h2>
+<h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.3</p>
+<ul>
+<li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
 <h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
 <h2 id="slurm-collector">Slurm collector</h2>
 <p>New filter options for querying slurm jobs are available.
@@ -258,7 +276,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <tr><td>Get all records</td><td><code>/get</code> (GET)</td><td><code>/record</code> (GET)</td></tr>
 <tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/record?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
 </tbody></table>
-<h2 id="development-1">Development</h2>
+<h2 id="development-2">Development</h2>
 <h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.2</p>
 <ul>
@@ -326,7 +344,7 @@ when creating a new record:
 <ul>
 <li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
 </ul>
-<h2 id="development-2">Development</h2>
+<h2 id="development-3">Development</h2>
 <h3 id="update-to-sqlx-0-7-1">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.1</p>
 <ul>
