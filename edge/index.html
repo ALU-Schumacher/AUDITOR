@@ -661,9 +661,9 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 <p>The following fields need to be present in the config file:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
-<tr><td><code>time_db_path</code></td><td>Path of the <code>time.db</code>. The database should be located at a persistent path and stores the end time of the latest reported job, and the time of the latest report to APEL.</td></tr>
+<tr><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
-<tr><td><code>publish_since</code></td><td>Date and time (UTC) after which jobs will be published. Only relevant for first run when no <code>time.db</code> is present yet.</td></tr>
+<tr><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
 <tr><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
 <tr><td><code>default_submit_host</code></td><td>Default submit host if this information is missing in the AUDITOR record.</td></tr>
 <tr><td><code>infrastructure_type</code></td><td>Origin of the job, can be set to <code>grid</code> or <code>local</code>.</td></tr>
@@ -692,7 +692,7 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 </span><span>log_level = INFO
 </span><span>
 </span><span>[paths]
-</span><span>time_db_path = /etc/auditor_apel_plugin/time.db
+</span><span>time_json_path = /etc/auditor_apel_plugin/time.json
 </span><span>
 </span><span>[intervals]
 </span><span>report_interval = 86400
@@ -729,8 +729,8 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 <p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
 </span></code></pre>
-<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.cfg</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The database <code>time.db</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>time_db_path = time.db
+<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.cfg</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path = time.json
 </span><span>client_cert = hostcert.pem
 </span><span>client_key = hostkey.pem
 </span></code></pre>
