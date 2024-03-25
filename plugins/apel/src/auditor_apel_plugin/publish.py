@@ -15,7 +15,7 @@ from auditor_apel_plugin.core import (
     get_token,
     get_time_json,
     get_report_time,
-    get_start_time,
+    # get_start_time,
     create_summary_db,
     group_summary_db,
     create_summary,
@@ -51,24 +51,27 @@ def run(config, client):
         else:
             logging.info("Enough time since last report, create new report")
 
+        if current_time.day == 1:
+            begin_month = get_begin_previous_month(current_time)
+        else:
+            begin_month = get_begin_current_month(current_time)
+
         for site in sites_to_report.keys():
             logging.info(f"Getting records for {site}")
 
-            start_time = get_start_time(config, time_dict, site)
-            logging.info(f"Getting records since {start_time}")
+            # start_time = get_start_time(config, time_dict, site)
+            # logging.info(f"Getting records since {start_time}")
 
-            records_summary = get_records(config, client, start_time, 30, site=site)
+            records = get_records(config, client, begin_month, 30, site=site)
 
-            if len(records_summary) == 0:
+            if len(records) == 0:
                 logging.info(f"No new records for {site}")
                 continue
 
-            latest_stop_time = records_summary[-1].stop_time.replace(
-                tzinfo=timezone.utc
-            )
-
+            latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
             logging.debug(f"Latest stop time is {latest_stop_time}")
-            summary_db = create_summary_db(config, records_summary)
+
+            summary_db = create_summary_db(config, records)
             grouped_summary_list = group_summary_db(summary_db)
             summary = create_summary(config, grouped_summary_list)
             logging.debug(summary)
@@ -81,13 +84,7 @@ def run(config, client):
             post_summary = send_payload(config, token, payload_summary)
             logging.debug(post_summary.status_code)
 
-            if current_time.day == 1:
-                begin_month = get_begin_previous_month(current_time)
-            else:
-                begin_month = get_begin_current_month(current_time)
-
-            records_sync = get_records(config, client, begin_month, 30, site=site)
-            sync_db = create_sync_db(config, records_sync)
+            sync_db = create_sync_db(config, records)
             grouped_sync_list = group_sync_db(sync_db)
             sync = create_sync(grouped_sync_list)
             logging.debug(sync)

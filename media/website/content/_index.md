@@ -530,7 +530,7 @@ See below for all currently available collectors.
 
 ## APEL Plugin
 
-The APEL plugin creates job summary records and sends them to APEL. It is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/) and as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin).
+The APEL plugin creates job summary records and sync messages for the current month (and the previous month if it is the first day of a month) and sends them to APEL. It is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/) and as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin).
 Two CLI commands are available after the installation via `pip`: `auditor-apel-publish` and `auditor-apel-republish`.
 
 `auditor-apel-publish` runs periodically at a given report interval.
