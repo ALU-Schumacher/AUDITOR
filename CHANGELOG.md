@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update uuid from 1.7.0 to 1.8.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update wiremock from 0.5.22 to 0.6.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Remove deprecated options from cargo.deny (#709) ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Switch to stable toolchain for coverage job ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
