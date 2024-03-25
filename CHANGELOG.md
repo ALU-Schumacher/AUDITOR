@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Apel plugin: Reduce unnecessary high number of records for sync messages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Send separate summary messages per site ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Include data of complete month in summary messages ([@dirksammel](https://github.com/dirksammel))
 - Client: Reduce logging information in info mode (#680) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Slurm collector: Reduce logging information in info mode (#680) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
