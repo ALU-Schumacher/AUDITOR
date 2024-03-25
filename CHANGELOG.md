@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3 from 0.19.2 to 0.20.3 ([@dirksammel](https://github.com/dirksammel), [@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pyo3-asyncio from 0.19 to 0.20 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.0.0 to 8.1.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest-cov from 4.1.0 to 5.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update regex from 1.10.3 to 1.10.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.24 to 0.12.2 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
