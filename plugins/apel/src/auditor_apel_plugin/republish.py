@@ -5,9 +5,9 @@
 
 import logging
 from pyauditor import AuditorClientBuilder
-import configparser
 import argparse
 from datetime import datetime, timezone
+import yaml
 import base64
 import sys
 from auditor_apel_plugin.core import (
@@ -70,10 +70,10 @@ def main():
     parser.add_argument("-c", "--config", required=True, help="Path to the config file")
     args = parser.parse_args()
 
-    config = configparser.ConfigParser()
-    config.read(args.config)
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
 
-    log_level = config["logging"].get("log_level")
+    log_level = config["log_level"]
     log_format = "[%(asctime)s] %(levelname)-8s %(message)s"
     logging.basicConfig(
         level=log_level,
@@ -83,9 +83,9 @@ def main():
     logging.getLogger("aiosqlite").setLevel("WARNING")
     logging.getLogger("urllib3").setLevel("WARNING")
 
-    auditor_ip = config["auditor"].get("auditor_ip")
-    auditor_port = config["auditor"].getint("auditor_port")
-    auditor_timeout = config["auditor"].getint("auditor_timeout")
+    auditor_ip = config["auditor"]["auditor_ip"]
+    auditor_port = config["auditor"]["auditor_port"]
+    auditor_timeout = config["auditor"]["auditor_timeout"]
 
     builder = AuditorClientBuilder()
     builder = builder.address(auditor_ip, auditor_port).timeout(auditor_timeout)
