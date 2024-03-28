@@ -21,10 +21,8 @@ from datetime import datetime, timezone
 import os
 import json
 import subprocess
-import configparser
 import pyauditor
 from unittest.mock import patch, PropertyMock
-import ast
 from pathlib import Path, PurePath
 
 test_dir = PurePath(__file__).parent
@@ -134,7 +132,7 @@ class TestAuditorApelPlugin:
     def test_get_time_json(self):
         path = "/tmp/nonexistent_55_abc_time.db"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["paths"] = {"time_json_path": path}
 
         result = get_time_json(conf)
@@ -151,7 +149,7 @@ class TestAuditorApelPlugin:
         assert result["last_report_time"] == "1970-01-01T00:00:00"
 
     def test_sign_msg(self):
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["authentication"] = {
             "client_cert": Path.joinpath(test_dir, "test_cert.cert"),
             "client_key": Path.joinpath(test_dir, "test_key.key"),
@@ -171,7 +169,7 @@ class TestAuditorApelPlugin:
         assert process.returncode == 0
 
     def test_sign_msg_fail(self):
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["authentication"] = {
             "client_cert": "tests/nodir/test_cert.cert",
             "client_key": "tests/no/dir/test_key.key",
@@ -205,7 +203,7 @@ class TestAuditorApelPlugin:
     def test_get_start_time(self):
         path = "/tmp/test.json"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {}
         conf["paths"] = {"time_json_path": path}
 
@@ -217,7 +215,7 @@ class TestAuditorApelPlugin:
         time_dict = create_time_json(path)
 
         for publish_since in publish_since_list:
-            conf["site"]["publish_since"] = publish_since
+            conf["site"]["publish_since"] = datetime.fromisoformat(publish_since)
             result = get_start_time(conf, time_dict, "TEST")
             time_dt = datetime.fromisoformat(publish_since)
 
@@ -252,7 +250,7 @@ class TestAuditorApelPlugin:
     def test_get_report_time(self):
         path = "/tmp/test.json"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["paths"] = {"time_json_path": path}
 
         time_dict = create_time_json(path)
@@ -281,7 +279,7 @@ class TestAuditorApelPlugin:
     def test_update_time_json(self):
         path = "/tmp/test.json"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["paths"] = {"time_json_path": path}
 
         time_dict = create_time_json(path)
@@ -316,7 +314,7 @@ class TestAuditorApelPlugin:
     def test_update_time_db_fail(self):
         path = "/tmp/test.json"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["paths"] = {"time_json_path": path}
 
         time_dict = create_time_json(path)
@@ -336,9 +334,10 @@ class TestAuditorApelPlugin:
         assert pytest_error.type == FileNotFoundError
 
     def test_create_summary_db(self):
-        sites_to_report = (
-            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
-        )
+        sites_to_report = {
+            "TEST_SITE_1": ["test-site-1"],
+            "TEST_SITE_2": ["test-site-2"],
+        }
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -352,7 +351,7 @@ class TestAuditorApelPlugin:
         meta_key_username = "subject"
         benchmark_type = "hepscore23"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
@@ -424,9 +423,7 @@ class TestAuditorApelPlugin:
         result.close()
 
         for idx, rec_values in enumerate(rec_value_list):
-            assert (
-                content[idx][0] == list(ast.literal_eval(sites_to_report).keys())[idx]
-            )
+            assert content[idx][0] == list(sites_to_report.keys())[idx]
             assert content[idx][1] == replace_record_string(rec_values["submit_host"])
             assert (
                 content[idx][2]
@@ -479,9 +476,10 @@ class TestAuditorApelPlugin:
         result.close()
 
     def test_create_summary_db_fail(self):
-        sites_to_report = (
-            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
-        )
+        sites_to_report = {
+            "TEST_SITE_1": ["test-site-1"],
+            "TEST_SITE_2": ["test-site-2"],
+        }
         default_submit_host = "https://default.submit_host.de:1234/xxx"
         infrastructure_type = "grid"
         benchmark_name = "hepscore"
@@ -495,7 +493,7 @@ class TestAuditorApelPlugin:
         meta_key_username = "subject"
         benchmark_type = "hepscore23"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
@@ -595,7 +593,7 @@ class TestAuditorApelPlugin:
         meta_key_voms = "voms"
         meta_key_username = "subject"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "default_submit_host": default_submit_host,
         }
@@ -687,7 +685,7 @@ class TestAuditorApelPlugin:
         meta_key_voms = "voms"
         meta_key_username = "subject"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "default_submit_host": default_submit_host,
         }
@@ -858,10 +856,10 @@ class TestAuditorApelPlugin:
     def test_get_records(self):
         client = FakeAuditorClient("pass")
 
-        sites_to_report = '{"TEST_SITE_1": ["test-site-1"]}'
+        sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
         meta_key_site = "site_id"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
         }
@@ -876,10 +874,10 @@ class TestAuditorApelPlugin:
         assert "".join(result) == "good"
 
     def test_get_records_fail(self):
-        sites_to_report = '{"TEST_SITE_1": ["test-site-1"]}'
+        sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
         meta_key_site = "site_id"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
         }
@@ -917,7 +915,7 @@ class TestAuditorApelPlugin:
         meta_key_voms = "voms"
         meta_key_username = "subject"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
@@ -986,7 +984,7 @@ class TestAuditorApelPlugin:
         meta_key_voms = "voms"
         meta_key_username = "subject"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
             "default_submit_host": default_submit_host,
@@ -1046,7 +1044,7 @@ class TestAuditorApelPlugin:
         cpu_time_name = "TotalCPU"
         cpu_time_unit = "seconds"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["auditor"] = {
             "cpu_time_name": cpu_time_name,
             "cpu_time_unit": cpu_time_unit,
@@ -1070,7 +1068,7 @@ class TestAuditorApelPlugin:
         cpu_time_name = "TotalCPU"
         cpu_time_unit = "hours"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["auditor"] = {
             "cpu_time_name": cpu_time_name,
             "cpu_time_unit": cpu_time_unit,
@@ -1081,9 +1079,10 @@ class TestAuditorApelPlugin:
         assert pytest_error.type == ValueError
 
     def test_check_sites_in_records(self):
-        sites_to_report = (
-            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
-        )
+        sites_to_report = {
+            "TEST_SITE_1": ["test-site-1"],
+            "TEST_SITE_2": ["test-site-2"],
+        }
         benchmark_name = "hepscore"
         cores_name = "Cores"
         cpu_time_name = "TotalCPU"
@@ -1093,7 +1092,7 @@ class TestAuditorApelPlugin:
         meta_key_voms = "voms"
         meta_key_username = "subject"
 
-        conf = configparser.ConfigParser()
+        conf = {}
         conf["site"] = {
             "sites_to_report": sites_to_report,
         }
@@ -1153,12 +1152,12 @@ class TestAuditorApelPlugin:
             result = check_sites_in_records(conf, records)
             assert len(result) == 2
 
-            conf["site"]["sites_to_report"] = '{"TEST_SITE_1": ["test-site-1"]}'
+            conf["site"]["sites_to_report"] = {"TEST_SITE_1": ["test-site-1"]}
 
             result = check_sites_in_records(conf, records)
             assert len(result) == 1
 
-            conf["site"]["sites_to_report"] = '{"TEST_SITE_3": ["test-site-3"]}'
+            conf["site"]["sites_to_report"] = {"TEST_SITE_3": ["test-site-3"]}
 
             result = check_sites_in_records(conf, records)
             assert len(result) == 0
