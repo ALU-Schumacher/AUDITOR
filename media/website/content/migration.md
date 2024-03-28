@@ -8,7 +8,8 @@ weight = 3
 
 ## Apel plugin
 
-The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter `time_db_path` has to be changed to `time_json_path`.
+- The format of the config file was changed from INI to YAML. An updated example config file can be found in the [Documentation](../#apel-plugin).
+- The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter `time_db_path` has to be changed to `time_json_path`.
 To migrate an existing database to a JSON file, run `migration-0_4_0-to-0_5_0.py` located in the `scripts` folder:
 
 ```bash
@@ -21,6 +22,8 @@ options:
   -d DB, --db DB        Path to the time database file
   -j JSON, --json JSON  Path to the time JSON file
 ```
+
+This already requires a config file with YAML format.
 
 ## Development
 

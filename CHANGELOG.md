@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
-- Apel plugin: change config parameter `time_db_path` to `time_json_path`
+- Apel plugin: change config parameter `time_db_path` to `time_json_path` ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: change config format from INI to YAML ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 - [RUSTSEC-2024-0019]: Update mio from 0.8.10 to 0.8.11 ([@QuantumDancer](https://github.com/QuantumDancer))

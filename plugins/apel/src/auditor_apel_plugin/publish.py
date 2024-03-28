@@ -6,8 +6,7 @@
 import logging
 from pyauditor import AuditorClientBuilder
 from datetime import datetime, timedelta, timezone
-import json
-import configparser
+import yaml
 import argparse
 import base64
 from time import sleep
@@ -33,8 +32,9 @@ from auditor_apel_plugin.core import (
 
 
 def run(config, client):
-    report_interval = config["intervals"].getint("report_interval")
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    report_interval = config["report_interval"]
+    sites_to_report = config["site"]["sites_to_report"]
+
     token = get_token(config)
     logging.debug(token)
 
@@ -51,7 +51,7 @@ def run(config, client):
         else:
             logging.info("Enough time since last report, create new report")
 
-        if current_time.day == 1:
+        if current_time.day < last_report_time.day:
             begin_month = get_begin_previous_month(current_time)
         else:
             begin_month = get_begin_current_month(current_time)
@@ -114,10 +114,10 @@ def main():
     parser.add_argument("-c", "--config", required=True, help="Path to the config file")
     args = parser.parse_args()
 
-    config = configparser.ConfigParser()
-    config.read(args.config)
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
 
-    log_level = config["logging"].get("log_level")
+    log_level = config["log_level"]
     log_format = (
         "[%(asctime)s] %(levelname)-8s %(message)s (%(pathname)s at line %(lineno)d)"
     )
@@ -130,9 +130,9 @@ def main():
     logging.getLogger("aiosqlite").setLevel("WARNING")
     logging.getLogger("urllib3").setLevel("WARNING")
 
-    auditor_ip = config["auditor"].get("auditor_ip")
-    auditor_port = config["auditor"].getint("auditor_port")
-    auditor_timeout = config["auditor"].getint("auditor_timeout")
+    auditor_ip = config["auditor"]["auditor_ip"]
+    auditor_port = config["auditor"]["auditor_port"]
+    auditor_timeout = config["auditor"]["auditor_timeout"]
 
     builder = AuditorClientBuilder()
     builder = builder.address(auditor_ip, auditor_port).timeout(auditor_timeout)

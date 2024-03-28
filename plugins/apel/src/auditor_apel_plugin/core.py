@@ -19,8 +19,8 @@ from pyauditor import Value, Operator, MetaOperator, MetaQuery, QueryBuilder
 
 
 def get_records(config, client, start_time, delay_time, site=None, end_time=None):
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
-    meta_key_site = config["auditor"].get("meta_key_site")
+    sites_to_report = config["site"]["sites_to_report"]
+    meta_key_site = config["auditor"]["meta_key_site"]
 
     site_ids = []
 
@@ -92,7 +92,7 @@ def get_begin_current_month(current_time):
 
 
 def get_time_json(config):
-    time_json_path = config["paths"].get("time_json_path")
+    time_json_path = config["time_json_path"]
 
     try:
         with open(time_json_path, "r", encoding="utf-8") as f:
@@ -122,12 +122,10 @@ def create_time_json(time_json_path):
 
 
 def get_start_time(config, time_dict, site):
-    publish_since = config["site"].get("publish_since")
-
     try:
         start_time = datetime.fromisoformat(time_dict["site_end_times"][site])
     except KeyError:
-        start_time = datetime.fromisoformat(publish_since)
+        start_time = config["site"]["publish_since"]
 
     return start_time
 
@@ -139,7 +137,7 @@ def get_report_time(time_dict):
 
 
 def update_time_json(config, time_dict, site, stop_time, report_time):
-    time_json_path = config["paths"].get("time_json_path")
+    time_json_path = config["time_json_path"]
 
     time_dict["last_report_time"] = report_time.isoformat()
     time_dict["site_end_times"][site] = stop_time.isoformat()
@@ -159,7 +157,7 @@ def replace_record_string(string):
 
 
 def get_site_id(config, record):
-    meta_key_site = config["auditor"].get("meta_key_site")
+    meta_key_site = config["auditor"]["meta_key_site"]
 
     try:
         site_id = record.meta.get(meta_key_site)[0]
@@ -173,8 +171,8 @@ def get_site_id(config, record):
 
 
 def get_submit_host(config, record):
-    meta_key_submithost = config["auditor"].get("meta_key_submithost")
-    default_submit_host = config["site"].get("default_submit_host")
+    meta_key_submithost = config["auditor"]["meta_key_submithost"]
+    default_submit_host = config["site"]["default_submit_host"]
 
     try:
         submit_host = replace_record_string(record.meta.get(meta_key_submithost)[0])
@@ -189,7 +187,7 @@ def get_submit_host(config, record):
 
 
 def get_voms_info(config, record):
-    meta_key_voms = config["auditor"].get("meta_key_voms")
+    meta_key_voms = config["auditor"]["meta_key_voms"]
     voms_dict = {}
 
     try:
@@ -308,14 +306,14 @@ def create_summary_db(config, records):
         logging.critical(e)
         raise
 
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
-    infrastructure = config["site"].get("infrastructure_type")
-    benchmark_type = config["site"].get("benchmark_type")
-    benchmark_name = config["auditor"].get("benchmark_name")
-    cores_name = config["auditor"].get("cores_name")
-    cpu_time_name = config["auditor"].get("cpu_time_name")
-    nnodes_name = config["auditor"].get("nnodes_name")
-    meta_key_username = config["auditor"].get("meta_key_username")
+    sites_to_report = config["site"]["sites_to_report"]
+    infrastructure = config["site"]["infrastructure_type"]
+    benchmark_type = config["site"]["benchmark_type"]
+    benchmark_name = config["auditor"]["benchmark_name"]
+    cores_name = config["auditor"]["cores_name"]
+    cpu_time_name = config["auditor"]["cpu_time_name"]
+    nnodes_name = config["auditor"]["nnodes_name"]
+    meta_key_username = config["auditor"]["meta_key_username"]
 
     for r in records:
         site_id = get_site_id(config, r)
@@ -447,7 +445,7 @@ def create_sync_db(config, records):
         logging.critical(e)
         raise
 
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    sites_to_report = config["site"]["sites_to_report"]
 
     for r in records:
         site_id = get_site_id(config, r)
@@ -625,12 +623,12 @@ def create_sync(sync_db):
 
 
 def get_token(config):
-    auth_url = config["authentication"].get("auth_url")
-    client_cert = config["authentication"].get("client_cert")
-    client_key = config["authentication"].get("client_key")
-    verify_ca = config["authentication"].getboolean("verify_ca")
+    auth_url = config["authentication"]["auth_url"]
+    client_cert = config["authentication"]["client_cert"]
+    client_key = config["authentication"]["client_key"]
+    verify_ca = config["authentication"]["verify_ca"]
     if verify_ca:
-        ca_path = config["authentication"].get("ca_path")
+        ca_path = config["authentication"]["ca_path"]
     else:
         ca_path = False
 
@@ -641,8 +639,8 @@ def get_token(config):
 
 
 def sign_msg(config, msg):
-    client_cert = config["authentication"].get("client_cert")
-    client_key = config["authentication"].get("client_key")
+    client_cert = config["authentication"]["client_cert"]
+    client_key = config["authentication"]["client_key"]
 
     with open(client_cert, "rb") as cc:
         cert = x509.load_pem_x509_certificate(cc.read())
@@ -672,11 +670,11 @@ def build_payload(msg):
 
 
 def send_payload(config, token, payload):
-    ams_url = config["authentication"].get("ams_url")
-    verify_ca = config["authentication"].getboolean("verify_ca")
+    ams_url = config["authentication"]["ams_url"]
+    verify_ca = config["authentication"]["verify_ca"]
 
     if verify_ca:
-        ca_path = config["authentication"].get("ca_path")
+        ca_path = config["authentication"]["ca_path"]
     else:
         ca_path = False
 
@@ -692,8 +690,8 @@ def send_payload(config, token, payload):
 
 
 def convert_to_seconds(config, cpu_time):
-    cpu_time_name = config["auditor"].get("cpu_time_name")
-    cpu_time_unit = config["auditor"].get("cpu_time_unit")
+    cpu_time_name = config["auditor"]["cpu_time_name"]
+    cpu_time_unit = config["auditor"]["cpu_time_unit"]
 
     if cpu_time_unit == "seconds":
         return cpu_time
@@ -708,7 +706,7 @@ def convert_to_seconds(config, cpu_time):
 
 
 def check_sites_in_records(config, records):
-    sites_to_report = json.loads(config["site"].get("sites_to_report"))
+    sites_to_report = config["site"]["sites_to_report"]
 
     logging.debug(f"Sites to report from config: {list(sites_to_report.keys())}")
 

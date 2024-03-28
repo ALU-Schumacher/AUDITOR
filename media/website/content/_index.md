@@ -592,58 +592,55 @@ The following fields need to be present in the config file:
 
 Example config:
 
-```
-[logging]
-log_level = INFO
+```yaml
+log_level: INFO
+time_json_path: /etc/auditor_apel_plugin/time.json
+report_interval: 86400
 
-[paths]
-time_json_path = /etc/auditor_apel_plugin/time.json
+site:
+  publish_since: 2023-01-01 13:37:42+00:00
+  sites_to_report: 
+    SITE_A: ["site_id_1", "site_id_2"]
+    SITE_B: ["site_id_3"]
+  default_submit_host: gsiftp://accounting.grid_site.de:1337/jobs
+  infrastructure_type: grid
+  benchmark_type: hepscore23
 
-[intervals]
-report_interval = 86400
+auditor:
+  auditor_ip: 127.0.0.1
+  auditor_port: 3333
+  auditor_timeout: 60
+  benchmark_name: hepscore23
+  cores_name: Cores
+  cpu_time_name: TotalCPU
+  cpu_time_unit: milliseconds
+  nnodes_name: NNodes
+  meta_key_site: site_id
+  meta_key_submithost: headnode
+  meta_key_voms: voms
+  meta_key_username: subject
 
-[site]
-publish_since = 2023-01-01 13:37:42+00:00
-sites_to_report = {"SITE_A": ["site_id_1", "site_id_2"], "SITE_B": ["site_id_3"]}
-default_submit_host = gsiftp://accounting.grid_site.de:1337/jobs
-infrastructure_type = grid
-benchmark_type = hepscore23
-
-[auditor]
-auditor_ip = 127.0.0.1
-auditor_port = 3333
-auditor_timeout = 60
-benchmark_name = hepscore23
-cores_name = Cores
-cpu_time_name = TotalCPU
-cpu_time_unit = milliseconds
-nnodes_name = NNodes
-meta_key_site = site_id
-meta_key_submithost = headnode
-meta_key_voms = voms
-meta_key_username = subject
-
-[authentication]
-auth_url = https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
-ams_url = https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
-client_cert = /etc/grid-security/hostcert.pem
-client_key = /etc/grid-security/hostkey.pem
-ca_path = /etc/grid-security/certificates
-verify_ca = True
+authentication:
+  auth_url: https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
+  ams_url: https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+  client_cert: /etc/grid-security/hostcert.pem
+  client_key: /etc/grid-security/hostkey.pem
+  ca_path: /etc/grid-security/certificates
+  verify_ca: True
 ```
 
 When using the Docker container, `auditor-apel-publish` for example can be started with
 
 ```bash
-docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
+docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
 ```
 
-In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.cfg`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The JSON file `time.json` will also be written in `config_folder`. The corresponding entries in the config file would be:
+In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.yml`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The JSON file `time.json` will also be written in `config_folder`. The corresponding entries in the config file would be:
 
 ```
-time_json_path = time.json
-client_cert = hostcert.pem
-client_key = hostkey.pem
+time_json_path: time.json
+client_cert: hostcert.pem
+client_key: hostkey.pem
 ```
 
 ## Priority Plugin
