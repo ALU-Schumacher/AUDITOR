@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
-import configparser
+import yaml
 import argparse
 import sqlite3
 import json
@@ -15,10 +15,10 @@ parser.add_argument("-d", "--db", required=True, help="Path to the time database
 parser.add_argument("-j", "--json", required=True, help="Path to the time JSON file")
 args = parser.parse_args()
 
-config = configparser.ConfigParser()
-config.read(args.config)
+with open(args.config) as f:
+    config = yaml.safe_load(f)
 
-sites_to_report = json.loads(config["site"].get("sites_to_report")).keys()
+sites_to_report = config["site"]["sites_to_report"].keys()
 
 db_path = args.db
 json_path = args.json
