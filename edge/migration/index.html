@@ -176,8 +176,11 @@
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
 <h2 id="apel-plugin">Apel plugin</h2>
-<p>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
-To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5_0.py</code> located in the <code>scripts</code> folder:</p>
+<ul>
+<li>The format of the config file was changed from INI to YAML. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
+<li>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
+To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5_0.py</code> located in the <code>scripts</code> folder:</li>
+</ul>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: migration-0_4_0-to-0_5_0.py </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG -d DB -j JSON
 </span><span>
 </span><span>options:
@@ -187,6 +190,7 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 </span><span>  -d DB, --db DB        Path to the time database file
 </span><span>  -j JSON, --json JSON  Path to the time JSON file
 </span></code></pre>
+<p>This already requires a config file with YAML format.</p>
 <h2 id="development">Development</h2>
 <h3 id="update-to-sqlx-0-7-4">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.4</p>

@@ -688,51 +688,48 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 <tr><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
 </tbody></table>
 <p>Example config:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>[logging]
-</span><span>log_level = INFO
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
+</span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
+</span><span style="color:#00a33f;">report_interval</span><span>: 86400
 </span><span>
-</span><span>[paths]
-</span><span>time_json_path = /etc/auditor_apel_plugin/time.json
+</span><span style="color:#00a33f;">site</span><span>:
+</span><span>  </span><span style="color:#00a33f;">publish_since</span><span>: 2023-01-01 13:37:42+00:00
+</span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>: 
+</span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
+</span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
+</span><span>  </span><span style="color:#00a33f;">default_submit_host</span><span>: </span><span style="color:#00a33f;">gsiftp://accounting.grid_site.de:1337/jobs
+</span><span>  </span><span style="color:#00a33f;">infrastructure_type</span><span>: </span><span style="color:#00a33f;">grid
+</span><span>  </span><span style="color:#00a33f;">benchmark_type</span><span>: </span><span style="color:#00a33f;">hepscore23
 </span><span>
-</span><span>[intervals]
-</span><span>report_interval = 86400
+</span><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">auditor_ip</span><span>: 127.0.0.1
+</span><span>  </span><span style="color:#00a33f;">auditor_port</span><span>: 3333
+</span><span>  </span><span style="color:#00a33f;">auditor_timeout</span><span>: 60
+</span><span>  </span><span style="color:#00a33f;">benchmark_name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>  </span><span style="color:#00a33f;">cores_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>  </span><span style="color:#00a33f;">cpu_time_name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>  </span><span style="color:#00a33f;">cpu_time_unit</span><span>: </span><span style="color:#00a33f;">milliseconds
+</span><span>  </span><span style="color:#00a33f;">nnodes_name</span><span>: </span><span style="color:#00a33f;">NNodes
+</span><span>  </span><span style="color:#00a33f;">meta_key_site</span><span>: </span><span style="color:#00a33f;">site_id
+</span><span>  </span><span style="color:#00a33f;">meta_key_submithost</span><span>: </span><span style="color:#00a33f;">headnode
+</span><span>  </span><span style="color:#00a33f;">meta_key_voms</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>  </span><span style="color:#00a33f;">meta_key_username</span><span>: </span><span style="color:#00a33f;">subject
 </span><span>
-</span><span>[site]
-</span><span>publish_since = 2023-01-01 13:37:42+00:00
-</span><span>sites_to_report = {&quot;SITE_A&quot;: [&quot;site_id_1&quot;, &quot;site_id_2&quot;], &quot;SITE_B&quot;: [&quot;site_id_3&quot;]}
-</span><span>default_submit_host = gsiftp://accounting.grid_site.de:1337/jobs
-</span><span>infrastructure_type = grid
-</span><span>benchmark_type = hepscore23
-</span><span>
-</span><span>[auditor]
-</span><span>auditor_ip = 127.0.0.1
-</span><span>auditor_port = 3333
-</span><span>auditor_timeout = 60
-</span><span>benchmark_name = hepscore23
-</span><span>cores_name = Cores
-</span><span>cpu_time_name = TotalCPU
-</span><span>cpu_time_unit = milliseconds
-</span><span>nnodes_name = NNodes
-</span><span>meta_key_site = site_id
-</span><span>meta_key_submithost = headnode
-</span><span>meta_key_voms = voms
-</span><span>meta_key_username = subject
-</span><span>
-</span><span>[authentication]
-</span><span>auth_url = https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
-</span><span>ams_url = https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
-</span><span>client_cert = /etc/grid-security/hostcert.pem
-</span><span>client_key = /etc/grid-security/hostkey.pem
-</span><span>ca_path = /etc/grid-security/certificates
-</span><span>verify_ca = True
+</span><span style="color:#00a33f;">authentication</span><span>:
+</span><span>  </span><span style="color:#00a33f;">auth_url</span><span>: </span><span style="color:#00a33f;">https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
+</span><span>  </span><span style="color:#00a33f;">ams_url</span><span>: </span><span style="color:#00a33f;">https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+</span><span>  </span><span style="color:#00a33f;">client_cert</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostcert.pem
+</span><span>  </span><span style="color:#00a33f;">client_key</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostkey.pem
+</span><span>  </span><span style="color:#00a33f;">ca_path</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/certificates
+</span><span>  </span><span style="color:#00a33f;">verify_ca</span><span>: </span><span style="color:#a535ae;">True
 </span></code></pre>
 <p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.cfg
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
 </span></code></pre>
-<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.cfg</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path = time.json
-</span><span>client_cert = hostcert.pem
-</span><span>client_key = hostkey.pem
+<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.yml</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path: time.json
+</span><span>client_cert: hostcert.pem
+</span><span>client_key: hostkey.pem
 </span></code></pre>
 <h2 id="priority-plugin">Priority Plugin</h2>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on how many resources were provided.
