@@ -7,7 +7,7 @@ use std::collections::HashMap;
 
 #[tokio::test]
 async fn get_advanced_queries_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -65,7 +65,7 @@ async fn get_advanced_queries_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn get_started_since_returns_a_list_of_sorted_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -146,7 +146,7 @@ async fn get_started_since_returns_a_200_and_no_records() {
 
 #[tokio::test]
 async fn get_stopped_since_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -205,7 +205,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn get_stopped_since_returns_a_list_of_sorted_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -288,7 +288,7 @@ async fn get_stopped_since_returns_a_200_and_no_records() {
 // Test should return the same meta data which are added to auditor using 'contains' operator
 #[tokio::test]
 async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -353,7 +353,7 @@ async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn get_component_query_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -411,7 +411,7 @@ async fn get_component_query_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn sort_by_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -465,7 +465,7 @@ async fn sort_by_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn limit_query_records_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -523,7 +523,7 @@ async fn limit_query_records_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn exact_record_id_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records

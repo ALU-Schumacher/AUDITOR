@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 
 #[tokio::test]
 async fn update_returns_a_404_for_non_existing_record() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 
@@ -24,7 +24,7 @@ async fn update_returns_a_404_for_non_existing_record() {
 
 #[tokio::test]
 async fn update_returns_a_200_for_valid_form_data() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 

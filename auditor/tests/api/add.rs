@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 
 #[tokio::test]
 async fn add_returns_a_200_for_valid_json_data() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // Act
@@ -71,7 +71,7 @@ async fn add_returns_a_200_for_valid_json_data() {
 
 #[tokio::test]
 async fn add_returns_a_400_for_invalid_json_data() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     let forbidden_strings: Vec<String> = ['/', '(', ')', '"', '<', '>', '\\', '{', '}']

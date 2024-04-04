@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 
 #[tokio::test]
 async fn get_returns_a_200_and_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
@@ -45,7 +45,7 @@ async fn get_returns_a_200_and_list_of_records() {
 
 #[tokio::test]
 async fn get_returns_a_list_of_sorted_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
