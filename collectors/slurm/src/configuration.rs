@@ -66,7 +66,7 @@ pub struct SiteConfig {
 
 impl SiteConfig {
     fn keys(&self) -> Option<KeyConfig> {
-        self.only_if.as_ref().map(|oif| oif.key())
+        self.only_if.as_ref().map(|only_if| only_if.key())
     }
 }
 
@@ -88,8 +88,8 @@ impl MetaConfig {
             key_type: self.key_type,
             allow_empty: self.key_allow_empty,
         }];
-        if let Some(ref oif) = self.only_if {
-            keys.push(oif.key());
+        if let Some(ref only_if) = self.only_if {
+            keys.push(only_if.key());
         }
         keys
     }
@@ -117,8 +117,8 @@ impl ComponentConfig {
             key_type: self.key_type,
             allow_empty: self.key_allow_empty,
         });
-        if let Some(ref oif) = self.only_if {
-            keys.push(oif.key());
+        if let Some(ref only_if) = self.only_if {
+            keys.push(only_if.key());
         }
         keys
     }
@@ -133,7 +133,7 @@ pub struct ScoreConfig {
 
 impl ScoreConfig {
     fn keys(&self) -> Vec<KeyConfig> {
-        self.only_if.iter().map(|oif| oif.key()).collect()
+        self.only_if.iter().map(|only_if| only_if.key()).collect()
     }
 }
 

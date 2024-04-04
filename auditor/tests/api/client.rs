@@ -6,7 +6,7 @@ use fake::{Fake, Faker};
 
 #[tokio::test]
 async fn add_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
     let client = AuditorClientBuilder::new()
         .connection_string(&app.address)
@@ -98,7 +98,7 @@ async fn add_records() {
 
 #[tokio::test]
 async fn update_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
     let client = AuditorClientBuilder::new()
         .connection_string(&app.address)
@@ -204,7 +204,7 @@ async fn update_records() {
 
 #[tokio::test]
 async fn get_returns_empty_list_of_records() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
     let client = AuditorClientBuilder::new()
         .connection_string(&app.address)

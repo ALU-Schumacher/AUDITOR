@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 
 #[tokio::test]
 async fn get_one_record_returns_a_200_and_get_one_record() {
-    // Arange
+    // Arrange
     let app = spawn_app().await;
 
     // First send a couple of records
