@@ -51,12 +51,12 @@ jobs:
     with:
       python-version: ${{ matrix.python-version }}
       
-  python-unit-tests:
+  python-code-tests:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     needs: build-pyauditor-linux
-    uses: ./.github/workflows/python_unit_tests.yml
+    uses: ./.github/workflows/python_code_tests.yml
     with:
       python-version: ${{ matrix.python-version }}
 

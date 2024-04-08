@@ -8,7 +8,8 @@ weight = 3
 
 ## Apel plugin
 
-- The format of the config file was changed from INI to YAML. An updated example config file can be found in the [Documentation](../#apel-plugin).
+- The format of the config file was changed from INI to YAML and the content in the APEL message can now be configured. An updated example config file can be found in the [Documentation](../#apel-plugin).
+- `auditor-apel-republish` now needs the arguments `--begin_date` and `--end_date` instead of `--month` and `--year`. The format is `yyyy-mm-dd hh:mm:ss+00:00`, e.g. `2023-11-29 21:10:54+00:00`.
 - The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter `time_db_path` has to be changed to `time_json_path`.
 To migrate an existing database to a JSON file, run `migration-0_4_0-to-0_5_0.py` located in the `scripts` folder:
 
@@ -23,7 +24,7 @@ options:
   -j JSON, --json JSON  Path to the time JSON file
 ```
 
-This already requires a config file with YAML format.
+This already requires a config file with the new YAML format.
 
 ## Docker container
 
