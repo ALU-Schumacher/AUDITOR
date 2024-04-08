@@ -1,0 +1,129 @@
+!Config
+plugin:
+  log_level: test_level
+  time_json_path: test_path
+  report_interval: 20
+  message_type: summaries
+  
+site:
+  publish_since: 2000-01-01 00:00:00+00:00
+  sites_to_report:
+    TEST-SITE: ["test"]
+
+authentication:
+  auth_url: test_auth_url
+  ams_url: test_ams_url
+  client_cert: test_client_cert
+  client_key: test_client_key
+  ca_path: test_ca_path
+  verify_ca: False
+
+auditor:
+  ip: 127.0.0.1
+  port: 3333
+  timeout: 5000
+  site_meta_field: site_in_meta
+  
+summary_fields:
+  mandatory:
+    NormalisedWallDuration: !NormalisedWallDurationField
+      datatype_in_message: INT
+      score:
+        name: hepscore23
+        datatype_in_message: FLOAT
+        component_name: Cores
+    CpuDuration: !ComponentField
+      name: TotalCPU
+      datatype_in_message: INT
+      divide_by: 1000
+    NormalisedCpuDuration: !NormalisedField
+      datatype_in_message: INT
+      base_value: !ComponentField
+        name: TotalCPU
+        datatype_in_message: INT
+        divide_by: 1000
+      score:
+        name: hepscore23
+        datatype_in_message: FLOAT
+        component_name: Cores
+    
+  optional:
+    GlobalUserName: !MetaField
+      name: subject
+      datatype_in_message: TEXT
+    VO: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?<=%2F).*?\S(?=%2F)
+    VOGroup: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?=%2F).*?\S(?=%2F)
+    VORole: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?=Role).*
+    SubmitHost: !MetaField
+      name: headnode
+      datatype_in_message: TEXT
+    Infrastructure: !ConstantField
+      value: grid
+      datatype_in_message: TEXT
+    NodeCount: !ComponentField
+      name: NNodes
+      datatype_in_message: INT
+    Processors: !ComponentField
+      name: Cores
+      datatype_in_message: INT
+
+single_job_fields:
+  mandatory:
+    NormalisedWallDuration: !NormalisedWallDurationField
+      datatype_in_message: INT
+      score:
+        name: hepscore23
+        datatype_in_message: FLOAT
+        component_name: Cores
+    CpuDuration: !ComponentField
+      name: TotalCPU
+      datatype_in_message: INT
+      divide_by: 1000
+    NormalisedCpuDuration: !NormalisedField
+      datatype_in_message: INT
+      base_value: !ComponentField
+        name: TotalCPU
+        datatype_in_message: INT
+        divide_by: 1000
+      score:
+        name: hepscore23
+        datatype_in_message: FLOAT
+        component_name: Cores
+    
+  optional:
+    GlobalUserName: !MetaField
+      name: subject
+      datatype_in_message: TEXT
+    VO: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?<=%2F).*?\S(?=%2F)
+    VOGroup: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?=%2F).*?\S(?=%2F)
+    VORole: !MetaField
+      name: voms
+      datatype_in_message: TEXT
+      regex: (?=Role).*
+    SubmitHost: !MetaField
+      name: headnode
+      datatype_in_message: TEXT
+    InfrastructureType: !ConstantField
+      value: grid
+      datatype_in_message: TEXT
+    NodeCount: !ComponentField
+      name: NNodes
+      datatype_in_message: INT
+    Processors: !ComponentField
+      name: Cores
+      datatype_in_message: INT

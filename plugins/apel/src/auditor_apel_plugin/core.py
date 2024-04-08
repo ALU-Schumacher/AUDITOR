@@ -15,12 +15,22 @@ import urllib
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
-from pyauditor import Value, Operator, MetaOperator, MetaQuery, QueryBuilder
+from pyauditor import Value, Operator, MetaOperator, MetaQuery, QueryBuilder, Record
+from auditor_apel_plugin.config import Field, MessageType, Config
+from auditor_apel_plugin.message import (
+    SummaryMessage,
+    SyncMessage,
+    SingleJobMessage,
+    Message,
+)
+from typing import Dict, List, Tuple
 
 
-def get_records(config, client, start_time, delay_time, site=None, end_time=None):
-    sites_to_report = config["site"]["sites_to_report"]
-    meta_key_site = config["auditor"]["meta_key_site"]
+def get_records(
+    config: Config, client, start_time, delay_time, site=None, end_time=None
+):
+    sites_to_report = config.site.sites_to_report
+    meta_key_site = config.auditor.site_meta_field
 
     site_ids = []
 
@@ -70,6 +80,7 @@ def get_records(config, client, start_time, delay_time, site=None, end_time=None
         "Call to AUDITOR timed out 3/3, quitting! "
         "Maybe increase auditor_timeout in the config"
     )
+
     sys.exit(1)
 
 
@@ -92,7 +103,7 @@ def get_begin_current_month(current_time):
 
 
 def get_time_json(config):
-    time_json_path = config["time_json_path"]
+    time_json_path = config.plugin.time_json_path
 
     try:
         with open(time_json_path, "r", encoding="utf-8") as f:
@@ -125,7 +136,7 @@ def get_start_time(config, time_dict, site):
     try:
         start_time = datetime.fromisoformat(time_dict["site_end_times"][site])
     except KeyError:
-        start_time = config["site"]["publish_since"]
+        start_time = config.site.publish_since
 
     return start_time
 
@@ -137,7 +148,7 @@ def get_report_time(time_dict):
 
 
 def update_time_json(config, time_dict, site, stop_time, report_time):
-    time_json_path = config["time_json_path"]
+    time_json_path = config.plugin.time_json_path
 
     time_dict["last_report_time"] = report_time.isoformat()
     time_dict["site_end_times"][site] = stop_time.isoformat()
@@ -168,22 +179,6 @@ def get_site_id(config, record):
     except TypeError:
         logging.critical(f"No site name found in {record.record_id}, aborting")
         raise
-
-
-def get_submit_host(config, record):
-    meta_key_submithost = config["auditor"]["meta_key_submithost"]
-    default_submit_host = config["site"]["default_submit_host"]
-
-    try:
-        submit_host = replace_record_string(record.meta.get(meta_key_submithost)[0])
-    except TypeError:
-        logging.warning(
-            f"No {meta_key_submithost} found in record {record.record_id}, "
-            f"sending default SubmitHost {default_submit_host}"
-        )
-        submit_host = default_submit_host
-
-    return submit_host
 
 
 def get_voms_info(config, record):
@@ -240,235 +235,85 @@ def get_voms_info(config, record):
     return voms_dict
 
 
-def create_summary_db(config, records):
-    create_table_sql = """
-                       CREATE TABLE IF NOT EXISTS records(
-                           site TEXT NOT NULL,
-                           submithost TEXT NOT NULL,
-                           vo TEXT,
-                           vogroup TEXT,
-                           vorole TEXT,
-                           infrastructure TEXT NOT NULL,
-                           year INTEGER NOT NULL,
-                           month INTEGER NOT NULL,
-                           cpucount INTEGER NOT NULL,
-                           nodecount INTEGER NOT NULL,
-                           recordid TEXT UNIQUE NOT NULL,
-                           runtime INTEGER NOT NULL,
-                           normruntime INTEGER NOT NULL,
-                           cputime INTEGER NOT NULL,
-                           normcputime INTEGER NOT NULL,
-                           starttime INTEGER NOT NULL,
-                           stoptime INTEGER NOT NULL,
-                           user TEXT,
-                           benchmarktype TEXT NOT NULL,
-                           benchmarkvalue FLOAT NOT NULL
-                       )
-                       """
+def create_db(
+    fields_dict: Dict[str, Field], message_type: MessageType
+) -> sqlite3.Connection:
+    message = Message()
 
-    insert_record_sql = """
-                        INSERT INTO records(
-                            site,
-                            submithost,
-                            vo,
-                            vogroup,
-                            vorole,
-                            infrastructure,
-                            year,
-                            month,
-                            cpucount,
-                            nodecount,
-                            recordid,
-                            runtime,
-                            normruntime,
-                            cputime,
-                            normcputime,
-                            starttime,
-                            stoptime,
-                            user,
-                            benchmarktype,
-                            benchmarkvalue
-                        )
-                        VALUES(
-                            ?, ?, ?, ?,
-                            ?, ?, ?, ?,
-                            ?, ?, ?, ?,
-                            ?, ?, ?, ?,
-                            ?, ?, ?, ?
-                        )
-                        """
+    if message_type == MessageType.summaries:
+        message = SummaryMessage()
+    elif message_type == MessageType.single_jobs:
+        message = SingleJobMessage()
+    elif message_type == MessageType.sync:
+        message = SyncMessage()
 
-    try:
-        conn = sqlite3.connect(":memory:")
-        cur = conn.cursor()
-        cur.execute(create_table_sql)
-    except Error as e:
-        logging.critical(e)
-        raise
+    field_list = message.create_sql
 
-    sites_to_report = config["site"]["sites_to_report"]
-    infrastructure = config["site"]["infrastructure_type"]
-    benchmark_type = config["site"]["benchmark_type"]
-    benchmark_name = config["auditor"]["benchmark_name"]
-    cores_name = config["auditor"]["cores_name"]
-    cpu_time_name = config["auditor"]["cpu_time_name"]
-    nnodes_name = config["auditor"]["nnodes_name"]
-    meta_key_username = config["auditor"]["meta_key_username"]
-
-    for r in records:
-        site_id = get_site_id(config, r)
-
-        for k, v in sites_to_report.items():
-            if site_id in v:
-                site_name = k
-                break
-
-        submit_host = get_submit_host(config, r)
-
-        voms_dict = get_voms_info(config, r)
-
-        try:
-            user_name = replace_record_string(r.meta.get(meta_key_username)[0])
-        except TypeError:
-            logging.warning(
-                f"No GlobalUserName found in {r.record_id}, not sending GlobalUserName"
+    for k, v in fields_dict.items():
+        if k not in message.message_fields:
+            logging.critical(
+                f"Field {k} not in list of possible fields: {message.message_fields}"
             )
-            user_name = None
+            raise ValueError
+        else:
+            data_type = v.datatype_in_message
+            field_list.append(f"{k} {data_type} NOT NULL")
 
-        year = r.stop_time.replace(tzinfo=timezone.utc).year
-        month = r.stop_time.replace(tzinfo=timezone.utc).month
+    field_list_str = ",".join(field_list)
 
-        component_dict = {}
-        score_dict = {}
-
-        for c in r.components:
-            component_dict[c.name] = c
-
-        try:
-            cputime = component_dict[cpu_time_name].amount
-        except KeyError:
-            logging.critical(f"no {cpu_time_name} in components")
-            raise
-
-        cputime = convert_to_seconds(config, cputime)
-
-        try:
-            nodecount = component_dict[nnodes_name].amount
-        except KeyError:
-            logging.critical(f"no {nnodes_name} in components")
-            raise
-
-        try:
-            cpucount = component_dict[cores_name].amount
-            for s in component_dict[cores_name].scores:
-                score_dict[s.name] = s.value
-        except KeyError:
-            logging.critical(f"no {cores_name} in components")
-            raise
-
-        try:
-            benchmark_value = score_dict[benchmark_name]
-        except KeyError:
-            logging.critical(f"no {benchmark_name} in scores")
-            raise
-
-        norm_runtime = r.runtime * benchmark_value
-        norm_cputime = cputime * benchmark_value
-
-        data_tuple = (
-            site_name,
-            submit_host,
-            voms_dict["vo"],
-            voms_dict["vogroup"],
-            voms_dict["vorole"],
-            infrastructure,
-            year,
-            month,
-            cpucount,
-            nodecount,
-            r.record_id,
-            r.runtime,
-            norm_runtime,
-            cputime,
-            norm_cputime,
-            r.start_time.replace(tzinfo=timezone.utc).timestamp(),
-            r.stop_time.replace(tzinfo=timezone.utc).timestamp(),
-            user_name,
-            benchmark_type,
-            benchmark_value,
-        )
-        try:
-            cur.execute(insert_record_sql, data_tuple)
-        except Error as e:
-            logging.critical(e)
-            raise
-
-    try:
-        conn.commit()
-        cur.close()
-    except Error as e:
-        logging.critical(e)
-        raise
-
-    return conn
-
-
-def create_sync_db(config, records):
-    create_table_sql = """
-                       CREATE TABLE IF NOT EXISTS records(
-                           site TEXT NOT NULL,
-                           submithost TEXT NOT NULL,
-                           year INTEGER NOT NULL,
-                           month INTEGER NOT NULL,
-                           recordid TEXT UNIQUE NOT NULL
-                       )
-                       """
-
-    insert_record_sql = """
-                        INSERT INTO records(
-                            site,
-                            submithost,
-                            year,
-                            month,
-                            recordid
-                        )
-                        VALUES(
-                            ?, ?, ?, ?, ?
-                        )
-                        """
+    create_db_str = "".join(
+        ["CREATE TABLE IF NOT EXISTS records(", field_list_str, ")"]
+    )
 
     try:
         conn = sqlite3.connect(":memory:")
         cur = conn.cursor()
-        cur.execute(create_table_sql)
+        cur.execute(create_db_str)
     except Error as e:
         logging.critical(e)
         raise
 
-    sites_to_report = config["site"]["sites_to_report"]
+    cur.close()
+
+    return conn
+
+
+def fill_db(
+    config: Config,
+    conn: sqlite3.Connection,
+    message_type: MessageType,
+    fields_dict: Dict[str, Field],
+    site: str,
+    records: List[Record],
+) -> sqlite3.Connection:
+    message = Message()
+
+    if message_type == MessageType.summaries:
+        message = SummaryMessage()
+    elif message_type == MessageType.single_jobs:
+        message = SingleJobMessage()
+    elif message_type == MessageType.sync:
+        message = SyncMessage()
+
+    field_list = [field.split(" ")[0] for field in message.create_sql]
+
+    for k in fields_dict.keys():
+        field_list.append(k)
+
+    field_list_str = ",".join(field_list)
+
+    q_marks = ",".join(len(field_list) * ["?"])
+
+    insert_db_str = "".join(
+        ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
+    )
 
     for r in records:
-        site_id = get_site_id(config, r)
+        data_tuple = get_data_tuple(config, message_type, fields_dict, site, r)
 
-        for k, v in sites_to_report.items():
-            if site_id in v:
-                site_name = k
-                break
-
-        submit_host = get_submit_host(config, r)
-
-        year = r.stop_time.replace(tzinfo=timezone.utc).year
-        month = r.stop_time.replace(tzinfo=timezone.utc).month
-
-        data_tuple = (
-            site_name,
-            submit_host,
-            year,
-            month,
-            r.record_id,
-        )
         try:
-            cur.execute(insert_record_sql, data_tuple)
+            cur = conn.cursor()
+            cur.execute(insert_db_str, data_tuple)
         except Error as e:
             logging.critical(e)
             raise
@@ -483,164 +328,161 @@ def create_sync_db(config, records):
     return conn
 
 
-def group_summary_db(summary_db):
-    group_sql = """
-                 SELECT site,
-                        submithost,
-                        vo,
-                        vogroup,
-                        vorole,
-                        infrastructure,
-                        year,
-                        month,
-                        cpucount,
-                        nodecount,
-                        COUNT(recordid) as jobcount,
-                        SUM(runtime) as runtime,
-                        SUM(normruntime) as norm_runtime,
-                        SUM(cputime) as cputime,
-                        SUM(normcputime) as norm_cputime,
-                        MIN(stoptime) as min_stoptime,
-                        MAX(stoptime) as max_stoptime,
-                        user,
-                        benchmarktype,
-                        benchmarkvalue
-                 FROM records
-                 GROUP BY site,
-                          submithost,
-                          vo,
-                          vogroup,
-                          vorole,
-                          infrastructure,
-                          year,
-                          month,
-                          cpucount,
-                          nodecount,
-                          user,
-                          benchmarktype,
-                          benchmarkvalue
-                """
+def get_data_tuple(
+    config: Config,
+    message_type: MessageType,
+    fields_dict: Dict[str, Field],
+    site: str,
+    record: Record,
+) -> Tuple[int, float, str]:
+    value_list = []
 
-    summary_db.row_factory = sqlite3.Row
-    cur = summary_db.cursor()
-    cur.execute(group_sql)
-    grouped_summary_list = cur.fetchall()
+    if message_type == MessageType.summaries:
+        month = record.stop_time.replace(tzinfo=timezone.utc).month
+        year = record.stop_time.replace(tzinfo=timezone.utc).year
+        stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
+        runtime = record.runtime
+        record_id = record.record_id
+
+        value_list = [site, month, year, stop_time, runtime, record_id]
+
+    elif message_type == MessageType.single_jobs:
+        record_id = record.record_id
+        runtime = record.runtime
+        start_time = record.start_time.replace(tzinfo=timezone.utc).timestamp()
+        stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
+
+        value_list = [site, record_id, runtime, start_time, stop_time]
+
+    elif message_type == MessageType.sync:
+        month = record.stop_time.replace(tzinfo=timezone.utc).month
+        year = record.stop_time.replace(tzinfo=timezone.utc).year
+        submithost_field = config.get_optional_fields().get("SubmitHost")
+        if submithost_field is not None:
+            submithost = replace_record_string(submithost_field.get_value(record))
+        else:
+            submithost = "None"
+        # try:
+        #     submithost = replace_record_string(
+        #         config.get_optional_fields().get("SubmitHost").get_value(record)
+        #     )
+        # except AttributeError:
+        #     submithost = "None"
+        record_id = record.record_id
+
+        value_list = [site, month, year, submithost, record_id]
+
+    for v in fields_dict.values():
+        value = v.get_value(record)
+
+        if v.datatype_in_message == "TEXT":
+            value = replace_record_string(value)
+
+        value_list.append(value)
+
+    data_tuple = tuple(value_list)
+
+    return data_tuple
+
+
+def group_db(
+    conn: sqlite3.Connection, message_type: MessageType, fields_dict: Dict[str, Field]
+) -> List[sqlite3.Row]:
+    message = Message()
+
+    if message_type == MessageType.summaries:
+        message = SummaryMessage()
+    elif message_type == MessageType.single_jobs:
+        message = SingleJobMessage()
+    elif message_type == MessageType.sync:
+        message = SyncMessage()
+
+    group_by_list = message.group_by
+
+    for k in fields_dict.keys():
+        group_by_list.append(k)
+
+    sql_group_by = ",".join(group_by_list)
+    sql_store_as = ",".join(message.store_as)
+
+    group_str = "".join(
+        [
+            "SELECT ",
+            sql_group_by,
+            ",",
+            sql_store_as,
+            " FROM records GROUP BY ",
+            sql_group_by,
+        ]
+    )
+
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(group_str)
+    grouped_sql = cur.fetchall()
     cur.close()
-    summary_db.close()
+    conn.close()
 
-    return grouped_summary_list
-
-
-def group_sync_db(sync_db):
-    sync_db.row_factory = sqlite3.Row
-    cur = sync_db.cursor()
-    group_sql = """
-                SELECT site,
-                       submithost,
-                       year,
-                       month,
-                       COUNT(recordid) as jobcount
-                FROM records
-                GROUP BY site,
-                         submithost,
-                         year,
-                         month
-                """
-
-    cur.execute(group_sql)
-    grouped_sync_list = cur.fetchall()
-    cur.close()
-    sync_db.close()
-
-    return grouped_sync_list
+    return grouped_sql
 
 
-def create_summary(config, grouped_summary_list):
-    apel_style = config["site"].get("apel_style", "Test")
+def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) -> str:
+    message = Message()
 
-    if apel_style == "APEL-v0.2":
-        summary = "APEL-summary-job-message: v0.2\n"
-    elif apel_style == "APEL-v0.3":
-        summary = "APEL-summary-job-message: v0.3\n"
-    elif apel_style == "ARC":
-        summary = "APEL-summary-job-message: v0.2\n"
-    elif apel_style == "Test":
-        summary = "APEL-summary-job-message: v0.3\n"
-    else:
-        logging.critical(
-            f"No such style: {apel_style}, please fix apel_style in the config"
-        )
-        raise ValueError
+    if message_type == MessageType.summaries:
+        message = SummaryMessage()
+    elif message_type == MessageType.single_jobs:
+        message = SingleJobMessage()
+    elif message_type == MessageType.sync:
+        message = SyncMessage()
 
-    for entry in grouped_summary_list:
-        summary += f"Site: {entry['site']}\n"
-        summary += f"Month: {entry['month']}\n"
-        summary += f"Year: {entry['year']}\n"
-        if entry["user"] is not None:
-            summary += f"GlobalUserName: {entry['user']}\n"
-        if entry["vo"] is not None:
-            if apel_style == "APEL-v0.2":
-                summary += f"Group: {entry['vo']}\n"
+    header = message.message_header
+    message_fields = message.message_fields
+
+    field_list = [header]
+
+    for entry in grouped_sql:
+        keys = entry.keys()
+
+        for field in message_fields:
+            if field in keys:
+                field_list.append(f"{field}: {entry[field]}\n")
             else:
-                summary += f"VO: {entry['vo']}\n"
-        if entry["vogroup"] is not None:
-            summary += f"VOGroup: {entry['vogroup']}\n"
-        if entry["vorole"] is not None:
-            summary += f"VORole: {entry['vorole']}\n"
-        if apel_style != "APEL-v0.2":
-            summary += f"SubmitHost: {entry['submithost']}\n"
-            summary += f"InfrastructureType: {entry['infrastructure']}\n"
-            summary += f"Processors: {entry['cpucount']}\n"
-            summary += f"NodeCount: {entry['nodecount']}\n"
-        summary += f"EarliestEndTime: {entry['min_stoptime']}\n"
-        summary += f"LatestEndTime: {entry['max_stoptime']}\n"
-        summary += f"WallDuration : {int(entry['runtime'])}\n"
-        summary += f"CpuDuration: {int(entry['cputime'])}\n"
-        if apel_style != "ARC":
-            summary += f"NormalisedWallDuration: {int(entry['norm_runtime'])}\n"
-            summary += f"NormalisedCpuDuration: {int(entry['norm_cputime'])}\n"
-        if apel_style in ["ARC", "Test"]:
-            summary += f"ServiceLevelType: {entry['benchmarktype']}\n"
-            summary += f"ServiceLevel: {entry['benchmarkvalue']}\n"
-        summary += f"NumberOfJobs: {entry['jobcount']}\n"
-        summary += "%%\n"
+                field_list.append(f"{field}: None\n")
 
-    return summary
+        field_list.append("%%\n")
 
+    apel_message = "".join(field_list)
 
-def create_sync(sync_db):
-    sync = "APEL-sync-message: v0.1\n"
-
-    for entry in sync_db:
-        sync += f"Site: {entry['site']}\n"
-        sync += f"Month: {entry['month']}\n"
-        sync += f"Year: {entry['year']}\n"
-        sync += f"SubmitHost: {entry['submithost']}\n"
-        sync += f"NumberOfJobs: {entry['jobcount']}\n"
-        sync += "%%\n"
-
-    return sync
+    return apel_message
 
 
 def get_token(config):
-    auth_url = config["authentication"]["auth_url"]
-    client_cert = config["authentication"]["client_cert"]
-    client_key = config["authentication"]["client_key"]
-    verify_ca = config["authentication"]["verify_ca"]
+    auth_url = config.authentication.auth_url
+    client_cert = config.authentication.client_cert
+    client_key = config.authentication.client_key
+    verify_ca = config.authentication.verify_ca
     if verify_ca:
-        ca_path = config["authentication"]["ca_path"]
+        ca_path = config.authentication.ca_path
     else:
         ca_path = False
 
-    response = requests.get(auth_url, cert=(client_cert, client_key), verify=ca_path)
+    try:
+        response = requests.get(
+            auth_url, cert=(client_cert, client_key), verify=ca_path, timeout=10
+        )
+    except requests.Timeout:
+        logging.critical("Timeout while getting token")
+        raise
+
     token = response.json()["token"]
 
     return token
 
 
 def sign_msg(config, msg):
-    client_cert = config["authentication"]["client_cert"]
-    client_key = config["authentication"]["client_key"]
+    client_cert = config.authentication.client_cert
+    client_key = config.authentication.client_key
 
     with open(client_cert, "rb") as cc:
         cert = x509.load_pem_x509_certificate(cc.read())

@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- Apel plugin: Use class structure for config and messages ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Change `month` and `year` parameters of republish script to `begin_date` and `end_date` ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
 ### Added
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
+- Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
+- CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))

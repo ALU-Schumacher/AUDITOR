@@ -11,18 +11,22 @@ dependencies = [
 	     "requests==2.31.0",
 	     "cryptography==42.0.5",
 	     "pyyaml==6.0.1",
+	     "pydantic==2.6.4",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
 readme = "README.md"
 
 [project.optional-dependencies]
 style = [
-      "black",
-      "flake8",
+      "black==24.2.0",
+      "ruff==0.3.2",
 ]
 tests = [
       "pytest==8.1.1",
       "pytest-cov==5.0.0",
+      "mypy==1.9.0",	
+      "types-pyyaml==6.0.12.20240311",
+      "types-requests==2.31.0.20240406",
 ]
 build = [
       "build==1.2.1",
@@ -49,9 +53,9 @@ include = '\.pyi?$'
 
 [tool.pytest.ini_options]
 addopts = "-s -v --cov --cov-report lcov"
-testpaths = [
-	  "tests",
-]
-filterwarnings = [
-	       "ignore::DeprecationWarning",
-]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[[tool.mypy.overrides]]
+module = "pyauditor"
+ignore_missing_imports = true

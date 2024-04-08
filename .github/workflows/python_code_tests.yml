@@ -1,4 +1,4 @@
-name: python-unit-tests
+name: python-code-tests
 
 on:
   workflow_call:
@@ -39,3 +39,27 @@ jobs:
           fail_ci_if_error: true
           token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
           #${{ secrets.CODECOV_TOKEN }} doesn't work for PRs from forks
+  mypy-apel-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/apel
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Download wheel
+        uses: actions/download-artifact@v4
+        with:
+          path: ./plugins/apel
+          name: pyauditor-wheels-linux-${{ inputs.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install *.whl
+          pip install -e .[tests]
+      - name: Run mypy
+        run: mypy .

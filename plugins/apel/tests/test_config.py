@@ -1,0 +1,300 @@
+import pytest
+import yaml
+from auditor_apel_plugin.config import (
+    Config,
+    Field,
+    MetaField,
+    ComponentField,
+    ScoreField,
+    NormalisedField,
+    ConstantField,
+    RecordField,
+    PluginConfig,
+    MessageType,
+    get_loaders,
+)
+import pyauditor
+from datetime import datetime, timezone
+from pydantic import ValidationError
+from pathlib import Path, PurePath
+
+test_dir = PurePath(__file__).parent
+
+
+class TestConfig:
+    def test_plugin_config(self):
+        with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
+            config: Config = yaml.load(f, Loader=get_loaders())
+
+        log_level = "DEBUG"
+        time_json_path = "time.json"
+        report_interval = 10
+        message_type = "summaries"
+
+        plugin = PluginConfig(
+            log_level=log_level,
+            time_json_path=time_json_path,
+            report_interval=report_interval,
+            message_type=message_type,
+        )
+
+        assert plugin.log_level == "DEBUG"
+        assert plugin.time_json_path == "time.json"
+        assert plugin.report_interval == 10
+        assert plugin.message_type == MessageType("summaries")
+
+        field_config = config.get_field_config()
+
+        value = field_config.mandatory["CpuDuration"].name
+
+        assert value == "TotalCPU"
+
+        mandatory_fields = config.get_mandatory_fields()
+
+        value = mandatory_fields["CpuDuration"].name
+
+        assert value == "TotalCPU"
+
+        optional_fields = config.get_optional_fields()
+
+        value = optional_fields["GlobalUserName"].name
+
+        assert value == "subject"
+
+        all_fields = config.get_all_fields()
+
+        value = all_fields["VO"].name
+
+        message_type = "voms"
+
+        value = all_fields["CpuDuration"].name
+
+        assert value == "TotalCPU"
+
+        with pytest.raises(Exception) as pytest_error:
+            plugin = PluginConfig(
+                log_level=log_level,
+                time_json_path=time_json_path,
+                report_interval=report_interval,
+                message_type=message_type,
+            )
+        assert pytest_error.type == ValidationError
+
+    def test_get_value_default(self):
+        class TestField(Field):
+            attribute: str
+
+        test_field = TestField(datatype_in_message="TEXT", attribute="test")
+
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            test_field.get_value(record)
+
+        assert pytest_error.type == NotImplementedError
+
+    def test_get_value_meta_field(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        meta = pyauditor.Meta()
+        meta.insert("meta_test", ["value"])
+        record.with_meta(meta)
+
+        meta_field = MetaField(datatype_in_message="TEXT", name="meta_test")
+        value = meta_field.get_value(record)
+
+        assert value == "value"
+
+    def test_get_value_meta_field_fail(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        meta = pyauditor.Meta()
+        meta.insert("meta_test", ["value"])
+        record.with_meta(meta)
+
+        meta_field = MetaField(datatype_in_message="TEXT", name="meta_test_missing")
+
+        value = meta_field.get_value(record)
+
+        assert value == "None"
+
+    def test_meta_field_regex(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        meta = pyauditor.Meta()
+        meta.insert("meta_test", ["aaavaluebbb"])
+        record.with_meta(meta)
+
+        meta_field = MetaField(
+            datatype_in_message="TEXT", name="meta_test", regex="(?<=aaa).*?\S(?=bbb)"
+        )
+
+        value = meta_field.get_value(record)
+
+        assert value == "value"
+
+        meta_field = MetaField(
+            datatype_in_message="TEXT", name="meta_test", regex="(?<=aaa).*?\S(?=ccc)"
+        )
+
+        value = meta_field.get_value(record)
+
+        assert value == "None"
+
+    def test_get_value_component_field(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        component = pyauditor.Component(name="test_component", amount=1000)
+        record.with_component(component)
+
+        component_field = ComponentField(
+            datatype_in_message="INT", name="test_component"
+        )
+        value = component_field.get_value(record)
+
+        assert value == 1000
+
+        component_field = ComponentField(
+            datatype_in_message="FLOAT",
+            name="test_component",
+            divide_by=1000,
+        )
+        value = component_field.get_value(record)
+
+        assert value == 1.0
+
+        component_field = ComponentField(
+            datatype_in_message="INT", name="test_component_2"
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            value = component_field.get_value(record)
+
+        assert pytest_error.type == ValueError
+
+    def test_get_value_score_field(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        score = pyauditor.Score(name="test_score", value=2.5)
+        component = pyauditor.Component(name="test_component", amount=1000)
+        component.with_score(score)
+        record.with_component(component)
+
+        score_field = ScoreField(
+            datatype_in_message="FLOAT",
+            name="test_score",
+            component_name="test_component",
+        )
+        value = score_field.get_value(record)
+
+        assert value == 2.5
+
+        score_field = ScoreField(
+            datatype_in_message="FLOAT",
+            name="test_score",
+            component_name="test_component_2",
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            value = score_field.get_value(record)
+
+        assert pytest_error.type == ValueError
+
+        score_field = ScoreField(
+            datatype_in_message="FLOAT",
+            name="test_score_2",
+            component_name="test_component",
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            value = score_field.get_value(record)
+
+        assert pytest_error.type == ValueError
+
+    def test_get_value_normalised_field(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        score = pyauditor.Score(name="test_score", value=2.5)
+        component = pyauditor.Component(name="test_component", amount=1000)
+        component.with_score(score)
+        record.with_component(component)
+
+        score_field = ScoreField(
+            datatype_in_message="FLOAT",
+            name="test_score",
+            component_name="test_component",
+        )
+        component_field = ComponentField(
+            datatype_in_message="INT", name="test_component"
+        )
+
+        normalised_field = NormalisedField(
+            datatype_in_message="INT", base_value=component_field, score=score_field
+        )
+        value = normalised_field.get_value(record)
+
+        assert value == 2500.0
+
+    def test_get_value_constant_field(self):
+        constant_field = ConstantField(datatype_in_message="TEXT", value="test")
+        value = constant_field.get_value()
+
+        assert value == "test"
+
+        constant_field = ConstantField(datatype_in_message="TEXT", value=15)
+        value = constant_field.get_value()
+
+        assert value == 15
+
+    def test_get_value_record_field(self):
+        record = pyauditor.Record(
+            "record_id_123",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        record_field = RecordField(datatype_in_message="TEXT", name="record_id")
+
+        value = record_field.get_value(record)
+
+        assert value == "record_id_123"
+
+        record_field = RecordField(
+            datatype_in_message="INT", name="start_time", modify="month"
+        )
+
+        value = record_field.get_value(record)
+
+        assert value == 3
+
+    def test_loaders(self):
+        test_yaml = """
+                    !ComponentField
+                      name: test_field
+                      datatype_in_message: INT
+                    """
+
+        config = yaml.load(test_yaml, Loader=get_loaders())
+        value = config.name
+
+        assert value == "test_field"

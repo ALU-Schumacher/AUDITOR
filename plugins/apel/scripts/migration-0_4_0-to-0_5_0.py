@@ -8,6 +8,7 @@ import argparse
 import sqlite3
 import json
 from datetime import datetime, timezone
+from auditor_apel_plugin.config import get_loaders, Config
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--config", required=True, help="Path to the config file")
@@ -15,10 +16,10 @@ parser.add_argument("-d", "--db", required=True, help="Path to the time database
 parser.add_argument("-j", "--json", required=True, help="Path to the time JSON file")
 args = parser.parse_args()
 
-with open(args.config) as f:
-    config = yaml.safe_load(f)
+with open(args.config, "r") as f:
+    config: Config = yaml.load(f, Loader=get_loaders())
 
-sites_to_report = config["site"]["sites_to_report"].keys()
+sites_to_report = config.site.sites_to_report.keys()
 
 db_path = args.db
 json_path = args.json
