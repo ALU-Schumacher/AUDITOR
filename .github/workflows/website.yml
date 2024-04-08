@@ -82,7 +82,7 @@ jobs:
           pathspec_error_handling: exitAtEnd
 
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages

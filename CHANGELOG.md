@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Remove deprecated options from cargo.deny (#709) ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Switch to stable toolchain for coverage job ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Update htcondor docker image from 10.9.0 to 23.5.2 ([@QuantumDancer](https://github.com/QuantumDancer))
+- CI: Use specific version for actions ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
