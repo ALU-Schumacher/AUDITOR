@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.115 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer)
 - Dependencies: Update serde_with from 3.6.0 to 3.7.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.3 to 69.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
