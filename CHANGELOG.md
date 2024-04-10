@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slurm collector: Reduce logging information in info mode (#680) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update actix-web from 4.4.1 to 4.5.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update actix-web-opentelemetry 0.16.0 to 0.17.0 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update anyhow from 1.0.79 to 1.0.81 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update anyhow from 1.0.79 to 1.0.82 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update build from 1.0.3 to 1.2.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update chrono from 0.4.33 to 0.4.37 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update color-eyre from 0.6.2 to 0.6.3 ([@QuantumDancer](https://github.com/QuantumDancer))
