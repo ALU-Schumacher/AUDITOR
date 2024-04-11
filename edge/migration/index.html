@@ -84,6 +84,10 @@
                 </div>
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#docker-container"><small>- Docker container</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#development"><small>- Development</small></a>
                 </div>
                 
@@ -191,6 +195,18 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 </span><span>  -j JSON, --json JSON  Path to the time JSON file
 </span></code></pre>
 <p>This already requires a config file with YAML format.</p>
+<h2 id="docker-container">Docker container</h2>
+<p>The Auditor Docker container can now be used to run database migrations. For details, see the <a href="../#migrating-the-database">documentation</a>.</p>
+<p>If you run Auditor using the Docker container and provide an external config file, you need to change the way how you run the Docker container:</p>
+<ul>
+<li>Old<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> /auditor/config.yaml
+</span></code></pre>
+</li>
+<li>New<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> auditor /auditor/config.yaml
+</span></code></pre>
+</li>
+</ul>
+<p>I.e., you need to add <code>auditor</code> as the first argument before pointing to the configuration file.</p>
 <h2 id="development">Development</h2>
 <h3 id="update-to-sqlx-0-7-4">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.4</p>

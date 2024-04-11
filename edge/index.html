@@ -122,23 +122,21 @@
                 </div>
                 
                 
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#features"><small>- Features</small></a>
-                </div>
-                
-                
-                
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#running-auditor">Running Auditor</a>
                 </div>
                 
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#setting-up-the-postgresql-database"><small>- Setting up the PostgreSQL database</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#migrating-the-database"><small>- Migrating the database</small></a>
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#using-docker"><small>- Using Docker</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#using-docker-2"><small>- Using Docker</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -149,11 +147,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#metrics-exporter-for-prometheus"><small>- Metrics exporter for Prometheus</small></a>
                 </div>
                 
-                
-                
-                <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#compiling-auditor">Compiling Auditor</a>
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#compiling-from-source"><small>- Compiling from source</small></a>
                 </div>
+                
                 
                 
                 <div class="toc-item">
@@ -236,12 +233,53 @@ Auditor ingests accounting data provided by so-called <em>collectors</em>, store
 </p>
 <p>Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
 database and offers these records to plugins which take an action based on the records.</p>
-<h2 id="features">Features</h2>
 <h1 id="running-auditor">Running Auditor</h1>
 <p>Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
-Both methods require that the PostgreSQL database is installed migrated beforehand.</p>
+Both methods require that the PostgreSQL database is installed and migrated beforehand.</p>
+<h2 id="setting-up-the-postgresql-database">Setting up the PostgreSQL database</h2>
+<h3 id="using-docker">Using Docker</h3>
+<p>You can use Docker to start a PostgreSQL database:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>DB_USER</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>DB_PASSWORD</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;&lt;your-password-here&gt;&quot;
+</span><span>DB_NAME</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span>DB_PORT</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;5432&quot;
+</span><span>
+</span><span>docker run -d --name postgresql_auditor \
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_USER=${DB_USER}&quot; </span><span>\
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_PASSWORD=${DB_PASSWORD}&quot;</span><span>\
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_DB=${DB_NAME}&quot;</span><span>\
+</span><span>    -p </span><span style="color:#00a33f;">&quot;${DB_PORT}:5432&quot; </span><span>\
+</span><span>    postgres
+</span></code></pre>
+<h3 id="manual">Manual</h3>
+<p>Alternatively, you can install PostgreSQL directly using your system's package manager and configure the database and user manually.
+For the next steps you will need the database user and password, database name, host and port.</p>
 <h2 id="migrating-the-database">Migrating the database</h2>
-<p>Migrating the database requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
+<h3 id="using-docker-1">Using Docker</h3>
+<p>You can run the database migration using the Auditor Docker container.
+The connection details for the database can be set using the <code>AUDITOR_DATABASE__*</code> environment variables, that are explained in the <a href="https://alu-schumacher.github.io/AUDITOR//edge/#using-docker-2">next section</a>.</p>
+<p>If you run the PostgreSQL database as a Docker container, execute the following command.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run \
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__USERNAME=${DB_USER}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=host.docker.internal&quot; </span><span>\
+</span><span>  --add-host</span><span style="color:#ff5600;">=</span><span>host.docker.internal:host-gateway \
+</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span></code></pre>
+<p>If the PostgreSQL database is not running in a Docker container, run</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run \
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__USERNAME=${DB_USER}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=${DB_HOST}&quot; </span><span>\
+</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span></code></pre>
+<p>Replace the <code>DB_*</code> variables with your corresponding values.</p>
+<h3 id="manual-1">Manual</h3>
+<p>Migrating the database manually requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
 A prerequisite is a working Rust setup, which can be installed either via your distributions package manager or via the following command:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>curl --proto </span><span style="color:#00a33f;">&#39;=https&#39;</span><span> --tlsv1.2 -sSf https://sh.rustup.rs </span><span style="color:#ff5600;">| </span><span>sh
 </span></code></pre>
@@ -264,8 +302,7 @@ A prerequisite is a working Rust setup, which can be installed either via your d
 </span><span>sqlx database create
 </span><span>sqlx migrate run
 </span></code></pre>
-<p>This assumes that the PostgreSQL database is already installed.</p>
-<h2 id="using-docker">Using Docker</h2>
+<h2 id="using-docker-2">Using Docker</h2>
 <p>The easiest way to run Auditor is via a Docker container from <a href="https://hub.docker.com/repository/docker/aluschumacher/auditor">Docker Hub</a> or <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor">Github Container Registry</a>.
 Auditor requires a properly configured PostgreSQL database.
 After installing PostgreSQL, the database needs to be migrated with <code>sqlx</code>.</p>
@@ -277,6 +314,7 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_DATABASE__PORT</code></td><td>Port of PostgreSQL database (default <code>5432</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__USERNAME</code></td><td>PostgreSQL database username (default <code>postgres</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__PASSWORD</code></td><td>PostgreSQL database password (default <code>password</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__DATABASE_NAME</code></td><td>Name of the PostgreSQL database (default <code>auditor</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
 <tr><td><code>AUDITOR_LOG_LEVEL</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>)</td></tr>
 </tbody></table>
@@ -310,6 +348,12 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span></code></pre>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
+<p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
+<p>If you run Auditor using Docker, then you first need to mount the configuration file inside the container, before you can use it.
+Furthermore, you need to call the Docker container with the <code>auditor</code> command as first argument and the path to the config file (location inside the container) as second argument.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> auditor /auditor/config.yaml
+</span></code></pre>
+<p>However, you should default to using environment variables for configuration when running Auditor using Docker.</p>
 <h2 id="metrics-exporter-for-prometheus">Metrics exporter for Prometheus</h2>
 <p>Metrics for Prometheus are exposed via the <code>/metrics</code> endpoint.
 By default HTTP metrics are exported.
@@ -331,7 +375,7 @@ Database metrics export can be configured in the configuration:</p>
 Note that computing the database metrics is a potentially expensive operation.
 Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
 The frequency setting should be somewhat in accordance with the Prometheus scraping interval.</p>
-<h1 id="compiling-auditor">Compiling Auditor</h1>
+<h2 id="compiling-from-source">Compiling from source</h2>
 <p>Alternatively, Auditor can be compiled and run directly.
 Instructions for compiling Auditor from source can be found in the <a href="https://alu-schumacher.github.io/AUDITOR//edge/development/#compiling-auditor-from-source">development</a> documentation.</p>
 <h1 id="packages">Packages</h1>
