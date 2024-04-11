@@ -183,6 +183,17 @@ log_level: info
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
 
+If you have compiled Auditor from source, pass the configuration file as first argument (i.e. `cargo run <path-to-config>` or `./auditor <path-to-config>`)
+
+If you run Auditor using Docker, then you first need to mount the configuration file inside the container, before you can use it.
+Furthermore, you need to call the Docker container with the `auditor` command as first argument and the path to the config file (location inside the container) as second argument.
+
+```bash
+docker run -v <absolute-path-to-config>:/auditor/config.yaml aluschumacher/auditor:<version> auditor /auditor/config.yaml
+```
+
+However, you should default to using environment variables for configuration when running Auditor using Docker.
+
 ## Metrics exporter for Prometheus
 
 Metrics for Prometheus are exposed via the `/metrics` endpoint.
