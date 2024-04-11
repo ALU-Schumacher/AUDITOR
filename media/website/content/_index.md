@@ -20,16 +20,73 @@ It comes with a well-defined REST API which allows for the implementation of app
 Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
 database and offers these records to plugins which take an action based on the records.
 
-## Features
-
 # Running Auditor
 
 Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
-Both methods require that the PostgreSQL database is installed migrated beforehand.
+Both methods require that the PostgreSQL database is installed and migrated beforehand.
+
+## Setting up the PostgreSQL database
+
+### Using Docker
+
+You can use Docker to start a PostgreSQL database:
+
+```bash
+DB_USER="postgres"
+DB_PASSWORD="<your-password-here>"
+DB_NAME="auditor"
+DB_PORT="5432"
+
+docker run -d --name postgresql_auditor \
+    -e "POSTGRES_USER=${DB_USER}" \
+    -e "POSTGRES_PASSWORD=${DB_PASSWORD}"\
+    -e "POSTGRES_DB=${DB_NAME}"\
+    -p "${DB_PORT}:5432" \
+    postgres
+```
+
+### Manual
+
+Alternatively, you can install PostgreSQL directly using your system's package manager and configure the database and user manually.
+For the next steps you will need the database user and password, database name, host and port.
 
 ## Migrating the database
 
-Migrating the database requires cloning the Auditor repository and installing `cargo` and `sqlx`.
+### Using Docker
+
+You can run the database migration using the Auditor Docker container.
+The connection details for the database can be set using the `AUDITOR_DATABASE__*` environment variables, that are explained in the [next section](#using-docker-2).
+
+If you run the PostgreSQL database as a Docker container, execute the following command.
+
+```bash
+docker run \
+  -e "AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}" \
+  -e "AUDITOR_DATABASE__USERNAME=${DB_USER}" \
+  -e "AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}" \
+  -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
+  -e "AUDITOR_DATABASE__HOST=host.docker.internal" \
+  --add-host=host.docker.internal:host-gateway \
+  auditor:<version> migrate
+```
+
+If the PostgreSQL database is not running in a Docker container, run
+
+```bash
+docker run \
+  -e "AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}" \
+  -e "AUDITOR_DATABASE__USERNAME=${DB_USER}" \
+  -e "AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}" \
+  -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
+  -e "AUDITOR_DATABASE__HOST=${DB_HOST}" \
+  auditor:<version> migrate
+```
+
+Replace the `DB_*` variables with your corresponding values.
+
+### Manual
+
+Migrating the database manually requires cloning the Auditor repository and installing `cargo` and `sqlx`.
 A prerequisite is a working Rust setup, which can be installed either via your distributions package manager or via the following command:
 
 ```bash
@@ -64,8 +121,6 @@ sqlx database create
 sqlx migrate run
 ```
 
-This assumes that the PostgreSQL database is already installed.
-
 ## Using Docker
 
 The easiest way to run Auditor is via a Docker container from [Docker Hub](https://hub.docker.com/repository/docker/aluschumacher/auditor) or [Github Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor).
@@ -82,6 +137,7 @@ AUDITORs configuration can be adapted with environment variables.
 | `AUDITOR_DATABASE__PORT`          | Port of PostgreSQL database (default `5432`)                                                              |
 | `AUDITOR_DATABASE__USERNAME`      | PostgreSQL database username (default `postgres`)                                                         |
 | `AUDITOR_DATABASE__PASSWORD`      | PostgreSQL database password (default `password`)                                                         |
+| `AUDITOR_DATABASE__DATABASE_NAME` | Name of the PostgreSQL database (default `auditor`)                                                       |
 | `AUDITOR_DATABASE__REQUIRE_SSL`   | Whether or not to use SSL (default `true`)                                                                |
 | `AUDITOR_LOG_LEVEL`               | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`) |
 
@@ -153,7 +209,7 @@ Note that computing the database metrics is a potentially expensive operation.
 Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
 The frequency setting should be somewhat in accordance with the Prometheus scraping interval.
 
-# Compiling Auditor
+## Compiling from source
 
 Alternatively, Auditor can be compiled and run directly.
 Instructions for compiling Auditor from source can be found in the [development](development/#compiling-auditor-from-source) documentation.
