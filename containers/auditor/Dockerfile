@@ -10,6 +10,8 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef as builder
 COPY --from=planner /auditor/recipe.json recipe.json
+# Install sqlx-cli
+RUN cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
 RUN cargo chef cook --release --recipe-path recipe.json
 
@@ -30,8 +32,11 @@ RUN apt-get update -y \
 && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /auditor/target/release/auditor auditor
+COPY --from=builder /usr/local/cargo/bin/sqlx sqlx
+COPY --from=builder /auditor/migrations migrations
+COPY --from=builder /auditor/containers/auditor/entrypoint.sh entrypoint.sh
 
 COPY auditor/configuration configuration
 
 ENV AUDITOR_ENVIRONMENT production
-ENTRYPOINT ["./auditor"]
+ENTRYPOINT ["./entrypoint.sh"]

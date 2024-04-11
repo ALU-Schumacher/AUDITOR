@@ -25,6 +25,23 @@ options:
 
 This already requires a config file with YAML format.
 
+## Docker container
+
+The Auditor Docker container can now be used to run database migrations. For details, see the [documentation](../#migrating-the-database).
+
+If you run Auditor using the Docker container and provide an external config file, you need to change the way how you run the Docker container:
+
+- Old
+  ```bash
+  docker run -v <absolute-path-to-config>:/auditor/config.yaml aluschumacher/auditor:<version> /auditor/config.yaml
+  ```
+- New
+  ```bash
+  docker run -v <absolute-path-to-config>:/auditor/config.yaml aluschumacher/auditor:<version> auditor /auditor/config.yaml
+  ```
+
+I.e., you need to add `auditor` as the first argument before pointing to the configuration file.
+
 ## Development
 
 ### Update to [sqlx 0.7.4](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
