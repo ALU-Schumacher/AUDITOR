@@ -2418,7 +2418,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c"
 dependencies = [
  "rand_core 0.5.1",
->>>>>>> 9f3d55c (test: Add benchmark to measure db performance)
 ]
 
 [[package]]
@@ -3651,7 +3650,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> 9f3d55c (test: Add benchmark to measure db performance)
 name = "want"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

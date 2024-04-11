@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2024-0332]: Update h2 from 0.4.2 to 0.4.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Added
+- AUDITOR: Add benchmark to measure db performance (#736) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - API: The health check (`GET /health_check`) now fails with an `500 INTERNAL SERVER ERROR` if no connection can be made to the database (#622) ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Add workflow for testing the pyaudtitor source distribution ([@dirksammel](https://github.com/dirksammel))
 - CI: Add workflow for building the Rust documentation ([@dirksammel](https://github.com/dirksammel))
