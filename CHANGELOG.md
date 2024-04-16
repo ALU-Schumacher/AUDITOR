@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pytest-cov from 4.1.0 to 5.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update regex from 1.10.3 to 1.10.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update reqwest from 0.11.24 to 0.12.3 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update serde from 1.0.196 to 1.0.197 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update serde from 1.0.196 to 1.0.198 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.115 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer)
