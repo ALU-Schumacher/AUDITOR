@@ -181,7 +181,7 @@ pub struct RecordUpdate {
 
 /// A `Record` represents a single accountable unit.
 ///
-/// Records can be sent to and received from Auditor with the [`AuditorClient`](`crate::client::AuditorClient`).
+/// Records can be sent to and received from Auditor with the [`AuditorClient`](`/auditor_client::AuditorClient`).
 /// When initially inserting a record in Auditor, the record is represented as [`RecordAdd`].
 /// The `stop_time` can be updated at a later time by pushing a [`RecordUpdate`] to Auditor.
 ///
@@ -192,7 +192,7 @@ pub struct RecordUpdate {
 /// Retrieve all records from Auditor:
 ///
 /// ```no_run
-/// # use auditor::client::{AuditorClientBuilder, ClientError};
+/// # use auditor_client::{AuditorClientBuilder, ClientError};
 /// #
 /// # fn main() -> Result<(), ClientError> {
 /// // Create client by using the builder
@@ -556,6 +556,42 @@ impl TryFrom<RecordTest> for RecordUpdate {
             start_time: value.start_time,
             stop_time: value.stop_time.unwrap(),
         })
+    }
+}
+
+impl From<RecordAdd> for Record {
+    fn from(r: RecordAdd) -> Self {
+        let runtime = r.stop_time.map(|t| (t - r.start_time).num_seconds());
+        Self {
+            record_id: r.record_id.to_string(),
+            meta: r.meta.map(Into::<Meta>::into),
+            components: if r.components.is_empty() {
+                None
+            } else {
+                Some(r.components)
+            },
+            start_time: Some(r.start_time),
+            stop_time: r.stop_time,
+            runtime,
+        }
+    }
+}
+
+impl From<RecordUpdate> for Record {
+    fn from(r: RecordUpdate) -> Self {
+        let runtime = r.start_time.map(|t| (r.stop_time - t).num_seconds());
+        Self {
+            record_id: r.record_id.to_string(),
+            meta: r.meta.map(Into::<Meta>::into),
+            components: if r.components.is_empty() {
+                None
+            } else {
+                Some(r.components)
+            },
+            start_time: r.start_time,
+            stop_time: Some(r.stop_time),
+            runtime,
+        }
     }
 }
 

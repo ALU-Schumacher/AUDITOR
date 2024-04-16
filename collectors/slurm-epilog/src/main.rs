@@ -6,10 +6,10 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::client::AuditorClientBuilder;
 use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
+use auditor_client::AuditorClientBuilder;
 use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use regex::Regex;
 use std::collections::HashMap;

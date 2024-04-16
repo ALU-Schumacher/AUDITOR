@@ -1,0 +1,41 @@
+[package]
+name = "auditor-client"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+auditor = { path = "../auditor", version = "0.4.0", default-features = false }
+chrono = { version = "0.4.31", default-features = false, features = ["serde"] }
+reqwest = { version = "0.11.22", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+urlencoding = "2.1.3"
+tracing = { version = "0.1", features = ["log"] }
+thiserror = "1"
+tokio = { version = "1", features = ["time"] }
+#color-eyre = "0.6.2"
+serde = { version = "1", features = ["derive"] }
+serde_qs = { version = "0.12.0", features = ["actix4"] }
+anyhow = "1.0.0"
+bincode = "1.3.3"
+
+[dependencies.sqlx]
+version = "0.7.2"
+default-features = false
+features = [
+    "runtime-tokio-rustls",
+    "macros",
+    "sqlite",
+    "uuid",
+    "chrono",
+    "migrate"
+]
+
+[dev-dependencies]
+#auditor = { path = "../auditor", version = "0.4.0" }
+claim = { package = "claims", version = "0.7" }
+wiremock = "0.6"
+fake = { version = "2.9", features = ["chrono"] }
+once_cell = "1"
+uuid = { version = "1.8", features = ["v4"] }
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+itertools = "0.12.1"

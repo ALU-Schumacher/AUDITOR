@@ -7,10 +7,8 @@
 
 use std::time::Duration;
 
-use auditor::{
-    client::{AuditorClient, ClientError},
-    domain::RecordAdd,
-};
+use auditor::domain::RecordAdd;
+use auditor_client::{AuditorClient, ClientError};
 use color_eyre::eyre::{Result, WrapErr};
 use tokio::sync::{mpsc, oneshot};
 

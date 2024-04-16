@@ -82,6 +82,7 @@ features = [
 ]
 
 [dev-dependencies]
+auditor-client = { path = "../auditor-client" }
 once_cell = "1"
 # claim = "0.5"
 claim = { package = "claims", version = "0.7" }
@@ -93,8 +94,7 @@ criterion = {version = "0.5", features = ["html_reports", "async_tokio"]}
 criterion-macro = "0.3"
 
 [features]
-default = ["client", "server"]
-client = []
+default = ["server"]
 server = []
 
 [[bench]]

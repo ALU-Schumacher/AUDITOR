@@ -16,7 +16,7 @@ use pyo3::types::PyDateTime;
 #[pyclass]
 #[derive(Clone)]
 pub struct AuditorClientBlocking {
-    pub(crate) inner: auditor::client::AuditorClientBlocking,
+    pub(crate) inner: auditor_client::AuditorClientBlocking,
 }
 
 #[pymethods]
@@ -64,8 +64,8 @@ impl AuditorClientBlocking {
     ///
     fn get_started_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
         let since: DateTime<Utc> = timestamp.extract()?;
-        let query_string = auditor::client::QueryBuilder::new()
-            .with_start_time(auditor::client::Operator::default().gte(since.into()))
+        let query_string = auditor_client::QueryBuilder::new()
+            .with_start_time(auditor_client::Operator::default().gte(since.into()))
             .build();
         Ok(self_
             .inner
@@ -101,8 +101,8 @@ impl AuditorClientBlocking {
     ///
     fn get_stopped_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
         let since: DateTime<Utc> = timestamp.extract()?;
-        let query_string = auditor::client::QueryBuilder::new()
-            .with_stop_time(auditor::client::Operator::default().gte(since.into()))
+        let query_string = auditor_client::QueryBuilder::new()
+            .with_stop_time(auditor_client::Operator::default().gte(since.into()))
             .build();
         Ok(self_
             .inner

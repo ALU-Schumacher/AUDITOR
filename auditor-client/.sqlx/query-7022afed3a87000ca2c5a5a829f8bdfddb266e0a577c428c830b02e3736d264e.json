@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT max(rowid) as id FROM updates",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Int64"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "7022afed3a87000ca2c5a5a829f8bdfddb266e0a577c428c830b02e3736d264e"
+}

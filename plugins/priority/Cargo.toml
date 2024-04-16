@@ -31,6 +31,7 @@ strip = true
 
 [dependencies]
 auditor = { path = "../../auditor", version = "0.5.0" }
+auditor-client = { path = "../../auditor-client" }
 actix-web = "4.5.1"
 config = "0.13"
 tracing = { version = "0.1", features = ["log"] }

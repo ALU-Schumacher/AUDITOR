@@ -1,6 +1,6 @@
 use crate::helpers::spawn_app;
-use auditor::client::{ComponentQuery, MetaOperator, MetaQuery, Operator, QueryBuilder, SortBy};
 use auditor::domain::{Record, RecordTest};
+use auditor_client::{ComponentQuery, MetaOperator, MetaQuery, Operator, QueryBuilder, SortBy};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 use std::collections::HashMap;
