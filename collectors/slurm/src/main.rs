@@ -11,10 +11,8 @@ mod database;
 mod sacctcaller;
 mod shutdown;
 
-use auditor::{
-    client::AuditorClientBuilder,
-    telemetry::{get_subscriber, init_subscriber},
-};
+use auditor::telemetry::{get_subscriber, init_subscriber};
+use auditor_client::AuditorClientBuilder;
 use color_eyre::eyre::{eyre, Result};
 use once_cell::sync::Lazy;
 use tokio::{

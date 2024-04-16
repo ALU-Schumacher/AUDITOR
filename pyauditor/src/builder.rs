@@ -36,7 +36,7 @@ use pyo3::prelude::*;
 #[pyclass]
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
-    inner: auditor::client::AuditorClientBuilder,
+    inner: auditor_client::AuditorClientBuilder,
 }
 
 impl Default for AuditorClientBuilder {
@@ -51,7 +51,7 @@ impl AuditorClientBuilder {
     #[new]
     pub fn new() -> Self {
         AuditorClientBuilder {
-            inner: auditor::client::AuditorClientBuilder::new(),
+            inner: auditor_client::AuditorClientBuilder::new(),
         }
     }
 

@@ -1,6 +1,6 @@
 use crate::helpers::spawn_app;
-use auditor::client::{AuditorClientBuilder, Operator, QueryBuilder};
 use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
+use auditor_client::{AuditorClientBuilder, Operator, QueryBuilder};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 

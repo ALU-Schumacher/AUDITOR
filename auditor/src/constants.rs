@@ -6,6 +6,6 @@
 // copied, modified, or distributed except according to those terms.
 
 pub const FORBIDDEN_CHARACTERS: [char; 9] = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
-pub const ERR_INVALID_TIMEOUT: &str = "INVALID_TIMEOUT";
+pub const ERR_INVALID_TIME_INTERVAL: &str = "INVALID_TIME_INTERVAL";
 pub const ERR_RECORD_EXISTS: &str = "RECORD_EXISTS";
 pub const ERR_UNEXPECTED_ERROR: &str = "UNEXPECTED_ERROR";

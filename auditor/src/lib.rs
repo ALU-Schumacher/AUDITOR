@@ -57,12 +57,12 @@
 //!
 //! ## Connecting to Auditor
 //!
-//! The [`AuditorClientBuilder`](`crate::client::AuditorClientBuilder`) is used to build an [`AuditorClient`](`crate::client::AuditorClient`) object
+//! The [`AuditorClientBuilder`](`/auditor_client::AuditorClientBuilder`) is used to build an [`AuditorClient`](`/auditor_client::AuditorClient`) object
 //! that can be used for interacting with Auditor.
 //!
 //! ```
-//! use auditor::client::AuditorClientBuilder;
-//! # use auditor::client::ClientError;
+//! use auditor_client::AuditorClientBuilder;
+//! # use auditor_client::ClientError;
 //!
 //! # fn main() -> Result<(), ClientError> {
 //! let client = AuditorClientBuilder::new()
@@ -79,7 +79,7 @@
 //! the record can be pushed to Auditor with
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! # use auditor::domain::RecordAdd;
 //! # use chrono::{DateTime, TimeZone, Utc};
 //! # use std::collections::HashMap;
@@ -102,7 +102,7 @@
 //!  the records can be pushed to Auditor with_ymd_and_hms
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! # use auditor::domain::RecordAdd;
 //! # use chrono::{DateTime, TimeZone, Utc};
 //! # use std::collections::HashMap;
@@ -129,7 +129,7 @@
 //! Fields other than the stop time cannot be updated.
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! use auditor::domain::RecordUpdate;
 //! use chrono::{DateTime, TimeZone, Utc};
 //! # use std::collections::HashMap;
@@ -153,7 +153,7 @@
 //! The complete set of records can be retrieved from Auditor with the `get()` method:
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
 //! # let client = AuditorClientBuilder::new()
@@ -174,7 +174,7 @@
 //! that have been started or stopped since a given timestamp:
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! use chrono::{DateTime, TimeZone, Utc};
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
@@ -236,8 +236,8 @@
 //!| `sort_by`    | Sort query results (SortBy(<column_name>))                             | `asc`, `desc`                          | `sort_by[desc]=<column_name>`              |
 //!| `limit`      | limit query records (number)                                           |                                        | `limit=5000`                               |
 //!
-//! Meta field can be used to query records by specifying the meta key and [`MetaOperator`](`crate::client::MetaOperator`)  must be used
-//! to specify meta values. The [`MetaOperator`](`crate::client::MetaOperator`) must be used to specify whether the value is
+//! Meta field can be used to query records by specifying the meta key and [`MetaOperator`](`/auditor_client::MetaOperator`)  must be used
+//! to specify meta values. The [`MetaOperator`](`/auditor_client::MetaOperator`) must be used to specify whether the value is
 //! contained or does not contained for the specific Metakey.
 //!
 //! Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
@@ -259,10 +259,10 @@
 //!
 //! ### Example 1:
 //!
-//! Constructs an empty [`QueryBuilder`](`crate::client::QueryBuilder`) to query all records
+//! Constructs an empty [`QueryBuilder`](`/auditor_client::QueryBuilder`) to query all records
 //!
 //! ```no_run
-//! # use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError};
+//! # use auditor_client::{QueryBuilder, AuditorClientBuilder, ClientError};
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
 //! # let client = AuditorClientBuilder::new()
@@ -288,7 +288,7 @@
 //!
 //!
 //! ```no_run
-//! # use auditor::client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
+//! # use auditor_client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
 //! # use chrono::{Utc, TimeZone};
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
@@ -323,7 +323,7 @@
 //! specifying ranges for each.
 //!
 //! ```no_run
-//! # use auditor::client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
+//! # use auditor_client::{QueryBuilder, Operator, AuditorClientBuilder, ClientError};
 //! use chrono::{Utc, TimeZone};
 //!
 //! # #[tokio::main]
@@ -372,7 +372,7 @@
 //! and a start time operator specifying a maximum datetime.
 //!
 //! ```no_run
-//! # use auditor::client::{QueryBuilder, Operator, MetaQuery, MetaOperator, AuditorClientBuilder,
+//! # use auditor_client::{QueryBuilder, Operator, MetaQuery, MetaOperator, AuditorClientBuilder,
 //! ClientError};
 //! use chrono::{Utc, TimeZone};
 //!
@@ -410,7 +410,7 @@
 //! Constructs a QueryBuilder with a component query specifying an equality condition for the "CPU" field.
 //!
 //! ```no_run
-//! use auditor::client::{QueryBuilder, Operator, ComponentQuery, AuditorClientBuilder, ClientError};
+//! use auditor_client::{QueryBuilder, Operator, ComponentQuery, AuditorClientBuilder, ClientError};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
@@ -443,7 +443,7 @@
 //! Constructs a QueryBuilder which sorts the record in descending order by stop_time and limits the query results by 500 records
 //!
 //! ```no_run
-//! use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError, SortBy};
+//! use auditor_client::{QueryBuilder, AuditorClientBuilder, ClientError, SortBy};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
@@ -472,7 +472,7 @@
 //! Constructs a QueryBuilder to retrieve one record using record id
 //!
 //! ```no_run
-//! use auditor::client::{QueryBuilder, AuditorClientBuilder, ClientError};
+//! use auditor_client::{QueryBuilder, AuditorClientBuilder, ClientError};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
@@ -503,7 +503,7 @@
 //! The health of Auditor can be checked with
 //!
 //! ```no_run
-//! # use auditor::client::{AuditorClientBuilder, ClientError};
+//! # use auditor_client::{AuditorClientBuilder, ClientError};
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), ClientError> {
 //! # let client = AuditorClientBuilder::new()
@@ -522,8 +522,6 @@
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-#[cfg(feature = "client")]
-pub mod client;
 #[cfg(feature = "server")]
 pub mod configuration;
 pub mod constants;

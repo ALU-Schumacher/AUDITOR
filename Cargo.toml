@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "auditor",
+    "auditor-client",
     "pyauditor",
     "collectors/slurm",
     "collectors/slurm-epilog",

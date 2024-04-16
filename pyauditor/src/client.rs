@@ -16,21 +16,21 @@ use std::collections::HashMap;
 #[pyclass]
 #[derive(Debug, Clone)]
 pub struct QueryBuilder {
-    pub(crate) inner: auditor::client::QueryBuilder,
+    pub(crate) inner: auditor_client::QueryBuilder,
 }
 
 /// The `Operator` is used to specify the operators on the query parameters
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone)]
 pub struct Operator {
-    pub(crate) inner: auditor::client::Operator,
+    pub(crate) inner: auditor_client::Operator,
 }
 
 /// Value is used to specify the type of the value which is used in the query
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Value {
-    pub(crate) inner: auditor::client::Value,
+    pub(crate) inner: auditor_client::Value,
 }
 
 /// Creates `Value` object which is passed to set the operator value
@@ -61,7 +61,7 @@ impl Value {
     fn set_datetime(datetime: &PyDateTime) -> Result<Self, Error> {
         let date_time: DateTime<Utc> = datetime.extract()?;
         Ok(Value {
-            inner: auditor::client::Value::Datetime(auditor::client::DateTimeUtcWrapper(date_time)),
+            inner: auditor_client::Value::Datetime(auditor_client::DateTimeUtcWrapper(date_time)),
         })
     }
 
@@ -79,7 +79,7 @@ impl Value {
     #[staticmethod]
     fn set_runtime(runtime: u64) -> Result<Self, Error> {
         Ok(Value {
-            inner: auditor::client::Value::Runtime(runtime),
+            inner: auditor_client::Value::Runtime(runtime),
         })
     }
 
@@ -98,7 +98,7 @@ impl Value {
     #[staticmethod]
     fn set_count(count: u8) -> Result<Self, Error> {
         Ok(Value {
-            inner: auditor::client::Value::Count(count),
+            inner: auditor_client::Value::Count(count),
         })
     }
 }
@@ -109,7 +109,7 @@ impl Operator {
     #[new]
     fn new() -> Self {
         Operator {
-            inner: auditor::client::Operator {
+            inner: auditor_client::Operator {
                 gt: None,
                 gte: None,
                 lt: None,
@@ -208,7 +208,7 @@ impl Operator {
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct MetaQuery {
-    pub(crate) inner: auditor::client::MetaQuery,
+    pub(crate) inner: auditor_client::MetaQuery,
 }
 
 #[pymethods]
@@ -217,7 +217,7 @@ impl MetaQuery {
     #[new]
     fn new() -> Self {
         MetaQuery {
-            inner: auditor::client::MetaQuery {
+            inner: auditor_client::MetaQuery {
                 meta_query: HashMap::new(),
             },
         }
@@ -254,7 +254,7 @@ impl MetaQuery {
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct MetaOperator {
-    pub(crate) inner: auditor::client::MetaOperator,
+    pub(crate) inner: auditor_client::MetaOperator,
 }
 
 #[pymethods]
@@ -263,7 +263,7 @@ impl MetaOperator {
     #[new]
     fn new() -> Self {
         MetaOperator {
-            inner: auditor::client::MetaOperator { c: None, dnc: None },
+            inner: auditor_client::MetaOperator { c: None, dnc: None },
         }
     }
 
@@ -312,7 +312,7 @@ impl MetaOperator {
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct ComponentQuery {
-    pub(crate) inner: auditor::client::ComponentQuery,
+    pub(crate) inner: auditor_client::ComponentQuery,
 }
 
 #[pymethods]
@@ -321,7 +321,7 @@ impl ComponentQuery {
     #[new]
     fn new() -> Self {
         ComponentQuery {
-            inner: auditor::client::ComponentQuery {
+            inner: auditor_client::ComponentQuery {
                 component_query: HashMap::new(),
             },
         }
@@ -359,7 +359,7 @@ impl ComponentQuery {
 #[pyclass]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct SortBy {
-    pub(crate) inner: auditor::client::SortBy,
+    pub(crate) inner: auditor_client::SortBy,
 }
 
 #[pymethods]
@@ -368,7 +368,7 @@ impl SortBy {
     #[new]
     fn new() -> Self {
         Self {
-            inner: auditor::client::SortBy {
+            inner: auditor_client::SortBy {
                 asc: None,
                 desc: None,
             },
@@ -412,8 +412,8 @@ impl QueryBuilder {
     #[new]
     fn new() -> Result<Self, Error> {
         Ok(QueryBuilder {
-            inner: auditor::client::QueryBuilder {
-                query_params: auditor::client::QueryParameters {
+            inner: auditor_client::QueryBuilder {
+                query_params: auditor_client::QueryParameters {
                     record_id: None,
                     start_time: None,
                     stop_time: None,
@@ -599,7 +599,7 @@ impl QueryBuilder {
 #[pyclass]
 #[derive(Clone)]
 pub struct AuditorClient {
-    pub(crate) inner: auditor::client::AuditorClient,
+    pub(crate) inner: auditor_client::AuditorClient,
 }
 
 #[pymethods]
@@ -662,8 +662,8 @@ impl AuditorClient {
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
-        let query_string = auditor::client::QueryBuilder::new()
-            .with_start_time(auditor::client::Operator::default().gte(since.into()))
+        let query_string = auditor_client::QueryBuilder::new()
+            .with_start_time(auditor_client::Operator::default().gte(since.into()))
             .build();
 
         pyo3_asyncio::tokio::future_into_py(py, async move {
@@ -710,8 +710,8 @@ impl AuditorClient {
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
-        let query_string = auditor::client::QueryBuilder::new()
-            .with_stop_time(auditor::client::Operator::default().gte(since.into()))
+        let query_string = auditor_client::QueryBuilder::new()
+            .with_stop_time(auditor_client::Operator::default().gte(since.into()))
             .build();
         pyo3_asyncio::tokio::future_into_py(py, async move {
             Ok(inner

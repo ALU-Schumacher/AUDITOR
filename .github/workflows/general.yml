@@ -60,6 +60,9 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
+      - name: Migrate auditor client sqlite database
+        run: ./scripts/init_client_sqlite.sh
+
       - name: Migrate slurm collector sqlite database
         run: |
           ./scripts/init_slurm_collector_sqlite.sh
@@ -132,6 +135,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: Migrate auditor client sqlite database
+        run: ./scripts/init_client_sqlite.sh
 
       - name: Migrate slurm collector sqlite database
         run: ./scripts/init_slurm_collector_sqlite.sh
@@ -220,6 +226,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: Migrate auditor client sqlite database
+        run: ./scripts/init_client_sqlite.sh
 
       - name: Build auditor
         run: cargo build --bin auditor

@@ -1,4 +1,4 @@
-// Copyright 2021-2022 AUDITOR developers
+// Copyright 2021-2024 AUDITOR developers
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -7,14 +7,22 @@
 
 //! This module provides a client to interact with an Auditor instance.
 
-use crate::{
-    constants::{ERR_INVALID_TIMEOUT, ERR_RECORD_EXISTS},
+use auditor::{
+    constants::{ERR_INVALID_TIME_INTERVAL, ERR_RECORD_EXISTS},
     domain::{Record, RecordAdd, RecordUpdate},
 };
+
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
+
 use chrono::{DateTime, Duration, Utc};
 use serde::Serialize;
 use std::collections::HashMap;
+use tokio::sync::oneshot;
 use urlencoding::encode;
+
+mod database;
+use database::Database;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
@@ -22,8 +30,10 @@ static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_P
 #[non_exhaustive]
 pub enum ClientError {
     RecordExists,
-    InvalidTimeout,
+    InvalidTimeInterval,
     ReqwestError(reqwest::Error),
+    DatabaseError(sqlx::Error),
+    Other(String),
 }
 
 impl std::fmt::Display for ClientError {
@@ -33,8 +43,10 @@ impl std::fmt::Display for ClientError {
             "{}",
             match self {
                 ClientError::RecordExists => ERR_RECORD_EXISTS.to_string(),
-                ClientError::InvalidTimeout => ERR_INVALID_TIMEOUT.to_string(),
+                ClientError::InvalidTimeInterval => ERR_INVALID_TIME_INTERVAL.to_string(),
                 ClientError::ReqwestError(e) => format!("Reqwest Error: {e}"),
+                ClientError::DatabaseError(e) => format!("Database Error: {e}"),
+                ClientError::Other(s) => format!("Other client error: {s}"),
             }
         )
     }
@@ -48,19 +60,31 @@ impl From<reqwest::Error> for ClientError {
 
 impl From<chrono::OutOfRangeError> for ClientError {
     fn from(_: chrono::OutOfRangeError) -> Self {
-        ClientError::InvalidTimeout
+        ClientError::InvalidTimeInterval
+    }
+}
+
+impl From<sqlx::Error> for ClientError {
+    fn from(error: sqlx::Error) -> Self {
+        ClientError::DatabaseError(error)
+    }
+}
+
+impl From<anyhow::Error> for ClientError {
+    fn from(error: anyhow::Error) -> Self {
+        ClientError::Other(error.to_string())
     }
 }
 
 /// The `AuditorClientBuilder` is used to build an instance of
-/// either [`AuditorClient`] or [`AuditorClientBlocking`].
+/// [`AuditorClient`], [`AuditorClientBlocking`] or [`QueuedAuditorClient`].
 ///
 /// # Examples
 ///
 /// Using the `address` and `port` of the Auditor instance:
 ///
 /// ```
-/// # use auditor::client::{AuditorClientBuilder, ClientError};
+/// # use auditor_client::{AuditorClientBuilder, ClientError};
 /// #
 /// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
@@ -74,7 +98,7 @@ impl From<chrono::OutOfRangeError> for ClientError {
 /// Using an connection string:
 ///
 /// ```
-/// # use auditor::client::{AuditorClientBuilder, ClientError};
+/// # use auditor_client::{AuditorClientBuilder, ClientError};
 /// #
 /// # fn main() -> Result<(), ClientError> {
 /// let client = AuditorClientBuilder::new()
@@ -86,7 +110,9 @@ impl From<chrono::OutOfRangeError> for ClientError {
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
     address: String,
+    database_path: PathBuf,
     timeout: Duration,
+    send_interval: Duration,
 }
 
 impl AuditorClientBuilder {
@@ -94,7 +120,9 @@ impl AuditorClientBuilder {
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
             address: "http://127.0.0.1:8080".into(),
+            database_path: PathBuf::from("sqlite::memory:"),
             timeout: Duration::try_seconds(30).expect("This should never fail"),
+            send_interval: Duration::try_seconds(60).expect("This should never fail"),
         }
     }
 
@@ -133,11 +161,34 @@ impl AuditorClientBuilder {
         self
     }
 
+    /// Set an interval in seconds for periodic updates to AUDITOR.
+    /// This setting is only relevant to the `QueuedAuditorClient`.
+    ///
+    /// # Arguments
+    ///
+    /// * `interval` - Interval in seconds.
+    pub fn send_interval(mut self, interval: i64) -> Self {
+        self.send_interval = Duration::try_seconds(interval)
+            .unwrap_or_else(|| panic!("Could not convert {} to duration", interval));
+        self
+    }
+
+    /// Set the file path for the persistent storage sqlite db.
+    /// This setting is only relevant to the `QueuedAuditorClient`.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - Path to the database (SQLite) file
+    pub fn database_path<P: AsRef<Path>>(mut self, path: P) -> Self {
+        self.database_path = path.as_ref().to_path_buf();
+        self
+    }
+
     /// Build an [`AuditorClient`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
-    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     pub fn build(self) -> Result<AuditorClient, ClientError> {
         Ok(AuditorClient {
@@ -149,11 +200,29 @@ impl AuditorClientBuilder {
         })
     }
 
+    /// Build a [`QueuedAuditorClient`] from `AuditorClientBuilder`.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration or send interval is less than zero.
+    /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
+    /// * [`ClientError::DatabaseError`] - If there was an error while opening or creating the
+    /// database
+    pub async fn build_queued(self) -> Result<QueuedAuditorClient, ClientError> {
+        let interval = self.send_interval;
+        let client = QueuedAuditorClient::new(
+            Database::new(self.database_path.to_str().unwrap()).await?,
+            self.build()?,
+            interval.to_std()?,
+        );
+        Ok(client)
+    }
+
     /// Build an [`AuditorClientBlocking`] from `AuditorClientBuilder`.
     ///
     /// # Errors
     ///
-    /// * [`ClientError::InvalidTimeout`] - If the timeout duration is less than zero.
+    /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     ///
     /// # Panics
@@ -327,7 +396,7 @@ impl From<u8> for Value {
 /// # Examples
 ///
 /// ```
-/// use auditor::client::{QueryBuilder, Operator, MetaQuery, ComponentQuery, SortBy};
+/// use auditor_client::{QueryBuilder, Operator, MetaQuery, ComponentQuery, SortBy};
 ///
 /// // Create a new QueryBuilder instance.
 /// let query_builder = QueryBuilder::new()
@@ -830,6 +899,229 @@ impl AuditorClient {
     }
 }
 
+/// The `QueuedAuditorClient` handles the interaction with the Auditor instances, providing the
+/// same interface as [`AuditorClient`].
+///
+/// It is constructed using [`AuditorClientBuilder::build_queued`].
+///
+/// When records are sent to Auditor, this client will transparently buffer them in a
+/// (persistent) local database.
+/// A background task will then periodically send records from the local database to
+/// Auditor, deleting them from the local database only after they have been successfully
+/// send to Auditor.
+///
+/// # Notes
+/// There are some quirks that need to be observed when using this client:
+/// - Since sending and updating records is delayed, there is no guarantee that a record
+///   can be retrieved from Auditor right after it has been "sent" by this client.
+/// - The background task of this client should be stopped by invoking [`QueuedAuditorClient::stop`]
+///   before the client is dropped.
+/// - Since methods for sending records like `QueuedAuditorClient::add` only push the records to
+///   the local queue, they can only ever raise database errors.
+///   Errors like `ClientError::ReqwestError` or `ClientError::RecordExists` can only be triggered
+///   by the background send task and will be logged.
+///
+/// # Examples
+/// ```
+/// # use auditor_client::{AuditorClientBuilder, ClientError};
+/// # use auditor::domain::{RecordAdd, RecordTest};
+/// #
+/// # async fn foo() -> Result<(), ClientError> {
+/// # //let record = RecordAdd::try_from(Faker.fake::<RecordTest>()).unwrap()
+/// # let record = RecordAdd::try_from(RecordTest::default()).unwrap();
+/// let mut client = AuditorClientBuilder::new()
+///     .address(&"localhost", 8000)
+///     .database_path("sqlite://:memory:")
+///     .send_interval(60)
+///     .build_queued()
+///     .await?;
+/// client.add(&record).await?;
+/// client.stop().await?;
+/// # Ok(())
+/// # }
+/// ```
+#[derive(Clone)]
+pub struct QueuedAuditorClient {
+    database: Database,
+    client: AuditorClient,
+    shutdown_tx: Arc<Mutex<Option<oneshot::Sender<()>>>>,
+    task_handle: Arc<Mutex<Option<tokio::task::JoinHandle<()>>>>,
+}
+
+impl QueuedAuditorClient {
+    /// Constructs the `QueuedAuditorClient` and starts the background send task
+    fn new(database: Database, client: AuditorClient, interval: std::time::Duration) -> Self {
+        let mut interval = tokio::time::interval(interval);
+        let (shutdown_tx, mut shutdown_rx) = oneshot::channel();
+        let _database = database.clone();
+        let _client = client.clone();
+        // Note: Since the first tick on interval::tick is immediate,
+        // a send is triggered immediately.
+        let task_handle = tokio::spawn(async move {
+            loop {
+                tokio::select! {
+                    _ = interval.tick() => {},
+                    result = &mut shutdown_rx => {
+                        if let Err(e) = result { tracing::error!("Error: {:?}", e) }
+                        break;
+                    },
+                }
+                if let Err(e) = Self::process_queue(&_database, &_client).await {
+                    tracing::error!("Processing queue failed with error: {e}");
+                }
+            }
+        });
+        Self {
+            database,
+            client,
+            shutdown_tx: Arc::new(Mutex::new(Some(shutdown_tx))),
+            task_handle: Arc::new(Mutex::new(Some(task_handle))),
+        }
+    }
+
+    #[tracing::instrument(name = "Process client send queue", skip(database, client))]
+    async fn process_queue(database: &Database, client: &AuditorClient) -> Result<(), ClientError> {
+        // Most recent update id
+        let update_rowid = database.get_last_update_rowid().await?;
+
+        // Send all inserts
+        for (rowid, r) in database.get_inserts().await? {
+            match client.add(&r).await {
+                Ok(_) => {
+                    tracing::info!("Successfully sent {} records", r.record_id);
+                    database.delete_insert(rowid).await?;
+                }
+                Err(ClientError::RecordExists) => {
+                    // TODO: make sure auditor actually inserts all new records
+                    tracing::warn!(
+                        "Failed sending record to Auditor instance. Record already exists.",
+                    );
+                    database.delete_insert(rowid).await?;
+                }
+                Err(e) => return Err(e),
+            };
+        }
+
+        // Send updates
+        if let Some(maxid) = update_rowid {
+            let updates = database.get_updates().await?;
+            for (rowid, u) in updates {
+                if rowid > maxid {
+                    continue;
+                };
+                match client.update(&u).await {
+                    Ok(_) => {
+                        tracing::info!("Successfully updated record {}", u.record_id);
+                        database.delete_update(rowid).await?;
+                    }
+                    Err(e) => return Err(e),
+                }
+            }
+        };
+        Ok(())
+    }
+
+    /// Stops the background sync task
+    #[tracing::instrument(name = "Stop QueuedAuditorClient task", skip(self))]
+    pub async fn stop(&mut self) -> anyhow::Result<()> {
+        // We cannot hold a MutexGuard across an await and Tokio cannot reason about
+        // Drops, so use scopes and Options
+        let handle;
+        {
+            let mut handle_opt = self.task_handle.lock().unwrap();
+            if handle_opt.is_none() {
+                anyhow::bail!("Send task is already shut down");
+            }
+            let shutdown_tx = self.shutdown_tx.lock().unwrap().take().unwrap();
+            if shutdown_tx.send(()).is_err() {
+                anyhow::bail!("Error while sending shutdown.");
+            }
+            handle = Some(handle_opt.take().unwrap());
+        }
+        if let Err(e) = handle.unwrap().await {
+            anyhow::bail!("Error while waiting on sender task to finish: {:?}", e);
+        }
+        Ok(())
+    }
+
+    /// Same as [`AuditorClient::health_check`]
+    pub async fn health_check(&self) -> bool {
+        self.client.health_check().await
+    }
+
+    /// Push a record to the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::DatabaseError`] - If there was an error inserting into the database
+    #[tracing::instrument(
+        name = "Pushing record to client send queue.",
+        skip(self, record),
+        fields(record_id = %record.record_id)
+    )]
+    pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
+        self.database.insert(record).await?;
+        Ok(())
+    }
+
+    /// Push multiple records to the Auditor instance as a vec.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::DatabaseError`] - If there was an error inserting into the database
+    #[tracing::instrument(
+        name = "Pushing multiple records to client send queue.",
+        skip(self, records)
+    )]
+    pub async fn bulk_insert(&self, records: &[RecordAdd]) -> Result<(), ClientError> {
+        self.database.insert_many(records).await?;
+        Ok(())
+    }
+
+    /// Update an existing record in the Auditor instance.
+    ///
+    /// # Errors
+    ///
+    /// * [`ClientError::DatabaseError`] - If there was an error inserting into the database
+    #[tracing::instrument(
+        name = "Pushing record update to client send queue.",
+        skip(self, record),
+        fields(record_id = %record.record_id)
+    )]
+    pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
+        self.database.update(record).await?;
+        Ok(())
+    }
+
+    /// Same as [`AuditorClient::get`]
+    pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
+        self.client.get().await
+    }
+
+    /// Same as [`AuditorClient::advanced_query`]
+    pub async fn advanced_query(&self, query_string: String) -> Result<Vec<Record>, ClientError> {
+        self.client.advanced_query(query_string).await
+    }
+
+    /// Same as [`AuditorClient::get_single_record`]
+    pub async fn get_single_record(&self, record_id: String) -> Result<Record, ClientError> {
+        self.client.get_single_record(record_id).await
+    }
+}
+
+// There is no async drop, so error messages are the best we can do here
+impl std::ops::Drop for QueuedAuditorClient {
+    fn drop(&mut self) {
+        if Arc::strong_count(&self.task_handle) > 1 {
+            return;
+        }
+        if self.shutdown_tx.lock().unwrap().is_some() || self.task_handle.lock().unwrap().is_some()
+        {
+            tracing::error!("Programming error: QueuedAuditorClient was not stopped");
+        }
+    }
+}
+
 /// The `AuditorClientBlocking` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database. In contrast to [`AuditorClient`], no async runtime is needed here.
@@ -1027,10 +1319,11 @@ impl AuditorClientBlocking {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::RecordTest;
+    use auditor::domain::RecordTest;
     use chrono::TimeZone;
     use claim::assert_err;
     use fake::{Fake, Faker};
+    use tokio::time::sleep;
     use wiremock::matchers::{any, body_json, header, method, path, query_param};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -1275,6 +1568,35 @@ mod tests {
         let _res = client.add(&record).await;
     }
 
+    // ATM a send is triggered on creation of `QueuedAuditorClient`,
+    // so we don't *need* waits as long as `QueuedAuditorClient::stop` is called.
+    // This is however highly implementation specific (number of awaits in each
+    // code path and usage of tokios `rt` runtime).
+    // So we set a low `send_interval` and wait after client.add.
+    // Same is true for the other queued tests.
+    #[tokio::test]
+    async fn queued_add_succeeds() {
+        let mock_server = MockServer::start().await;
+        let mut client_builder = AuditorClientBuilder::new().connection_string(&mock_server.uri());
+        client_builder.send_interval = chrono::Duration::try_milliseconds(50).unwrap();
+        let mut client = client_builder.build_queued().await.unwrap();
+
+        let record: RecordAdd = record();
+
+        Mock::given(method("POST"))
+            .and(path("/record"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&record))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = client.add(&record).await;
+        sleep(std::time::Duration::from_millis(100)).await;
+        client.stop().await.unwrap();
+    }
+
     #[tokio::test]
     async fn blocking_add_succeeds() {
         let mock_server = MockServer::start().await;
@@ -1370,6 +1692,29 @@ mod tests {
             .await;
 
         let _res = client.update(&record).await;
+    }
+
+    #[tokio::test]
+    async fn queued_update_succeeds() {
+        let mock_server = MockServer::start().await;
+        let mut client_builder = AuditorClientBuilder::new().connection_string(&mock_server.uri());
+        client_builder.send_interval = chrono::Duration::try_milliseconds(50).unwrap();
+        let mut client = client_builder.build_queued().await.unwrap();
+
+        let record: RecordUpdate = record();
+
+        Mock::given(method("PUT"))
+            .and(path("/record"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&record))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = client.update(&record).await;
+        sleep(std::time::Duration::from_millis(100)).await;
+        client.stop().await.unwrap();
     }
 
     #[tokio::test]
@@ -2035,6 +2380,47 @@ mod tests {
             .await;
 
         let _res = client.bulk_insert(&records).await;
+    }
+
+    /*
+    #[tokio::test]
+    async fn queued_bulk_insert_succeeds() {
+        let mock_server = MockServer::start().await;
+        let mut client_builder = AuditorClientBuilder::new()
+            .connection_string(&mock_server.uri());
+        client_builder.send_interval = chrono::Duration::try_milliseconds(50).unwrap();
+        let mut client = client_builder
+            .build_queued()
+            .await
+            .unwrap();
+
+        let records: Vec<RecordAdd> = (0..10).map(|_| record()).collect();
+
+        Mock::given(method("POST"))
+            .and(path("/records"))
+            .and(header("Content-Type", "application/json"))
+            .and(body_json(&records))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _res = client.bulk_insert(&records).await;
+        sleep(std::time::Duration::from_millis(100)).await;
+        client.stop().await.unwrap();
+    }
+    */
+
+    #[tokio::test]
+    async fn queued_client_stop_raises_error() {
+        let mut client = AuditorClientBuilder::new()
+            .address(&"localhost", 8000)
+            .build_queued()
+            .await
+            .unwrap();
+
+        client.stop().await.unwrap();
+        assert_err!(client.stop().await);
     }
 
     #[tokio::test]

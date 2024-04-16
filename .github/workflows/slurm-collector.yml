@@ -65,6 +65,9 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
           SKIP_DOCKER=true ./scripts/init_slurm_collector_sqlite.sh
 
+      - name: Migrate auditor client sqlite database
+        run: ./scripts/init_client_sqlite.sh
+
       - name: Install musl
         run: |
           sudo apt-get install musl musl-tools

@@ -6,9 +6,9 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::client::{AuditorClientBuilder, Operator, QueryBuilder};
 use auditor::domain::Record;
 use auditor::telemetry::{get_subscriber, init_subscriber};
+use auditor_client::{AuditorClientBuilder, Operator, QueryBuilder};
 use chrono::Utc;
 use configuration::{ComputationMode, PrometheusMetricsOptions, Settings};
 use num_traits::cast::FromPrimitive;

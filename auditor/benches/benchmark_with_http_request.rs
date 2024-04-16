@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
-use auditor::client::{
+use auditor_client::{
     AuditorClient, AuditorClientBuilder, ComponentQuery, MetaOperator, MetaQuery, Operator,
     QueryBuilder,
 };
