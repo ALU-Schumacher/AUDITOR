@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2024-0332]: Update h2 from 0.3.24 to 0.3.26 ([@QuantumDancer](https://github.com/QuantumDancer))
 - [RUSTSEC-2024-0332]: Update h2 from 0.4.2 to 0.4.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 - [CVE-2024-32650]: Update rustls from 0.21.10 to 0.21.11 ([@QuantumDancer](https://github.com/QuantumDancer))
+- [RUSTSEC-2024-0336]: Update rustls from 0.22.2 to 0.22.4 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Added
 - AUDITOR: Add benchmark to measure db performance (#736) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
