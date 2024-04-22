@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update setuptools from 69.0.3 to 69.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.3 to 0.7.4 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update thiserror from 1.0.56 to 1.0.58 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update thiserror from 1.0.56 to 1.0.59 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tokio from 1.35.1 to 1.37.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update tracing-actix-web from 0.7.9 to 0.7.10 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 ([@QuantumDancer](https://github.com/QuantumDancer))
