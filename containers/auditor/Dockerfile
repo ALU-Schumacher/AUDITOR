@@ -25,7 +25,7 @@ FROM debian:bookworm-slim AS runtime
 WORKDIR /auditor
 
 RUN apt-get update -y \
-&& apt-get install -y --no-install-recommends openssl ca-certificates \
+&& apt-get install -y --no-install-recommends openssl ca-certificates curl \
 # Clean up
 && apt-get autoremove -y \
 && apt-get clean -y \
@@ -35,8 +35,10 @@ COPY --from=builder /auditor/target/release/auditor auditor
 COPY --from=builder /usr/local/cargo/bin/sqlx sqlx
 COPY --from=builder /auditor/migrations migrations
 COPY --from=builder /auditor/containers/auditor/entrypoint.sh entrypoint.sh
+COPY --from=builder /auditor/containers/auditor/health_check.sh health_check.sh
 
 COPY auditor/configuration configuration
 
 ENV AUDITOR_ENVIRONMENT production
+HEALTHCHECK --start-period=3s CMD [ "/auditor/health_check.sh" ]
 ENTRYPOINT ["./entrypoint.sh"]
