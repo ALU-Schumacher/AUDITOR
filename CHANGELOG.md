@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
+### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.5.0] - 2024-04-23
+
+### Breaking changes
 - Apel plugin: change config parameter `time_db_path` to `time_json_path` ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: change config format from INI to YAML ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Database migrations can now be run using the Docker container (#765) ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -474,7 +486,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.5.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -487,3 +499,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.0
 [0.3.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1
 [0.4.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0
+[0.5.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0
