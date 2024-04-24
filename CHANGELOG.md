@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update serde_with from 3.7.0 to 3.8.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Removed
 
