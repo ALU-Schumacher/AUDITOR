@@ -5,7 +5,10 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::{blocking_client::AuditorClientBlocking, client::AuditorClient};
+use crate::{
+    blocking_client::AuditorClientBlocking, client::AuditorClient,
+    queued_client::QueuedAuditorClient,
+};
 use anyhow::Error;
 use pyo3::prelude::*;
 
@@ -90,12 +93,48 @@ impl AuditorClientBuilder {
         self_
     }
 
+    /// Set an interval in seconds for periodic updates to AUDITOR.
+    /// This setting is only relevant to the ``QueuedAuditorClient``.
+    ///
+    /// :param interval: Interval in sections
+    /// :type interval: int
+    pub fn send_interval(mut self_: PyRefMut<Self>, interval: i64) -> PyRefMut<Self> {
+        self_.inner = self_.inner.clone().send_interval(interval);
+        self_
+    }
+
+    /// Set the file path for the persistent storage sqlite db.
+    /// This setting is only relevant to the ``QueuedAuditorClient``.
+    ///
+    /// :param path: Path to the database (SQLite) file
+    /// :type path: str
+    pub fn database_path(mut self_: PyRefMut<Self>, path: String) -> PyRefMut<Self> {
+        let path = std::path::PathBuf::from(path);
+        self_.inner = self_.inner.clone().database_path(&path);
+        self_
+    }
+
     /// Build an ``AuditorClient`` from ``AuditorClientBuilder``
     pub fn build(&self) -> Result<AuditorClient, Error> {
         Ok(AuditorClient {
             // Must clone here because `build` moves the builder, but python
             // does not allow that. Doesn't matter, Python is slow anyways.
             inner: self.inner.clone().build()?,
+        })
+    }
+
+    /// Build a ``QueuedAuditorClient`` from ``AuditorClientBuilder``
+    pub fn build_queued<'a>(&'a self, py: Python<'a>) -> PyResult<&'a PyAny> {
+        // Must clone here because `build` moves the builder, but python
+        // does not allow that. Doesn't matter, Python is slow anyways.
+        let builder = self.inner.clone();
+        pyo3_asyncio::tokio::future_into_py(py, async move {
+            Ok(QueuedAuditorClient {
+                inner: builder
+                    .build_queued()
+                    .await
+                    .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(format!("{e}")))?,
+            })
         })
     }
 

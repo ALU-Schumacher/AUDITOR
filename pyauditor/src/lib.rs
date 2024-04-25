@@ -13,6 +13,7 @@ mod blocking_client;
 mod builder;
 mod client;
 mod domain;
+mod queued_client;
 
 /// pyauditor is a client for interacting with an Auditor instance via Python.
 #[pymodule]
@@ -27,6 +28,7 @@ fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<crate::client::ComponentQuery>()?;
     m.add_class::<crate::client::SortBy>()?;
     m.add_class::<crate::blocking_client::AuditorClientBlocking>()?;
+    m.add_class::<crate::queued_client::QueuedAuditorClient>()?;
     m.add_class::<crate::domain::Record>()?;
     m.add_class::<crate::domain::Meta>()?;
     m.add_class::<crate::domain::Component>()?;
