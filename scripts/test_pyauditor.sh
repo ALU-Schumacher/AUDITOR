@@ -18,6 +18,7 @@ function compile_pyauditor() {
   source $ENV_DIR/bin/activate
   pip install maturin
   pip install tzlocal
+  pip install patchelf
   if [ "$RELEASE_MODE" = true ]; then
     maturin develop --manifest-path pyauditor/Cargo.toml --release
   else
