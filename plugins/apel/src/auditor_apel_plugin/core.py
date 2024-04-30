@@ -308,11 +308,12 @@ def fill_db(
         ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
     )
 
+    cur = conn.cursor()
+
     for r in records:
         data_tuple = get_data_tuple(config, message_type, fields_dict, site, r)
 
         try:
-            cur = conn.cursor()
             cur.execute(insert_db_str, data_tuple)
         except Error as e:
             logging.critical(e)
@@ -362,12 +363,7 @@ def get_data_tuple(
             submithost = replace_record_string(submithost_field.get_value(record))
         else:
             submithost = "None"
-        # try:
-        #     submithost = replace_record_string(
-        #         config.get_optional_fields().get("SubmitHost").get_value(record)
-        #     )
-        # except AttributeError:
-        #     submithost = "None"
+
         record_id = record.record_id
 
         value_list = [site, month, year, submithost, record_id]

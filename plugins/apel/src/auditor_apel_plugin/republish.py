@@ -61,14 +61,14 @@ def run(config, client, args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--begin_date",
+        "--begin-date",
         type=str,
         required=True,
         help="Begin of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, "
         "e.g. 2023-11-27 13:31:10+00:00",
     )
     parser.add_argument(
-        "--end_date",
+        "--end-date",
         type=str,
         required=True,
         help="End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, "

@@ -7,7 +7,7 @@ import yaml
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, Dict, List, Callable
 from pyauditor import Record
 import re
 
@@ -93,7 +93,9 @@ class MetaField(Field):
     regex: Optional[str] = None
     function: Optional[str] = None
 
-    def get_value(self, record: Record) -> str:
+    def get_value(self, record: Record) -> Union[str, int, float]:
+        function_dict: Dict[str, Callable[[str], Union[str, int, float]]] = {}
+
         try:
             value = record.meta.get(self.name)[0]
         except TypeError:
@@ -110,7 +112,14 @@ class MetaField(Field):
                 print(f"WARNING: Pattern {self.regex} not found in {value}")
                 return "None"
         elif self.function is not None:
-            value = globals()[self.function](value)
+            try:
+                function = function_dict[self.function]
+            except KeyError:
+                raise KeyError(
+                    f"Function {self.function} not found in dictionary of allowed "
+                    "functions"
+                )
+            value = function(value)
             return value
 
         return value
@@ -154,10 +163,21 @@ class RecordField(Field):
     modify: Optional[str] = None
 
     def get_value(self, record: Record) -> Union[str, int]:
-        value = getattr(record, self.name)
+        try:
+            value = getattr(record, self.name)
+        except AttributeError:
+            raise AttributeError(
+                f"Record {record.record_id} does not have attribute {self.name}"
+            )
 
         if self.modify is not None:
-            value = getattr(value, self.modify)
+            try:
+                value = getattr(value, self.modify)
+            except AttributeError:
+                raise AttributeError(
+                    f"Value {value} of type {type(value)} does not have attribute "
+                    f"{self.name}"
+                )
 
         return value
 

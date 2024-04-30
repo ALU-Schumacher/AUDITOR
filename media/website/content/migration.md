@@ -4,12 +4,18 @@ description = "Migration Guide"
 weight = 3
 +++
 
+# From 0.5.0 to unreleased/0.6.0
+
+## Apel plugin
+
+- The APEL message can now be configured via the config. An updated example config file can be found in the [Documentation](../#apel-plugin).
+- `auditor-apel-republish` now needs the arguments `--begin-date` and `--end-date` instead of `--month` and `--year`. The format is `yyyy-mm-dd hh:mm:ss+00:00`, e.g. `2023-11-29 21:10:54+00:00`.
+
 # From 0.4.0 to 0.5.0
 
 ## Apel plugin
 
-- The format of the config file was changed from INI to YAML and the content in the APEL message can now be configured. An updated example config file can be found in the [Documentation](../#apel-plugin).
-- `auditor-apel-republish` now needs the arguments `--begin_date` and `--end_date` instead of `--month` and `--year`. The format is `yyyy-mm-dd hh:mm:ss+00:00`, e.g. `2023-11-29 21:10:54+00:00`.
+- The format of the config file was changed from INI to YAML. An updated example config file can be found in the [Documentation](../#apel-plugin).
 - The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter `time_db_path` has to be changed to `time_json_path`.
 To migrate an existing database to a JSON file, run `migration-0_4_0-to-0_5_0.py` located in the `scripts` folder:
 
@@ -24,7 +30,7 @@ options:
   -j JSON, --json JSON  Path to the time JSON file
 ```
 
-This already requires a config file with the new YAML format.
+This already requires a config file with YAML format.
 
 ## Docker container
 
@@ -48,7 +54,6 @@ I.e., you need to add `auditor` as the first argument before pointing to the con
 ### Update to [sqlx 0.7.4](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
 Use this command to update the sqlx-cli to 0.7.4
 - `cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
-
 
 # From 0.3.0/0.3.1 to 0.4.0
 
