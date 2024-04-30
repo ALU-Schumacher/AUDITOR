@@ -25,7 +25,7 @@ name = "pyauditor"
 crate-type = ["cdylib"]
 
 [dependencies]
-auditor = { path = "../auditor", version = "0.5.0", default-features = false, features = ["client"] }
+auditor = { path = "../auditor", version = "0.5.0", default-features = false }
 auditor-client = { path = "../auditor-client" }
 anyhow = "1"
 pyo3 = { version = "0.20", features = ["chrono", "extension-module", "anyhow"] }

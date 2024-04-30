@@ -1,11 +1,11 @@
 [package]
 name = "auditor-client"
-version = "0.1.0"
+version = "0.5.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-auditor = { path = "../auditor", version = "0.4.0", default-features = false }
+auditor = { path = "../auditor", version = "0.5.0", default-features = false }
 chrono = { version = "0.4.31", default-features = false, features = ["serde"] }
 reqwest = { version = "0.11.22", default-features = false, features = ["json", "rustls-tls", "blocking"] }
 urlencoding = "2.1.3"

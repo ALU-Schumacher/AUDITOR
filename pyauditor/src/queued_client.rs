@@ -11,7 +11,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 
 /// The `QueuedAuditorClient` handles the interaction with the Auditor instances. All
-/// data to be sent is transparantly saved in a persistent local database.
+/// data to be sent is transparently saved in a persistent local database.
 ///
 /// When records are sent to Auditor, this client will transparently buffer them in a
 /// (persistent) local database.

@@ -110,7 +110,7 @@ impl AuditorClientBuilder {
     /// :type path: str
     pub fn database_path(mut self_: PyRefMut<Self>, path: String) -> PyRefMut<Self> {
         let path = std::path::PathBuf::from(path);
-        self_.inner = self_.inner.clone().database_path(&path);
+        self_.inner = self_.inner.clone().database_path(path);
         self_
     }
 

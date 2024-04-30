@@ -181,7 +181,8 @@ pub struct RecordUpdate {
 
 /// A `Record` represents a single accountable unit.
 ///
-/// Records can be sent to and received from Auditor with the [`AuditorClient`](`/auditor_client::AuditorClient`).
+/// Records can be sent to and received from Auditor with the
+/// [`AuditorClient`](../../auditor_client/index.html) crate.
 /// When initially inserting a record in Auditor, the record is represented as [`RecordAdd`].
 /// The `stop_time` can be updated at a later time by pushing a [`RecordUpdate`] to Auditor.
 ///
