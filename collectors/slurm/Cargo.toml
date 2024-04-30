@@ -40,7 +40,7 @@ tracing-subscriber = { version = "0.3" }
 uuid = { version = "1.8", features = ["v4"] }
 fake = { version = "2.9", features = ["chrono"] }
 config = "0.13.4"
-serde = { version = "1.0.198", features = ["derive"] }
+serde = { version = "1.0.199", features = ["derive"] }
 serde-aux = "4.5.0"
 itertools = "0.12.1"
 regex = "1.10.4"
