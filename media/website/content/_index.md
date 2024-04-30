@@ -617,88 +617,19 @@ options:
 `auditor-apel-republish` runs once and submits a report of jobs between two dates for a given site.
 
 ```bash
-usage: auditor-apel-republish [-h] --begin_date BEGIN_DATE --end_date END_DATE -s SITE -c CONFIG
+usage: auditor-apel-republish [-h] --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG
 
 options:
   -h, --help            show this help message and exit
-  --begin_date BEGIN_DATE
+  --begin-date BEGIN_DATE
                         Begin of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
-  --end_date END_DATE   End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
+  --end-date END_DATE   End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
   -s SITE, --site SITE  Site (GOCDB): UNI-FREIBURG, ...
   -c CONFIG, --config CONFIG
                         Path to the config file
 ```
 
 The config file is written in YAML format and has the main sections `plugin`, `site`, `authentication`, `auditor`, and at least one of `summary_fields` or `single_job_fields`.
-
-The individual parameters in the config file are:
-
-| Parameter         | Description                                                                                                                                                                                  |
-|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `log_level`       | Can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                                |
-| `time_json_path`  | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
-| `report_interval` | Time in seconds between reports to APEL.                                                                                                                                                     |
-| `message_type`    | Type of mesasge to create. Can be set to `summaries` or `single_jobs`.                                                                                                                       |
-| `publish_since`   | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                              |
-| `sites_to_report` | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
-| `auth_url`        | URL from which the APEL authentication token is received.                                                                                                                                    |
-| `ams_url`         | URL to which the reports are sent.                                                                                                                                                           |
-| `client_cert`     | Path of the host certificate.                                                                                                                                                                |
-| `client_key`      | Path of the host key.                                                                                                                                                                        |
-| `ca_path`         | Path of the local certificate folder.                                                                                                                                                        |
-| `verify_ca`       | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                                      |
-| `ip`              | IP of the AUDITOR instance.                                                                                                                                                                  |
-| `port`            | Port of the AUDITOR instance.                                                                                                                                                                |
-| `timeout`         | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
-| `site_meta_field` | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
-|                   |                                                                                                                                                                                              |
-
-`summary_fields` and `single_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
-
-```
-CpuDuration
-NormalisedCpuDuration (only for summary_job_fields)
-NormalisedWallDuration (only for summary_job_fields)
-```
-
-There are actually more mandatory fields, but they are handlded internally and don't need any input from the user.
-
-`optional` fields are optional and can be:
-
-```
-GlobalUserName
-VO
-VOGroup
-VORole
-SubmitHost
-Infrastructure (only for summary_job_fields)
-InfrastructureType (only for single_job_fields)
-InfrastructureDescription (only for single_job_fields)
-NodeCount
-Processors
-LocalUserId (only for single_job_fields)
-FQAN (only for single_job_fields)
-ServiceLevel (only for single_job_fields)
-ServiceLevelType (only for single_job_fields)
-```
-
-The information about the possible fields, and what is mandatory or optional, is taken from [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records), where the former also contains explanations and examples for the field content.
-
-Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, `NormalisedField`, and `NormalisedWallDurationField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
-
-`ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
-
-`MetaField` extracts the value from the `meta` information in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters `regex` or `function` can be used. `regex` takes a regular expression an applies it to the value, `function` takes the name of a function and applies it to the value. The function has to be present in `config.py` and can be added via a pull request.
-
-`ConstantField` has the mandatory parameter `value`, which is exactly what will be written in the message field.
-
-`ScoreField` extracts the score value from a given component from the AUDITOR record. The mandatory parameters are `name`, the name of the score, and `component_name`, the name of the component.
-
-`NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` a `ComponentField`. The resulting value is the product of the score and the base value.
-
-`NormalisedWallDurationField` has the parameter `score`, which is a `ScoreField`. The value of the score is multiplied with the `runtime` of the AUDITOR record.
-
-All fields have the mandatory parameter `datatype_in_message`, which indicates the data type of the field in the APEL message (see [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat)). Possible types are `FLOAT`, `TEXT`, and `INT`.
 
 Example config:
 
@@ -835,6 +766,74 @@ single_job_fields:
       value: hepscore23
       datatype_in_message: TEXT
 ```
+
+The individual parameters in the config file are:
+
+| Section          | Parameter          | Description                                                                                                                                                                                  |
+|------------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `plugin`         | `log_level`        | Can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                                |
+| `plugin`         | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
+| `plugin`         | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
+| `plugin`         | `message_type`     | Type of mesasge to create. Can be set to `summaries` or `single_jobs`.                                                                                                                       |
+| `site`           | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                              |
+| `site`           | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
+| `authentication` | `auth_url`         | URL from which the APEL authentication token is received.                                                                                                                                    |
+| `authentication` | `ams_url`          | URL to which the reports are sent.                                                                                                                                                           |
+| `authentication` | `client_cert`      | Path of the host certificate.                                                                                                                                                                |
+| `authentication` | `client_key`       | Path of the host key.                                                                                                                                                                        |
+| `authentication` | `ca_path`          | Path of the local certificate folder.                                                                                                                                                        |
+| `authentication` | `verify_ca`        | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                                      |
+| `auditor`        | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                  |
+| `auditor`        | `port`             | Port of the AUDITOR instance.                                                                                                                                                                |
+| `auditor`        | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
+| `auditor`        | `site_metaa_field` | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
+
+The main sections `summary_fields` and `single_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
+
+```
+CpuDuration
+NormalisedCpuDuration (only for summary_job_fields)
+NormalisedWallDuration (only for summary_job_fields)
+```
+
+There are actually more mandatory fields, but they are handlded internally and don't need any input from the user.
+
+`optional` fields can be used to provide additional information to APEL:
+
+```
+GlobalUserName
+VO
+VOGroup
+VORole
+SubmitHost
+Infrastructure (only for summary_job_fields)
+InfrastructureType (only for single_job_fields)
+InfrastructureDescription (only for single_job_fields)
+NodeCount
+Processors
+LocalUserId (only for single_job_fields)
+FQAN (only for single_job_fields)
+ServiceLevel (only for single_job_fields)
+ServiceLevelType (only for single_job_fields)
+```
+
+The information about the possible fields, and what is mandatory or optional, is taken from [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records), where the former also contains explanations and examples for the field content.
+
+Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, `NormalisedField`, and `NormalisedWallDurationField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
+
+All fields have the mandatory parameter `datatype_in_message`, which indicates the data type of the field in the APEL message (see [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat)). Possible types are `FLOAT`, `TEXT`, and `INT`.
+
+`ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
+
+`MetaField` extracts the value from the `meta` information in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters `regex` or `function` can be used. `regex` takes a regular expression, searches the value for this expression, and returns the complete match, `function` takes the name of a function and applies it to the value. The function has to be present in `config.py` and can be added via a pull request.
+
+`ConstantField` has the mandatory parameter `value`, which is exactly what will be written in the message field.
+
+`ScoreField` extracts the score value from a given component from the AUDITOR record. The mandatory parameters are `name`, the name of the score, and `component_name`, the name of the component.
+
+`NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` a `ComponentField`. The resulting value is the product of the score and the base value.
+
+`NormalisedWallDurationField` has the parameter `score`, which is a `ScoreField`. The value of the score is multiplied with the `runtime` of the AUDITOR record.
 
 When using the Docker container, `auditor-apel-publish` for example can be started with
 
