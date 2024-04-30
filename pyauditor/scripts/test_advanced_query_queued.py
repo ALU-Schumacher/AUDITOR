@@ -20,10 +20,10 @@ async def main():
 
     client = await (
         AuditorClientBuilder()
-            .address("127.0.0.1", 8000)
-            .timeout(10)
-            .send_interval(1)
-            .build_queued()
+        .address("127.0.0.1", 8000)
+        .timeout(10)
+        .send_interval(1)
+        .build_queued()
     )
 
     print("Testing /health_check endpoint")
