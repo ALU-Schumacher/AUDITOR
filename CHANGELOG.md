@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update serde from 1.0.198 to 1.0.199 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 
