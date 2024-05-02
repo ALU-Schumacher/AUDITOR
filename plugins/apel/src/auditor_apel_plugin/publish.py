@@ -61,7 +61,7 @@ def run(config: Config, client):
         for site in sites_to_report.keys():
             logging.info(f"Getting records for {site}")
 
-            if message_type == MessageType.single_jobs:
+            if message_type == MessageType.individual_jobs:
                 start_time = get_start_time(config, time_dict, site)
                 logging.info(f"Getting records since {start_time}")
                 records = get_records(config, client, start_time, 30, site=site)
@@ -89,7 +89,7 @@ def run(config: Config, client):
             post_message = send_payload(config, token, payload_message)
             logging.debug(post_message.status_code)
 
-            if message_type == MessageType.single_jobs:
+            if message_type == MessageType.individual_jobs:
                 records = get_records(config, client, begin_month, 30, site=site)
 
             sync_db = create_db({}, MessageType.sync)

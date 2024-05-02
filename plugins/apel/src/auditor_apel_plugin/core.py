@@ -242,7 +242,7 @@ def create_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.single_jobs:
+    elif message_type == MessageType.individual_jobs:
         message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
@@ -265,15 +265,14 @@ def create_db(
         ["CREATE TABLE IF NOT EXISTS records(", field_list_str, ")"]
     )
 
+    conn = sqlite3.connect(":memory:")
+
     try:
-        conn = sqlite3.connect(":memory:")
-        cur = conn.cursor()
-        cur.execute(create_db_str)
+        with conn:
+            conn.execute(create_db_str)
     except Error as e:
         logging.critical(e)
         raise
-
-    cur.close()
 
     return conn
 
@@ -290,7 +289,7 @@ def fill_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.single_jobs:
+    elif message_type == MessageType.individual_jobs:
         message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
@@ -308,23 +307,15 @@ def fill_db(
         ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
     )
 
-    cur = conn.cursor()
-
     for r in records:
         data_tuple = get_data_tuple(config, message_type, fields_dict, site, r)
 
         try:
-            cur.execute(insert_db_str, data_tuple)
+            with conn:
+                conn.execute(insert_db_str, data_tuple)
         except Error as e:
             logging.critical(e)
             raise
-
-    try:
-        conn.commit()
-        cur.close()
-    except Error as e:
-        logging.critical(e)
-        raise
 
     return conn
 
@@ -347,7 +338,7 @@ def get_data_tuple(
 
         value_list = [site, month, year, stop_time, runtime, record_id]
 
-    elif message_type == MessageType.single_jobs:
+    elif message_type == MessageType.individual_jobs:
         record_id = record.record_id
         runtime = record.runtime
         start_time = record.start_time.replace(tzinfo=timezone.utc).timestamp()
@@ -388,7 +379,7 @@ def group_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.single_jobs:
+    elif message_type == MessageType.individual_jobs:
         message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
@@ -413,8 +404,7 @@ def group_db(
     )
 
     conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(group_str)
+    cur = conn.execute(group_str)
     grouped_sql = cur.fetchall()
     cur.close()
     conn.close()
@@ -427,7 +417,7 @@ def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) ->
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.single_jobs:
+    elif message_type == MessageType.individual_jobs:
         message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()

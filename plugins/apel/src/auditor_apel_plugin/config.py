@@ -14,7 +14,7 @@ import re
 
 class MessageType(Enum):
     summaries = "summaries"
-    single_jobs = "single_jobs"
+    individual_jobs = "individual_jobs"
     sync = "sync"
 
 
@@ -217,7 +217,7 @@ class Config(Configurable):
     auditor: AuditorConfig
     authentication: AuthConfig
     summary_fields: Optional[FieldConfig] = None
-    single_job_fields: Optional[FieldConfig] = None
+    individual_job_fields: Optional[FieldConfig] = None
 
     def get_field_config(self) -> FieldConfig:
         if self.plugin.message_type == MessageType.summaries:
@@ -225,11 +225,11 @@ class Config(Configurable):
                 field_config = self.summary_fields
             else:
                 raise ValueError("summary_fields missing in config!")
-        elif self.plugin.message_type == MessageType.single_jobs:
-            if self.single_job_fields is not None:
-                field_config = self.single_job_fields
+        elif self.plugin.message_type == MessageType.individual_jobs:
+            if self.individual_job_fields is not None:
+                field_config = self.individual_job_fields
             else:
-                raise ValueError("single_job_fields missing in config!")
+                raise ValueError("individual_job_fields missing in config!")
 
         return field_config
 
