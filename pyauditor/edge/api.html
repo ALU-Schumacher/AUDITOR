@@ -53,7 +53,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.address"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.address()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build_blocking"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build_blocking()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build_queued"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build_queued()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.connection_string"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.connection_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.database_path"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.database_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.send_interval"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.send_interval()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.timeout"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.timeout()</span></code></a></li>
 </ul>
 </li>
@@ -123,6 +126,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_stopped_since()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.health_check"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.health_check()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.update"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.QueuedAuditorClient"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.add"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.advanced_query"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.advanced_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.bulk_insert"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.bulk_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_single_record"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_single_record()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_started_since"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_started_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_stopped_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.health_check"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.stop"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.stop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.update"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.update()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.Record"><code class="docutils literal notranslate"><span class="pre">Record</span></code></a><ul>
@@ -234,12 +250,42 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.build_queued">
+<span class="sig-name descname"><span class="pre">build_queued</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.build_queued" title="Link to this definition"></a></dt>
+<dd><p>Build a <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code> from <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.connection_string">
 <span class="sig-name descname"><span class="pre">connection_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.connection_string" title="Link to this definition"></a></dt>
 <dd><p>Set a connection string of the form <code class="docutils literal notranslate"><span class="pre">http://&lt;auditor_address&gt;:&lt;auditor_port&gt;</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection_string</strong> (<em>str</em>) – Connection string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.database_path">
+<span class="sig-name descname"><span class="pre">database_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.database_path" title="Link to this definition"></a></dt>
+<dd><p>Set the file path for the persistent storage sqlite db.
+This setting is only relevant to the <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the database (SQLite) file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.send_interval">
+<span class="sig-name descname"><span class="pre">send_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.send_interval" title="Link to this definition"></a></dt>
+<dd><p>Set an interval in seconds for periodic updates to AUDITOR.
+This setting is only relevant to the <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>interval</strong> (<em>int</em>) – Interval in sections</p>
 </dd>
 </dl>
 </dd></dl>
@@ -945,6 +991,162 @@ Push a list of records to the Auditor instance</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.update" title="Link to this definition"></a></dt>
+<dd><p>Update an existing record in the Auditor instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">QueuedAuditorClient</span></span><a class="headerlink" href="#pyauditor.QueuedAuditorClient" title="Link to this definition"></a></dt>
+<dd><p>The <cite>QueuedAuditorClient</cite> handles the interaction with the Auditor instances. All
+data to be sent is transparently saved in a persistent local database.</p>
+<p>When records are sent to Auditor, this client will transparently buffer them in a
+(persistent) local database.
+A background task will then periodically send records from the local database to
+Auditor, deleting them from the local database only after they have been successfully
+send to Auditor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>There are some quirks that need to be observed when using this client:</dt><dd><ul class="simple">
+<li><p>Uses an in-memory database by default. It is strongly
+recommended to provide a path.
+See <a class="reference internal" href="#pyauditor.AuditorClientBuilder.database_path" title="pyauditor.AuditorClientBuilder.database_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AuditorClientBuilder.database_path()</span></code></a>.</p></li>
+<li><p>Since sending and updating records is delayed, there is no guarantee that a record
+can be retrieved from Auditor right after it has been “sent” by this client.</p></li>
+<li><p>The background task of this client should be stopped by invoking
+<a class="reference internal" href="#pyauditor.QueuedAuditorClient.stop" title="pyauditor.QueuedAuditorClient.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueuedAuditorClient.stop()</span></code></a>
+before the client is dropped.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.add" title="Link to this definition"></a></dt>
+<dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.advanced_query">
+<span class="sig-name descname"><span class="pre">advanced_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.advanced_query" title="Link to this definition"></a></dt>
+<dd><p>Get records from the database depending on the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_string</strong> (<em>string</em>) – query_string constructed with QueryBuilder using .build() method</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value1</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">value2</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
+<span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get" title="Link to this definition"></a></dt>
+<dd><p>Gets all records from the Auditors database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_single_record">
+<span class="sig-name descname"><span class="pre">get_single_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_single_record" title="Link to this definition"></a></dt>
+<dd><p>get_one_record(record_id: string)
+Get one record using record_id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<em>string</em>) – record_id</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span>
+<span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_one_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_started_since">
+<span class="sig-name descname"><span class="pre">get_started_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_started_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a started timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">start_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_stopped_since">
+<span class="sig-name descname"><span class="pre">get_stopped_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_stopped_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a stopped timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">stop_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.health_check">
+<span class="sig-name descname"><span class="pre">health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.health_check" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the Auditor instance is healthy, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.stop" title="Link to this definition"></a></dt>
+<dd><p>Stops the background sync task</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.update" title="Link to this definition"></a></dt>
 <dd><p>Update an existing record in the Auditor instance</p>
 </dd></dl>
 

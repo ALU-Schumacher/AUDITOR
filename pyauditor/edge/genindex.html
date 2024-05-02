@@ -106,6 +106,8 @@
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.add">(pyauditor.AuditorClientBlocking method)</a>
 </li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.add">(pyauditor.QueuedAuditorClient method)</a>
+</li>
       </ul></li>
       <li><a href="api.html#pyauditor.AuditorClientBuilder.address">address() (pyauditor.AuditorClientBuilder method)</a>
 </li>
@@ -113,6 +115,8 @@
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.advanced_query">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.advanced_query">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -139,14 +143,18 @@
         <li><a href="api.html#pyauditor.QueryBuilder.build">(pyauditor.QueryBuilder method)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#pyauditor.AuditorClientBuilder.build_blocking">build_blocking() (pyauditor.AuditorClientBuilder method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#pyauditor.AuditorClientBuilder.build_blocking">build_blocking() (pyauditor.AuditorClientBuilder method)</a>
+      <li><a href="api.html#pyauditor.AuditorClientBuilder.build_queued">build_queued() (pyauditor.AuditorClientBuilder method)</a>
 </li>
       <li><a href="api.html#pyauditor.AuditorClient.bulk_insert">bulk_insert() (pyauditor.AuditorClient method)</a>
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.bulk_insert">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.bulk_insert">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -175,10 +183,12 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#pyauditor.SortBy.descending">descending() (pyauditor.SortBy method)</a>
+      <li><a href="api.html#pyauditor.AuditorClientBuilder.database_path">database_path() (pyauditor.AuditorClientBuilder method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.SortBy.descending">descending() (pyauditor.SortBy method)</a>
+</li>
       <li><a href="api.html#pyauditor.MetaOperator.does_not_contains">does_not_contains() (pyauditor.MetaOperator method)</a>
 </li>
   </ul></td>
@@ -202,11 +212,15 @@
 </li>
         <li><a href="api.html#pyauditor.Meta.get">(pyauditor.Meta method)</a>
 </li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.get">(pyauditor.QueuedAuditorClient method)</a>
+</li>
       </ul></li>
       <li><a href="api.html#pyauditor.AuditorClient.get_single_record">get_single_record() (pyauditor.AuditorClient method)</a>
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.get_single_record">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.get_single_record">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -216,11 +230,15 @@
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.get_started_since">(pyauditor.AuditorClientBlocking method)</a>
 </li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.get_started_since">(pyauditor.QueuedAuditorClient method)</a>
+</li>
       </ul></li>
       <li><a href="api.html#pyauditor.AuditorClient.get_stopped_since">get_stopped_since() (pyauditor.AuditorClient method)</a>
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.get_stopped_since">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.get_stopped_since">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
       <li><a href="api.html#pyauditor.Operator.gt">gt() (pyauditor.Operator method)</a>
@@ -237,6 +255,8 @@
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.health_check">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.health_check">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -328,6 +348,10 @@
       <li><a href="api.html#pyauditor.QueryBuilder">QueryBuilder (class in pyauditor)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#pyauditor.QueuedAuditorClient">QueuedAuditorClient (class in pyauditor)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
@@ -351,6 +375,8 @@
 </li>
       <li><a href="api.html#pyauditor.Component.scores">scores (pyauditor.Component attribute)</a>
 </li>
+      <li><a href="api.html#pyauditor.AuditorClientBuilder.send_interval">send_interval() (pyauditor.AuditorClientBuilder method)</a>
+</li>
       <li><a href="api.html#pyauditor.Value.set_count">set_count() (pyauditor.Value static method)</a>
 </li>
       <li><a href="api.html#pyauditor.Value.set_datetime">set_datetime() (pyauditor.Value static method)</a>
@@ -364,6 +390,8 @@
       <li><a href="api.html#pyauditor.SortBy">SortBy (class in pyauditor)</a>
 </li>
       <li><a href="api.html#pyauditor.Record.start_time">start_time (pyauditor.Record attribute)</a>
+</li>
+      <li><a href="api.html#pyauditor.QueuedAuditorClient.stop">stop() (pyauditor.QueuedAuditorClient method)</a>
 </li>
       <li><a href="api.html#pyauditor.Record.stop_time">stop_time (pyauditor.Record attribute)</a>
 </li>
@@ -389,6 +417,8 @@
 
       <ul>
         <li><a href="api.html#pyauditor.AuditorClientBlocking.update">(pyauditor.AuditorClientBlocking method)</a>
+</li>
+        <li><a href="api.html#pyauditor.QueuedAuditorClient.update">(pyauditor.QueuedAuditorClient method)</a>
 </li>
       </ul></li>
   </ul></td>
