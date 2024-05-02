@@ -76,7 +76,7 @@ summary_fields:
       name: Cores
       datatype_in_message: INT
 
-single_job_fields:
+individual_job_fields:
   mandatory:
     NormalisedWallDuration: !NormalisedWallDurationField
       datatype_in_message: INT

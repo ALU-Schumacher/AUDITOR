@@ -629,7 +629,7 @@ options:
                         Path to the config file
 ```
 
-The config file is written in YAML format and has the main sections `plugin`, `site`, `authentication`, `auditor`, and at least one of `summary_fields` or `single_job_fields`.
+The config file is written in YAML format and has the main sections `plugin`, `site`, `authentication`, `auditor`, and at least one of `summary_fields` or `individual_job_fields`.
 
 Example config:
 
@@ -714,7 +714,7 @@ summary_fields:
       datatype_in_message: INT
 
 
-single_job_fields:
+individual_job_fields:
   mandatory:
     CpuDuration: !ComponentField
       name: TotalCPU
@@ -774,7 +774,7 @@ The individual parameters in the config file are:
 | `plugin`         | `log_level`        | Can be set to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                                |
 | `plugin`         | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
 | `plugin`         | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
-| `plugin`         | `message_type`     | Type of mesasge to create. Can be set to `summaries` or `single_jobs`.                                                                                                                       |
+| `plugin`         | `message_type`     | Type of mesasge to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                   |
 | `site`           | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                              |
 | `site`           | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
 | `authentication` | `auth_url`         | URL from which the APEL authentication token is received.                                                                                                                                    |
@@ -788,7 +788,7 @@ The individual parameters in the config file are:
 | `auditor`        | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
 | `auditor`        | `site_metaa_field` | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
 
-The main sections `summary_fields` and `single_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
+The main sections `summary_fields` and `individual_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
 
 ```
 CpuDuration
@@ -807,14 +807,14 @@ VOGroup
 VORole
 SubmitHost
 Infrastructure (only for summary_job_fields)
-InfrastructureType (only for single_job_fields)
-InfrastructureDescription (only for single_job_fields)
+InfrastructureType (only for individual_job_fields)
+InfrastructureDescription (only for individual_job_fields)
 NodeCount
 Processors
-LocalUserId (only for single_job_fields)
-FQAN (only for single_job_fields)
-ServiceLevel (only for single_job_fields)
-ServiceLevelType (only for single_job_fields)
+LocalUserId (only for individual_job_fields)
+FQAN (only for individual_job_fields)
+ServiceLevel (only for individual_job_fields)
+ServiceLevelType (only for individual_job_fields)
 ```
 
 The information about the possible fields, and what is mandatory or optional, is taken from [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records), where the former also contains explanations and examples for the field content.
