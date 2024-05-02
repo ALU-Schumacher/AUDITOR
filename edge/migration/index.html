@@ -75,12 +75,23 @@
             <div class="toc-sticky">
                 
                 <div class="toc-item">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-5-0-to-unreleased-0-6-0">From 0.5.0 to unreleased&#x2F;0.6.0</a>
                 </div>
                 
                 
                 <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -103,7 +114,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-2"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -145,7 +156,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-2"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-3"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -178,8 +189,14 @@
         <div class="content text">
             
 <div class="heading-text">Migration Guide</div>
-<h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
+<h1 id="from-0-5-0-to-unreleased-0-6-0">From 0.5.0 to unreleased/0.6.0</h1>
 <h2 id="apel-plugin">Apel plugin</h2>
+<ul>
+<li>The APEL message can now be configured via the config. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
+<li><code>auditor-apel-republish</code> now needs the arguments <code>--begin-date</code> and <code>--end-date</code> instead of <code>--month</code> and <code>--year</code>. The format is <code>yyyy-mm-dd hh:mm:ss+00:00</code>, e.g. <code>2023-11-29 21:10:54+00:00</code>.</li>
+</ul>
+<h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
+<h2 id="apel-plugin-1">Apel plugin</h2>
 <ul>
 <li>The format of the config file was changed from INI to YAML. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
 <li>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
@@ -227,7 +244,7 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 </tbody></table>
 <p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
 <p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
-<h2 id="apel-plugin-1">Apel plugin</h2>
+<h2 id="apel-plugin-2">Apel plugin</h2>
 <p>The config parameter <code>site_name_mapping</code> is removed and the structure of the config parameter <code>sites_to_report</code> is changed. <code>sites_to_report</code> is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.</p>
 <p>Before:</p>
 <pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>[</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
@@ -319,7 +336,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <li><code>cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 <h1 id="from-0-1-0-to-0-2-0">From 0.1.0 to 0.2.0</h1>
-<h2 id="apel-plugin-2">Apel plugin</h2>
+<h2 id="apel-plugin-3">Apel plugin</h2>
 <ul>
 <li>The config file now needs to have a field <code>cpu_time_unit</code> present, which describes the unit of total CPU time in the AUDITOR records.
 Possible values are <code>seconds</code> or <code>milliseconds</code>.</li>

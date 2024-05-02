@@ -680,8 +680,9 @@ In case the regex contains a group, the value is set to the (first) matching gro
 <p>Plugins are used to retrieve data from Auditor for further processing.
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
-<p>The APEL plugin creates job summary records and sync messages for the current month (and the previous month if it is the first day of a month) and sends them to APEL. It is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.
-Two CLI commands are available after the installation via <code>pip</code>: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
+<p>The APEL plugin creates messages and sends them to the APEL server. The plugin can either create <code>summary messages</code> for the current month, or <code>individual job messages</code>. <code>Sync messages</code> for the current month are created in both cases.</p>
+<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.</p>
+<p>Two CLI commands are available after the installation via <code>pip</code>: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
 <p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
 </span><span>
@@ -690,74 +691,32 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 </span><span>  -c CONFIG, --config CONFIG
 </span><span>                        Path to the config file
 </span></code></pre>
-<p><code>auditor-apel-republish</code> runs once and submits a report for a given month, year, and site.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -y YEAR -m MONTH -s SITE -c CONFIG
+<p><code>auditor-apel-republish</code> runs once and submits a report of jobs between two dates for a given site.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG
 </span><span>
 </span><span>options:
 </span><span>  -h, --help            show this help message and exit
-</span><span>  -y YEAR, --year YEAR  Year: 2020, 2021, ...
-</span><span>  -m MONTH, --month MONTH
-</span><span>                        Month: 4, 8, 12, ...
+</span><span>  --begin-date BEGIN_DATE
+</span><span>                        Begin of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
+</span><span>  --end-date END_DATE   End of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
 </span><span>  -s SITE, --site SITE  Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
 </span><span>  -c CONFIG, --config CONFIG
 </span><span>                        Path to the config file
 </span></code></pre>
-<p>The following fields need to be present in the config file:</p>
-<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
-<tr><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
-<tr><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
-<tr><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
-<tr><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
-<tr><td><code>default_submit_host</code></td><td>Default submit host if this information is missing in the AUDITOR record.</td></tr>
-<tr><td><code>infrastructure_type</code></td><td>Origin of the job, can be set to <code>grid</code> or <code>local</code>.</td></tr>
-<tr><td><code>benchmark_type</code></td><td>Name of the benchmark that will be reported to APEL.</td></tr>
-<tr><td><code>auditor_ip</code></td><td>IP of the AUDITOR instance.</td></tr>
-<tr><td><code>auditor_port</code></td><td>Port of the AUDITOR instance.</td></tr>
-<tr><td><code>auditor_timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
-<tr><td><code>benchmark_name</code></td><td>Name of the <code>benchmark</code> field in the AUDITOR records.</td></tr>
-<tr><td><code>cores_name</code></td><td>Name of the <code>cores</code> field in the AUDITOR records.</td></tr>
-<tr><td><code>cpu_time_name</code></td><td>Name of the field that stores the total CPU time in the AUDITOR records.</td></tr>
-<tr><td><code>cpu_time_unit</code></td><td>Unit of total CPU time in the AUDITOR records, can be <code>seconds</code> or <code>milliseconds</code>.</td></tr>
-<tr><td><code>nnodes_name</code></td><td>Name of the field that stores the number of nodes in the AUDITOR records.</td></tr>
-<tr><td><code>meta_key_site</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
-<tr><td><code>meta_key_submithost</code></td><td>Name of the field that stores the submithost in the AUDITOR records.</td></tr>
-<tr><td><code>meta_key_voms</code></td><td>Name of the field that stores the VOMS information in the AUDITOR records.</td></tr>
-<tr><td><code>meta_key_user</code></td><td>Name of the field that stores the GlobalUserName in the AUDITOR records.</td></tr>
-<tr><td><code>auth_url</code></td><td>URL from which the APEL authentication token is received.</td></tr>
-<tr><td><code>ams_url</code></td><td>URL to which the reports are sent.</td></tr>
-<tr><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
-<tr><td><code>client_key</code></td><td>Path of the host key.</td></tr>
-<tr><td><code>ca_path</code></td><td>Path of the local certificate folder.</td></tr>
-<tr><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
-</tbody></table>
+<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>authentication</code>, <code>auditor</code>, and at least one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
 <p>Example config:</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
-</span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
-</span><span style="color:#00a33f;">report_interval</span><span>: 86400
-</span><span>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#ff5600;">!Config
+</span><span style="color:#00a33f;">plugin</span><span>:
+</span><span>  </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
+</span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
+</span><span>  </span><span style="color:#00a33f;">report_interval</span><span>: 86400
+</span><span>  </span><span style="color:#00a33f;">message_type</span><span>: </span><span style="color:#00a33f;">summaries
+</span><span>  
 </span><span style="color:#00a33f;">site</span><span>:
-</span><span>  </span><span style="color:#00a33f;">publish_since</span><span>: 2023-01-01 13:37:42+00:00
-</span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>: 
+</span><span>  </span><span style="color:#00a33f;">publish_since</span><span>: 2024-01-01 06:00:00+00:00
+</span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>:
 </span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
 </span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
-</span><span>  </span><span style="color:#00a33f;">default_submit_host</span><span>: </span><span style="color:#00a33f;">gsiftp://accounting.grid_site.de:1337/jobs
-</span><span>  </span><span style="color:#00a33f;">infrastructure_type</span><span>: </span><span style="color:#00a33f;">grid
-</span><span>  </span><span style="color:#00a33f;">benchmark_type</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>
-</span><span style="color:#00a33f;">auditor</span><span>:
-</span><span>  </span><span style="color:#00a33f;">auditor_ip</span><span>: 127.0.0.1
-</span><span>  </span><span style="color:#00a33f;">auditor_port</span><span>: 3333
-</span><span>  </span><span style="color:#00a33f;">auditor_timeout</span><span>: 60
-</span><span>  </span><span style="color:#00a33f;">benchmark_name</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>  </span><span style="color:#00a33f;">cores_name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>  </span><span style="color:#00a33f;">cpu_time_name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>  </span><span style="color:#00a33f;">cpu_time_unit</span><span>: </span><span style="color:#00a33f;">milliseconds
-</span><span>  </span><span style="color:#00a33f;">nnodes_name</span><span>: </span><span style="color:#00a33f;">NNodes
-</span><span>  </span><span style="color:#00a33f;">meta_key_site</span><span>: </span><span style="color:#00a33f;">site_id
-</span><span>  </span><span style="color:#00a33f;">meta_key_submithost</span><span>: </span><span style="color:#00a33f;">headnode
-</span><span>  </span><span style="color:#00a33f;">meta_key_voms</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>  </span><span style="color:#00a33f;">meta_key_username</span><span>: </span><span style="color:#00a33f;">subject
 </span><span>
 </span><span style="color:#00a33f;">authentication</span><span>:
 </span><span>  </span><span style="color:#00a33f;">auth_url</span><span>: </span><span style="color:#00a33f;">https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
@@ -766,7 +725,168 @@ Two CLI commands are available after the installation via <code>pip</code>: <cod
 </span><span>  </span><span style="color:#00a33f;">client_key</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostkey.pem
 </span><span>  </span><span style="color:#00a33f;">ca_path</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/certificates
 </span><span>  </span><span style="color:#00a33f;">verify_ca</span><span>: </span><span style="color:#a535ae;">True
+</span><span>
+</span><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">ip</span><span>: 127.0.0.1
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 3333
+</span><span>  </span><span style="color:#00a33f;">timeout</span><span>: 60
+</span><span>  </span><span style="color:#00a33f;">site_meta_field</span><span>: </span><span style="color:#00a33f;">site_id
+</span><span>  
+</span><span style="color:#00a33f;">summary_fields</span><span>:
+</span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
+</span><span>    </span><span style="color:#00a33f;">NormalisedWallDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedWallDurationField
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>      </span><span style="color:#00a33f;">score</span><span>:
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
+</span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>    </span><span style="color:#00a33f;">NormalisedCpuDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedField
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>      </span><span style="color:#00a33f;">base_value</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>        </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>      </span><span style="color:#00a33f;">score</span><span>:
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
+</span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    
+</span><span>  </span><span style="color:#00a33f;">optional</span><span>:
+</span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">Infrastructure</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>
+</span><span>
+</span><span style="color:#00a33f;">individual_job_fields</span><span>:
+</span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
+</span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>
+</span><span>  </span><span style="color:#00a33f;">optional</span><span>:
+</span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">InfrastructureType</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
+</span><span>    </span><span style="color:#00a33f;">LocalUserId</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user_id
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">FQAN</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">InfrastructureDescription</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">AUDITOR-ARC-SLURM
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
+</span><span>    </span><span style="color:#00a33f;">ServiceLevel</span><span>: </span><span style="color:#ff5600;">!ScoreField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
+</span><span>      </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">ServiceLevelType</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span></code></pre>
+<p>The individual parameters in the config file are:</p>
+<table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
+<tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
+<tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
+<tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of mesasge to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
+<tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
+<tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
+<tr><td><code>authentication</code></td><td><code>auth_url</code></td><td>URL from which the APEL authentication token is received.</td></tr>
+<tr><td><code>authentication</code></td><td><code>ams_url</code></td><td>URL to which the reports are sent.</td></tr>
+<tr><td><code>authentication</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
+<tr><td><code>authentication</code></td><td><code>client_key</code></td><td>Path of the host key.</td></tr>
+<tr><td><code>authentication</code></td><td><code>ca_path</code></td><td>Path of the local certificate folder.</td></tr>
+<tr><td><code>authentication</code></td><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
+<tr><td><code>auditor</code></td><td><code>ip</code></td><td>IP of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
+<tr><td><code>auditor</code></td><td><code>site_metaa_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+</tbody></table>
+<p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>CpuDuration
+</span><span>NormalisedCpuDuration (only for summary_job_fields)
+</span><span>NormalisedWallDuration (only for summary_job_fields)
+</span></code></pre>
+<p>There are actually more mandatory fields, but they are handlded internally and don't need any input from the user.</p>
+<p><code>optional</code> fields can be used to provide additional information to APEL:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>GlobalUserName
+</span><span>VO
+</span><span>VOGroup
+</span><span>VORole
+</span><span>SubmitHost
+</span><span>Infrastructure (only for summary_job_fields)
+</span><span>InfrastructureType (only for individual_job_fields)
+</span><span>InfrastructureDescription (only for individual_job_fields)
+</span><span>NodeCount
+</span><span>Processors
+</span><span>LocalUserId (only for individual_job_fields)
+</span><span>FQAN (only for individual_job_fields)
+</span><span>ServiceLevel (only for individual_job_fields)
+</span><span>ServiceLevelType (only for individual_job_fields)
+</span></code></pre>
+<p>The information about the possible fields, and what is mandatory or optional, is taken from <a href="https://wiki.egi.eu/wiki/APEL/MessageFormat">https://wiki.egi.eu/wiki/APEL/MessageFormat</a> and <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>, where the former also contains explanations and examples for the field content.</p>
+<p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, <code>NormalisedField</code>, and <code>NormalisedWallDurationField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
+<p>All fields have the mandatory parameter <code>datatype_in_message</code>, which indicates the data type of the field in the APEL message (see <a href="https://wiki.egi.eu/wiki/APEL/MessageFormat">https://wiki.egi.eu/wiki/APEL/MessageFormat</a>). Possible types are <code>FLOAT</code>, <code>TEXT</code>, and <code>INT</code>.</p>
+<p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
+<p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> takes the name of a function and applies it to the value. The function has to be present in <code>config.py</code> and can be added via a pull request.</p>
+<p><code>ConstantField</code> has the mandatory parameter <code>value</code>, which is exactly what will be written in the message field.</p>
+<p><code>ScoreField</code> extracts the score value from a given component from the AUDITOR record. The mandatory parameters are <code>name</code>, the name of the score, and <code>component_name</code>, the name of the component.</p>
+<p><code>NormalisedField</code> has the parameters <code>base_value</code> and <code>score</code>, where <code>score</code> is a <code>ScoreField</code> and <code>base_value</code> a <code>ComponentField</code>. The resulting value is the product of the score and the base value.</p>
+<p><code>NormalisedWallDurationField</code> has the parameter <code>score</code>, which is a <code>ScoreField</code>. The value of the score is multiplied with the <code>runtime</code> of the AUDITOR record.</p>
 <p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
 </span></code></pre>
