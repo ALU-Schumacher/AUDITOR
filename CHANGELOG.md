@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.21.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.6.4 to 2.7.1 ([@dirksammel](https://github.com/dirksammel))
