@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.21.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.6.4 to 2.7.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.1.1 to 8.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
