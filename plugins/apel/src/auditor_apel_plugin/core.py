@@ -25,6 +25,8 @@ from auditor_apel_plugin.message import (
 )
 from typing import Dict, List, Tuple
 
+logger = logging.getLogger("apel_plugin")
+
 
 def get_records(
     config: Config, client, start_time, delay_time, site=None, end_time=None
@@ -36,12 +38,12 @@ def get_records(
 
     if site is not None:
         site_ids = sites_to_report[site]
-        logging.info(f"Getting records for site {site} with site_ids: {site_ids}")
+        logger.info(f"Getting records for site {site} with site_ids: {site_ids}")
     else:
         for k, v in sites_to_report.items():
             site_ids.extend(v)
 
-        logging.info(
+        logger.info(
             f"Getting records for sites {list(sites_to_report.keys())} "
             f"with site_ids: {list(sites_to_report.values())}"
         )
@@ -67,16 +69,16 @@ def get_records(
         except Exception as e:
             if "timed" in str(e):
                 timeout_counter += 1
-                logging.warning(
+                logger.warning(
                     f"Call to AUDITOR timed out {timeout_counter}/3! "
                     f"Trying again in {timeout_counter * delay_time}s"
                 )
                 sleep(timeout_counter * delay_time)
             else:
-                logging.critical(e)
+                logger.critical(e)
                 raise
 
-    logging.critical(
+    logger.critical(
         "Call to AUDITOR timed out 3/3, quitting! "
         "Maybe increase auditor_timeout in the config"
     )
@@ -109,7 +111,7 @@ def get_time_json(config):
         with open(time_json_path, "r", encoding="utf-8") as f:
             time_dict = json.load(f)
     except FileNotFoundError:
-        logging.warning(f"Path {time_json_path} not found, creating new time json")
+        logger.warning(f"Path {time_json_path} not found, creating new time json")
         time_dict = create_time_json(time_json_path)
 
     return time_dict
@@ -126,7 +128,7 @@ def create_time_json(time_json_path):
         with open(time_json_path, "w", encoding="utf-8") as f:
             json.dump(time_dict, f)
     except FileNotFoundError:
-        logging.critical(f"Path {time_json_path} not found, could not create time json")
+        logger.critical(f"Path {time_json_path} not found, could not create time json")
         raise
 
     return time_dict
@@ -157,7 +159,7 @@ def update_time_json(config, time_dict, site, stop_time, report_time):
         with open(time_json_path, "w", encoding="utf-8") as f:
             json.dump(time_dict, f)
     except FileNotFoundError:
-        logging.critical(f"Path {time_json_path} not found, could not update time json")
+        logger.critical(f"Path {time_json_path} not found, could not update time json")
         raise
 
 
@@ -174,10 +176,10 @@ def get_site_id(config, record):
         site_id = record.meta.get(meta_key_site)[0]
         return site_id
     except AttributeError:
-        logging.critical(f"No meta data found in {record.record_id}, aborting")
+        logger.critical(f"No meta data found in {record.record_id}, aborting")
         raise
     except TypeError:
-        logging.critical(f"No site name found in {record.record_id}, aborting")
+        logger.critical(f"No site name found in {record.record_id}, aborting")
         raise
 
 
@@ -188,7 +190,7 @@ def get_voms_info(config, record):
     try:
         voms_string = replace_record_string(record.meta.get(meta_key_voms)[0])
     except TypeError:
-        logging.warning(
+        logger.warning(
             f"No VOMS information found in {record.record_id}, "
             "not sending VO, VOGroup, and VORole"
         )
@@ -200,7 +202,7 @@ def get_voms_info(config, record):
         return voms_dict
 
     if not voms_string.startswith("/"):
-        logging.warning(
+        logger.warning(
             f"VOMS information found in {record.record_id} has unknown "
             f"format: {voms_string}. Not sending VO, VOGroup, and VORole"
         )
@@ -215,7 +217,7 @@ def get_voms_info(config, record):
     voms_dict["vo"] = voms_list[1]
 
     if "Role" not in voms_string:
-        logging.warning(
+        logger.warning(
             f"No Role found in VOMS of {record.record_id}: {voms_string}, "
             "not sending VORole"
         )
@@ -251,7 +253,7 @@ def create_db(
 
     for k, v in fields_dict.items():
         if k not in message.message_fields:
-            logging.critical(
+            logger.critical(
                 f"Field {k} not in list of possible fields: {message.message_fields}"
             )
             raise ValueError
@@ -271,7 +273,7 @@ def create_db(
         with conn:
             conn.execute(create_db_str)
     except Error as e:
-        logging.critical(e)
+        logger.critical(e)
         raise
 
     return conn
@@ -314,7 +316,7 @@ def fill_db(
             with conn:
                 conn.execute(insert_db_str, data_tuple)
         except Error as e:
-            logging.critical(e)
+            logger.critical(e)
             raise
 
     return conn
@@ -458,7 +460,7 @@ def get_token(config):
             auth_url, cert=(client_cert, client_key), verify=ca_path, timeout=10
         )
     except requests.Timeout:
-        logging.critical("Timeout while getting token")
+        logger.critical("Timeout while getting token")
         raise
 
     token = response.json()["token"]
@@ -506,7 +508,7 @@ def send_payload(config, token, payload):
     else:
         ca_path = False
 
-    logging.debug(f"{ams_url}{token}")
+    logger.debug(f"{ams_url}{token}")
     post = requests.post(
         f"{ams_url}{token}",
         json=payload,
@@ -526,7 +528,7 @@ def convert_to_seconds(config, cpu_time):
     elif cpu_time_unit == "milliseconds":
         return round(cpu_time / 1000)
     else:
-        logging.critical(
+        logger.critical(
             f"Unknown unit for {cpu_time_name}: {cpu_time_unit}. "
             "Possible values are seconds or milliseconds."
         )
@@ -536,7 +538,7 @@ def convert_to_seconds(config, cpu_time):
 def check_sites_in_records(config, records):
     sites_to_report = config["site"]["sites_to_report"]
 
-    logging.debug(f"Sites to report from config: {list(sites_to_report.keys())}")
+    logger.debug(f"Sites to report from config: {list(sites_to_report.keys())}")
 
     sites_in_records = {get_site_id(config, r) for r in records}
     sites = []
@@ -547,6 +549,6 @@ def check_sites_in_records(config, records):
                 sites.append(k)
                 break
 
-    logging.debug(f"Sites found in records: {sites}")
+    logger.debug(f"Sites found in records: {sites}")
 
     return sites

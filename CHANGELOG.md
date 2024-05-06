@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Apel plugin: Use common logger in the code base ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.21.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 42.0.5 to 42.0.7 ([@dirksammel](https://github.com/dirksammel))

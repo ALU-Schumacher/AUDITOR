@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
+import logging
 import yaml
 from datetime import datetime
 from enum import Enum
@@ -10,6 +11,8 @@ from pydantic import BaseModel
 from typing import Optional, Union, Dict, List, Callable
 from pyauditor import Record
 import re
+
+logger = logging.getLogger("apel_plugin")
 
 
 class MessageType(Enum):
@@ -78,9 +81,10 @@ class ComponentField(Field):
                 break
 
         if value is None:
-            raise ValueError(
+            logger.critical(
                 f"Component {self.name} not found in record {record.record_id}"
             )
+            raise ValueError
 
         if self.divide_by is not None:
             value = round(value / self.divide_by)
@@ -99,7 +103,7 @@ class MetaField(Field):
         try:
             value = record.meta.get(self.name)[0]
         except TypeError:
-            print(f"WARNING: Meta {self.name} not found in record {record.record_id}")
+            logger.warning(f"Meta {self.name} not found in record {record.record_id}")
             return "None"
 
         if self.regex is not None:
@@ -109,16 +113,17 @@ class MetaField(Field):
                 value = re_match.group(0)
                 return value
             else:
-                print(f"WARNING: Pattern {self.regex} not found in {value}")
+                logger.warning(f"Pattern {self.regex} not found in {value}")
                 return "None"
         elif self.function is not None:
             try:
                 function = function_dict[self.function]
             except KeyError:
-                raise KeyError(
+                logger.critical(
                     f"Function {self.function} not found in dictionary of allowed "
                     "functions"
                 )
+                raise
             value = function(value)
             return value
 
@@ -140,9 +145,10 @@ class ScoreField(Field):
                 break
 
         if scores is None:
-            raise ValueError(
+            logger.critical(
                 f"Component {self.name} not found in record {record.record_id}"
             )
+            raise ValueError
 
         for s in scores:
             if s.name == self.name:
@@ -150,10 +156,11 @@ class ScoreField(Field):
                 break
 
         if value is None:
-            raise ValueError(
+            logger.critical(
                 f"Score {self.name} not found in component {self.component_name} of "
                 f"record {record.record_id}"
             )
+            raise ValueError
 
         return value
 
@@ -166,18 +173,20 @@ class RecordField(Field):
         try:
             value = getattr(record, self.name)
         except AttributeError:
-            raise AttributeError(
+            logger.critical(
                 f"Record {record.record_id} does not have attribute {self.name}"
             )
+            raise
 
         if self.modify is not None:
             try:
                 value = getattr(value, self.modify)
             except AttributeError:
-                raise AttributeError(
+                logger.critical(
                     f"Value {value} of type {type(value)} does not have attribute "
                     f"{self.name}"
                 )
+                raise
 
         return value
 
@@ -191,10 +200,11 @@ class NormalisedField(Field):
         score_value = self.score.get_value(record)
 
         if isinstance(base_value, str):
-            raise TypeError(
+            logger.critical(
                 f"base_value of NormalisedField is a string: {base_value}. "
                 "Multiplication not possible!"
             )
+            raise TypeError
         value = base_value * score_value
 
         return value
@@ -224,12 +234,14 @@ class Config(Configurable):
             if self.summary_fields is not None:
                 field_config = self.summary_fields
             else:
-                raise ValueError("summary_fields missing in config!")
+                logger.critical("summary_fields missing in config!")
+                raise ValueError
         elif self.plugin.message_type == MessageType.individual_jobs:
             if self.individual_job_fields is not None:
                 field_config = self.individual_job_fields
             else:
-                raise ValueError("individual_job_fields missing in config!")
+                logger.critical("individual_job_fields missing in config!")
+                raise ValueError
 
         return field_config
 

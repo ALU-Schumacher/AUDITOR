@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import logging
+from logging import Logger
 from pyauditor import AuditorClientBuilder
 import argparse
 from datetime import datetime
@@ -24,7 +25,7 @@ from auditor_apel_plugin.core import (
 from auditor_apel_plugin.config import get_loaders, Config
 
 
-def run(config, client, args):
+def run(logger: Logger, config, client, args):
     site = args.site
 
     message_type = config.plugin.message_type
@@ -37,25 +38,25 @@ def run(config, client, args):
     records = get_records(config, client, begin_date, 30, site, end_date)
 
     if len(records) == 0:
-        logging.critical("No records found!")
+        logger.critical("No records found!")
         sys.exit(1)
 
     token = get_token(config)
-    logging.debug(token)
+    logger.debug(token)
 
     db = create_db(field_dict, message_type)
     filled_db = fill_db(config, db, message_type, field_dict, site, records)
     grouped_db = group_db(filled_db, message_type, optional_fields)
     message = create_message(message_type, grouped_db)
-    logging.debug(message)
+    logger.debug(message)
     signed_message = sign_msg(config, message)
-    # logging.debug(signed_message)
+    # logger.debug(signed_message)
     encoded_message = base64.b64encode(signed_message).decode("utf-8")
-    # logging.debug(encoded_message)
+    # logger.debug(encoded_message)
     payload_message = build_payload(encoded_message)
-    # logging.debug(payload_message)
+    # logger.debug(payload_message)
     post_message = send_payload(config, token, payload_message)
-    logging.debug(post_message.status_code)
+    logger.debug(post_message.status_code)
 
 
 def main():
@@ -93,6 +94,8 @@ def main():
     logging.getLogger("aiosqlite").setLevel("WARNING")
     logging.getLogger("urllib3").setLevel("WARNING")
 
+    logger = logging.getLogger("apel_plugin")
+
     auditor_ip = config.auditor.ip
     auditor_port = config.auditor.port
     auditor_timeout = config.auditor.timeout
@@ -102,11 +105,11 @@ def main():
     client = builder.build_blocking()
 
     try:
-        run(config, client, args)
+        run(logger, config, client, args)
     except KeyboardInterrupt:
-        logging.critical("User abort")
+        logger.critical("User abort")
     finally:
-        logging.info("Republishing finished")
+        logger.info("Republishing finished")
 
 
 if __name__ == "__main__":
