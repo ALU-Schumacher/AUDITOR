@@ -65,11 +65,13 @@ class TestConfig:
 
         value = all_fields["VO"].name
 
-        message_type = "voms"
+        assert value == "voms"
 
         value = all_fields["CpuDuration"].name
 
         assert value == "TotalCPU"
+
+        message_type = "something_else"
 
         with pytest.raises(Exception) as pytest_error:
             plugin = PluginConfig(
@@ -126,6 +128,15 @@ class TestConfig:
         value = meta_field.get_value(record)
 
         assert value == "None"
+
+        meta_field = MetaField(
+            datatype_in_message="TEXT", name="meta_test", function="missing_function"
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            meta_field.get_value(record)
+
+        assert pytest_error.type == KeyError
 
     def test_meta_field_regex(self):
         record = pyauditor.Record(
@@ -256,6 +267,34 @@ class TestConfig:
 
         assert value == 2500.0
 
+    def test_get_value_normalised_field_fail(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        score = pyauditor.Score(name="test_score", value=2.5)
+        component = pyauditor.Component(name="test_component", amount=1000)
+        component.with_score(score)
+        record.with_component(component)
+
+        record_field = RecordField(datatype_in_message="TEXT", name="record_id")
+
+        score_field = ScoreField(
+            datatype_in_message="FLOAT",
+            name="test_score",
+            component_name="test_component",
+        )
+
+        normalised_field = NormalisedField(
+            datatype_in_message="INT", base_value=record_field, score=score_field
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            normalised_field.get_value(record)
+
+        assert pytest_error.type == TypeError
+
     def test_get_value_constant_field(self):
         constant_field = ConstantField(datatype_in_message="TEXT", value="test")
         value = constant_field.get_value()
@@ -286,6 +325,28 @@ class TestConfig:
         value = record_field.get_value(record)
 
         assert value == 3
+
+    def test_get_value_record_field_fail(self):
+        record = pyauditor.Record(
+            "record_id_123",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        record_field = RecordField(datatype_in_message="TEXT", name="missing")
+
+        with pytest.raises(Exception) as pytest_error:
+            record_field.get_value(record)
+
+        assert pytest_error.type == AttributeError
+
+        record_field = RecordField(
+            datatype_in_message="INT", name="start_time", modify="missing"
+        )
+
+        with pytest.raises(Exception) as pytest_error:
+            record_field.get_value(record)
+
+        assert pytest_error.type == AttributeError
 
     def test_loaders(self):
         test_yaml = """
