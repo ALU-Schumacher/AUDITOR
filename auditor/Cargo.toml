@@ -91,7 +91,7 @@ quickcheck_macros = "1"
 tokio = { version = "1", features = ["full"] }
 wiremock = "0.6"
 criterion = {version = "0.5", features = ["html_reports", "async_tokio"]}
-criterion-macro = "0.3"
+criterion-macro = "0.4"
 
 [features]
 default = ["server"]
