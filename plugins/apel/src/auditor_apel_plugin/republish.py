@@ -24,6 +24,8 @@ from auditor_apel_plugin.core import (
 )
 from auditor_apel_plugin.config import get_loaders, Config
 
+TRACE = logging.DEBUG - 5
+
 
 def run(logger: Logger, config, client, args):
     site = args.site
@@ -48,13 +50,13 @@ def run(logger: Logger, config, client, args):
     filled_db = fill_db(config, db, message_type, field_dict, site, records)
     grouped_db = group_db(filled_db, message_type, optional_fields)
     message = create_message(message_type, grouped_db)
-    logger.debug(message)
+    logger.log(TRACE, message)
     signed_message = sign_msg(config, message)
-    # logger.debug(signed_message)
+    logger.log(TRACE, signed_message)
     encoded_message = base64.b64encode(signed_message).decode("utf-8")
-    # logger.debug(encoded_message)
+    logger.log(TRACE, encoded_message)
     payload_message = build_payload(encoded_message)
-    # logger.debug(payload_message)
+    logger.log(TRACE, payload_message)
     post_message = send_payload(config, token, payload_message)
     logger.debug(post_message.status_code)
 
@@ -85,7 +87,11 @@ def main():
         config: Config = yaml.load(f, Loader=get_loaders())
 
     log_level = config.plugin.log_level
-    log_format = "[%(asctime)s] %(levelname)-8s %(message)s"
+    log_format = (
+        "[%(asctime)s] %(levelname)-8s %(message)s (%(pathname)s at line %(lineno)d)"
+    )
+
+    logging.addLevelName(TRACE, "TRACE")
     logging.basicConfig(
         level=log_level,
         format=log_format,
