@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.21.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 42.0.5 to 42.0.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pydantic from 2.6.4 to 2.7.1 ([@dirksammel](https://github.com/dirksammel))
