@@ -62,12 +62,7 @@ def run(logger: Logger, config: Config, client):
             begin_month = get_begin_current_month(current_time)
 
         for site in sites_to_report.keys():
-            if message_type == MessageType.individual_jobs:
-                start_time = get_start_time(config, time_dict, site)
-                logger.info(f"Getting records since {start_time}")
-                records = get_records(config, client, start_time, 30, site=site)
-            elif message_type == MessageType.summaries:
-                records = get_records(config, client, begin_month, 30, site=site)
+            records = get_records(config, client, begin_month, 30, site=site)
 
             if len(records) == 0:
                 logger.info(f"No new records for {site}")
@@ -75,23 +70,6 @@ def run(logger: Logger, config: Config, client):
 
             latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
             logger.debug(f"Latest stop time is {latest_stop_time}")
-
-            db = create_db(field_dict, message_type)
-            filled_db = fill_db(config, db, message_type, field_dict, site, records)
-            grouped_db = group_db(filled_db, message_type, optional_fields)
-            message = create_message(message_type, grouped_db)
-            logger.log(TRACE, message)
-            signed_message = sign_msg(config, message)
-            logger.log(TRACE, signed_message)
-            encoded_message = base64.b64encode(signed_message).decode("utf-8")
-            logger.log(TRACE, encoded_message)
-            payload_message = build_payload(encoded_message)
-            logger.log(TRACE, payload_message)
-            post_message = send_payload(config, token, payload_message)
-            logger.debug(post_message.status_code)
-
-            if message_type == MessageType.individual_jobs:
-                records = get_records(config, client, begin_month, 30, site=site)
 
             sync_db = create_db({}, MessageType.sync)
             filled_sync_db = fill_db(
@@ -108,6 +86,33 @@ def run(logger: Logger, config: Config, client):
             logger.debug(payload_sync)
             post_sync = send_payload(config, token, payload_sync)
             logger.debug(post_sync.status_code)
+
+            if message_type == MessageType.individual_jobs:
+                start_time = get_start_time(config, time_dict, site)
+                logger.info(f"Getting records since {start_time}")
+                records = [
+                    r
+                    for r in records
+                    if r.stop_time.replace(tzinfo=timezone.utc) > start_time
+                ]
+
+                if len(records) == 0:
+                    logger.info(f"No new records for {site}")
+                    continue
+
+            db = create_db(field_dict, message_type)
+            filled_db = fill_db(config, db, message_type, field_dict, site, records)
+            grouped_db = group_db(filled_db, message_type, optional_fields)
+            message = create_message(message_type, grouped_db)
+            logger.log(TRACE, message)
+            signed_message = sign_msg(config, message)
+            logger.log(TRACE, signed_message)
+            encoded_message = base64.b64encode(signed_message).decode("utf-8")
+            logger.log(TRACE, encoded_message)
+            payload_message = build_payload(encoded_message)
+            logger.log(TRACE, payload_message)
+            post_message = send_payload(config, token, payload_message)
+            logger.debug(post_message.status_code)
 
             latest_report_time = datetime.now()
             update_time_json(
