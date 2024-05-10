@@ -839,7 +839,7 @@ See below for all currently available collectors.</p>
 </span></code></pre>
 <p>The individual parameters in the config file are:</p>
 <table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
+<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity). <code>TRACE</code> might produce a lot of output if <code>message_type</code> is set to <code>individual_jobs</code>, since the message that will be sent to APEL is printed.</td></tr>
 <tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of mesasge to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
@@ -854,7 +854,7 @@ See below for all currently available collectors.</p>
 <tr><td><code>auditor</code></td><td><code>ip</code></td><td>IP of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
-<tr><td><code>auditor</code></td><td><code>site_metaa_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+<tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
 </tbody></table>
 <p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
 <pre style="background-color:#ffffff;color:#000000;"><code><span>CpuDuration
