@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE auditor\n        SET stop_time = $2,\n            runtime = $3,\n            updated_at = $4\n        WHERE\n            record_id = $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Timestamptz",
+        "Int8",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fd0276b7b26e8fee23c01c8552cd8f4391fb2f9de1cdd6e6501e8ee5647cacbf"
+}

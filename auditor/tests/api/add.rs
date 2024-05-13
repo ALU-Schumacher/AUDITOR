@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, RecordDatabase, RecordTest};
+use auditor::domain::{RecordDatabase, RecordTest};
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -17,45 +17,14 @@ async fn add_returns_a_200_for_valid_json_data() {
 
         let saved = sqlx::query_as!(
             RecordDatabase,
-            r#"SELECT a.record_id,
-                      m.meta as "meta: Vec<(String, Vec<String>)>",
-                      css.components as "components: Vec<Component>",
-                      a.start_time as "start_time?",
-                      a.stop_time,
-                      a.runtime
-               FROM accounting a
-               LEFT JOIN (
-                   WITH subquery AS (
-                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
-                       FROM meta as m
-                       WHERE m.record_id = $1
-                       GROUP BY m.record_id, m.key
-                   )
-                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
-                   FROM subquery as s
-                   GROUP BY s.record_id
-                   ) m ON m.record_id = a.record_id
-               LEFT JOIN (
-                   WITH subquery AS (
-                      SELECT 
-                          c.id as cid,
-                          COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores
-                      FROM components as c
-                      LEFT JOIN components_scores as cs
-                      ON c.id = cs.component_id
-                      LEFT JOIN scores as s
-                      ON cs.score_id = s.id
-                      GROUP BY c.id
-                   )
-                   SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components
-                   FROM records_components AS rc
-                   LEFT JOIN components as c
-                   ON rc.component_id = c.id
-                   LEFT JOIN subquery AS sq
-                   ON sq.cid = rc.component_id
-                   GROUP BY rc.record_id
-               ) css ON css.id = a.id
-               WHERE a.record_id = $1
+            r#"SELECT record_id,
+                  meta,
+                  components,
+                  start_time,
+                  stop_time,
+                  runtime
+           FROM auditor
+           WHERE record_id = $1
             "#,
             body.record_id.as_ref().unwrap(),
         )
@@ -93,7 +62,7 @@ async fn add_returns_a_400_for_invalid_json_data() {
 
             assert_eq!(400, response.status().as_u16());
 
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM accounting"#,)
+            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
                 .fetch_all(&app.db_pool)
                 .await
                 .expect("Failed to fetch data");
@@ -138,7 +107,7 @@ async fn add_returns_a_400_when_data_is_missing() {
             "The API did not fail with 400 Bad Request when the payload was {error_message}."
         );
 
-        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM accounting"#,)
+        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
             .fetch_all(&app.db_pool)
             .await
             .expect("Failed to fetch data");
@@ -174,45 +143,14 @@ async fn bulk_insert_records() {
     for record in records {
         let saved = sqlx::query_as!(
             RecordDatabase,
-            r#"SELECT a.record_id,
-                      m.meta as "meta: Vec<(String, Vec<String>)>",
-                      css.components as "components: Vec<Component>",
-                      a.start_time as "start_time?",
-                      a.stop_time,
-                      a.runtime
-               FROM accounting a
-               LEFT JOIN (
-                   WITH subquery AS (
-                       SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
-                       FROM meta as m
-                       WHERE m.record_id = $1
-                       GROUP BY m.record_id, m.key
-                   )
-                   SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
-                   FROM subquery as s
-                   GROUP BY s.record_id
-                   ) m ON m.record_id = a.record_id
-               LEFT JOIN (
-                   WITH subquery AS (
-                      SELECT 
-                          c.id as cid,
-                          COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores
-                      FROM components as c
-                      LEFT JOIN components_scores as cs
-                      ON c.id = cs.component_id
-                      LEFT JOIN scores as s
-                      ON cs.score_id = s.id
-                      GROUP BY c.id
-                   )
-                   SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components
-                   FROM records_components AS rc
-                   LEFT JOIN components as c
-                   ON rc.component_id = c.id
-                   LEFT JOIN subquery AS sq
-                   ON sq.cid = rc.component_id
-                   GROUP BY rc.record_id
-               ) css ON css.id = a.id
-               WHERE a.record_id = $1
+            r#"SELECT record_id,
+                  meta,
+                  components,
+                  start_time,
+                  stop_time,
+                  runtime
+           FROM auditor
+           WHERE record_id = $1
             "#,
             record.record_id.as_ref().unwrap(),
         )
@@ -249,7 +187,7 @@ async fn bulk_insert_returns_a_400_for_invalid_json_data() {
 
             assert_eq!(400, response.status().as_u16());
 
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM accounting"#,)
+            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
                 .fetch_all(&app.db_pool)
                 .await
                 .expect("Failed to fetch data");
@@ -305,7 +243,7 @@ async fn bulk_insert_returns_a_400_when_data_is_missing() {
             "The API did not fail with 400 Bad Request when the payload was {error_message}."
         );
 
-        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM accounting"#,)
+        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
             .fetch_all(&app.db_pool)
             .await
             .expect("Failed to fetch data");

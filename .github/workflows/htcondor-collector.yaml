@@ -86,12 +86,13 @@ jobs:
       run: |
         TABLE=$(docker exec htcondor-postgres-1 \
           bash -c "psql -U postgres -d auditor -c \" \
-            SELECT ac.runtime, sc.name, sc.value FROM accounting as ac \
-            JOIN records_components as rc ON ac.id=rc.record_id \
-            JOIN components AS co ON rc.component_id=co.id \
-            JOIN components_scores AS cs ON co.id=cs.component_id \
-            JOIN scores AS sc ON cs.score_id=sc.id \
-            ORDER BY sc.name; \
+            SELECT runtime, \
+            (score->>'name') AS name, \
+            (score->>'value')::double precision AS value \
+            FROM auditor, \
+            jsonb_array_elements(components) AS comp, \
+            jsonb_array_elements(comp->'scores') AS score \
+            ORDER BY name; \
           \"")
         echo "table<<EOF" >> $GITHUB_OUTPUT
         echo "$TABLE" >> $GITHUB_OUTPUT

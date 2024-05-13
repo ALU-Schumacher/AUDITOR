@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Component, Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
+use auditor::domain::{Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};
 use auditor_client::{AuditorClientBuilder, Operator, QueryBuilder};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
@@ -28,44 +28,14 @@ async fn add_records() {
 
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<(String, Vec<String>)>",
-                  css.components as "components: Vec<Component>",
-                  a.start_time as "start_time?",
-                  a.stop_time,
-                  a.runtime
-           FROM accounting a
-           LEFT JOIN (
-               WITH subquery AS (
-                   SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
-                   FROM meta as m
-                   GROUP BY m.record_id, m.key
-               )
-               SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
-               FROM subquery as s
-               GROUP BY s.record_id
-               ) m ON m.record_id = a.record_id
-           LEFT JOIN (
-               WITH subquery AS (
-                  SELECT 
-                      c.id as cid,
-                      COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores
-                  FROM components as c
-                  LEFT JOIN components_scores as cs
-                  ON c.id = cs.component_id
-                  LEFT JOIN scores as s
-                  ON cs.score_id = s.id
-                  GROUP BY c.id
-               )
-               SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components
-               FROM records_components AS rc
-               LEFT JOIN components as c
-               ON rc.component_id = c.id
-               LEFT JOIN subquery AS sq
-               ON sq.cid = rc.component_id
-               GROUP BY rc.record_id
-           ) css ON css.id = a.id
-           ORDER BY a.stop_time
+        r#"SELECT record_id,
+                  meta,
+                  components,
+                  start_time,
+                  stop_time,
+                  runtime
+           FROM auditor
+           ORDER BY stop_time
         "#,
     )
     .fetch_all(&app.db_pool)
@@ -133,44 +103,14 @@ async fn update_records() {
 
     let mut saved_records = sqlx::query_as!(
         RecordDatabase,
-        r#"SELECT a.record_id,
-                  m.meta as "meta: Vec<(String, Vec<String>)>",
-                  css.components as "components: Vec<Component>",
-                  a.start_time as "start_time?",
-                  a.stop_time,
-                  a.runtime
-           FROM accounting a
-           LEFT JOIN (
-               WITH subquery AS (
-                   SELECT m.record_id as record_id, m.key as key, array_agg(m.value) as values
-                   FROM meta as m
-                   GROUP BY m.record_id, m.key
-               )
-               SELECT s.record_id as record_id, array_agg(row(s.key, s.values)) as meta
-               FROM subquery as s
-               GROUP BY s.record_id
-               ) m ON m.record_id = a.record_id
-           LEFT JOIN (
-               WITH subquery AS (
-                  SELECT 
-                      c.id as cid,
-                      COALESCE(array_agg(row(s.name, s.value)::score) FILTER (WHERE s.name IS NOT NULL AND s.value IS NOT NULL), '{}'::score[]) as scores
-                  FROM components as c
-                  LEFT JOIN components_scores as cs
-                  ON c.id = cs.component_id
-                  LEFT JOIN scores as s
-                  ON cs.score_id = s.id
-                  GROUP BY c.id
-               )
-               SELECT rc.record_id as id, array_agg(row(c.name, c.amount, sq.scores)::component) as components
-               FROM records_components AS rc
-               LEFT JOIN components as c
-               ON rc.component_id = c.id
-               LEFT JOIN subquery AS sq
-               ON sq.cid = rc.component_id
-               GROUP BY rc.record_id
-           ) css ON css.id = a.id
-           ORDER BY a.stop_time
+        r#"SELECT record_id,
+                  meta,
+                  components,
+                  start_time,
+                  stop_time,
+                  runtime
+           FROM auditor
+           ORDER BY stop_time
         "#,
     )
     .fetch_all(&app.db_pool)
@@ -230,96 +170,26 @@ async fn get_returns_a_list_of_records() {
         let runtime = (record.stop_time.unwrap() - record.start_time.unwrap()).num_seconds();
         let mut transaction = app.db_pool.begin().await.unwrap();
 
-        let id = sqlx::query_unchecked!(
+        sqlx::query_unchecked!(
             r#"
-                INSERT INTO accounting (
-                    record_id, start_time, stop_time, runtime, updated_at
-                )
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id;
-            "#,
+        INSERT INTO auditor (
+            record_id, start_time, stop_time, meta, components, runtime, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id;
+        "#,
             record.record_id.as_ref(),
             record.start_time,
             record.stop_time,
+            serde_json::to_value(&record.meta).unwrap_or_else(|_| serde_json::Value::Null),
+            serde_json::to_value(&record.components).unwrap_or_else(|_| serde_json::Value::Null),
             runtime,
             Utc::now()
         )
         .fetch_optional(&mut *transaction)
         .await
         .unwrap()
-        .unwrap()
-        .id;
-
-        for component in record.components.as_ref().unwrap().iter() {
-            let (names, scores): (Vec<String>, Vec<f64>) = component
-                .scores
-                .iter()
-                .map(|s| (s.name.as_ref().unwrap().to_string(), s.value.unwrap()))
-                .unzip();
-
-            sqlx::query_unchecked!(
-                r#"
-                WITH insert_components AS (
-                    INSERT INTO components (name, amount)
-                    VALUES ($1, $2)
-                    RETURNING id
-                ),
-                insert_scores AS (
-                    INSERT INTO scores (name, value)
-                    SELECT * FROM UNNEST($3::text[], $4::double precision[])
-                    -- Update if already in table. This isn't great, but 
-                    -- otherwise RETURNING won't return anything.
-                    ON CONFLICT (name, value) DO UPDATE
-                    SET value = EXCLUDED.value, name = EXCLUDED.name
-                    RETURNING id
-                ),
-                insert_components_scores AS (
-                    INSERT INTO components_scores (component_id, score_id)
-                    SELECT (SELECT id FROM insert_components), id
-                    FROM insert_scores
-                )
-                INSERT INTO records_components (record_id, component_id)
-                SELECT $5, (SELECT id from insert_components) 
-                -- FROM accounting WHERE id = $5
-                "#,
-                component.name.as_ref(),
-                component.amount,
-                &names[..],
-                &scores[..],
-                id,
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
-
-        if let Some(data) = record.meta.as_ref() {
-            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
-                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
-                    v.iter()
-                        .map(|v| {
-                            (
-                                record.record_id.as_ref().unwrap().clone(),
-                                k.clone(),
-                                v.clone(),
-                            )
-                        })
-                        .collect::<Vec<_>>()
-                }));
-
-            sqlx::query!(
-                r#"
-                INSERT INTO meta (record_id, key, value)
-                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
-                "#,
-                &rid[..],
-                &names[..],
-                &values[..],
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
+        .unwrap();
 
         transaction.commit().await.unwrap();
     }
@@ -371,96 +241,26 @@ async fn get_started_since_returns_a_list_of_records() {
 
         let mut transaction = app.db_pool.begin().await.unwrap();
 
-        let id = sqlx::query_unchecked!(
+        sqlx::query_unchecked!(
             r#"
-                INSERT INTO accounting (
-                    record_id, start_time, stop_time, runtime, updated_at
-                )
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id;
-            "#,
+        INSERT INTO auditor (
+            record_id, start_time, stop_time, meta, components, runtime, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id;
+        "#,
             record.record_id.as_ref(),
             record.start_time,
             record.stop_time,
+            serde_json::to_value(&record.meta).unwrap_or_else(|_| serde_json::Value::Null),
+            serde_json::to_value(&record.components).unwrap_or_else(|_| serde_json::Value::Null),
             runtime,
             Utc::now()
         )
         .fetch_optional(&mut *transaction)
         .await
         .unwrap()
-        .unwrap()
-        .id;
-
-        for component in record.components.as_ref().unwrap().iter() {
-            let (names, scores): (Vec<String>, Vec<f64>) = component
-                .scores
-                .iter()
-                .map(|s| (s.name.as_ref().unwrap().to_string(), s.value.unwrap()))
-                .unzip();
-
-            sqlx::query_unchecked!(
-                r#"
-                WITH insert_components AS (
-                    INSERT INTO components (name, amount)
-                    VALUES ($1, $2)
-                    RETURNING id
-                ),
-                insert_scores AS (
-                    INSERT INTO scores (name, value)
-                    SELECT * FROM UNNEST($3::text[], $4::double precision[])
-                    -- Update if already in table. This isn't great, but 
-                    -- otherwise RETURNING won't return anything.
-                    ON CONFLICT (name, value) DO UPDATE
-                    SET value = EXCLUDED.value, name = EXCLUDED.name
-                    RETURNING id
-                ),
-                insert_components_scores AS (
-                    INSERT INTO components_scores (component_id, score_id)
-                    SELECT (SELECT id FROM insert_components), id
-                    FROM insert_scores
-                )
-                INSERT INTO records_components (record_id, component_id)
-                SELECT $5, (SELECT id from insert_components) 
-                -- FROM accounting WHERE id = $5
-                "#,
-                component.name.as_ref(),
-                component.amount,
-                &names[..],
-                &scores[..],
-                id,
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
-
-        if let Some(data) = record.meta.as_ref() {
-            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
-                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
-                    v.iter()
-                        .map(|v| {
-                            (
-                                record.record_id.as_ref().unwrap().clone(),
-                                k.clone(),
-                                v.clone(),
-                            )
-                        })
-                        .collect::<Vec<_>>()
-                }));
-
-            sqlx::query!(
-                r#"
-                INSERT INTO meta (record_id, key, value)
-                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
-                "#,
-                &rid[..],
-                &names[..],
-                &values[..],
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
+        .unwrap();
 
         transaction.commit().await.unwrap();
     }
@@ -523,96 +323,26 @@ async fn get_stopped_since_returns_a_list_of_records() {
 
         let mut transaction = app.db_pool.begin().await.unwrap();
 
-        let id = sqlx::query_unchecked!(
+        sqlx::query_unchecked!(
             r#"
-                INSERT INTO accounting (
-                    record_id, start_time, stop_time, runtime, updated_at
-                )
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id;
-            "#,
+        INSERT INTO auditor (
+            record_id, start_time, stop_time, meta, components, runtime, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id;
+        "#,
             record.record_id.as_ref(),
             record.start_time,
             record.stop_time,
+            serde_json::to_value(&record.meta).unwrap_or_else(|_| serde_json::Value::Null),
+            serde_json::to_value(&record.components).unwrap_or_else(|_| serde_json::Value::Null),
             runtime,
             Utc::now()
         )
         .fetch_optional(&mut *transaction)
         .await
         .unwrap()
-        .unwrap()
-        .id;
-
-        for component in record.components.as_ref().unwrap().iter() {
-            let (names, scores): (Vec<String>, Vec<f64>) = component
-                .scores
-                .iter()
-                .map(|s| (s.name.as_ref().unwrap().to_string(), s.value.unwrap()))
-                .unzip();
-
-            sqlx::query_unchecked!(
-                r#"
-                WITH insert_components AS (
-                    INSERT INTO components (name, amount)
-                    VALUES ($1, $2)
-                    RETURNING id
-                ),
-                insert_scores AS (
-                    INSERT INTO scores (name, value)
-                    SELECT * FROM UNNEST($3::text[], $4::double precision[])
-                    -- Update if already in table. This isn't great, but 
-                    -- otherwise RETURNING won't return anything.
-                    ON CONFLICT (name, value) DO UPDATE
-                    SET value = EXCLUDED.value, name = EXCLUDED.name
-                    RETURNING id
-                ),
-                insert_components_scores AS (
-                    INSERT INTO components_scores (component_id, score_id)
-                    SELECT (SELECT id FROM insert_components), id
-                    FROM insert_scores
-                )
-                INSERT INTO records_components (record_id, component_id)
-                SELECT $5, (SELECT id from insert_components) 
-                -- FROM accounting WHERE id = $5
-                "#,
-                component.name.as_ref(),
-                component.amount,
-                &names[..],
-                &scores[..],
-                id,
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
-
-        if let Some(data) = record.meta.as_ref() {
-            let (rid, names, values): (Vec<String>, Vec<String>, Vec<String>) =
-                itertools::multiunzip(data.iter().flat_map(|(k, v)| {
-                    v.iter()
-                        .map(|v| {
-                            (
-                                record.record_id.as_ref().unwrap().clone(),
-                                k.clone(),
-                                v.clone(),
-                            )
-                        })
-                        .collect::<Vec<_>>()
-                }));
-
-            sqlx::query!(
-                r#"
-                INSERT INTO meta (record_id, key, value)
-                SELECT * FROM UNNEST($1::text[], $2::text[], $3::text[])
-                "#,
-                &rid[..],
-                &names[..],
-                &values[..],
-            )
-            .execute(&mut *transaction)
-            .await
-            .unwrap();
-        }
+        .unwrap();
 
         transaction.commit().await.unwrap();
     }

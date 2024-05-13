@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- AUDITOR: Run `sqlx migrate run` to migrate to new schema for AUDITOR accounting db. ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Use class structure for config and messages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Change `month` and `year` parameters of republish script to `begin_date` and `end_date` ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Logging of APEL messages moved from DEBUG to TRACE level ([@dirksammel](https://github.com/dirksammel))
@@ -14,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- AUDITOR: Migrate to jsonb type for meta and component fields for AUDITOR postgresql. (#736) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))

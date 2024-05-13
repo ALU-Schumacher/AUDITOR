@@ -96,7 +96,7 @@ impl DatabaseMetricsWatcher {
 
     #[tracing::instrument(name = "Update record count for database metrics", skip(self))]
     async fn update_record_count(&self) -> Result<(), anyhow::Error> {
-        let num = sqlx::query_scalar!(r#"SELECT count(*) as "count!" FROM accounting;"#)
+        let num = sqlx::query_scalar!(r#"SELECT count(*) as "count!" FROM auditor;"#)
             .fetch_one(&self.db_pool)
             .await?;
         let mut data_lock = self.data.lock().unwrap();
@@ -108,12 +108,11 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_site(&self) -> Result<(), anyhow::Error> {
         let per_site: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value as "name!", count(*) as "num!"
-               FROM meta
-               WHERE key = $1 
-               GROUP BY value;
-            "#,
-            "site_id"
+            r#"
+            SELECT jsonb_array_elements_text(meta->'site_id') AS "name!", COUNT(*) AS "num!"
+            FROM auditor
+            GROUP BY jsonb_array_elements_text(meta->'site_id');
+            "#
         )
         .fetch_all(&self.db_pool)
         .await?
@@ -133,12 +132,11 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_group(&self) -> Result<(), anyhow::Error> {
         let per_group: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value as "name!", count(*) as "num!"
-               FROM meta
-               WHERE key = $1
-               GROUP BY value;
-            "#,
-            "group_id"
+            r#"
+            SELECT jsonb_array_elements_text(meta->'group_id') AS "name!", COUNT(*) AS "num!"
+            FROM auditor
+            GROUP BY jsonb_array_elements_text(meta->'group_id');
+            "#
         )
         .fetch_all(&self.db_pool)
         .await?
@@ -155,12 +153,11 @@ impl DatabaseMetricsWatcher {
     async fn update_record_count_per_user(&self) -> Result<(), anyhow::Error> {
         let per_user: HashMap<String, i64> = sqlx::query_as!(
             AggregatedColumns,
-            r#"SELECT value as "name!", count(*) as "num!"
-               FROM meta
-               WHERE key = $1
-               GROUP BY value;
-            "#,
-            "user_id"
+            r#"
+            SELECT jsonb_array_elements_text(meta->'user_id') AS "name!", COUNT(*) AS "num!"
+            FROM auditor
+            GROUP BY jsonb_array_elements_text(meta->'user_id');
+            "#
         )
         .fetch_all(&self.db_pool)
         .await?
