@@ -82,9 +82,8 @@ features = [
 ]
 
 [dev-dependencies]
-auditor-client = { path = "../auditor-client" }
+auditor-client = { path = "../auditor-client", version = "0.5.0" }
 once_cell = "1"
-# claim = "0.5"
 claim = { package = "claims", version = "0.7" }
 quickcheck = "1"
 quickcheck_macros = "1"

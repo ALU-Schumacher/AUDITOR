@@ -32,7 +32,7 @@ strip = true
 [dependencies]
 anyhow = "1"
 auditor = { path = "../../auditor", version = "0.5.0", default-features = false }
-auditor-client = { path = "../../auditor-client" }
+auditor-client = { path = "../../auditor-client", version = "0.5.0" }
 bincode = "1.3.3"
 color-eyre = "0.6.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "process"] }
