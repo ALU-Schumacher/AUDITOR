@@ -11,6 +11,10 @@ component_management:
       name: auditor
       paths:
         - auditor/**
+    - component_id: module_auditor_client
+      name: auditor_client
+      paths:
+        - auditor-client/**
     - component_id: module_slurm_collector
       name: slurm_collector
       paths:
