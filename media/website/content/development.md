@@ -100,6 +100,7 @@ cargo install bunyan
 git clone git@github.com:ALU-Schumacher/AUDITOR.git
 cd AUDITOR
 ./scripts/init_db.sh
+./scripts/init_client_sqlite.sh
 ./scripts/init_slurm_collector_sqlite.sh
 cargo run
 ```
