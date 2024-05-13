@@ -75,6 +75,25 @@
             <div class="toc-sticky">
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/development/#contributing-to-auditor">Contributing to Auditor</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/development/#getting-started"><small>- Getting started</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/development/#working-on-a-new-features"><small>- Working on a new features</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/development/#creating-a-pull-request"><small>- Creating a pull request</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/development/#compiling-auditor-from-source">Compiling Auditor from source</a>
                 </div>
                 
@@ -139,6 +158,36 @@
             
 <div class="heading-text">Instructions for developers</div>
 <p>This document covers instructions for developers of Auditor and its plugins/collectors.</p>
+<h1 id="contributing-to-auditor">Contributing to Auditor</h1>
+<h2 id="getting-started">Getting started</h2>
+<p>First, fork the <a href="https://github.com/ALU-Schumacher/AUDITOR">AUDITOR</a> repo to your account. Then clone the forked repo to your machine. Also add the original repository as <code>upstream</code> remote.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;"># if you use SSH authentication
+</span><span>git clone git@github.com:</span><span style="color:#ff5600;">&lt;</span><span>your-username</span><span style="color:#ff5600;">&gt;</span><span>/AUDITOR.git
+</span><span style="color:#a535ae;">cd</span><span> AUDITOR
+</span><span>git remote add upstream git@github.com:ALU-Schumacher/AUDITOR.git
+</span><span>
+</span><span style="color:#919191;"># if you use HTTPS authentication
+</span><span>git clone https://github.com/</span><span style="color:#ff5600;">&lt;</span><span>your-username</span><span style="color:#ff5600;">&gt;</span><span>/AUDITOR.git
+</span><span style="color:#a535ae;">cd</span><span> AUDITOR
+</span><span>git remote add upstream https://github.com/ALU-Schumacher/AUDITOR.git
+</span></code></pre>
+<h2 id="working-on-a-new-features">Working on a new features</h2>
+<p>Create a new branch in your fork</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git switch -c my-feature-branch
+</span><span>git push -u origin my-feature-branch
+</span></code></pre>
+<p>You can now create and push new commits as usual.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git add my-file
+</span><span>git push
+</span></code></pre>
+<h2 id="creating-a-pull-request">Creating a pull request</h2>
+<p>We follow a rebased-based workflow. Therefore, you need to rebase your branch to the latest <code>main</code> branch of the <code>upstream</code> repo.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git fetch upstream
+</span><span>git rebase upstream/main
+</span><span style="color:#919191;"># force push might be necessary
+</span><span>git push origin my-feature-branch -f
+</span></code></pre>
+<p>You then can create a pull request through GitHub's UI.</p>
 <h1 id="compiling-auditor-from-source">Compiling Auditor from source</h1>
 <p>This section describes how to set up the required development environment in order to compile Auditor from source.
 It also covers cross compiling and static linking against <code>musl</code> instead of <code>glibc</code> in order to obtain a maximally portable binary.</p>
@@ -167,6 +216,7 @@ It also covers cross compiling and static linking against <code>musl</code> inst
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git clone git@github.com:ALU-Schumacher/AUDITOR.git
 </span><span style="color:#a535ae;">cd</span><span> AUDITOR
 </span><span>./scripts/init_db.sh
+</span><span>./scripts/init_client_sqlite.sh
 </span><span>./scripts/init_slurm_collector_sqlite.sh
 </span><span>cargo run
 </span></code></pre>
@@ -253,10 +303,12 @@ A local version of the documentation can be built with</p>
 <li>Publish <code>auditor</code> crate first (you will need a <a href="https://crates.io/settings/tokens">crates.io API token</a>)<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a535ae;">cd</span><span> auditor
 </span><span>cargo publish --dry-run
 </span><span>cargo publish
+</span><span style="color:#a535ae;">cd</span><span> ..
 </span></code></pre>
 </li>
-<li>Then run the publish workflow for all rust-based collectors/plugins (<code>cd</code> into corresponding dirs)
+<li>Then run the publish workflow for the <code>auditor-client</code> crate and all rust-based collectors/plugins (<code>cd</code> into corresponding dirs)
 <ul>
+<li><code>auditor-client</code></li>
 <li><code>plugins/priority</code></li>
 <li><code>collectors/slurm</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
 <li><code>collectors/slurm_epilog</code></li>
@@ -273,7 +325,7 @@ A local version of the documentation can be built with</p>
 <li>This triggers the build of the docker containers and pushes them to DockerHub and GHCR</li>
 <li>This triggers a GitHub release
 <ul>
-<li>Update the release notes by editing the release and pressing the auto-generate button</li>
+<li>Update the release notes by copying the corresponding section from the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a></li>
 </ul>
 </li>
 </ul>
