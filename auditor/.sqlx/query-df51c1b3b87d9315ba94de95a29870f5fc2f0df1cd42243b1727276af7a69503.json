@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT jsonb_array_elements_text(meta->'group_id') AS \"name!\", COUNT(*) AS \"num!\"\n            FROM auditor\n            GROUP BY jsonb_array_elements_text(meta->'group_id');\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "num!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "df51c1b3b87d9315ba94de95a29870f5fc2f0df1cd42243b1727276af7a69503"
+}

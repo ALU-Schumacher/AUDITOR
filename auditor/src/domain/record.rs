@@ -224,11 +224,11 @@ pub struct Record {
 }
 
 #[doc(hidden)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, sqlx::FromRow)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, sqlx::FromRow)]
 pub struct RecordDatabase {
     pub record_id: String,
-    pub meta: Option<Vec<(String, Vec<String>)>>,
-    pub components: Option<Vec<Component>>,
+    pub meta: Option<serde_json::Value>,
+    pub components: Option<serde_json::Value>,
     pub start_time: Option<DateTime<Utc>>,
     pub stop_time: Option<DateTime<Utc>>,
     pub runtime: Option<i64>,
@@ -663,7 +663,13 @@ impl TryFrom<RecordDatabase> for Record {
             runtime,
         } = other;
         let meta = if let Some(meta) = meta {
-            Some(meta.try_into()?)
+            serde_json::from_value(meta).ok()
+        } else {
+            None
+        };
+
+        let components = if let Some(components) = components {
+            serde_json::from_value(components).ok()
         } else {
             None
         };

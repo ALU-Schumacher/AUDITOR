@@ -6,6 +6,10 @@ weight = 3
 
 # From 0.5.0 to unreleased/0.6.0
 
+## Auditor DB:
+- WARNING: Please create a backup of the database before running the migration script.
+- AUDITOR db should be migrated to use the new schema. Run `sqlx migrate run --source migration` from the AUDITOR home directory. It is also possible using the container which can be found here [Documentation](../#migrating-the-database)
+
 ## Apel plugin
 
 - The APEL message can now be configured via the config. An updated example config file can be found in the [Documentation](../#apel-plugin).
