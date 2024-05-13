@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
+- Docs: Add contribution guidelines ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed
 - Apel plugin: Use common logger in the code base ([@dirksammel](https://github.com/dirksammel))

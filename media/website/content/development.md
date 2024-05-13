@@ -6,6 +6,53 @@ weight = 3
 
 This document covers instructions for developers of Auditor and its plugins/collectors.
 
+# Contributing to Auditor
+
+## Getting started
+
+First, fork the [AUDITOR](https://github.com/ALU-Schumacher/AUDITOR) repo to your account. Then clone the forked repo to your machine. Also add the original repository as `upstream` remote.
+
+```bash
+# if you use SSH authentication
+git clone git@github.com:<your-username>/AUDITOR.git
+cd AUDITOR
+git remote add upstream git@github.com:ALU-Schumacher/AUDITOR.git
+
+# if you use HTTPS authentication
+git clone https://github.com/<your-username>/AUDITOR.git
+cd AUDITOR
+git remote add upstream https://github.com/ALU-Schumacher/AUDITOR.git
+```
+
+## Working on a new features
+
+Create a new branch in your fork
+
+```bash
+git switch -c my-feature-branch
+git push -u origin my-feature-branch
+```
+
+You can now create and push new commits as usual.
+
+```bash
+git add my-file
+git push
+```
+
+## Creating a pull request
+
+We follow a rebased-based workflow. Therefore, you need to rebase your branch to the latest `main` branch of the `upstream` repo.
+
+```bash
+git fetch upstream
+git rebase upstream/main
+# force push might be necessary
+git push origin my-feature-branch -f
+```
+
+You then can create a pull request through GitHub's UI.
+
 # Compiling Auditor from source
 
 This section describes how to set up the required development environment in order to compile Auditor from source.
