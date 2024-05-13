@@ -232,10 +232,12 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
   cd auditor
   cargo publish --dry-run
   cargo publish
+  cd ..
   ```
-- Then run the publish workflow for all rust-based collectors/plugins (`cd` into corresponding dirs)
+- Then run the publish workflow for the `auditor-client` crate and all rust-based collectors/plugins (`cd` into corresponding dirs)
+  - `auditor-client`
   - `plugins/priority`
-  -  `collectors/slurm` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
+  - `collectors/slurm` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
   - `collectors/slurm_epilog`
 - Merge PR
 - Create tag for version
@@ -248,6 +250,6 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
   - This triggers the build of the pyauditor package and the python-based collectors/plugins
   - This triggers the build of the docker containers and pushes them to DockerHub and GHCR
   - This triggers a GitHub release
-    - Update the release notes by editing the release and pressing the auto-generate button
+    - Update the release notes by copying the corresponding section from the [changelog](https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md)
 - Announce in Mattermost AUDITOR channel
 - Update the `pyauditor` version number in [tardis](https://github.com/MatterMiners/tardis) (and update the code of the AUDITOR plugin if the release introduced breaking changes)
