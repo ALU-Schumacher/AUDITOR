@@ -7,3 +7,4 @@ dist/
 **/lcov.info
 /venv
 *~
+auditor-client/client.db
