@@ -308,7 +308,7 @@ A local version of the documentation can be built with</p>
 </li>
 <li>Then run the publish workflow for the <code>auditor-client</code> crate and all rust-based collectors/plugins (<code>cd</code> into corresponding dirs)
 <ul>
-<li><code>auditor-client</code></li>
+<li><code>auditor-client</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
 <li><code>plugins/priority</code></li>
 <li><code>collectors/slurm</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
 <li><code>collectors/slurm_epilog</code></li>
