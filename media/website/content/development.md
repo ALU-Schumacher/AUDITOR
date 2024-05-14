@@ -236,7 +236,7 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
   cd ..
   ```
 - Then run the publish workflow for the `auditor-client` crate and all rust-based collectors/plugins (`cd` into corresponding dirs)
-  - `auditor-client`
+  - `auditor-client` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
   - `plugins/priority`
   - `collectors/slurm` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
   - `collectors/slurm_epilog`
