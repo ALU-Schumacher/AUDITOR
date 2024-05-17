@@ -26,17 +26,17 @@ exclude = [
 path = "src/lib.rs"
 
 [dependencies]
-auditor = { path = "../auditor", version = "0.5.0", default-features = false }
-chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
-reqwest = { version = "0.12.4", default-features = false, features = ["json", "rustls-tls", "blocking"] }
-urlencoding = "2.1.3"
-tracing = { version = "0.1", features = ["log"] }
-thiserror = "1"
-tokio = { version = "1", features = ["time"] }
-serde = { version = "1", features = ["derive"] }
-serde_qs = { version = "0.13.0", features = ["actix4"] }
-anyhow = "1.0.0"
-bincode = "1.3.3"
+anyhow.workspace = true
+auditor.workspace = true
+bincode.workspace = true
+chrono.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_qs.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["time"]}
+tracing.workspace = true
+urlencoding.workspace = true
 
 [dependencies.sqlx]
 version = "0.7.4"
@@ -51,10 +51,12 @@ features = [
 ]
 
 [dev-dependencies]
-claim = { package = "claims", version = "0.7" }
-wiremock = "0.6"
-fake = { version = "2.9", features = ["chrono"] }
-once_cell = "1"
-uuid = { version = "1.8", features = ["v4"] }
-tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
-itertools = "0.12.1"
+claim.workspace = true
+fake.workspace = true
+itertools.workspace = true
+once_cell.workspace = true
+tracing-subscriber = { workspace = true, features = ["registry", "env-filter"] }
+uuid.workspace = true
+wiremock.workspace = true
+
+
