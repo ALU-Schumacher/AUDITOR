@@ -30,17 +30,17 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-auditor = { path = "../../auditor", version = "0.5.0" }
-auditor-client = { path = "../../auditor-client", version = "0.5.0" }
-chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
-anyhow = "1"
-regex = "1"
-tracing = { version = "0.1", features = ["log"] }
-tracing-subscriber = { version = "0.3"}
-serde = { version = "1", features = ["derive"] }
-serde-aux = "4"
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
-config = "0.13"
-uuid = { version = "1.8", features = ["v4"] }
+anyhow.workspace = true
+auditor-client.workspace = true
+auditor.workspace = true
+chrono.workspace = true
+config.workspace = true
+regex.workspace = true
+serde-aux.workspace = true
+serde.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
+tracing-subscriber.workspace = true
+tracing.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]

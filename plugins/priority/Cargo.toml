@@ -30,27 +30,27 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-auditor = { path = "../../auditor", version = "0.5.0" }
-auditor-client = { path = "../../auditor-client", version = "0.5.0" }
-actix-web = "4.5.1"
-config = "0.13"
-tracing = { version = "0.1", features = ["log"] }
-tracing-subscriber = { version = "0.3" }
-serde = { version = "1", features = ["derive"] }
-serde_with = { version = "3", features = ["chrono_0_4"] }
-serde-aux = "4"
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
-chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
-uuid = { version = "1.8", features = ["v4"] }
-num-traits = "^0.2"
-anyhow = "1"
-shell-words = "^1"
-actix-web-opentelemetry = { version = "0.17", features = ["metrics", "metrics-prometheus"] }
-opentelemetry = "0.22.0"
-opentelemetry_api = "0.20.0"
-opentelemetry_sdk = "0.22.1"
-tracing-actix-web = "0.7"
-prometheus = "0.13"
-opentelemetry-prometheus = "0.15.0"
+actix-web-opentelemetry.workspace = true
+actix-web.workspace = true
+anyhow.workspace = true
+auditor-client.workspace = true
+auditor.workspace = true
+chrono.workspace = true
+config.workspace = true
+num-traits.workspace = true
+opentelemetry-prometheus.workspace = true
+opentelemetry.workspace = true
+opentelemetry_api.workspace = true
+opentelemetry_sdk.workspace = true
+prometheus.workspace = true
+serde-aux.workspace = true
+serde.workspace = true
+serde_with.workspace = true
+shell-words.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
+tracing-actix-web.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]
