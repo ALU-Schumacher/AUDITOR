@@ -98,9 +98,11 @@ function auditor_main() {
   SKIP_DOCKER=true ./scripts/init_db.sh 
   ./scripts/init_slurm_collector_sqlite.sh
   ./scripts/init_client_sqlite.sh
+  compile_auditor
   start_auditor_main
   fill_auditor
   kill $AUDITOR_SERVER_PID
+  wait $AUDITOR_SERVER_PID
 }
 
 function auditor_new_migration() {
@@ -108,16 +110,20 @@ function auditor_new_migration() {
   start_auditor_main
   fill_auditor_new
   test_collector
-  kill $AUDITOR_SERVER_PID
 }
 
-git checkout main
+function cleanup_exit() {
+  if [ -n "$AUDITOR_SERVER_PID" ]; then
+    echo >&2 "Stopping Auditor due to script exit"
+    kill $AUDITOR_SERVER_PID
+    wait $AUDITOR_SERVER_PID
+  fi
+}
+
+trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
 
 auditor_main  
 
-git checkout -
-
 auditor_new_migration
 
-trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
 
