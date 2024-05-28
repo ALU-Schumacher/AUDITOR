@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.6.4 to 2.7.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.1.1 to 8.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update ruff from 0.3.2 to 0.4.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.3.2 to 0.4.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.2.0 to 69.5.1 ([@dirksammel](https://github.com/dirksammel))
