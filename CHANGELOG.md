@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ruff from 0.3.2 to 0.4.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update setuptools from 69.2.0 to 69.5.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 69.2.0 to 70.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-requests from 2.31.0.20240406 to 2.32.0.20240523 ([@dirksammel](https://github.com/dirksammel))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
