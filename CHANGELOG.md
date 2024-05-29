@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update pydantic from 2.6.4 to 2.7.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pytest from 8.1.1 to 8.2.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest from 8.1.1 to 8.2.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update ruff from 0.3.2 to 0.4.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
