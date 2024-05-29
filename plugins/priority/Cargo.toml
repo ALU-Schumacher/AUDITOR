@@ -33,7 +33,7 @@ strip = true
 auditor = { path = "../../auditor", version = "0.5.0" }
 auditor-client = { path = "../../auditor-client", version = "0.5.0" }
 actix-web = "4.5.1"
-config = "0.13"
+config = "0.14"
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3" }
 serde = { version = "1", features = ["derive"] }

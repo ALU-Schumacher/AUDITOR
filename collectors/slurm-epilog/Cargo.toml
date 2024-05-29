@@ -40,7 +40,7 @@ tracing-subscriber = { version = "0.3"}
 serde = { version = "1", features = ["derive"] }
 serde-aux = "4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
-config = "0.13"
+config = "0.14"
 uuid = { version = "1.8", features = ["v4"] }
 
 [dev-dependencies]
