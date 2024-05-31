@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.6.4 to 2.7.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.1.1 to 8.2.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.3.2 to 0.4.6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.3.2 to 0.4.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.2.0 to 70.0.0 ([@dirksammel](https://github.com/dirksammel))
@@ -94,7 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.196 to 1.0.198 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.116 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer)
+- Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.6.0 to 3.7.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.3 to 69.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
@@ -119,7 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Remove `site_name_mapping` config parameter and change structure of `sites_to_report` config parameter ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
-- [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer)
+- [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer))
 - [RUSTSEC-2023-0074]: Update zerocopy from 0.7.26 to 0.7.31 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Added
@@ -130,8 +130,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Remove get_since.rs and clean up dead code (#624) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - pyauditor: Add string representation to python Record Object (#596) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
-- Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer)
-- Docs: Add overview of API endpoints (#597) ([@QuantumDancer](https://github.com/QuantumDancer)
+- Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add overview of API endpoints (#597) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Add optional config setting for style of summary message ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
