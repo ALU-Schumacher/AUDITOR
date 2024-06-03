@@ -3,6 +3,7 @@ members = [
     "auditor",
     "auditor-client",
     "pyauditor",
+    "collectors/kubernetes",
     "collectors/slurm",
     "collectors/slurm-epilog",
     "plugins/priority",

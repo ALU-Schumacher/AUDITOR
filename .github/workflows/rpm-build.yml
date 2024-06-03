@@ -22,6 +22,7 @@ jobs:
           - auditor
           - auditor-slurm-epilog-collector
           - auditor-slurm-collector
+          - auditor-kubernetes-collector
           - auditor-priority-plugin
 
     env:
