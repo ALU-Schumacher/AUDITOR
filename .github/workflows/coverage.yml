@@ -66,6 +66,9 @@ jobs:
         run: |
           ./scripts/init_slurm_collector_sqlite.sh
 
+      - name: Migrate kubernetes collector sqlite database
+        run: ./scripts/init_kubernetes_collector_sqlite.sh
+
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
 
