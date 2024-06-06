@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT record as blob FROM mergequeue\n            WHERE retry<=$1 AND updated<=$2 AND complete=FALSE",
+  "describe": {
+    "columns": [
+      {
+        "name": "blob",
+        "ordinal": 0,
+        "type_info": "Blob"
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "ac062e28635bdbdf94eca73902c063edcd2309e0a16bd499305c39d9f37ae9c9"
+}
