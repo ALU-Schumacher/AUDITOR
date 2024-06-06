@@ -10,7 +10,6 @@ use std::str::FromStr;
 
 use auditor::domain::RecordAdd;
 
-use anyhow;
 use chrono::{DateTime, NaiveDateTime, Utc};
 use sqlx::{sqlite::SqliteJournalMode, QueryBuilder, Sqlite, SqlitePool};
 
@@ -188,7 +187,7 @@ impl Database {
     }
 
     #[tracing::instrument(
-        name = "Getting mergable records from database",
+        name = "Getting mergeable records from database",
         level = "debug",
         skip(self)
     )]
@@ -208,7 +207,7 @@ impl Database {
     }
 
     #[tracing::instrument(
-        name = "Getting non-mergable, incomplete records from database",
+        name = "Getting non-mergeable, incomplete records from database",
         level = "debug",
         skip(self)
     )]
