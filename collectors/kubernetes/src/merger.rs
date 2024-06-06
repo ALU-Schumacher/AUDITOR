@@ -212,10 +212,10 @@ async fn fill_record(rec: &mut RecordAdd, client: &PClient) -> Result<(), MergeE
     }
 }
 
-/// Tries to complete all mergable records using Prometheus.
+/// Tries to complete all mergeable records using Prometheus.
 ///
 /// Errors: On failed DB operations and MergeError::Critical
-#[tracing::instrument(name = "Complete mergable Records", level = "debug", skip_all)]
+#[tracing::instrument(name = "Complete mergeable Records", level = "debug", skip_all)]
 async fn merge(database: &Database, pclient: &PClient) -> anyhow::Result<()> {
     let records = database
         .get_mergequeue()
@@ -346,10 +346,7 @@ mod tests {
     use auditor::domain::ValidName;
     use std::collections::HashMap;
     use std::time::Duration;
-    use tokio::sync::{broadcast, mpsc};
-    use wiremock::matchers::{
-        any, body_json, header, method, path, query_param, query_param_contains,
-    };
+    use wiremock::matchers::{method, path, query_param_contains};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     #[test]
@@ -390,10 +387,9 @@ mod tests {
         let uri = mock_server.uri();
         let client = PClient::try_from(uri).unwrap();
 
-        let query = format!(
-            r#"sum by (namespace,pod) (
-            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#,
-        );
+        let query = r#"sum by (namespace,pod) (
+            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#
+            .to_string();
         let response = r#"
         {
           "status": "success",
@@ -434,10 +430,9 @@ mod tests {
         let uri = mock_server.uri();
         let client = PClient::try_from(uri).unwrap();
 
-        let query = format!(
-            r#"sum by (namespace,pod) (
-            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#,
-        );
+        let query = r#"sum by (namespace,pod) (
+            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#
+            .to_string();
         let response = r#"
         {
           "status": "success",
@@ -465,10 +460,9 @@ mod tests {
         let uri = mock_server.uri();
         let client = PClient::try_from(uri).unwrap();
 
-        let query = format!(
-            r#"sum by (namespace,pod) (
-            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#,
-        );
+        let query = r#"sum by (namespace,pod) (
+            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#
+            .to_string();
         let response = r#"
         {
           "status": "success",
@@ -496,10 +490,9 @@ mod tests {
         let uri = mock_server.uri();
         let client = PClient::try_from(uri).unwrap();
 
-        let query = format!(
-            r#"sum by (namespace,pod) (
-            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#,
-        );
+        let query = r#"sum by (namespace,pod) (
+            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#
+            .to_string();
         let response = r#"
         {
           "status": "success",
@@ -548,10 +541,9 @@ mod tests {
         let uri = mock_server.uri();
         let client = build_pclient(&uri, Duration::from_millis(100)).unwrap();
 
-        let query = format!(
-            r#"sum by (namespace,pod) (
-            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#,
-        );
+        let query = r#"sum by (namespace,pod) (
+            max_over_time(pod_memory_working_set_bytes{{app==test}}[60s]))"#
+            .to_string();
         let response = r#"
         {
           "status": "success",

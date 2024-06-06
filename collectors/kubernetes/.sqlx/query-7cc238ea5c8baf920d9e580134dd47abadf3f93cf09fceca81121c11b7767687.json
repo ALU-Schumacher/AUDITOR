@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE mergequeue SET\n                    record = $2,\n                    retry = (SELECT retry FROM mergequeue WHERE rid=$1) + 1,\n                    updated = $3\n                WHERE rid=$1\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "7cc238ea5c8baf920d9e580134dd47abadf3f93cf09fceca81121c11b7767687"
+}

@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT time FROM lastcheck",
+  "describe": {
+    "columns": [
+      {
+        "name": "time",
+        "ordinal": 0,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "7ac7f549a6aaeb16d40c3102ed59d9b3568ad3d4bca17fb064f356f95a4c463d"
+}
