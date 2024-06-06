@@ -246,7 +246,10 @@ fn parse_sacct_rows(sacct_rows: SacctRows, keys: &[KeyConfig]) -> Result<Vec<Job
             .starts_with("CANCELLED");
         if cancelled
             && map1.get(START).and_then(Option::as_ref).is_none()
-            && map2.and_then(|m| m.get(START)).is_none()
+            && map2
+                .and_then(|m| m.get(START))
+                .and_then(Option::as_ref)
+                .is_none()
         {
             tracing::debug!(
                 "Ignore Job {} since it was cancelled before it was started.",
@@ -1001,6 +1004,221 @@ mod tests {
             (
                 STATE.to_owned(),
                 AllowedTypes::String("COMPLETED".to_owned()),
+            ),
+        ])];
+        assert_eq!(parsed_sacct_rows, expected);
+    }
+
+    #[test]
+    fn parse_sacct_rows_unstarted_cancelled_skipped() {
+        let keys = vec![
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: START.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: END.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+
+        let sacct_rows = SacctRows::from([
+            (
+                "1234567".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567".to_owned())),
+                    ),
+                    (START.to_owned(), None),
+                    (END.to_owned(), None),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
+            (
+                "1234567.batch".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.batch".to_owned())),
+                    ),
+                    (START.to_owned(), None),
+                    (END.to_owned(), None),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
+        ]);
+
+        let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &keys).unwrap();
+
+        let expected = vec![];
+        assert_eq!(parsed_sacct_rows, expected);
+    }
+
+    #[test]
+    fn parse_sacct_rows_started_cancelled_succeeds() {
+        let keys = vec![
+            KeyConfig {
+                name: JOBID.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: START.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: END.to_owned(),
+                key_type: ParsableType::DateTime,
+                allow_empty: false,
+            },
+            KeyConfig {
+                name: STATE.to_owned(),
+                key_type: ParsableType::String,
+                allow_empty: false,
+            },
+        ];
+
+        let sacct_rows = SacctRows::from([
+            (
+                "1234567".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
+            (
+                "1234567.batch".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.batch".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
+        ]);
+
+        let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &keys).unwrap();
+
+        let expected = vec![Job::from([
+            (
+                "JobID".to_owned(),
+                AllowedTypes::String("1234567".to_owned()),
+            ),
+            (
+                START.to_owned(),
+                AllowedTypes::DateTime(DateTime::<Utc>::from(
+                    NaiveDateTime::parse_from_str("2023-11-07T10:14:01", "%Y-%m-%dT%H:%M:%S")
+                        .unwrap()
+                        .and_local_timezone(
+                            FixedOffset::east_opt(Local::now().offset().local_minus_utc()).unwrap(),
+                        )
+                        .unwrap(),
+                )),
+            ),
+            (
+                END.to_owned(),
+                AllowedTypes::DateTime(DateTime::<Utc>::from(
+                    NaiveDateTime::parse_from_str("2023-11-07T11:39:09", "%Y-%m-%dT%H:%M:%S")
+                        .unwrap()
+                        .and_local_timezone(
+                            FixedOffset::east_opt(Local::now().offset().local_minus_utc()).unwrap(),
+                        )
+                        .unwrap(),
+                )),
+            ),
+            (
+                STATE.to_owned(),
+                AllowedTypes::String("CANCELLED by 1000".to_owned()),
             ),
         ])];
         assert_eq!(parsed_sacct_rows, expected);
