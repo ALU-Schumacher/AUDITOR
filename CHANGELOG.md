@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add TRACE level for logging ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Re-use records fetched for sync message for individual jobs reporting ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.20.7 to 1.22.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.20.7 to 1.22.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 42.0.5 to 42.0.8 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
