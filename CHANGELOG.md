@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.22.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 42.0.5 to 42.0.8 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
 - Dependencies: Update itertools from 0.12.1 to 0.13.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
