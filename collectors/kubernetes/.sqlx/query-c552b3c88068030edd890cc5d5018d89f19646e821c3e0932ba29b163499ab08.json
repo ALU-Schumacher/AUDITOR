@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE mergequeue\n                SET (record, updated, complete) = ($1, $2, $3)\n                WHERE rid=$4\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "c552b3c88068030edd890cc5d5018d89f19646e821c3e0932ba29b163499ab08"
+}

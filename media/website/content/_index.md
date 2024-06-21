@@ -590,6 +590,68 @@ components:
     key: "RemoteUserCpu"
 ```
 
+## Kubernetes
+This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via i's API. This means that the collector needs to be able to access the API as well as Prometheus.
+
+A preconfigured Prometheus can be deployed via a Helm Chart:
+```bash
+helm install prometheus helmcharts/charts/auditor-prometheus/ -n auditor
+```
+or
+```bash
+helm install prometheus helmcharts/charts/auditor-prometheus/ -n auditor --set service.type=NodePort
+```
+
+### Configuration
+A yaml-file is used for configuration. The parameters are as follows:
+
+| Parameter | Default | Description |
+| --------- | ------- | ----------- |
+| auditor_addr | | Address of AUDITOR instance |
+| auditor_port | 8000 | Port of AUDITOR |
+| prometheus_addr | | Address of Prometheus |
+| prometheus_port | | Port of Prometheus |
+| record_prefix | "" | Is prepended to all record IDs |
+| earliest_datetime | Now | Collector will ignore all pods finished before this time. Should be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) |
+| auditor_timeout | 10s | Timeout for connecting to AUDITOR |
+| prometheus_timeout | 60s | Timeout for a single Prometheus query |
+| collect_interval | 60s | Interval for collecting pod info from Kubernetes |
+| send_interval | 60s | Interval for sending records to AUDITOR |
+| database_path | "." | Directory to house the persistent sender queue |
+| job_filter | | Sets which pods to account. See below |
+| backlog_interval | 300s | How long to wait before retrying to fetch metrics from Prometheus |
+| backlog_maxretries | 2 | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this |
+| log_level | INFO | Logging level |
+
+Job filter settings:
+
+| Parameter | Default | Description |
+| --------- | ------- | ----------- |
+| namespace | ["default"] | A whitelist of namespaces to consider |
+| labels | [] | A list of labels. A pod will be accounted if *all* conditions are true |
+
+### Example Config
+```yaml
+auditor_addr: localhost
+auditor_port: 8000
+prometheus_addr: localhost
+prometheus_port: 31000
+record_prefix: "KUBE"
+earliest_datetime: "2024-04-18T12:00:00Z"
+job_filter:
+  namespace:
+    - "default"
+  labels:
+    - app==test
+auditor_timeout: 10
+prometheus_timeout: 90
+collect_interval: 30
+send_interval: 60
+backlog_interval: 300
+backlog_maxretries: 2
+log_level: debug
+```
+
 # Plugins
 
 Plugins are used to retrieve data from Auditor for further processing.

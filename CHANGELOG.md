@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add contribution guidelines ([@QuantumDancer](https://github.com/QuantumDancer))
+- Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Apel plugin: Use common logger in the code base ([@dirksammel](https://github.com/dirksammel))
