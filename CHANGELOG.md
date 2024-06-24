@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Use workspace dependencies ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.5.1 to 4.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update anyhow from 1.0.82 to 1.0.86 ([@dirksammel](https://github.com/dirksammel))
+- Slurm collector: Remove fields `collector_addr` and `collector_port` in settings struct ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.22.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 ([@dirksammel](https://github.com/dirksammel))
