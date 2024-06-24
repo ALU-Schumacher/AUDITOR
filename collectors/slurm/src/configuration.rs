@@ -20,11 +20,6 @@ use tracing_subscriber::filter::LevelFilter;
 #[derive(serde::Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Settings {
-    #[serde(default = "default_collector_addr")]
-    pub collector_addr: String,
-    #[serde(deserialize_with = "deserialize_number_from_string")]
-    #[serde(default = "default_collector_port")]
-    pub collector_port: u16,
     #[serde(default = "default_addr")]
     pub addr: String,
     #[serde(deserialize_with = "deserialize_number_from_string")]
@@ -172,16 +167,8 @@ fn default_addr() -> String {
     "127.0.0.1".to_string()
 }
 
-fn default_collector_addr() -> String {
-    "0.0.0.0".to_string()
-}
-
 fn default_port() -> u16 {
     8000
-}
-
-fn default_collector_port() -> u16 {
-    4687
 }
 
 fn default_record_prefix() -> String {
