@@ -41,7 +41,7 @@ class TestConfig:
         assert plugin.log_level == "DEBUG"
         assert plugin.time_json_path == "time.json"
         assert plugin.report_interval == 10
-        assert plugin.message_type == MessageType("summaries")
+        assert plugin.message_type is MessageType("summaries")
 
         field_config = config.get_field_config()
 
@@ -80,7 +80,7 @@ class TestConfig:
                 report_interval=report_interval,
                 message_type=message_type,
             )
-        assert pytest_error.type == ValidationError
+        assert pytest_error.type is ValidationError
 
     def test_get_value_default(self):
         class TestField(Field):
@@ -96,7 +96,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             test_field.get_value(record)
 
-        assert pytest_error.type == NotImplementedError
+        assert pytest_error.type is NotImplementedError
 
     def test_get_value_meta_field(self):
         record = pyauditor.Record(
@@ -136,7 +136,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             meta_field.get_value(record)
 
-        assert pytest_error.type == KeyError
+        assert pytest_error.type is KeyError
 
     def test_meta_field_regex(self):
         record = pyauditor.Record(
@@ -149,7 +149,7 @@ class TestConfig:
         record.with_meta(meta)
 
         meta_field = MetaField(
-            datatype_in_message="TEXT", name="meta_test", regex="(?<=aaa).*?\S(?=bbb)"
+            datatype_in_message="TEXT", name="meta_test", regex=r"(?<=aaa).*?\S(?=bbb)"
         )
 
         value = meta_field.get_value(record)
@@ -157,7 +157,7 @@ class TestConfig:
         assert value == "value"
 
         meta_field = MetaField(
-            datatype_in_message="TEXT", name="meta_test", regex="(?<=aaa).*?\S(?=ccc)"
+            datatype_in_message="TEXT", name="meta_test", regex=r"(?<=aaa).*?\S(?=ccc)"
         )
 
         value = meta_field.get_value(record)
@@ -196,7 +196,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             value = component_field.get_value(record)
 
-        assert pytest_error.type == ValueError
+        assert pytest_error.type is ValueError
 
     def test_get_value_score_field(self):
         record = pyauditor.Record(
@@ -227,7 +227,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             value = score_field.get_value(record)
 
-        assert pytest_error.type == ValueError
+        assert pytest_error.type is ValueError
 
         score_field = ScoreField(
             datatype_in_message="FLOAT",
@@ -238,7 +238,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             value = score_field.get_value(record)
 
-        assert pytest_error.type == ValueError
+        assert pytest_error.type is ValueError
 
     def test_get_value_normalised_field(self):
         record = pyauditor.Record(
@@ -293,7 +293,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             normalised_field.get_value(record)
 
-        assert pytest_error.type == TypeError
+        assert pytest_error.type is TypeError
 
     def test_get_value_constant_field(self):
         constant_field = ConstantField(datatype_in_message="TEXT", value="test")
@@ -337,7 +337,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             record_field.get_value(record)
 
-        assert pytest_error.type == AttributeError
+        assert pytest_error.type is AttributeError
 
         record_field = RecordField(
             datatype_in_message="INT", name="start_time", modify="missing"
@@ -346,7 +346,7 @@ class TestConfig:
         with pytest.raises(Exception) as pytest_error:
             record_field.get_value(record)
 
-        assert pytest_error.type == AttributeError
+        assert pytest_error.type is AttributeError
 
     def test_loaders(self):
         test_yaml = """

@@ -128,7 +128,7 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             create_time_json(path)
 
-        assert pytest_error.type == FileNotFoundError
+        assert pytest_error.type is FileNotFoundError
 
     def test_get_time_json(self):
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
@@ -181,7 +181,7 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             sign_msg(config, "test")
 
-        assert pytest_error.type == FileNotFoundError
+        assert pytest_error.type is FileNotFoundError
 
         config.authentication.client_cert = str(
             Path.joinpath(test_dir, "test_cert.cert")
@@ -338,7 +338,7 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             update_time_json(config, time_dict, site, stop_time, report_time)
 
-        assert pytest_error.type == FileNotFoundError
+        assert pytest_error.type is FileNotFoundError
 
     # def test_create_summary_db(self):
     #     sites_to_report = {
@@ -564,30 +564,30 @@ class TestAuditorApelPlugin:
     #         conf["auditor"]["cpu_time_name"] = "fail"
     #         with pytest.raises(Exception) as pytest_error:
     #             create_summary_db(conf, records)
-    #         assert pytest_error.type == KeyError
+    #         assert pytest_error.type is KeyError
 
     #         conf["auditor"]["cpu_time_name"] = "TotalCPU"
     #         conf["auditor"]["nnodes_name"] = "fail"
     #         with pytest.raises(Exception) as pytest_error:
     #             create_summary_db(conf, records)
-    #         assert pytest_error.type == KeyError
+    #         assert pytest_error.type is KeyError
 
     #         conf["auditor"]["nnodes_name"] = "NNodes"
     #         conf["auditor"]["cores_name"] = "fail"
     #         with pytest.raises(Exception) as pytest_error:
     #             create_summary_db(conf, records)
-    #         assert pytest_error.type == KeyError
+    #         assert pytest_error.type is KeyError
 
     #         conf["auditor"]["cores_name"] = "Cores"
     #         conf["auditor"]["benchmark_name"] = "fail"
     #         with pytest.raises(Exception) as pytest_error:
     #             create_summary_db(conf, records)
-    #         assert pytest_error.type == KeyError
+    #         assert pytest_error.type is KeyError
 
     #         rec_metaless = [create_rec_metaless(rec_1_values, conf["auditor"])]
     #         with pytest.raises(Exception) as pytest_error:
     #             create_summary_db(conf, rec_metaless)
-    #         assert pytest_error.type == AttributeError
+    #         assert pytest_error.type is AttributeError
 
     def test_get_voms_info(self):
         default_submit_host = "https://default.submit_host.de:1234/xxx"
@@ -803,13 +803,13 @@ class TestAuditorApelPlugin:
 
         with pytest.raises(SystemExit) as pytest_error:
             get_records(config, client, start_time, 1)
-        assert pytest_error.type == SystemExit
+        assert pytest_error.type is SystemExit
 
         client = FakeAuditorClient("fail_else")
 
         with pytest.raises(Exception) as pytest_error:
             get_records(config, client, start_time, 1)
-        assert pytest_error.type == RuntimeError
+        assert pytest_error.type is RuntimeError
 
     def test_get_site_id(self):
         sites_to_report = (
@@ -945,11 +945,11 @@ class TestAuditorApelPlugin:
 
         with pytest.raises(Exception) as pytest_error:
             get_site_id(conf, rec_1)
-        assert pytest_error.type == TypeError
+        assert pytest_error.type is TypeError
 
         with pytest.raises(Exception) as pytest_error:
             get_site_id(conf, rec_2)
-        assert pytest_error.type == AttributeError
+        assert pytest_error.type is AttributeError
 
     def test_convert_to_seconds(self):
         cpu_time_name = "TotalCPU"
@@ -987,7 +987,7 @@ class TestAuditorApelPlugin:
 
         with pytest.raises(Exception) as pytest_error:
             convert_to_seconds(conf, 1100)
-        assert pytest_error.type == ValueError
+        assert pytest_error.type is ValueError
 
     def test_check_sites_in_records(self):
         sites_to_report = {
