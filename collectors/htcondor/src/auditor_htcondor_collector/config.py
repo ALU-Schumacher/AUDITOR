@@ -79,7 +79,7 @@ class Config(object):
                 raise MalformedConfigEntryError(
                     keys, f"Must be of type {_type.__name__}"
                 )
-            if _type == list:
+            if _type is list:
                 assert isinstance(_cfg, list)  # For type checking
                 if len(_cfg) == 0:
                     raise MalformedConfigEntryError(
