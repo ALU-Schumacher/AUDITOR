@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add TRACE level for logging ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Re-use records fetched for sync message for individual jobs reporting ([@dirksammel](https://github.com/dirksammel))
 - Auditor: Use workspace dependencies ([@dirksammel](https://github.com/dirksammel))
+- Benchmark: Add `num_of_records` and `sample size` config fields for benchmark script ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actix-web from 4.5.1 to 4.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update anyhow from 1.0.82 to 1.0.86 ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Remove fields `collector_addr` and `collector_port` in settings struct ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
