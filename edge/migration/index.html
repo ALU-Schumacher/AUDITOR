@@ -242,7 +242,7 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 <h1 id="from-0-3-0-0-3-1-to-0-4-0">From 0.3.0/0.3.1 to 0.4.0</h1>
 <h2 id="auditor">AUDITOR</h2>
 <h3 id="rest-apis">REST APIs</h3>
-<p>Auditor REST APIs are changed as shown in the table below. </p>
+<p>Auditor REST APIs are changed as shown in the table below.</p>
 <table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
 <tr><td>Health check</td><td><code>/health_check</code> (GET)</td><td><code>/health_check</code> (GET)</td></tr>
 <tr><td>Add record</td><td><code>/add</code> (POST)</td><td><code>/record</code> (POST)</td></tr>
@@ -264,7 +264,7 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 </span></code></pre>
 <h2 id="removed">Removed</h2>
 <p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
-functions but throws a deprecated warning if used. </p>
+functions but throws a deprecated warning if used.</p>
 <h2 id="development-1">Development</h2>
 <h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.3</p>
@@ -305,7 +305,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <p>Below, you find an example of the priority plugin configuration before and after the change.</p>
 <ul>
 <li>
-<p>Before </p>
+<p>Before</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
 </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span>... </span><span style="color:#00a33f;">(other options)
@@ -330,7 +330,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 </ul>
 <h2 id="auditor-1">AUDITOR</h2>
 <h3 id="standardized-rest-apis">Standardized REST APIs</h3>
-<p>Auditor REST APIs are changed as shown in the table below. </p>
+<p>Auditor REST APIs are changed as shown in the table below.</p>
 <table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
 <tr><td>Health check</td><td><code>/health_check</code> (GET)</td><td><code>/health_check</code> (GET)</td></tr>
 <tr><td>Add record</td><td><code>/add</code> (POST)</td><td><code>/record</code> (POST)</td></tr>
