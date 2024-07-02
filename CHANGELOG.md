@@ -56,6 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update prometheus from 0.13.3 to 0.13.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Fix timezone offset of local timestamp `lastcheck` (#681, #178) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore `.extern` steps instead of handling them as separate jobs (#812) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore cancelled jobs which have never been started (#811) ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 
