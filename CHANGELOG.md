@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update opentelemetry from 0.22.0 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update opentelemetry-prometheus from 0.15.0 to 0.16.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update opentelemetry_sdk from 0.22.1 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pydantic from 2.6.4 to 2.7.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.6.4 to 2.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.1.1 to 8.2.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.3.2 to 0.5.0 ([@dirksammel](https://github.com/dirksammel))
