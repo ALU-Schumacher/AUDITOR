@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update setuptools from 69.2.0 to 70.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.18.0 to 0.19.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from from 1.0.59 to 1.0.61 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tracing-actix-web from 0.7.10 to 0.7.11 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update types-requests from 2.31.0.20240406 to 2.32.0.20240622 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.2 in /plugins/apel ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest from 0.12.4 to 0.12.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
