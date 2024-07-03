@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update requests from 2.31.0 to 2.32.2 in /plugins/apel ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest from 0.12.4 to 0.12.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update prometheus from 0.13.3 to 0.13.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.8.0 to 1.9.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
 
