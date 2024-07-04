@@ -60,8 +60,8 @@ jobs:
         # if: ${{ steps.cache_sqlx.outputs.cache-hit }}
         run: cargo install sqlx-cli --version=${{ env.SQLX_VERSION }} --features=${{ env.SQLX_FEATURES }} --no-default-features --locked
 
-      - name: Checkout to specific commit
-        run: git checkout a9a1ddb
+      - name: Checkout to main branch
+        run: git checkout main
 
       - name: Migrate database
         run: |
