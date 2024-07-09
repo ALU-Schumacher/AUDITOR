@@ -1,6 +1,5 @@
 mod add;
 mod advanced_queries;
-mod client;
 mod get;
 mod get_one_record;
 mod get_since;

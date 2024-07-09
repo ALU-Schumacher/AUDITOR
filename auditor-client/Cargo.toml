@@ -30,8 +30,12 @@ anyhow.workspace = true
 auditor.workspace = true
 bincode.workspace = true
 chrono.workspace = true
+config.workspace = true
 reqwest.workspace = true
 serde.workspace = true
+rand.workspace = true
+rand_distr.workspace = true
+serde-aux.workspace = true
 serde_qs.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["time"]}
@@ -53,10 +57,15 @@ features = [
 [dev-dependencies]
 claim.workspace = true
 fake.workspace = true
+criterion-macro.workspace = true
+criterion.workspace = true
 itertools.workspace = true
 once_cell.workspace = true
+tokio = { workspace = true, features = ["full"] }
 tracing-subscriber = { workspace = true, features = ["registry", "env-filter"] }
 uuid.workspace = true
 wiremock.workspace = true
 
-
+[[bench]]
+name = "benchmark_with_http_request"
+harness = false

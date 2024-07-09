@@ -49,13 +49,12 @@ opentelemetry_api.workspace = true
 opentelemetry_sdk.workspace = true
 prometheus.workspace = true
 rand.workspace = true
-rand_distr.workspace = true
 regex.workspace = true
 reqwest.workspace = true
 secrecy.workspace = true
-serde-aux.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+serde-aux.workspace = true
 serde_qs.workspace = true
 serde_with.workspace = true
 thiserror.workspace = true
@@ -83,20 +82,12 @@ features = [
 ]
 
 [dev-dependencies]
-auditor-client.workspace = true
 claim.workspace = true
-criterion-macro.workspace = true
-criterion.workspace = true
 once_cell.workspace = true
 quickcheck.workspace = true
 quickcheck_macros.workspace = true
-tokio = { workspace = true, features = ["full"] }
 wiremock.workspace = true
 
 [features]
 default = ["server"]
 server = []
-
-[[bench]]
-name = "benchmark_with_http_request"
-harness = false

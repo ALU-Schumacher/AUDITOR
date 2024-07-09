@@ -1,9 +1,9 @@
 use crate::helpers::spawn_app;
 use auditor::domain::{Record, RecordTest};
-use auditor_client::{ComponentQuery, MetaOperator, MetaQuery, Operator, QueryBuilder, SortBy};
 use chrono::{TimeZone, Utc};
 use fake::{Fake, Faker};
 use std::collections::HashMap;
+use urlencoding::encode;
 
 #[tokio::test]
 async fn get_advanced_queries_returns_a_200_and_list_of_records() {
@@ -29,12 +29,10 @@ async fn get_advanced_queries_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .with_start_time(
-                Operator::default()
-                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
-            )
-            .build();
+        let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
+        let datetime_str = datetime_utc.to_rfc3339();
+        let encoded_datetime = encode(&datetime_str);
+        let query = format!("start_time[gte]={}", encoded_datetime);
 
         let response = app.advanced_queries(query).await;
         println!("{:?}", response);
@@ -87,12 +85,11 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .with_start_time(
-                Operator::default()
-                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
-            )
-            .build();
+        let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
+        let datetime_str = datetime_utc.to_rfc3339();
+        let encoded_datetime = encode(&datetime_str);
+        let query = format!("start_time[gte]={}", encoded_datetime);
+
         let response = app.advanced_queries(query).await;
 
         assert_eq!(200, response.status().as_u16());
@@ -128,12 +125,10 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 #[tokio::test]
 async fn get_started_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
-
-    let query = QueryBuilder::new()
-        .with_start_time(
-            Operator::default().gte(Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap().into()),
-        )
-        .build();
+    let datetime_utc = Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap();
+    let datetime_str = datetime_utc.to_rfc3339();
+    let encoded_datetime = encode(&datetime_str);
+    let query = format!("start_time[gte]={}", encoded_datetime);
 
     let response = app.advanced_queries(query).await;
 
@@ -168,12 +163,10 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .with_stop_time(
-                Operator::default()
-                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
-            )
-            .build();
+        let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
+        let datetime_str = datetime_utc.to_rfc3339();
+        let encoded_datetime = encode(&datetime_str);
+        let query = format!("stop_time[gte]={}", encoded_datetime);
 
         let response = app.advanced_queries(query).await;
 
@@ -227,12 +220,10 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .with_stop_time(
-                Operator::default()
-                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
-            )
-            .build();
+        let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
+        let datetime_str = datetime_utc.to_rfc3339();
+        let encoded_datetime = encode(&datetime_str);
+        let query = format!("stop_time[gte]={}", encoded_datetime);
 
         let response = app.advanced_queries(query).await;
 
@@ -269,12 +260,10 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 #[tokio::test]
 async fn get_stopped_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
-
-    let query = QueryBuilder::new()
-        .with_start_time(
-            Operator::default().gte(Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap().into()),
-        )
-        .build();
+    let datetime_utc = Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap();
+    let datetime_str = datetime_utc.to_rfc3339();
+    let encoded_datetime = encode(&datetime_str);
+    let query = format!("start_time[gte]={}", encoded_datetime);
 
     let response = app.advanced_queries(query).await;
 
@@ -313,16 +302,13 @@ async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .with_start_time(
-                Operator::default()
-                    .gte(Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap().into()),
-            )
-            .with_meta_query(MetaQuery::new().meta_operator(
-                "group_id".to_string(),
-                MetaOperator::default().contains("group_1".to_string()),
-            ))
-            .build();
+        let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
+        let datetime_str = datetime_utc.to_rfc3339();
+        let encoded_datetime = encode(&datetime_str);
+        let query = format!(
+            "start_time[gte]={}&meta[group_id][c]=group_1",
+            encoded_datetime
+        );
 
         let response = app.advanced_queries(query).await;
         println!("{:?}", response);
@@ -378,14 +364,7 @@ async fn get_component_query_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let count: u8 = 4;
-        let query =
-            QueryBuilder::new()
-                .with_component_query(ComponentQuery::new().component_operator(
-                    "cpu".to_string(),
-                    Operator::default().equals(count.into()),
-                ))
-                .build();
+        let query = "component[cpu][equals]=4".to_string();
 
         let response = app.advanced_queries(query).await;
         println!("{:?}", response);
@@ -435,9 +414,7 @@ async fn sort_by_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .sort_by(SortBy::new().descending("start_time".to_string()))
-            .build();
+        let query = "sort_by[desc]=start_time".to_string();
 
         let response = app.advanced_queries(query).await;
         println!("{:?}", response);
@@ -487,13 +464,9 @@ async fn limit_query_records_returns_a_200_and_list_of_records() {
         assert_eq!(200, response.status().as_u16());
     }
 
-    let number: u64 = 4;
     // Try different start dates and receive records
     for i in 1..10 {
-        let query = QueryBuilder::new()
-            .sort_by(SortBy::new().descending("start_time".to_string()))
-            .limit(number)
-            .build();
+        let query = "sort_by[desc]=start_time&limit=4".to_string();
 
         let response = app.advanced_queries(query).await;
         println!("{:?}", response);
@@ -546,16 +519,16 @@ async fn exact_record_id_returns_a_200_and_list_of_records() {
     }
 
     // Try different start dates and receive records
-    let query = QueryBuilder::new().with_record_id("r3".to_string()).build();
+    //let query = QueryBuilder::new().with_record_id("r3".to_string()).build();
 
-    let response = app.advanced_queries(query).await;
+    let query = "r3".to_string();
+
+    let response = app.get_single_record(query).await;
     println!("{:?}", response);
 
     assert_eq!(200, response.status().as_u16());
 
-    let received_record = response.json::<Vec<Record>>().await.unwrap();
+    let received_record = response.json::<Record>().await.unwrap();
 
-    assert_eq!(received_record.len(), 1);
-
-    assert_eq!(received_record[0].record_id, "r3".to_string());
+    assert_eq!(received_record.record_id, "r3".to_string());
 }
