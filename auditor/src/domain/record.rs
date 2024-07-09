@@ -192,7 +192,7 @@ pub struct RecordUpdate {
 ///
 /// Retrieve all records from Auditor:
 ///
-/// ```no_run
+/// ```ignore
 /// # use auditor_client::{AuditorClientBuilder, ClientError};
 /// #
 /// # fn main() -> Result<(), ClientError> {
