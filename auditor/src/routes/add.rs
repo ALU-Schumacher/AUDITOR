@@ -92,7 +92,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
 
     sqlx::query_unchecked!(
         r#"
-        INSERT INTO auditor (
+        INSERT INTO auditor_accounting (
             record_id, start_time, stop_time, meta, components, runtime, updated_at
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -168,7 +168,7 @@ pub async fn bulk_insert(records: &[RecordAdd], pool: &PgPool) -> Result<(), Add
 
     sqlx::query_unchecked!(
         r#"
-        INSERT INTO auditor (
+        INSERT INTO auditor_accounting (
             record_id, start_time, stop_time, meta, components, runtime, updated_at
         )
         SELECT * FROM UNNEST($1::text[], $2::timestamptz[], $3::timestamptz[], $4::jsonb[], $5::jsonb[],  $6::bigint[], $7::timestamptz[])

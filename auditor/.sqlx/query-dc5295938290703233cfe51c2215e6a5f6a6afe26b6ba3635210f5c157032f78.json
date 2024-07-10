@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT jsonb_array_elements_text(meta->'site_id') AS \"name!\", COUNT(*) AS \"num!\"\n            FROM auditor\n            GROUP BY jsonb_array_elements_text(meta->'site_id');\n            ",
+  "query": "\n            SELECT jsonb_array_elements_text(meta->'site_id') AS \"name!\", COUNT(*) AS \"num!\"\n            FROM auditor_accounting\n            GROUP BY jsonb_array_elements_text(meta->'site_id');\n            ",
   "describe": {
     "columns": [
       {
@@ -22,5 +22,5 @@
       null
     ]
   },
-  "hash": "262acf5fc2b4f747cd2e05ad2707e28f4d17fc26371012aeaece84cdf012c733"
+  "hash": "dc5295938290703233cfe51c2215e6a5f6a6afe26b6ba3635210f5c157032f78"
 }

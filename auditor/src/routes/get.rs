@@ -27,7 +27,7 @@ pub async fn get_records(pool: &PgPool) -> Result<Vec<Record>, anyhow::Error> {
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            ORDER BY stop_time
         "#
     )

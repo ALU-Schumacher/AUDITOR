@@ -23,7 +23,7 @@ async fn add_returns_a_200_for_valid_json_data() {
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            WHERE record_id = $1
             "#,
             body.record_id.as_ref().unwrap(),
@@ -62,7 +62,7 @@ async fn add_returns_a_400_for_invalid_json_data() {
 
             assert_eq!(400, response.status().as_u16());
 
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
+            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
                 .fetch_all(&app.db_pool)
                 .await
                 .expect("Failed to fetch data");
@@ -107,7 +107,7 @@ async fn add_returns_a_400_when_data_is_missing() {
             "The API did not fail with 400 Bad Request when the payload was {error_message}."
         );
 
-        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
+        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
             .fetch_all(&app.db_pool)
             .await
             .expect("Failed to fetch data");
@@ -149,7 +149,7 @@ async fn bulk_insert_records() {
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            WHERE record_id = $1
             "#,
             record.record_id.as_ref().unwrap(),
@@ -187,7 +187,7 @@ async fn bulk_insert_returns_a_400_for_invalid_json_data() {
 
             assert_eq!(400, response.status().as_u16());
 
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
+            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
                 .fetch_all(&app.db_pool)
                 .await
                 .expect("Failed to fetch data");
@@ -243,7 +243,7 @@ async fn bulk_insert_returns_a_400_when_data_is_missing() {
             "The API did not fail with 400 Bad Request when the payload was {error_message}."
         );
 
-        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor"#,)
+        let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
             .fetch_all(&app.db_pool)
             .await
             .expect("Failed to fetch data");
