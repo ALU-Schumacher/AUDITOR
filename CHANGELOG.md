@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pytest from 8.1.1 to 8.3.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.3.2 to 0.5.4 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update serde from 1.0.198 to 1.0.203 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde from 1.0.203 to 1.0.204 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_json from 1.0.117 to 1.0.120 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.2.0 to 71.1.0 ([@dirksammel](https://github.com/dirksammel))
