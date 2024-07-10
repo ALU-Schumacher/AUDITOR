@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT start_time\n        FROM auditor \n        WHERE record_id = $1\n        ",
+  "query": "\n        SELECT start_time\n        FROM auditor_accounting\n        WHERE record_id = $1\n        ",
   "describe": {
     "columns": [
       {
@@ -18,5 +18,5 @@
       false
     ]
   },
-  "hash": "5b634a506d39595160459fb8a8ea3a9760372c1fc3dd14e8c086a2f91d7177d6"
+  "hash": "aa313afec8c23e75ee45750e2ce8e520b96a98670d3c46572a6f942f839b99c0"
 }

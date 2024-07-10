@@ -89,7 +89,7 @@ jobs:
             SELECT runtime, \
             (score->>'name') AS name, \
             (score->>'value')::double precision AS value \
-            FROM auditor, \
+            FROM auditor_accounting, \
             jsonb_array_elements(components) AS comp, \
             jsonb_array_elements(comp->'scores') AS score \
             ORDER BY name; \

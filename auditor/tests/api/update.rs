@@ -65,7 +65,7 @@ async fn update_returns_a_200_for_valid_form_data() {
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            WHERE record_id = $1
         "#,
         body.record_id.as_ref().unwrap()

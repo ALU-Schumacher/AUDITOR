@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS auditor (
+CREATE TABLE IF NOT EXISTS auditor_accounting (
     id INT GENERATED ALWAYS AS IDENTITY,
     record_id TEXT NOT NULL UNIQUE,
     meta JSONB,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS auditor (
     updated_at  TIMESTAMPTZ NOT NULL
 );
 
-INSERT INTO auditor (record_id, meta, components, start_time, stop_time, runtime, updated_at)
+INSERT INTO auditor_accounting (record_id, meta, components, start_time, stop_time, runtime, updated_at)
 
 SELECT a.record_id,
                           m.meta::jsonb AS meta,

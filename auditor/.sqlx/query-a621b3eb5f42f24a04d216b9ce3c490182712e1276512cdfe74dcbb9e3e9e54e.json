@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT record_id,\n                  meta,\n                  components,\n                  start_time,\n                  stop_time,\n                  runtime\n           FROM auditor\n           ORDER BY stop_time\n        ",
+  "query": "SELECT record_id,\n                  meta,\n                  components,\n                  start_time,\n                  stop_time,\n                  runtime\n           FROM auditor_accounting\n           WHERE record_id = $1\n        ",
   "describe": {
     "columns": [
       {
@@ -35,7 +35,9 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
       false,
@@ -46,5 +48,5 @@
       true
     ]
   },
-  "hash": "e21896f3c7d1bbbef588d50794a4cd5ecd7f5f5bf51945bc2076ebd104ecbfbc"
+  "hash": "a621b3eb5f42f24a04d216b9ce3c490182712e1276512cdfe74dcbb9e3e9e54e"
 }

@@ -52,7 +52,7 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
     let start_time = sqlx::query!(
         r#"
         SELECT start_time
-        FROM auditor 
+        FROM auditor_accounting
         WHERE record_id = $1
         "#,
         record.record_id.as_ref(),
@@ -69,7 +69,7 @@ pub async fn update_record(record: &RecordUpdate, pool: &PgPool) -> Result<(), U
 
     sqlx::query_unchecked!(
         r#"
-        UPDATE auditor
+        UPDATE auditor_accounting
         SET stop_time = $2,
             runtime = $3,
             updated_at = $4
