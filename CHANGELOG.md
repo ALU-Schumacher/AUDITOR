@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Use workspace dependencies ([@dirksammel](https://github.com/dirksammel))
 - Auditor & auditor-client: Resolve circular dependency with auditor and auditor-client ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Auditor: Refactor auditor database table to `auditor_accounting` ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor & auditor-client: Add test to check query metadata & add missing sqlx query metadata ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Benchmark: Add `num_of_records` and `sample size` config fields for benchmark script ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actix-web from 4.6.0 to 4.8.0 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update anyhow from 1.0.82 to 1.0.86 ([@dirksammel](https://github.com/dirksammel))

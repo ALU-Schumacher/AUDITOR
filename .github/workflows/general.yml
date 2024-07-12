@@ -145,6 +145,9 @@ jobs:
       - name: Clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
 
+      - name: Clippy- check sqlx prepared statements
+        run: SQLX_OFFLINE=true cargo clippy --all-targets --all-features -- -D warnings
+
   cargo-deny:
     runs-on: ubuntu-latest
     strategy:
