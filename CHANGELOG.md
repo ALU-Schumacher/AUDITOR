@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update regex from 1.10.4 to 1.10.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
 - Dependencies: Update pytest from 8.1.1 to 8.2.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.3.2 to 0.5.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.3.2 to 0.5.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.198 to 1.0.203 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.117 to 1.0.120 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
