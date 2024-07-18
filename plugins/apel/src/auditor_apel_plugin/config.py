@@ -195,7 +195,7 @@ class NormalisedField(Field):
     base_value: Union[ComponentField, RecordField]
     score: ScoreField
 
-    def get_value(self, record: Record) -> float:
+    def get_value(self, record: Record) -> int:
         base_value = self.base_value.get_value(record)
         score_value = self.score.get_value(record)
 
@@ -205,7 +205,7 @@ class NormalisedField(Field):
                 "Multiplication not possible!"
             )
             raise TypeError
-        value = base_value * score_value
+        value = int(base_value * score_value)
 
         return value
 
