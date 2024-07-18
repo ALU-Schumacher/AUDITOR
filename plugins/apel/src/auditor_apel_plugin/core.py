@@ -450,6 +450,7 @@ def get_token(config):
     client_cert = config.authentication.client_cert
     client_key = config.authentication.client_key
     verify_ca = config.authentication.verify_ca
+
     if verify_ca:
         ca_path = config.authentication.ca_path
     else:
@@ -500,11 +501,11 @@ def build_payload(msg):
 
 
 def send_payload(config, token, payload):
-    ams_url = config["authentication"]["ams_url"]
-    verify_ca = config["authentication"]["verify_ca"]
+    ams_url = config.authentication.ams_url
+    verify_ca = config.authentication.verify_ca
 
     if verify_ca:
-        ca_path = config["authentication"]["ca_path"]
+        ca_path = config.authentication.ca_path
     else:
         ca_path = False
 

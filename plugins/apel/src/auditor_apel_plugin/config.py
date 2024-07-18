@@ -205,7 +205,7 @@ class NormalisedField(Field):
                 "Multiplication not possible!"
             )
             raise TypeError
-        value = int(base_value * score_value)
+        value = round(base_value * score_value)
 
         return value
 
