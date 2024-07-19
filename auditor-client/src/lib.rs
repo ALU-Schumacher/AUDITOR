@@ -522,10 +522,12 @@
 //! # }
 //! ```
 
+mod constants;
 use auditor::{
-    constants::{ERR_INVALID_TIME_INTERVAL, ERR_RECORD_EXISTS},
+    constants::ERR_RECORD_EXISTS,
     domain::{Record, RecordAdd, RecordUpdate},
 };
+use constants::ERR_INVALID_TIME_INTERVAL;
 
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};

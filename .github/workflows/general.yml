@@ -148,6 +148,11 @@ jobs:
       - name: Clippy- check sqlx prepared statements
         run: SQLX_OFFLINE=true cargo clippy --all-targets --all-features -- -D warnings
 
+      - name: Run cargo build to check auditor-client
+        run: |
+          cd auditor-client
+          SQLX_OFFLINE=true cargo build
+
   cargo-deny:
     runs-on: ubuntu-latest
     strategy:
