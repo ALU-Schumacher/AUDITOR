@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.198 to 1.0.203 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.117 to 1.0.120 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update setuptools from 69.2.0 to 71.0.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 69.2.0 to 71.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.18.0 to 0.19.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from from 1.0.59 to 1.0.61 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tracing-actix-web from 0.7.10 to 0.7.11 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
