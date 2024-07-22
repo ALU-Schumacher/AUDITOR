@@ -86,7 +86,7 @@ class TestConfig:
         class TestField(Field):
             attribute: str
 
-        test_field = TestField(datatype_in_message="TEXT", attribute="test")
+        test_field = TestField(attribute="test")
 
         record = pyauditor.Record(
             "record_id",
@@ -108,7 +108,7 @@ class TestConfig:
         meta.insert("meta_test", ["value"])
         record.with_meta(meta)
 
-        meta_field = MetaField(datatype_in_message="TEXT", name="meta_test")
+        meta_field = MetaField(name="meta_test")
         value = meta_field.get_value(record)
 
         assert value == "value"
@@ -123,15 +123,13 @@ class TestConfig:
         meta.insert("meta_test", ["value"])
         record.with_meta(meta)
 
-        meta_field = MetaField(datatype_in_message="TEXT", name="meta_test_missing")
+        meta_field = MetaField(name="meta_test_missing")
 
         value = meta_field.get_value(record)
 
         assert value == "None"
 
-        meta_field = MetaField(
-            datatype_in_message="TEXT", name="meta_test", function="missing_function"
-        )
+        meta_field = MetaField(name="meta_test", function="missing_function")
 
         with pytest.raises(Exception) as pytest_error:
             meta_field.get_value(record)
@@ -148,17 +146,13 @@ class TestConfig:
         meta.insert("meta_test", ["aaavaluebbb"])
         record.with_meta(meta)
 
-        meta_field = MetaField(
-            datatype_in_message="TEXT", name="meta_test", regex=r"(?<=aaa).*?\S(?=bbb)"
-        )
+        meta_field = MetaField(name="meta_test", regex=r"(?<=aaa).*?\S(?=bbb)")
 
         value = meta_field.get_value(record)
 
         assert value == "value"
 
-        meta_field = MetaField(
-            datatype_in_message="TEXT", name="meta_test", regex=r"(?<=aaa).*?\S(?=ccc)"
-        )
+        meta_field = MetaField(name="meta_test", regex=r"(?<=aaa).*?\S(?=ccc)")
 
         value = meta_field.get_value(record)
 
@@ -173,25 +167,20 @@ class TestConfig:
         component = pyauditor.Component(name="test_component", amount=1000)
         record.with_component(component)
 
-        component_field = ComponentField(
-            datatype_in_message="INT", name="test_component"
-        )
+        component_field = ComponentField(name="test_component")
         value = component_field.get_value(record)
 
         assert value == 1000
 
         component_field = ComponentField(
-            datatype_in_message="FLOAT",
             name="test_component",
             divide_by=1000,
         )
         value = component_field.get_value(record)
 
-        assert value == 1.0
+        assert value == 1
 
-        component_field = ComponentField(
-            datatype_in_message="INT", name="test_component_2"
-        )
+        component_field = ComponentField(name="test_component_2")
 
         with pytest.raises(Exception) as pytest_error:
             value = component_field.get_value(record)
@@ -210,7 +199,6 @@ class TestConfig:
         record.with_component(component)
 
         score_field = ScoreField(
-            datatype_in_message="FLOAT",
             name="test_score",
             component_name="test_component",
         )
@@ -219,7 +207,6 @@ class TestConfig:
         assert value == 2.5
 
         score_field = ScoreField(
-            datatype_in_message="FLOAT",
             name="test_score",
             component_name="test_component_2",
         )
@@ -230,7 +217,6 @@ class TestConfig:
         assert pytest_error.type is ValueError
 
         score_field = ScoreField(
-            datatype_in_message="FLOAT",
             name="test_score_2",
             component_name="test_component",
         )
@@ -252,16 +238,13 @@ class TestConfig:
         record.with_component(component)
 
         score_field = ScoreField(
-            datatype_in_message="FLOAT",
             name="test_score",
             component_name="test_component",
         )
-        component_field = ComponentField(
-            datatype_in_message="INT", name="test_component"
-        )
+        component_field = ComponentField(name="test_component")
 
         normalised_field = NormalisedField(
-            datatype_in_message="INT", base_value=component_field, score=score_field
+            base_value=component_field, score=score_field
         )
         value = normalised_field.get_value(record)
 
@@ -278,17 +261,14 @@ class TestConfig:
         component.with_score(score)
         record.with_component(component)
 
-        record_field = RecordField(datatype_in_message="TEXT", name="record_id")
+        record_field = RecordField(name="record_id")
 
         score_field = ScoreField(
-            datatype_in_message="FLOAT",
             name="test_score",
             component_name="test_component",
         )
 
-        normalised_field = NormalisedField(
-            datatype_in_message="INT", base_value=record_field, score=score_field
-        )
+        normalised_field = NormalisedField(base_value=record_field, score=score_field)
 
         with pytest.raises(Exception) as pytest_error:
             normalised_field.get_value(record)
@@ -296,12 +276,12 @@ class TestConfig:
         assert pytest_error.type is TypeError
 
     def test_get_value_constant_field(self):
-        constant_field = ConstantField(datatype_in_message="TEXT", value="test")
+        constant_field = ConstantField(value="test")
         value = constant_field.get_value()
 
         assert value == "test"
 
-        constant_field = ConstantField(datatype_in_message="TEXT", value=15)
+        constant_field = ConstantField(value=15)
         value = constant_field.get_value()
 
         assert value == 15
@@ -312,15 +292,13 @@ class TestConfig:
             datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
         )
 
-        record_field = RecordField(datatype_in_message="TEXT", name="record_id")
+        record_field = RecordField(name="record_id")
 
         value = record_field.get_value(record)
 
         assert value == "record_id_123"
 
-        record_field = RecordField(
-            datatype_in_message="INT", name="start_time", modify="month"
-        )
+        record_field = RecordField(name="start_time", modify="month")
 
         value = record_field.get_value(record)
 
@@ -332,16 +310,14 @@ class TestConfig:
             datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
         )
 
-        record_field = RecordField(datatype_in_message="TEXT", name="missing")
+        record_field = RecordField(name="missing")
 
         with pytest.raises(Exception) as pytest_error:
             record_field.get_value(record)
 
         assert pytest_error.type is AttributeError
 
-        record_field = RecordField(
-            datatype_in_message="INT", name="start_time", modify="missing"
-        )
+        record_field = RecordField(name="start_time", modify="missing")
 
         with pytest.raises(Exception) as pytest_error:
             record_field.get_value(record)
@@ -352,7 +328,6 @@ class TestConfig:
         test_yaml = """
                     !ComponentField
                       name: test_field
-                      datatype_in_message: INT
                     """
 
         config = yaml.load(test_yaml, Loader=get_loaders())
