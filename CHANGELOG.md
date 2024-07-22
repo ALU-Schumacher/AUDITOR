@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update anyhow from 1.0.82 to 1.0.86 ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Remove fields `collector_addr` and `collector_port` in settings struct ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.20.7 to 1.23.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.20.7 to 1.23.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 42.0.5 to 42.0.8 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
