@@ -56,8 +56,6 @@ class AuthConfig(Configurable):
 
 
 class Field(Configurable):
-    datatype_in_message: str
-
     def get_value(self, record: Optional[Record]) -> Union[str, int, float]:
         raise NotImplementedError()
 
@@ -211,7 +209,7 @@ class NormalisedField(Field):
 
 
 class NormalisedWallDurationField(NormalisedField):
-    base_value: RecordField = RecordField(name="runtime", datatype_in_message="INT")
+    base_value: RecordField = RecordField(name="runtime")
 
 
 class ConstantField(Field):

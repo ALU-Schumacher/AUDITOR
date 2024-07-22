@@ -258,8 +258,7 @@ def create_db(
             )
             raise ValueError
         else:
-            data_type = v.datatype_in_message
-            field_list.append(f"{k} {data_type} NOT NULL")
+            field_list.append(f"{k} NOT NULL")
 
     field_list_str = ",".join(field_list)
 
@@ -364,7 +363,7 @@ def get_data_tuple(
     for v in fields_dict.values():
         value = v.get_value(record)
 
-        if v.datatype_in_message == "TEXT":
+        if isinstance(value, str):
             value = replace_record_string(value)
 
         value_list.append(value)
