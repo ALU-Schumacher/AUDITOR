@@ -735,107 +735,79 @@ See below for all currently available collectors.</p>
 </span><span style="color:#00a33f;">summary_fields</span><span>:
 </span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
 </span><span>    </span><span style="color:#00a33f;">NormalisedWallDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedWallDurationField
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>      </span><span style="color:#00a33f;">score</span><span>:
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
 </span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
 </span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
 </span><span>    </span><span style="color:#00a33f;">NormalisedCpuDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedField
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>      </span><span style="color:#00a33f;">base_value</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>        </span><span style="color:#00a33f;">divide_by</span><span>: 1000
 </span><span>      </span><span style="color:#00a33f;">score</span><span>:
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>        </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
 </span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
 </span><span>    
 </span><span>  </span><span style="color:#00a33f;">optional</span><span>:
 </span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
 </span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
 </span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">Infrastructure</span><span>: </span><span style="color:#ff5600;">!ConstantField
 </span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>
 </span><span>
 </span><span style="color:#00a33f;">individual_job_fields</span><span>:
 </span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
 </span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
 </span><span>
 </span><span>  </span><span style="color:#00a33f;">optional</span><span>:
 </span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
 </span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
 </span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">InfrastructureType</span><span>: </span><span style="color:#ff5600;">!ConstantField
 </span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">INT
 </span><span>    </span><span style="color:#00a33f;">LocalUserId</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user_id
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">FQAN</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">InfrastructureDescription</span><span>: </span><span style="color:#ff5600;">!ConstantField
 </span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">AUDITOR-ARC-SLURM
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span><span>    </span><span style="color:#00a33f;">ServiceLevel</span><span>: </span><span style="color:#ff5600;">!ScoreField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">FLOAT
 </span><span>      </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
 </span><span>    </span><span style="color:#00a33f;">ServiceLevelType</span><span>: </span><span style="color:#ff5600;">!ConstantField
 </span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>      </span><span style="color:#00a33f;">datatype_in_message</span><span>: </span><span style="color:#00a33f;">TEXT
 </span></code></pre>
 <p>The individual parameters in the config file are:</p>
 <table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
@@ -857,30 +829,32 @@ See below for all currently available collectors.</p>
 <tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
 </tbody></table>
 <p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>CpuDuration
-</span><span>NormalisedCpuDuration (only for summary_job_fields)
-</span><span>NormalisedWallDuration (only for summary_job_fields)
-</span></code></pre>
-<p>There are actually more mandatory fields, but they are handlded internally and don't need any input from the user.</p>
+<table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>CpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedCpuDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedWallDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
+</tbody></table>
+<p>There are actually more mandatory fields, but they are handled internally and don't need any input from the user.</p>
 <p><code>optional</code> fields can be used to provide additional information to APEL:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>GlobalUserName
-</span><span>VO
-</span><span>VOGroup
-</span><span>VORole
-</span><span>SubmitHost
-</span><span>Infrastructure (only for summary_job_fields)
-</span><span>InfrastructureType (only for individual_job_fields)
-</span><span>InfrastructureDescription (only for individual_job_fields)
-</span><span>NodeCount
-</span><span>Processors
-</span><span>LocalUserId (only for individual_job_fields)
-</span><span>FQAN (only for individual_job_fields)
-</span><span>ServiceLevel (only for individual_job_fields)
-</span><span>ServiceLevelType (only for individual_job_fields)
-</span></code></pre>
-<p>The information about the possible fields, and what is mandatory or optional, is taken from <a href="https://wiki.egi.eu/wiki/APEL/MessageFormat">https://wiki.egi.eu/wiki/APEL/MessageFormat</a> and <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>, where the former also contains explanations and examples for the field content.</p>
+<table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>GlobalUserName</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VO</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VOGroup</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VORole</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>SubmitHost</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>Infrastructure</code> (only for summary_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>InfrastructureType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>InfrastructureDescription</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>NodeCount</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>Processors</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>LocalUserId</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>FQAN</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>ServiceLevel</code> (only for individual_job_fields)</td><td style="text-align: center"><code>float</code></td></tr>
+<tr><td style="text-align: left"><code>ServiceLevelType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+</tbody></table>
+<p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>.</p>
+<p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!</p>
 <p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, <code>NormalisedField</code>, and <code>NormalisedWallDurationField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
-<p>All fields have the mandatory parameter <code>datatype_in_message</code>, which indicates the data type of the field in the APEL message (see <a href="https://wiki.egi.eu/wiki/APEL/MessageFormat">https://wiki.egi.eu/wiki/APEL/MessageFormat</a>). Possible types are <code>FLOAT</code>, <code>TEXT</code>, and <code>INT</code>.</p>
 <p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
 <p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> takes the name of a function and applies it to the value. The function has to be present in <code>config.py</code> and can be added via a pull request.</p>
 <p><code>ConstantField</code> has the mandatory parameter <code>value</code>, which is exactly what will be written in the message field.</p>
