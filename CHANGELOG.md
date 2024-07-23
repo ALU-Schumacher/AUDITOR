@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 42.0.5 to 42.0.8 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
 - Dependencies: Update itertools from 0.12.1 to 0.13.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update mypy from 1.9.0 to 1.10.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update mypy from 1.9.0 to 1.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update opentelemetry from 0.22.0 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update opentelemetry-prometheus from 0.15.0 to 0.16.0 ([@dirksammel](https://github.com/dirksammel))
