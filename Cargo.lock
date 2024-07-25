@@ -334,7 +334,7 @@ dependencies = [
 
 [[package]]
 name = "auditor"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "actix-web",
  "actix-web-opentelemetry",
@@ -378,7 +378,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-client"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -409,7 +409,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-priority-plugin"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "actix-web",
  "actix-web-opentelemetry",
@@ -437,7 +437,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-collector"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -463,7 +463,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-epilog-collector"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -2417,7 +2417,7 @@ dependencies = [
 
 [[package]]
 name = "python-auditor"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "anyhow",
  "auditor",
