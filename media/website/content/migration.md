@@ -4,7 +4,9 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.5.0 to unreleased/0.6.0
+# From 0.6.1 to unreleased/0.7.0
+
+# From 0.5.0 to 0.6.1
 
 ## Auditor DB:
 - WARNING: Please create a backup of the database before running the migration script.
