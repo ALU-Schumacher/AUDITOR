@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update crate-ci/typos from 1.23.3 to 1.23.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 71.1.0 to 72.1.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
