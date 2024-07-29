@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update setuptools from 71.1.0 to 72.1.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
@@ -50,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update crate-ci/typos from 1.20.7 to 1.23.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 42.0.5 to 43.0.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
+- Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update itertools from 0.12.1 to 0.13.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.9.0 to 1.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
@@ -58,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update opentelemetry-prometheus from 0.15.0 to 0.16.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update opentelemetry_sdk from 0.22.1 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.6.4 to 2.8.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update regex from 1.10.4 to 1.10.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
+- Dependencies: Update regex from 1.10.4 to 1.10.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pytest from 8.1.1 to 8.3.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.3.2 to 0.5.4 ([@dirksammel](https://github.com/dirksammel))
@@ -76,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update uuid from 1.9.1 to 1.10.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
-- Docs: Fix clippy issues for indentation ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
+- Docs: Fix clippy issues for indentation ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
