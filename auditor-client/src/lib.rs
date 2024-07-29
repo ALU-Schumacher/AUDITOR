@@ -724,7 +724,7 @@ impl AuditorClientBuilder {
     /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration or send interval is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     /// * [`ClientError::DatabaseError`] - If there was an error while opening or creating the
-    /// database
+    ///     database
     pub async fn build_queued(self) -> Result<QueuedAuditorClient, ClientError> {
         let interval = self.send_interval;
         let client = QueuedAuditorClient::new(

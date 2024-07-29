@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [0.6.1] - 2024-07-25
+## [0.6.2] - 2024-07-29
 
 ### Breaking changes
 - AUDITOR: Run `sqlx migrate run` to migrate to new schema for AUDITOR accounting db. ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update uuid from 1.9.1 to 1.10.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
+- Docs: Fix clippy issues for indentation ([@raghuvar-vijay](https://github.com/raghuvar-vijay)
 
 ### Removed
 
@@ -549,7 +550,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.2...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -563,4 +564,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1
 [0.4.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0
 [0.5.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0
-[0.6.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.1
+[0.6.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.2
