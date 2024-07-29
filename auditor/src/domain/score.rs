@@ -44,7 +44,7 @@ impl Score {
     /// # Errors
     ///
     /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `name`
-    /// or if a negative `value` was given.
+    ///     or if a negative `value` was given.
     pub fn new<T: AsRef<str>>(name: T, value: f64) -> Result<Self, Error> {
         Ok(Score {
             name: ValidName::parse(name.as_ref().to_string())
