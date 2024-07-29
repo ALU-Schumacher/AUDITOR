@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog &mdash; pyauditor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyauditor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#breaking-changes">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.6.2 - 2024-07-29</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">0.5.0 - 2024-04-23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">0.4.0 - 2024-01-31</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">0.3.1 - 2023-11-24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id25">0.3.0 - 2023-11-17</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id31">0.2.0 - 2023-09-21</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id37">0.1.0 - 2023-04-19</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id41">0.0.7 - 2023-02-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id42">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id45">0.0.6 - 2022-09-06</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id46">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deprecated">Deprecated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id48">0.0.5 - 2022-08-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id49">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id52">0.0.4 - 2022-08-16</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id53">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id54">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id56">0.0.3 - 2022-08-11</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id57">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id58">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id60">0.0.2 - 2022-08-01</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id61">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id62">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id64">0.0.1 - 2022-07-26</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id65">Added</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyauditor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changelog</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/changelog.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="changelog">
+<span id="ref-changelog"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<p>All notable changes to the AUDITOR project will be documented in this file.</p>
+<p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<section id="unreleased">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/compare/v0.6.2...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Link to this heading"></a></h2>
+<section id="breaking-changes">
+<h3>Breaking changes<a class="headerlink" href="#breaking-changes" title="Link to this heading"></a></h3>
+</section>
+<section id="security">
+<h3>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h3>
+</section>
+<section id="added">
+<h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
+</section>
+<section id="removed">
+<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id1">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.2">0.6.2</a> - 2024-07-29<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>Breaking changes<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>AUDITOR: Run <code class="docutils literal notranslate"><span class="pre">sqlx</span> <span class="pre">migrate</span> <span class="pre">run</span></code> to migrate to new schema for AUDITOR accounting db. (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Apel plugin: Use class structure for config and messages (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Change <code class="docutils literal notranslate"><span class="pre">month</span></code> and <code class="docutils literal notranslate"><span class="pre">year</span></code> parameters of republish script to <code class="docutils literal notranslate"><span class="pre">begin_date</span></code> and <code class="docutils literal notranslate"><span class="pre">end_date</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Logging of APEL messages moved from DEBUG to TRACE level (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Security<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+</section>
+<section id="id4">
+<h3>Added<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>AUDITOR: Migrate to jsonb type for meta and component fields for AUDITOR postgresql. (#736) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Client: Added a <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code> that queues records to be sent in a local SQLite database (<a class="reference external" href="https://github.com/rkleinem">&#64;rkleinem</a>)</p></li>
+<li><p>Apel plugin: Add option to send individual job messages (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Add mypy workflow for type checking (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Add integration test for db migraiton (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Docs: Add contribution guidelines (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Changed<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Apel plugin: Use common logger in the code base (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Add TRACE level for logging (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Re-use records fetched for sync message for individual jobs reporting (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor: Use workspace dependencies (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor &amp; auditor-client: Resolve circular dependency with auditor and auditor-client (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Refactor auditor database table to <code class="docutils literal notranslate"><span class="pre">auditor_accounting</span></code> (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor &amp; auditor-client: Add test to check query metadata &amp; add missing sqlx query metadata (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Benchmark: Add <code class="docutils literal notranslate"><span class="pre">num_of_records</span></code> and <code class="docutils literal notranslate"><span class="pre">sample</span> <span class="pre">size</span></code> config fields for benchmark script (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update actix-web from 4.6.0 to 4.8.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>), (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update anyhow from 1.0.82 to 1.0.86 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Slurm collector: Remove fields <code class="docutils literal notranslate"><span class="pre">collector_addr</span></code> and <code class="docutils literal notranslate"><span class="pre">collector_port</span></code> in settings struct (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update black from 24.2.0 to 24.4.2 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update crate-ci/typos from 1.20.7 to 1.23.3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 42.0.5 to 43.0.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/build-push-action from 5 to 6 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a></p></li>
+<li><p>Dependencies: Update itertools from 0.12.1 to 0.13.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update mypy from 1.9.0 to 1.11.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update num-traits from 0.2.18 to 0.2.19 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry from 0.22.0 to 0.23.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry-prometheus from 0.15.0 to 0.16.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry_sdk from 0.22.1 to 0.23.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update pydantic from 2.6.4 to 2.8.2 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.10.4 to 1.10.5 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a></p></li>
+<li><p>Dependencies: Update pytest from 8.1.1 to 8.3.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update requests from 2.31.0 to 2.32.3 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update ruff from 0.3.2 to 0.5.4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.203 to 1.0.204 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>), (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.117 to 1.0.120 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>), (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update serde_with from 3.7.0 to 3.8.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update setuptools from 69.2.0 to 71.1.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update shalzz/zola-deploy-action from 0.18.0 to 0.19.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update thiserror from from 1.0.61 to 1.0.63 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update tracing-actix-web from 0.7.10 to 0.7.11 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update types-requests from 2.31.0.20240406 to 2.32.0.20240712 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update requests from 2.31.0 to 2.32.2 in /plugins/apel (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.12.4 to 0.12.5 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update prometheus from 0.13.3 to 0.13.4 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.9.1 to 1.10.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>CI: Switch to stable toolchain for clippy job (#793) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Client: Moved the client to a dedicated package <code class="docutils literal notranslate"><span class="pre">auditor-client</span></code> due to limitations of sqlx (<a class="reference external" href="https://github.com/rkleinem">&#64;rkleinem</a>)</p></li>
+<li><p>Docs: Fix clippy issues for indentation (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Removed<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id7">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0">0.5.0</a> - 2024-04-23<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="id8">
+<h3>Breaking changes<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Apel plugin: change config parameter <code class="docutils literal notranslate"><span class="pre">time_db_path</span></code> to <code class="docutils literal notranslate"><span class="pre">time_json_path</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: change config format from INI to YAML (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>AUDITOR: Database migrations can now be run using the Docker container (#765) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>Security<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[RUSTSEC-2024-0019]: Update mio from 0.8.10 to 0.8.11 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2024-0020]: Update whoami from 1.4.1 to 1.5.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2024-0021]: Update eyre from 0.6.11 to 0.6.12 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2024-0332]: Update h2 from 0.3.24 to 0.3.26 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2024-0332]: Update h2 from 0.4.2 to 0.4.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[CVE-2024-32650]: Update rustls from 0.21.10 to 0.21.11 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2024-0336]: Update rustls from 0.22.2 to 0.22.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3>Added<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>AUDITOR: Add benchmark to measure db performance (#736) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>AUDITOR: Add health check to docker container (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>API: The health check (<code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/health_check</span></code>) now fails with an <code class="docutils literal notranslate"><span class="pre">500</span> <span class="pre">INTERNAL</span> <span class="pre">SERVER</span> <span class="pre">ERROR</span></code> if no connection can be made to the database (#622) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Add workflow for testing the pyaudtitor source distribution (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Add workflow for building the Rust documentation (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>Changed<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Apel plugin: Reduce unnecessary high number of records for sync messages (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Send separate summary messages per site (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Include data of complete month in summary messages (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Client: Reduce logging information in info mode (#680) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Slurm collector: Reduce logging information in info mode (#680) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actix-web from 4.4.1 to 4.5.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actix-web-opentelemetry 0.16.0 to 0.17.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update anyhow from 1.0.79 to 1.0.82 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update build from 1.0.3 to 1.2.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update chrono from 0.4.33 to 0.4.38 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update color-eyre from 0.6.2 to 0.6.3 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update crate-ci/typos from 1.20.4 to 1.20.7 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 42.0.2 to 42.0.5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update iana-time-zone from 0.1.59 to 0.1.60 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update num-traits from 0.2.17 to 0.2.18 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry from 0.21.0 to 0.22.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry-prometheus from 0.14.1 to 0.15.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry_sdk from 0.21.2 to 0.22.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pyo3 from 0.19.2 to 0.20.3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pyo3-asyncio from 0.19 to 0.20 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update pytest from 8.0.0 to 8.1.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update pytest-cov from 4.1.0 to 5.0.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.10.3 to 1.10.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.11.24 to 0.12.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.196 to 1.0.198 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde-aux from 4.4.0 to 4.5.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.113 to 1.0.116 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_qs from 0.12.0 to 0.13.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_with from 3.6.0 to 3.7.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update setuptools from 69.0.3 to 69.2.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update softprops/action-gh-release from 1 to 2 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update sqlx from 0.7.3 to 0.7.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update thiserror from 1.0.56 to 1.0.58 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tokio from 1.35.1 to 1.37.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-actix-web from 0.7.9 to 0.7.10 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update unicode-segmentation from 1.10.1 to 1.11.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.7.0 to 1.8.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update wiremock from 0.5.22 to 0.6.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Remove deprecated options from cargo.deny (#709) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Switch to stable toolchain for coverage job (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Update htcondor docker image from 10.9.0 to 23.5.2 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Use specific version for actions (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>Removed<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id13">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0">0.4.0</a> - 2024-01-31<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<section id="id14">
+<h3>Breaking changes<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>API: Deprecate get_[started/stopped]_since endpoint (#525) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Apel plugin: Remove <code class="docutils literal notranslate"><span class="pre">site_name_mapping</span></code> config parameter and change structure of <code class="docutils literal notranslate"><span class="pre">sites_to_report</span></code> config parameter (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3>Security<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>[RUSTSEC-2023-0074]: Update zerocopy from 0.7.26 to 0.7.31 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id16">
+<h3>Added<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor+pyauditor: Added advanced filtering when querying records (#466) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor+pyauditor: Added bulk_insert option to insert list of records using auditor client and pyauditor (#580) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Incorrect query string returns an error (#598) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Return correct status code for errors during querying of records (#620) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Remove get_since.rs and clean up dead code (#624) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>pyauditor: Add string representation to python Record Object (#596) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>CI: Added new workflow to define reusable parameters for other workflows (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Docs: Add versioning of GitHub Pages and pyauditor docs (#551) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Add overview of API endpoints (#597) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: Add optional config setting for style of summary message (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3>Changed<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor+pyauditor: Deprecate <code class="docutils literal notranslate"><span class="pre">get_started_since()</span></code> and <code class="docutils literal notranslate"><span class="pre">get_stopped_since()</span></code> functions (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Restructure <code class="docutils literal notranslate"><span class="pre">/record</span></code> endpoint to handle single record operations and <code class="docutils literal notranslate"><span class="pre">/records</span></code> endpoint to handle multiple records operations (#629) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Incorrect meta and component query returns an empty vector and implement more edge case testing for advanced queries (#638) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor: Implement prepared SQL queries using push_bind for advanced filtering (#637) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Auditor container: Update Rust from 1.68 to 1.75 and Debian from 11 (Bullseye) to 12 (Bookworm) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actions/setup-python from 4 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/download-artifact from 3 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/upload-artifact from 3 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actix-web from 4.4.0 to 4.4.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update anyhow from 1.0.75 to 1.0.79 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update chrono from 0.4.31 to 0.4.33 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 41.0.5 to 42.0.2 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update fake from 2.9.1 to 2.9.2 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update h2 from 0.3.22 to 0.3.24 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update itertools from 0.12.0 to 0.12.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update once_cell from 1.18.0 to 1.19.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry_sdk from 0.21.1 to 0.21.2 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pytest from 7.4.3 to 8.0.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.10.2 to 1.10.3 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.11.22 to 0.11.24 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.193 to 1.0.196 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde-aux from 4.2.0 to 4.4.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.108 to 1.0.113 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_qs from 0.11.0 to 0.12.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a></p></li>
+<li><p>Dependencies: Update serde_with from 3.4.0 to 3.6.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update setuptools from 69.0.2 to 69.0.3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update sqlx from 0.7.2 to 0.7.3 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update thiserror from 1.0.50 to 1.0.56 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tokio from 1.34.0 to 1.35.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.6.1 to 1.7.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update wiremock from 0.5.21 to 0.5.22 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Replace unmaintained actions-rs/audit-check action with maintained one from rustsec (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Introduce dependency between pyauditor release and release of python packages (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Add extra workflow for building the pyaudtitor source distribution (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Fix setting symlink to latest pyauditor tag (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Split webpage building and symlink creation into two jobs (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Use tagged version instead of master branch for zola deploy action (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: Replace all URL encodings in meta fields with single-character equivalent (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Use advanced querying for filtering records (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Rename summary record field <code class="docutils literal notranslate"><span class="pre">Infrastructure</span></code> to <code class="docutils literal notranslate"><span class="pre">InfrastructureType</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Docs: Pyauditor- Fix pyauditor tutorial for creating new records (#631) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>Removed<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id19">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1">0.3.1</a> - 2023-11-24<a class="headerlink" href="#id19" title="Link to this heading"></a></h2>
+<section id="id20">
+<h3>Breaking changes<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+</section>
+<section id="id21">
+<h3>Security<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+</section>
+<section id="id22">
+<h3>Added<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Docs: Add steps for creating a new release (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Add Python 3.12 to workflows (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3>Changed<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Dependencies: Update config from 0.13.3 to 0.13.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pytest from 7.4.2 to 7.4.3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.192 to 1.0.193 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update setuptools from 68.2.2 to 69.0.2 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.5.0 to 1.6.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Fix maturin version to v1.2.3 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id24">
+<h3>Removed<a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id25">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.0">0.3.0</a> - 2023-11-17<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
+<section id="id26">
+<h3>Breaking changes<a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor: Standardize REST APIs. Routes have changed to single endpoint ‘/record’ with methods such as ‘GET’, ‘PUT’, ‘POST’ (#465) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Priority plugin: ‘auditor’ configuration has to be present in the config file. ‘prometheus’ configuration is optional (#456) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Slurm collector: New filter options to filter slurm jobs are added. The <code class="docutils literal notranslate"><span class="pre">job_status</span></code> key in the config is moved to the <code class="docutils literal notranslate"><span class="pre">job_filter</span></code> section and is renamed to <code class="docutils literal notranslate"><span class="pre">status</span></code> (#472) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id27">
+<h3>Security<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
+</section>
+<section id="id28">
+<h3>Added<a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor: Add records_handler module to routes to handle record queries  (#465) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Docs: Add instructions for developers for building the Rust and Python documentation locally (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Priority plugin: Add prometheus data exporter (#456) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Slurm collector: Add <code class="docutils literal notranslate"><span class="pre">default_value</span></code> option for component configuration (#510) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Add urlencoding 2.1.3 (to parse datetime while querying records)  (#465) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+</ul>
+</section>
+<section id="id29">
+<h3>Changed<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Slurm collector: Fix ambiguous local time in database.rs after switching from CEST to CET (#518) (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Slurm collector: Fix panic during component construction when job info is missing data for component (#510) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actix-web-opentelemetry 0.15.0 to 0.16.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update cargo-get from 0.3.3 to 1.0.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 41.0.4 to 41.0.5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update fake from 2.8.0 to 2.9.1 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update itertools from 0.11.0 to 0.12.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update num-traits from 0.2.16 to 0.2.17 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry from 0.20.0 to 0.21.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry-prometheus from 0.13.0 to 0.14.1 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry_sdk from 0.20.0 to 0.21.1 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.9.5 to 1.10.2 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.11.20 to 0.11.22 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update rustix from 0.38.14 to 0.38.20 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.188 to 1.0.192 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.107 to 1.0.108 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_with from 3.3.0 to 3.4.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update sqlx from 0.7.1 to 0.7.2 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update thiserror from 1.0.48 to 1.0.50 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update time from 0.3.28 to 0.3.29 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tokio from 1.32.0 to 1.34.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing from 0.1.37 to 0.1.40 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-actix-web from 0.7.6 to 0.7.9 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-log from 0.1.3 to 0.2.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.4.1 to 1.5.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update wiremock from 0.5.19 to 0.5.21 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Build pyauditor and Auditor Docker image from source for HTCondor collector test (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Build pyauditor with maturin for Python unit tests (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: New workflow structure (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id30">
+<h3>Removed<a class="headerlink" href="#id30" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id31">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.2.0">0.2.0</a> - 2023-09-21<a class="headerlink" href="#id31" title="Link to this heading"></a></h2>
+<section id="id32">
+<h3>Breaking changes<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>pyauditor + Apel plugin + HTCondor collector: Support for Python 3.6 and 3.7 has been dropped (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: <code class="docutils literal notranslate"><span class="pre">cpu_time_unit</span></code> has to be present in the config file. See <a class="reference external" href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/_index.md#apel-plugin">Documentation</a> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor: Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docker containers: The <code class="docutils literal notranslate"><span class="pre">main</span></code> tag was replaced with the <code class="docutils literal notranslate"><span class="pre">edge</span></code> tag (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update pyo3 from 0.15.2 to 0.19 and pyo3-asyncio from 0.15 to 0.19 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p>
+<ul>
+<li><p>When creating a record with <code class="docutils literal notranslate"><span class="pre">pyauditor</span></code>, the timezone of the datetime object now needs to be converted to <code class="docutils literal notranslate"><span class="pre">datetime.timezone.utc</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pytz.utc</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id33">
+<h3>Security<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[RUSTSEC-2023-0052]: Update webpki from 0.22.0 to 0.22.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>[CVE-2022-35737]: Update libsqlite3-sys from 0.24.2 to 0.26.0 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id34">
+<h3>Added<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor + Apel plugin: Add semver tags and edge tag for docker container (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Auditor + CI: Add integration test for Auditor Prometheus exporter(<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: Migrate the Apel plugin from <a class="reference external" href="https://github.com/ALU-Schumacher/AUDITOR-APEL-plugin">ALU-Schumacher/AUDITOR-APEL-plugin</a> to this repo (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Docker image (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Apel plugin: Check if there are sites to report in the record list (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>HTCondor collector (<a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>Priority plugin: Add option for client timeout (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Set LogLevel using env variable for auditor, slurm and slurm-epilog collectors and priority plugin (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>CI: Linting of python code with ruff and black (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Dependabot checks for python plugins/collectors and GitHub actions (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Python unit tests (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Check CHANGELOG.md for changes (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>CI: Publish Apel plugin and HTCondor collector to PyPI and GitHub (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Docs: Document <code class="docutils literal notranslate"><span class="pre">Record</span></code>, <code class="docutils literal notranslate"><span class="pre">RecordAdd</span></code>, <code class="docutils literal notranslate"><span class="pre">RecordUpdate</span></code>, <code class="docutils literal notranslate"><span class="pre">Component</span></code>, <code class="docutils literal notranslate"><span class="pre">Score</span></code>, and <code class="docutils literal notranslate"><span class="pre">Meta</span></code> in Rust API (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Add tutorial for Rust client (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Common sections for collectors and plugins (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Dedicated docs for development (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Add documentation for the Slurm collector (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Docs: Add documentation for the Apel plugin (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+</ul>
+</section>
+<section id="id35">
+<h3>Changed<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Apel plugin: Bugfix in catching empty record list (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Catch VOMS information that does not start with <code class="docutils literal notranslate"><span class="pre">/</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Remove <code class="docutils literal notranslate"><span class="pre">pytz</span></code> dependency (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Refactor code (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Apel plugin: Remove encoding from logging (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Auditor: Fix default address in AuditorClientBuilder (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>CI: Update list of RUSTSEC ignores (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>HTCondor collector: Handle <code class="docutils literal notranslate"><span class="pre">undefined</span></code> values from the batch system correctly (<a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>HTCondor collector: Replace <code class="docutils literal notranslate"><span class="pre">datetime.utcfromtimestamp</span></code> with <code class="docutils literal notranslate"><span class="pre">datetime.fromtimestamp</span></code> (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Slurm collector: Add option to allow for empty fields in <code class="docutils literal notranslate"><span class="pre">sacct</span></code> output (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Slurm collector: Fix parsing of ParsableType::Time for certain cases (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Webpage: Adjust color schema and add text to About and ChangeLog pages (<a class="reference external" href="https://github.com/frboehler">&#64;frboehler</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actions/checkout from 1 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>, <a class="reference external" href="https://github.com/rfvc">&#64;rfvc</a>)</p></li>
+<li><p>Dependencies: Update actions/download-artifact from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/setup-python from 2 to 4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actions/upload-artifact from 2 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update actix-web from 4.3.1 to 4.4.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update actix-web-opentelemetry from 0.12.0 to 0.15.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update anyhow from 1.0.70 to 1.0.75 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update chrono from 0.4.24 to 0.4.31 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update cryptography from 41.0.1 to 41.0.4 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/build-push-action from 2.5.0 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/login-action from 1.10.0 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/metadata-action from 3.3.0 to 5 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update docker/setup-buildx-action from 1 to 3 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update fake from 2.5.0 to 2.8.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update itertools from 0.10.5 to 0.11.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update maturin from 0.13 to 1.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update num-traits from 0.2.15 to 0.2.16 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update once_cell from 1.17.1 to 1.18.0 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry from 0.17.0 to 0.20.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update opentelemetry-prometheus from 0.10.0 to 0.13.0 (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update regex from 1.7.3 to 1.9.5 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update reqwest from 0.11.16 to 0.11.20 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update rustls-webpki from 0.101.2 to 0.101.4 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde from 1.0.160 to 1.0.188 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update serde_json from 1.0.96 to 1.0.107 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update serde_with from 2.3.2 to 3.3.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update sqlx from 0.6.3 to 0.7.1 (<a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>), (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Dependencies: Update thiserror from 1.0.40 to 1.0.48 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update tokio from 1.27.0 to 1.32.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing from 0.1.37 to 0.1.38 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Update tracing-actix-web from 0.7.4 to 0.7.6 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update tracing-bunyan-formatter from 0.3.7 to 0.3.9 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>, <a class="reference external" href="https://github.com/dirksammel">&#64;dirksammel</a>)</p></li>
+<li><p>Dependencies: Update tracing-subscriber from 0.3.16 to 0.3.17 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Update uuid from 1.3.1 to 1.4.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>, <a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+<li><p>Dependencies: Update wiremock from 0.5.18 to 0.5.19 (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id36">
+<h3>Removed<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id37">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.1.0">0.1.0</a> - 2023-04-19<a class="headerlink" href="#id37" title="Link to this heading"></a></h2>
+<section id="id38">
+<h3>Added<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>pyauditor: Added <code class="docutils literal notranslate"><span class="pre">to_json</span></code> method to records (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>pyauditor: Runtime can now be set for record either directly or by adding a <code class="docutils literal notranslate"><span class="pre">stop_time</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Slurm collector: Added JSON parsing for meta fields (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Slurm collector: Added VOMS proxy info to meta (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Auditor + pyauditor: Added blocking client (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Auditor: Added implementation for <code class="docutils literal notranslate"><span class="pre">From</span></code> trait to <code class="docutils literal notranslate"><span class="pre">ClientError</span></code> (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3>Changed<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Slurm collector: Bugfixes for parsing slurm output (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Slurm collector: Ignores subjobs (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Slurm collector: Use safer defaults (<a class="reference external" href="https://github.com/rkleinem">&#64;rkleinem</a>)</p></li>
+<li><p>Dependencies: Updated actix-web from 4.3.0 to 4.3.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated anyhow from 1.0.69 to 1.0.70 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated chrono from 0.4.23 to 0.4.24 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated once_cell from 1.17.0 to 1.17.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated regex from 1.7.1 to 1.7.3 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated reqwest from 0.11.14 to 0.11.16 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated serde from 1.0.152 to 1.0.160 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated serde-aux from 4.1.2 to 4.2.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated serde_json from 1.0.93 to 1.0.96 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated serde_with from 2.2.0 to 2.3.2 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated sqlx from 0.6.2 to 0.6.3 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated thiserror from 1.0.38 to 1.0.40 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated tokio from 1.25.0 to 1.27.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated tracing-actix-web from 0.7.2 to 0.7.4 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated tracing-bunyan-formatter from 0.3.6 to 0.3.7 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated uuid from 1.3.0 to 1.3.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Dependencies: Updated wiremock from 0.5.17 to 0.5.18 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+</ul>
+</section>
+<section id="id40">
+<h3>Removed<a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor: Removed constructors for auditor client (both async and blocking) (<a class="reference external" href="https://github.com/QuantumDancer">&#64;QuantumDancer</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id41">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.7">0.0.7</a> - 2023-02-13<a class="headerlink" href="#id41" title="Link to this heading"></a></h2>
+<section id="id42">
+<h3>Added<a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Added Slurm collector (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Added code coverage to CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3>Changed<a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All collectors and plugins are now dedicated crates (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Renamed Score “factor” to “value” (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Added meta field which stores key-value pairs of the form <code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">Vec&lt;string&gt;</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Auditor crate now has server and client features. This allows one to avoid pulling in server code when only client code is needed. Server code requires a live database to compile (because of sqlx). (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Support for building python 3.11 pyauditor modules (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Improvements in CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Replaced <code class="docutils literal notranslate"><span class="pre">cargo-spellcheck</span></code> with <code class="docutils literal notranslate"><span class="pre">typos</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated Postgres instances in CI to version 15 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Use claims instead of unmaintained claim (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Removed dependency on time 0.1 as much as possible. Potential vulnerability does not affect us though. (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated tokio from 1.22.0 to 1.25.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated prometheus from 0.13.1 to 0.13.3 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated serde_with from 2.0.0 to 2.2.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated actix-web from 4.1.0 to 4.3.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated anyhow from 1.0.64 to 1.0.69 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated thiserror from 1.0.34 to 1.0.37 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated unicode-segmentation from 1.9.0 to 1.10.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated reqwest from 0.11.11 to 0.11.14 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated tracing-actix-web from 0.6.0 to 0.7.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated once_cell from 1.14.0 to 1.17.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated sqlx from 0.6.1 to 0.6.2 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated serde from 1.0.144 to 1.0.152 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated tracing-subscriber from 0.3.15 to 0.3.16 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated tracing-bunyan-formatter from 0.3.3 to 0.3.6 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated uuid from 1.1.2 to 1.3.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated wiremock from 0.5.14 to 0.5.17 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated config from 0.13.2 to 0.13.3 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Updated regex from 1.7.0 to 1.7.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3>Removed<a class="headerlink" href="#id44" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Removed old python client (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+<li><p>Removed <code class="docutils literal notranslate"><span class="pre">user_id</span></code>, <code class="docutils literal notranslate"><span class="pre">site_id</span></code> and <code class="docutils literal notranslate"><span class="pre">group_id</span></code> from <code class="docutils literal notranslate"><span class="pre">Record</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id45">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.6">0.0.6</a> - 2022-09-06<a class="headerlink" href="#id45" title="Link to this heading"></a></h2>
+<section id="id46">
+<h3>Added<a class="headerlink" href="#id46" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Spellcheck in CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>cargo-deny in CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Implemented comparison operators for pyauditor types (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id47">
+<h3>Changed<a class="headerlink" href="#id47" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Any <code class="docutils literal notranslate"><span class="pre">get</span></code> endpoint now returns a list of records sorted by <code class="docutils literal notranslate"><span class="pre">stop_time</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated anyhow from 1.0.63 to 1.0.64 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated thiserror from 1.0.33 to 1.0.34 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated serde-aux from 3.1.0 to 4.0.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated once-cell from 1.13.1 to 1.14.0 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated sqlx from 0.5.7 to 0.6.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fixed Slurm Epilog Collector to correctly send UTC timestamps (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="deprecated">
+<h3>Deprecated<a class="headerlink" href="#deprecated" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Old python client written in python is deprecated (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id48">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.5">0.0.5</a> - 2022-08-25<a class="headerlink" href="#id48" title="Link to this heading"></a></h2>
+<section id="id49">
+<h3>Added<a class="headerlink" href="#id49" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Database metrics in Prometheus exporter (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Added cargo-deny to CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id50">
+<h3>Changed<a class="headerlink" href="#id50" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Better errors, error handling, error logging and exposing errors to users (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Using a SQL transaction for updating records (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>pyauditor wheels now also have support for python 3.6 (for TARDIS). This required downgrading the pyo3 libraries (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Restructured and simplified test suite (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>AuditorClient now properly errors on server errors (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated once-cell from 1.13.0 to 1.13.1 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated anyhow from 1.0.61 to 1.0.62 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated serde from 1.0.143 to 1.0.144 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id51">
+<h3>Fixed<a class="headerlink" href="#id51" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fixed broken website build in CI (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Removed duplicate configuration directory (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id52">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.4">0.0.4</a> - 2022-08-16<a class="headerlink" href="#id52" title="Link to this heading"></a></h2>
+<section id="id53">
+<h3>Added<a class="headerlink" href="#id53" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Sphinx documentation for pyauditor module (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Tutorial for pyauditor module (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Automatic deployment of pyauditor documentation (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id54">
+<h3>Changed<a class="headerlink" href="#id54" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Updated chrono from 0.4.21 to 0.4.22 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id55">
+<h3>Fixed<a class="headerlink" href="#id55" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Correct badges for pyauditor Readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Moved sqlx-data.json to auditor folder to fix docs.rs build (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id56">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3">0.0.3</a> - 2022-08-11<a class="headerlink" href="#id56" title="Link to this heading"></a></h2>
+<section id="id57">
+<h3>Added<a class="headerlink" href="#id57" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Python interface exported from Rust code (pyauditor) including test harness (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Logging spans with unique id for priority plugin and slurm epilog collector (helps differentiate different runs in logs) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Export of HTTP metrics on <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint for prometheus (Auditor) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Builder pattern for <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> (<code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code>) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Unit tests for client code (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Build pipeline for python wheels on Linux, Windows and MacOS for python versions 3.7-3.10 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Added python package description (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Added pyauditor readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id58">
+<h3>Changed<a class="headerlink" href="#id58" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> methods of <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> now take references to <code class="docutils literal notranslate"><span class="pre">Record</span></code> (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated config from 0.13.1 to 0.13.2 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated serde from 1.0.141 to 1.0.143 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated chrono from 0.4.19 to 0.4.21 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated wiremock from 0.5.13 to 0.5.14 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated anyhow from 1.0.60 to 1.0.61 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Introduced workspaces (as preparation for the python client written in Rust) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Better error handling in Auditor client code (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Improved API of <code class="docutils literal notranslate"><span class="pre">Component</span></code> type (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>CI: Moved clippy pipeline to beta channel (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Changed some of the interfaces in <code class="docutils literal notranslate"><span class="pre">domain</span></code> module to better fit pyauditor (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id59">
+<h3>Fixed<a class="headerlink" href="#id59" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Pointed auditor Cargo.toml to correct readme (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id60">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2">0.0.2</a> - 2022-08-01<a class="headerlink" href="#id60" title="Link to this heading"></a></h2>
+<section id="id61">
+<h3>Added<a class="headerlink" href="#id61" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Documentation of priority plugin on website (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id62">
+<h3>Changed<a class="headerlink" href="#id62" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>CI: Run clippy for all targets (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Build docker containers when pushing a version tag (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Updated tracing from 1.0.35 to 1.0.36 (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+<section id="id63">
+<h3>Fixed<a class="headerlink" href="#id63" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Correctly parse scontrol output in slurm epilog collector (Thanks to Raphael Kleinemuehl for the hint!) (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Fixed building of docs on docs.rs by activating sqlx offline mode (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+<section id="id64">
+<h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1">0.0.1</a> - 2022-07-26<a class="headerlink" href="#id64" title="Link to this heading"></a></h2>
+<section id="id65">
+<h3>Added<a class="headerlink" href="#id65" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Auditor (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Auditor slurm epilog collector (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Auditor priority plugin (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Auditor website (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>Docker container builds (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+<li><p>RPM builds (<a class="reference external" href="https://github.com/stefan-k">&#64;stefan-k</a>).</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Auditor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
