@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Auditor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/juice.css">
+    
+    
+</head>
+
+<body>
+    
+
+    <header class="pos-absolute" style="text-color : white; background-color: transparent">
+        
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.6.2&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR//v0.6.2/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.6.2&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.6.2&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.6.2&#x2F;development&#x2F;">Development</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.6.2&#x2F;migration&#x2F;">Migration</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+    </header>
+
+    <div class="hero">
+        
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        <section class="text-center">
+            <img src="auditor_overview.png" alt="AUDITOR"  style="width: 100%">
+            <h1 class="heading-text" style="color : white;font-size: 80px">
+              <b>AUDITOR</b>
+            </h1>
+            <h3 class="title-text" style="color:white">
+                Accounting Data Handling Toolbox For Opportunistic Resources
+            </h3>
+            <div>
+                <a class="github-button" href="https://github.com/ALU-Schumacher/AUDITOR" data-size="large" data-show-count="true"
+                   aria-label="Star ALU-Schumacher/AUDITOR on GitHub">Star</a>
+                <a class="github-button" href="https://github.com/ALU-Schumacher/AUDITOR/fork" data-size="large"
+                   data-show-count="true" aria-label="Fork ALU-Schumacher/AUDITOR on GitHub">Fork</a>
+            </div>
+        </section>
+        <img class="hero-image" style="width: 15%" src="https://alu-schumacher.github.io/AUDITOR//v0.6.2/white_transparent_background.png">
+
+        <div class="explore-more text"
+            onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+            Explore More ⇩
+        </div>
+        <style>
+            .hero section {
+                padding: 0 5rem;
+            }
+            @media screen and (max-width: 768px) {
+                .hero section {
+                    padding: 0 2rem;
+                }
+
+                .hero-image {
+                    display: none
+                }
+            }
+        </style>
+        
+    </div>
+
+    
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#auditor">Auditor</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#running-auditor">Running Auditor</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#setting-up-the-postgresql-database"><small>- Setting up the PostgreSQL database</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#migrating-the-database"><small>- Migrating the database</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#using-docker-2"><small>- Using Docker</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#configuration-files"><small>- Configuration files</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#metrics-exporter-for-prometheus"><small>- Metrics exporter for Prometheus</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#compiling-from-source"><small>- Compiling from source</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#packages">Packages</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#collectors">Collectors</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#slurm-collector"><small>- SLURM Collector</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#slurm-epilog-collector"><small>- SLURM Epilog Collector</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#htcondor-collector"><small>- HTCondor Collector</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#plugins">Plugins</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#apel-plugin"><small>- APEL Plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#priority-plugin"><small>- Priority Plugin</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#auditor-clients">Auditor Clients</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#api">API</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#license">License</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#contribution"><small>- Contribution</small></a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+            <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
+            <h1 id="auditor">Auditor</h1>
+<p>Auditor stands for <strong>A</strong>cco<strong>u</strong>nting <strong>D</strong>ata Handl<strong>i</strong>ng <strong>T</strong>oolbox For <strong>O</strong>pportunistic <strong>R</strong>esources.
+Auditor ingests accounting data provided by so-called <em>collectors</em>, stores it and provides it to the outside to so-called <em>plugins</em>.</p>
+<p>It comes with a well-defined REST API which allows for the implementation of application-specific collectors and plugins. This makes it well suited for a wide range of use cases.</p>
+<p align="center">
+  <img
+    width="700"
+    src="auditor_overview.png"
+  />
+</p>
+<p>Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
+database and offers these records to plugins which take an action based on the records.</p>
+<h1 id="running-auditor">Running Auditor</h1>
+<p>Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
+Both methods require that the PostgreSQL database is installed and migrated beforehand.</p>
+<h2 id="setting-up-the-postgresql-database">Setting up the PostgreSQL database</h2>
+<h3 id="using-docker">Using Docker</h3>
+<p>You can use Docker to start a PostgreSQL database:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>DB_USER</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>DB_PASSWORD</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;&lt;your-password-here&gt;&quot;
+</span><span>DB_NAME</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span>DB_PORT</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;5432&quot;
+</span><span>
+</span><span>docker run -d --name postgresql_auditor \
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_USER=${DB_USER}&quot; </span><span>\
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_PASSWORD=${DB_PASSWORD}&quot;</span><span>\
+</span><span>    -e </span><span style="color:#00a33f;">&quot;POSTGRES_DB=${DB_NAME}&quot;</span><span>\
+</span><span>    -p </span><span style="color:#00a33f;">&quot;${DB_PORT}:5432&quot; </span><span>\
+</span><span>    postgres
+</span></code></pre>
+<h3 id="manual">Manual</h3>
+<p>Alternatively, you can install PostgreSQL directly using your system's package manager and configure the database and user manually.
+For the next steps you will need the database user and password, database name, host and port.</p>
+<h2 id="migrating-the-database">Migrating the database</h2>
+<h3 id="using-docker-1">Using Docker</h3>
+<p>You can run the database migration using the Auditor Docker container.
+The connection details for the database can be set using the <code>AUDITOR_DATABASE__*</code> environment variables, that are explained in the <a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#using-docker-2">next section</a>.</p>
+<p>If you run the PostgreSQL database as a Docker container, execute the following command.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run \
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__USERNAME=${DB_USER}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=host.docker.internal&quot; </span><span>\
+</span><span>  --add-host</span><span style="color:#ff5600;">=</span><span>host.docker.internal:host-gateway \
+</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span></code></pre>
+<p>If the PostgreSQL database is not running in a Docker container, run</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run \
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__DATABASE_NAME=${DB_NAME}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__USERNAME=${DB_USER}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
+</span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=${DB_HOST}&quot; </span><span>\
+</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span></code></pre>
+<p>Replace the <code>DB_*</code> variables with your corresponding values.</p>
+<h3 id="manual-1">Manual</h3>
+<p>Migrating the database manually requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
+A prerequisite is a working Rust setup, which can be installed either via your distributions package manager or via the following command:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>curl --proto </span><span style="color:#00a33f;">&#39;=https&#39;</span><span> --tlsv1.2 -sSf https://sh.rustup.rs </span><span style="color:#ff5600;">| </span><span>sh
+</span></code></pre>
+<p>Now <code>sqlx</code> can be installed via <code>cargo</code>:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo install --version</span><span style="color:#ff5600;">=</span><span>0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite
+</span></code></pre>
+<p>Clone the repository and <code>cd</code> into the directory.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git clone git@github.com:ALU-Schumacher/AUDITOR.git
+</span><span style="color:#a535ae;">cd</span><span> AUDITOR
+</span></code></pre>
+<p>To migrate the database, run the following from the root directory of the repo:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;"># Adapt thesee variables to your setup
+</span><span>DB_USER</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>DB_PASSWORD</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;password&quot;
+</span><span>DB_NAME</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span>DB_HOST</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span>DB_PORT</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&quot;5432&quot;
+</span><span>
+</span><span style="color:#ff5600;">export </span><span>DATABASE_URL</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+</span><span>sqlx database create
+</span><span>sqlx migrate run
+</span></code></pre>
+<h2 id="using-docker-2">Using Docker</h2>
+<p>The easiest way to run Auditor is via a Docker container from <a href="https://hub.docker.com/repository/docker/aluschumacher/auditor">Docker Hub</a> or <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor">Github Container Registry</a>.
+Auditor requires a properly configured PostgreSQL database.
+After installing PostgreSQL, the database needs to be migrated with <code>sqlx</code>.</p>
+<p>AUDITORs configuration can be adapted with environment variables.</p>
+<table><thead><tr><th>Variable</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>AUDITOR_APPLICATION__ADDR</code></td><td>Address to bind to (default <code>0.0.0.0</code>)</td></tr>
+<tr><td><code>AUDITOR_APPLICATION__PORT</code></td><td>Port to bind to (default <code>8000</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__HOST</code></td><td>Host address of PostgreSQL database (default <code>localhost</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__PORT</code></td><td>Port of PostgreSQL database (default <code>5432</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__USERNAME</code></td><td>PostgreSQL database username (default <code>postgres</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__PASSWORD</code></td><td>PostgreSQL database password (default <code>password</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__DATABASE_NAME</code></td><td>Name of the PostgreSQL database (default <code>auditor</code>)</td></tr>
+<tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
+<tr><td><code>AUDITOR_LOG_LEVEL</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>)</td></tr>
+</tbody></table>
+<p>Use <code>docker run</code> to execute Auditor:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
+</span></code></pre>
+<p>The configuration parameters can be set by passing environment variables via <code>-e</code>:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -e AUDITOR_APPLICATION__ADDR=localhost -e AUDITOR_DATABASE__REQUIRE_SSL=false aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
+</span></code></pre>
+<p>We offer versioned tags (starting from <code>0.2.0</code>) or the <code>edge</code> tag, which corresponds to the latest commit on the <code>main</code> branch.</p>
+<h2 id="configuration-files">Configuration files</h2>
+<p>Besides environment variables, a YAML configuration file can be used:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: 0.0.0.0
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">database</span><span>:
+</span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 5432
+</span><span>  </span><span style="color:#00a33f;">username</span><span>: </span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>  </span><span style="color:#00a33f;">password</span><span>: </span><span style="color:#00a33f;">&quot;password&quot;
+</span><span>  </span><span style="color:#00a33f;">database_name</span><span>: </span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span>  </span><span style="color:#00a33f;">require_ssl</span><span>: </span><span style="color:#a535ae;">false
+</span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>  </span><span style="color:#00a33f;">database</span><span>:
+</span><span>    </span><span style="color:#00a33f;">frequency</span><span>: 30
+</span><span>    </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">RecordCount
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span></code></pre>
+<p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
+<p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
+<p>If you run Auditor using Docker, then you first need to mount the configuration file inside the container, before you can use it.
+Furthermore, you need to call the Docker container with the <code>auditor</code> command as first argument and the path to the config file (location inside the container) as second argument.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> auditor /auditor/config.yaml
+</span></code></pre>
+<p>However, you should default to using environment variables for configuration when running Auditor using Docker.</p>
+<h2 id="metrics-exporter-for-prometheus">Metrics exporter for Prometheus</h2>
+<p>Metrics for Prometheus are exposed via the <code>/metrics</code> endpoint.
+By default HTTP metrics are exported.
+In addition, database metrics are exported as well (optional).
+These include the current number of records in the database, as a well as the number of records per site, group and user.
+Database metrics export can be configured in the configuration:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">metrics</span><span>:
+</span><span>  </span><span style="color:#00a33f;">database</span><span>:
+</span><span>    </span><span style="color:#919191;"># How often these values are computed (default: every 30 seconds)
+</span><span>    </span><span style="color:#00a33f;">frequency</span><span>: 30
+</span><span>    </span><span style="color:#919191;"># Type of metrics to export (default: None)
+</span><span>    </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">RecordCount
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span></code></pre>
+<p>How often the database metrics are computed is defined by the <code>frequency</code> configuration variable.
+Note that computing the database metrics is a potentially expensive operation.
+Therefore it is advised to monitor the performance of Auditor when working with databases with a large number of records.
+The frequency setting should be somewhat in accordance with the Prometheus scraping interval.</p>
+<h2 id="compiling-from-source">Compiling from source</h2>
+<p>Alternatively, Auditor can be compiled and run directly.
+Instructions for compiling Auditor from source can be found in the <a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/development/#compiling-auditor-from-source">development</a> documentation.</p>
+<h1 id="packages">Packages</h1>
+<p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>.</p>
+<h1 id="collectors">Collectors</h1>
+<p>Collectors are used to collect data from various sources.
+See below for all currently available collectors.</p>
+<h2 id="slurm-collector">SLURM Collector</h2>
+<p>The Slurm collector collects information from slurm jobs based on the <code>sacct</code> command.
+It can be installed from the provided RPM or can be built with this command:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-collector
+</span></code></pre>
+<p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-slurm-collector</code> and should be placed on the Slurm head node.</p>
+<p>Run the Slurm collector with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>/absolute/path/to/auditor-slurm-collector /absolute/path/to/auditor-slurm-collector-config.yml
+</span></code></pre>
+<p>Ideally, you should run the Slurm collector as a service, e.g. by using a systemd unit file.</p>
+<p>Example:</p>
+<pre data-lang="ini" style="background-color:#ffffff;color:#000000;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#ff5600;">[Unit]
+</span><span>Description</span><span style="color:#ff5600;">=</span><span>Auditor Slurm collector
+</span><span>After</span><span style="color:#ff5600;">=</span><span>network</span><span style="color:#ff5600;">.</span><span>target
+</span><span>
+</span><span style="color:#ff5600;">[Service]
+</span><span>Type</span><span style="color:#ff5600;">=</span><span>simple
+</span><span>Restart</span><span style="color:#ff5600;">=</span><span>always
+</span><span>RestartSec</span><span style="color:#ff5600;">=</span><span>10
+</span><span>User</span><span style="color:#ff5600;">=&lt;</span><span>service user</span><span style="color:#ff5600;">&gt;
+</span><span>ExecStart</span><span style="color:#ff5600;">=/</span><span>absolute</span><span style="color:#ff5600;">/</span><span>path</span><span style="color:#ff5600;">/</span><span>to</span><span style="color:#ff5600;">/</span><span>auditor</span><span style="color:#ff5600;">-</span><span>slurm</span><span style="color:#ff5600;">-</span><span>collector </span><span style="color:#ff5600;">/</span><span>absolute</span><span style="color:#ff5600;">/</span><span>path</span><span style="color:#ff5600;">/</span><span>to</span><span style="color:#ff5600;">/</span><span>auditor</span><span style="color:#ff5600;">-</span><span>slurm</span><span style="color:#ff5600;">-</span><span>collector</span><span style="color:#ff5600;">-</span><span>config</span><span style="color:#ff5600;">.</span><span>yml
+</span><span>
+</span><span style="color:#ff5600;">[Install]
+</span><span>WantedBy</span><span style="color:#ff5600;">=</span><span>multi</span><span style="color:#ff5600;">-</span><span>user</span><span style="color:#ff5600;">.</span><span>target
+</span></code></pre>
+<h3 id="configuration">Configuration</h3>
+<p>The Slurm collector is configured using a yaml-file. Configuration parameters are as follows:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>addr</code></td><td>Host name or IP address of the Auditor instance.</td></tr>
+<tr><td><code>port</code></td><td>Port of the Auditor instance.</td></tr>
+<tr><td><code>record_prefix</code></td><td>Prefix for the record identifier. The full record identifier is then <code>&lt;record_prefix&gt;-&lt;slurm-job-id&gt;</code>.</td></tr>
+<tr><td><code>job_filter</code></td><td>Filter jobs based on certain properties. See the <strong>Job filter</strong> section below.</td></tr>
+<tr><td><code>sacct_frequency</code></td><td>Frequency of executing the <code>sacct</code> command  (in seconds). Resulting records are first placed in a queue (based on a SQLite database) and later sent to the Auditor instance.</td></tr>
+<tr><td><code>sender_frequency</code></td><td>Frequency of sending new records from the sending queue to the Auditor instance.</td></tr>
+<tr><td><code>earliest_datetime</code></td><td>After starting the collector for the first time, only query jobs that started later than <code>earliest_datetime</code>. Has to follow the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> standard</td></tr>
+<tr><td><code>database_path</code></td><td>Path to the SQLite database that is used for the sending queue.</td></tr>
+<tr><td><code>sites</code></td><td>A list of potential sites that can be associated with a job. Each site has to have a <code>name</code> field. A site can be matched to a job based on the contents of a field in the job information using the <code>only_if</code> field. The <code>only_if</code> field needs to have a <code>key</code>, that corresponds to a field in the <code>sacct</code> output, and a <code>matches</code> field, used to match a certain value. Regular expressions are supported.</td></tr>
+<tr><td><code>meta</code></td><td>A list of meta objects that are added to the record. Each meta object needs to have a <code>name</code> that is used as the name of the meta object, and a <code>key</code>, that corresponds to a field in the job information. The type of the data can be specified with <code>key_type</code>. Possible values are <code>Integer</code> (default), <code>IntegerMega</code> (integer with a <code>M</code> behind the number), <code>Time</code>, <code>String</code>, <code>DateTime</code>, <code>Id</code>, <code>Json</code>. Per default, empty values are not allowed. This can be changed by setting <code>key_allow_empty</code> to <code>true</code>. Alternatively, a default value can be specified with <code>default_value</code>. Setting meta information can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above .</td></tr>
+<tr><td><code>components</code></td><td>A list of components that is added to the record. A component needs to have a <code>name</code>, <code>key</code>, and <code>key_type</code>, similar to the <code>meta</code> configuration. One or multiple scores can be added to a component with the <code>scores</code> option. Each score config needs to have a <code>name</code> and a <code>value</code>. Setting scores can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above.</td></tr>
+<tr><td><code>log_level</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>).</td></tr>
+</tbody></table>
+<h4 id="job-filter">Job filter</h4>
+<p>Job filters can be used to filter the slurm jobs when calling the <code>sacct</code> command.
+The following filters are supported:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>status</code></td><td>A list of acceptable job states. See <a href="https://slurm.schedmd.com/sacct.html#SECTION_JOB-STATE-CODES">SLURM JOB STATE CODES</a> for a list of allowed values. Per default jobs with the <code>completed</code> state are queried.</td></tr>
+<tr><td><code>partition</code></td><td>A list of partition names. Per default no filter is applied.</td></tr>
+<tr><td><code>user</code></td><td>A list of users. Per default no filter is applied.</td></tr>
+<tr><td><code>group</code></td><td>A list of groups. Per default no filter is applied.</td></tr>
+<tr><td><code>account</code></td><td>A list of accounts. Per default no filter is applied.</td></tr>
+</tbody></table>
+<h3 id="example-configuration">Example configuration</h3>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
+</span><span style="color:#00a33f;">job_filter</span><span>:
+</span><span>  </span><span style="color:#00a33f;">status</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;completed&quot;
+</span><span>    - </span><span style="color:#00a33f;">&quot;failed&quot;
+</span><span style="color:#00a33f;">sacct_frequency</span><span>: 300
+</span><span style="color:#00a33f;">sender_frequency</span><span>: 60
+</span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2023-09-15T12:00:00+00:00&quot;
+</span><span style="color:#00a33f;">database_path</span><span>: </span><span style="color:#00a33f;">&quot;/absolute/path/to/db.db&quot;
+</span><span style="color:#00a33f;">sites</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;mysite1&quot;
+</span><span>    </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>      </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
+</span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^mypartition$&quot;
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;mysite2&quot;
+</span><span style="color:#00a33f;">meta</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Comment
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Comment&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Json
+</span><span>    </span><span style="color:#00a33f;">key_allow_empty</span><span>: </span><span style="color:#a535ae;">true
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Cores&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NCPUS&quot;
+</span><span>    </span><span style="color:#00a33f;">scores</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC06&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 10.0
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;hepscore23&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 10.0
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;SystemCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;SystemCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;TotalCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;TotalCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">Time
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;ReqMem&quot;
+</span><span>    </span><span style="color:#00a33f;">key_type</span><span>: </span><span style="color:#00a33f;">IntegerMega
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;MaxRSS&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;MaxRSS&quot;
+</span><span>    </span><span style="color:#00a33f;">default_value</span><span>: 0
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span></code></pre>
+<h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
+<p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-epilog-collector
+</span></code></pre>
+<p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-slurm-epilog-collector</code> and is ideally placed on the Slurm head node.</p>
+<p>Add this to your epilog shell script (on the slurm head node):</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;">#!/bin/sh
+</span><span>
+</span><span style="color:#919191;"># Divert stdout and sterr. Make sure the slurm user has write access to both locations.
+</span><span style="color:#919191;"># Ideally there is also log rotation in place for those logs.
+</span><span style="color:#a535ae;">exec </span><span style="color:#ff5600;">&gt;&gt;</span><span> /epilog_logs/epilog.log
+</span><span style="color:#a535ae;">exec </span><span>2</span><span style="color:#ff5600;">&gt;&gt;</span><span> /epilog_logs/epilog.log
+</span><span>
+</span><span>/absolute/path/to/auditor-slurm-epilog-collector /absolute/path/to/auditor-slurm-epilog-collector-config.yaml
+</span></code></pre>
+<p>This will read the <code>$SLURM_JOB_ID</code> environment variable, which is only available in the context of a SLURM epilog script.</p>
+<p>Internally, <code>scontrol</code> is called to obtain the necessary information of the job.</p>
+<p>If not all jobs are of relevance, filtering should be done in the epilog script such that the collector is only executed for relevant jobs.
+This avoids unnecessary and potentially expensive calls to <code>scontrol</code>.
+Slurm provides a number of environment variables in the context of an epilog script which are listed in the <a href="https://slurm.schedmd.com/prolog_epilog.html">Slurm documentation</a>.</p>
+<p>Example:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;">#!/bin/sh
+</span><span>
+</span><span style="color:#919191;"># Only execute collector for jobs running on `some_partition`
+</span><span style="color:#ff5600;">if </span><span style="color:#a535ae;">[ </span><span style="color:#00a33f;">&quot;$SLURM_JOB_PARTITION&quot; </span><span style="color:#ff5600;">== </span><span style="color:#00a33f;">&quot;some_partition&quot; </span><span style="color:#a535ae;">]</span><span style="color:#ff5600;">; then
+</span><span>	LOG_FILE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">/path/to/epilog.log
+</span><span>	</span><span style="color:#a535ae;">exec </span><span style="color:#ff5600;">&gt;&gt; </span><span>$LOG_FILE
+</span><span>	</span><span style="color:#a535ae;">exec </span><span>2</span><span style="color:#ff5600;">&gt;&gt; </span><span>$LOG_FILE
+</span><span>
+</span><span>	/absolute/path/to/auditor-slurm-epilog-collector /absolute/path/to/auditor-slurm-epilog-collector-config.yaml
+</span><span style="color:#ff5600;">fi
+</span></code></pre>
+<h3 id="example-configurations">Example configurations</h3>
+<p>The following configuration shows how to set the Auditor host address and port.
+The <code>record_prefix</code> will be used to prefix the Slurm job id in the record identifier (in this case it will be <code>slurm-JOBID</code>).
+The <code>site_name</code> is the <code>site_id</code> which will be attached to the meta field of every record.
+<code>components</code> defines how to extract accountable information from the call to <code>scontrol</code> and attaches <code>score</code>s to it.
+In the context of <code>components</code>, <code>name</code> indicates how this component will be identified in the final record and <code>key</code> indicates the <code>key</code> which is to be extracted from the <code>scontrol</code> output.
+<code>scores</code> are optional.
+The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
+</span><span style="color:#00a33f;">site_id</span><span>: </span><span style="color:#00a33f;">&quot;site_name&quot;
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Cores&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NumCPUs&quot;
+</span><span>    </span><span style="color:#00a33f;">scores</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 1.0
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Mem&quot;
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span></code></pre>
+<p>Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
+The matching is performed on values associated with certain keys in the <code>scontrol</code> output.
+Regex is accepted.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_address&quot;
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
+</span><span style="color:#00a33f;">site_id</span><span>: </span><span style="color:#00a33f;">&quot;site_name&quot;
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Cores&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NumCPUs&quot;
+</span><span>    </span><span style="color:#00a33f;">scores</span><span>:
+</span><span>      </span><span style="color:#919191;"># If it the job is running on partition `part1`, then use HEPSPEC value 1.1
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 1.1
+</span><span>        </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>          </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
+</span><span>          </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^part1$&quot;
+</span><span>      </span><span style="color:#919191;"># If it the job is running on partition `part2`, then use HEPSPEC value 1.2
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
+</span><span>        </span><span style="color:#00a33f;">value</span><span>: 1.2
+</span><span>        </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>          </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
+</span><span>          </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^part2$&quot;
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Mem&quot;
+</span><span>    </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>      </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
+</span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^part2$&quot;
+</span></code></pre>
+<h2 id="htcondor-collector">HTCondor Collector</h2>
+<p>The collector relies on <code>condor_history</code> to retrieve the information about the jobs.
+The collector runs periodically, creating <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record">records</a> and committing them to the AUDITOR-instance using <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor</a>.</p>
+<p>The collector is run as follows:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>python -m collectors.htcondor -c CONFIG_FILE
+</span></code></pre>
+<p><code>-c/--config CONFIG_FILE</code> is required to be set and of the form as stated below.
+Further, optional arguments are</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>-h, --help            show this help message and exit
+</span><span>-c CONFIG_FILE, --config CONFIG_FILE
+</span><span>                      Path to config file.
+</span><span>-j &lt;CLUSTERID&gt;[.&lt;PROCID&gt;], --job-id &lt;CLUSTERID&gt;[.&lt;PROCID&gt;]
+</span><span>                      ID of the job, condor_history to invoke with.
+</span><span>-n SCHEDD, --schedd-names SCHEDD
+</span><span>                      Name of the schedd, condor_history to invoke with.
+</span><span>-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+</span><span>                      Log level. Defaults to INFO.
+</span><span>-f LOG_FILE, --log-file LOG_FILE
+</span><span>                      Log file. Defaults to stdout.
+</span><span>-i INTERVAL, --interval INTERVAL
+</span><span>                      Interval in seconds between queries. Defaults to 900.
+</span><span>-1, --one-shot        Run once and exit.
+</span></code></pre>
+<p>Command line arguments override the values set in the config file.</p>
+<h3 id="configuration-1">Configuration</h3>
+<p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
+<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>state_db</code></td><td>Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.</td></tr>
+<tr><td><code>record_prefix</code></td><td>Prefix used for all records put into the AUDITOR-database.</td></tr>
+<tr><td><code>interval</code></td><td>Interval in seconds between runs of the collector.</td></tr>
+<tr><td><code>pool</code></td><td>The <code>-pool</code> argument used for the invocation of <code>condor_history</code>.</td></tr>
+<tr><td><code>schedd_names</code></td><td>List of the schedulers used for the <code>-name</code> argument of the invocation of <code>condor_history</code>.</td></tr>
+<tr><td><code>job_status</code></td><td>List of job statuses considered. See <a href="https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers">HTCondor magic numbers</a>.</td></tr>
+<tr><td><code>meta</code></td><td>Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are <a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#entry"><code>entry</code></a>s.<br>If multiple <a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#entry"><code>entry</code></a>s are given for specified name, the values are appended to a list. A special case is <code>site</code>, which is a list of <a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#entry"><code>entry</code></a>s, but only the first match is used.</td></tr>
+<tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR//v0.6.2/#entry"><code>entry</code></a>s).</td></tr>
+</tbody></table>
+<p>The following parameters are optional:</p>
+<table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>addr</code></td><td><code>http://127.0.0.1</code></td><td>Address of the AUDITOR-instance. If this is set, <code>port</code> must also be specified.</td></tr>
+<tr><td><code>port</code></td><td><code>8080</code></td><td>Port of the AUDITOR-instance. If this is set, <code>addr</code> must also be specified.</td></tr>
+<tr><td><code>timeout</code></td><td><code>30</code></td><td>Timeout in seconds for the connection to the AUDITOR-instance.</td></tr>
+</tbody></table>
+<h3 id="entry"><code>entry</code></h3>
+<p>An <code>entry</code> describes how to get the value for a meta-var or component from the job.
+Unlike meta-variables, components contain a <code>name</code>-field, which is used as the name of the component.
+If the entry has a <code>key</code>-field, the value is taken from the corresponding ClassAd.
+Else, if the entry has a <code>factor</code>-field, this factor is used as the value.
+Else, if the entry has a <code>name</code>-field, this name is used as the value (this is used for the <code>site</code>-meta-var).
+Else, the value is not set.</p>
+<p>If the entry has a <code>matches</code>-field, the value is matched against the regex given in <code>matches</code>.
+In case the regex contains a group, the value is set to the (first) matching group, else the <code>name</code>-field is used.</p>
+<p>If the entry contains an <code>only_if</code>-field, the value is only returned if the value of the ClassAd in <code>only_if.key</code>  matches the regex given in <code>only_if.matches</code>.</p>
+<p>See below for an example config and the use of such <code>entry</code>s.</p>
+<h3 id="example-config">Example config</h3>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">localhost
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">timeout</span><span>: 10
+</span><span style="color:#00a33f;">state_db</span><span>: </span><span style="color:#00a33f;">htcondor_history_state.db
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">htcondor
+</span><span style="color:#00a33f;">interval</span><span>: 900 </span><span style="color:#919191;"># 15 minutes
+</span><span style="color:#00a33f;">pool</span><span>: </span><span style="color:#00a33f;">htcondor.example.com
+</span><span style="color:#00a33f;">schedd_names</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">schedd1.example.com
+</span><span>  - </span><span style="color:#00a33f;">schedd2.example.com
+</span><span style="color:#00a33f;">job_status</span><span>: </span><span style="color:#919191;"># See https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers
+</span><span>  - 3 </span><span style="color:#919191;"># Removed
+</span><span>  - 4 </span><span style="color:#919191;"># Completed
+</span><span>
+</span><span style="color:#00a33f;">meta</span><span>:
+</span><span>  </span><span style="color:#00a33f;">user</span><span>:
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">Owner
+</span><span>    </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^(.+)$
+</span><span>  </span><span style="color:#00a33f;">group</span><span>:
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">VoName
+</span><span>    </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^(.+)$
+</span><span>  </span><span style="color:#00a33f;">submithost</span><span>:
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;GlobalJobId&quot;
+</span><span>    </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^(.*)#\d+.\d+#\d+$  </span><span style="color:#919191;"># As this regex contains a group, the value for &#39;submithost&#39; is set to the matching group.
+</span><span>
+</span><span>  </span><span style="color:#919191;"># For `site` the first match is used.
+</span><span>  </span><span style="color:#00a33f;">site</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;site1&quot;  </span><span style="color:#919191;"># This entry
+</span><span>      </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;LastRemoteHost&quot;
+</span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^slot.+@site1-.+$
+</span><span>    - </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;LastRemoteHost&quot;
+</span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^slot.+@(site2)-.+$  </span><span style="color:#919191;"># This regex contains a group, the value for &#39;site&#39; is set to the matching group (&quot;site2&quot;).
+</span><span>    - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UNDEF&quot;  </span><span style="color:#919191;"># If no match is found, site is set to &quot;UNDEF&quot;
+</span><span>
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Cores&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;CpusProvisioned&quot;
+</span><span>    </span><span style="color:#00a33f;">scores</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
+</span><span>        </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;MachineAttrApelSpecs0&quot;
+</span><span>        </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">HEPSPEC\D+(\d+(\.\d+)?)  </span><span style="color:#919191;"># This regex matches the value of HEPSPEC in the corresponding ClassAd
+</span><span>        </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>          </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;LastRemoteHost&quot;
+</span><span>          </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^slot.+@(?:site1)-.{10}@.+$  </span><span style="color:#919191;"># This score is only attributed to the component on site1
+</span><span>      - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;HEPscore23&quot;
+</span><span>        </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;MachineAttrApelSpecs0&quot;
+</span><span>        </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">HEPscore23\D+(\d+(\.\d+)?)
+</span><span>        </span><span style="color:#00a33f;">only_if</span><span>:
+</span><span>          </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;LastRemoteHost&quot;
+</span><span>          </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">^slot.+@(?:site1)-.{10}@.+$
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;MemoryProvisioned&quot;
+</span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
+</span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;RemoteUserCpu&quot;
+</span></code></pre>
+<h1 id="plugins">Plugins</h1>
+<p>Plugins are used to retrieve data from Auditor for further processing.
+See below for all currently available collectors.</p>
+<h2 id="apel-plugin">APEL Plugin</h2>
+<p>The APEL plugin creates messages and sends them to the APEL server. The plugin can either create <code>summary messages</code> for the current month, or <code>individual job messages</code>. <code>Sync messages</code> for the current month are created in both cases.</p>
+<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.</p>
+<p>Two CLI commands are available after the installation via <code>pip</code>: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
+<p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
+</span><span>
+</span><span>options:
+</span><span>  -h, --help            show this help message and exit
+</span><span>  -c CONFIG, --config CONFIG
+</span><span>                        Path to the config file
+</span></code></pre>
+<p><code>auditor-apel-republish</code> runs once and submits a report of jobs between two dates for a given site.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG
+</span><span>
+</span><span>options:
+</span><span>  -h, --help            show this help message and exit
+</span><span>  --begin-date BEGIN_DATE
+</span><span>                        Begin of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
+</span><span>  --end-date END_DATE   End of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
+</span><span>  -s SITE, --site SITE  Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
+</span><span>  -c CONFIG, --config CONFIG
+</span><span>                        Path to the config file
+</span></code></pre>
+<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>authentication</code>, <code>auditor</code>, and at least one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
+<p>Example config:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#ff5600;">!Config
+</span><span style="color:#00a33f;">plugin</span><span>:
+</span><span>  </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
+</span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
+</span><span>  </span><span style="color:#00a33f;">report_interval</span><span>: 86400
+</span><span>  </span><span style="color:#00a33f;">message_type</span><span>: </span><span style="color:#00a33f;">summaries
+</span><span>  
+</span><span style="color:#00a33f;">site</span><span>:
+</span><span>  </span><span style="color:#00a33f;">publish_since</span><span>: 2024-01-01 06:00:00+00:00
+</span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>:
+</span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
+</span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
+</span><span>
+</span><span style="color:#00a33f;">authentication</span><span>:
+</span><span>  </span><span style="color:#00a33f;">auth_url</span><span>: </span><span style="color:#00a33f;">https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
+</span><span>  </span><span style="color:#00a33f;">ams_url</span><span>: </span><span style="color:#00a33f;">https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+</span><span>  </span><span style="color:#00a33f;">client_cert</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostcert.pem
+</span><span>  </span><span style="color:#00a33f;">client_key</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostkey.pem
+</span><span>  </span><span style="color:#00a33f;">ca_path</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/certificates
+</span><span>  </span><span style="color:#00a33f;">verify_ca</span><span>: </span><span style="color:#a535ae;">True
+</span><span>
+</span><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">ip</span><span>: 127.0.0.1
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 3333
+</span><span>  </span><span style="color:#00a33f;">timeout</span><span>: 60
+</span><span>  </span><span style="color:#00a33f;">site_meta_field</span><span>: </span><span style="color:#00a33f;">site_id
+</span><span>  
+</span><span style="color:#00a33f;">summary_fields</span><span>:
+</span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
+</span><span>    </span><span style="color:#00a33f;">NormalisedWallDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedWallDurationField
+</span><span>      </span><span style="color:#00a33f;">score</span><span>:
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>    </span><span style="color:#00a33f;">NormalisedCpuDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedField
+</span><span>      </span><span style="color:#00a33f;">base_value</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>        </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>      </span><span style="color:#00a33f;">score</span><span>:
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    
+</span><span>  </span><span style="color:#00a33f;">optional</span><span>:
+</span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
+</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
+</span><span>    </span><span style="color:#00a33f;">Infrastructure</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
+</span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
+</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>
+</span><span>
+</span><span style="color:#00a33f;">individual_job_fields</span><span>:
+</span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
+</span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
+</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
+</span><span>
+</span><span>  </span><span style="color:#00a33f;">optional</span><span>:
+</span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
+</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
+</span><span>    </span><span style="color:#00a33f;">InfrastructureType</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
+</span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
+</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">LocalUserId</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user_id
+</span><span>    </span><span style="color:#00a33f;">FQAN</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>    </span><span style="color:#00a33f;">InfrastructureDescription</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">AUDITOR-ARC-SLURM
+</span><span>    </span><span style="color:#00a33f;">ServiceLevel</span><span>: </span><span style="color:#ff5600;">!ScoreField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span><span>      </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">ServiceLevelType</span><span>: </span><span style="color:#ff5600;">!ConstantField
+</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">hepscore23
+</span></code></pre>
+<p>The individual parameters in the config file are:</p>
+<table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity). <code>TRACE</code> might produce a lot of output if <code>message_type</code> is set to <code>individual_jobs</code>, since the message that will be sent to APEL is printed.</td></tr>
+<tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
+<tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
+<tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of message to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
+<tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
+<tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
+<tr><td><code>authentication</code></td><td><code>auth_url</code></td><td>URL from which the APEL authentication token is received.</td></tr>
+<tr><td><code>authentication</code></td><td><code>ams_url</code></td><td>URL to which the reports are sent.</td></tr>
+<tr><td><code>authentication</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
+<tr><td><code>authentication</code></td><td><code>client_key</code></td><td>Path of the host key.</td></tr>
+<tr><td><code>authentication</code></td><td><code>ca_path</code></td><td>Path of the local certificate folder.</td></tr>
+<tr><td><code>authentication</code></td><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
+<tr><td><code>auditor</code></td><td><code>ip</code></td><td>IP of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
+<tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
+<tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+</tbody></table>
+<p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
+<table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>CpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedCpuDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedWallDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
+</tbody></table>
+<p>There are actually more mandatory fields, but they are handled internally and don't need any input from the user.</p>
+<p><code>optional</code> fields can be used to provide additional information to APEL:</p>
+<table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>GlobalUserName</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VO</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VOGroup</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>VORole</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>SubmitHost</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>Infrastructure</code> (only for summary_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>InfrastructureType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>InfrastructureDescription</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>NodeCount</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>Processors</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>LocalUserId</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>FQAN</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>ServiceLevel</code> (only for individual_job_fields)</td><td style="text-align: center"><code>float</code></td></tr>
+<tr><td style="text-align: left"><code>ServiceLevelType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+</tbody></table>
+<p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>.</p>
+<p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!</p>
+<p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, <code>NormalisedField</code>, and <code>NormalisedWallDurationField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
+<p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
+<p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> takes the name of a function and applies it to the value. The function has to be present in <code>config.py</code> and can be added via a pull request.</p>
+<p><code>ConstantField</code> has the mandatory parameter <code>value</code>, which is exactly what will be written in the message field.</p>
+<p><code>ScoreField</code> extracts the score value from a given component from the AUDITOR record. The mandatory parameters are <code>name</code>, the name of the score, and <code>component_name</code>, the name of the component.</p>
+<p><code>NormalisedField</code> has the parameters <code>base_value</code> and <code>score</code>, where <code>score</code> is a <code>ScoreField</code> and <code>base_value</code> a <code>ComponentField</code>. The resulting value is the product of the score and the base value.</p>
+<p><code>NormalisedWallDurationField</code> has the parameter <code>score</code>, which is a <code>ScoreField</code>. The value of the score is multiplied with the <code>runtime</code> of the AUDITOR record.</p>
+<p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
+</span></code></pre>
+<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.yml</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path: time.json
+</span><span>client_cert: hostcert.pem
+</span><span>client_key: hostkey.pem
+</span></code></pre>
+<h2 id="priority-plugin">Priority Plugin</h2>
+<p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on how many resources were provided.
+This allows one to transfer provided resources on one system to priorities in another system.
+The computed priorities are set via shelling out, and the executed commands can be defined as needed.</p>
+<p>The priority plugin is available as RPM or can be built with the command:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-priority-plugin
+</span></code></pre>
+<p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-priority-plugin</code> and is ideally placed on a node where the priorities should be set.</p>
+<p>The priority plugin runs continuously. Ideally, it is installed as a systemd service.
+Priorities are updated at a frequency that can be set via the configuration.</p>
+<p>A typical configuration for the SLURM batch system may look like this:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_address&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">timeout</span><span>: 30 </span><span style="color:#919191;"># in seconds
+</span><span style="color:#00a33f;">duration</span><span>: 1209600 </span><span style="color:#919191;"># in seconds
+</span><span style="color:#00a33f;">frequency</span><span>: 3600 </span><span style="color:#919191;"># in seconds
+</span><span style="color:#00a33f;">components</span><span>:
+</span><span>  </span><span style="color:#00a33f;">NumCPUs</span><span>: </span><span style="color:#00a33f;">&quot;HEPSPEC&quot;
+</span><span style="color:#00a33f;">group_mapping</span><span>:
+</span><span>  </span><span style="color:#00a33f;">group1</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;part1&quot;
+</span><span>  </span><span style="color:#00a33f;">group2</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;part2&quot;
+</span><span>  </span><span style="color:#00a33f;">group3</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;part3&quot;
+</span><span style="color:#00a33f;">commands</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">&#39;/usr/bin/bash -c &quot;/usr/bin/echo \&quot;$(date --rfc-3339=sec --utc) | {resource} | {priority}\&quot; &gt;&gt; {group}.txt&quot;&#39;
+</span><span>  - </span><span style="color:#00a33f;">&quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
+</span><span style="color:#00a33f;">min_priority</span><span>: 1
+</span><span style="color:#00a33f;">max_priority</span><span>: 65335
+</span><span style="color:#00a33f;">computation_mode</span><span>: </span><span style="color:#00a33f;">ScaledBySum
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span><span style="color:#00a33f;">prometheus</span><span>:
+</span><span>  </span><span style="color:#00a33f;">enable</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;0.0.0.0&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 9000
+</span><span>  </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">ResourceUsage
+</span><span>    - </span><span style="color:#00a33f;">Priority
+</span></code></pre>
+<p>The Auditor instance that is providing the records can be configured with the <code>auditor</code> block.
+Here, <code>addr</code> refers to the address of the machine that hosts the Auditor instance. The port can be specified with <code>port</code>.
+The resources used for calculating the priorities can be configured via the <code>components</code> field.
+It defines which components to extract from the <code>components</code> field of the record (<code>NumCPUs</code> in this example), as well as the corresponding score (<code>HEPSPEC</code> in this example).
+Multiple components can be extracted.
+The configured components and scores must be part of the records.
+The resources of each component will be multiplied by the corresponding score and the resulting provided resource per group is the sum of all these.
+The records considered in the computation can be limited to all records which finished in the past X seconds via the <code>duration</code> field (in seconds).
+Omitting this field takes all records in the database into account.
+The frequency of recalculating the priorities can be set via the <code>frequency</code> field.
+Via the <code>group_mapping</code> field, it is possible to attach certain additional information to the individual groups which are to be considered in the calculation.
+In the example configuration above are three groups <code>group{1,2,3}</code>, where each has a corresponding partition <code>part{1,2.3}</code>.
+These mappings can be accessed when constructing the <code>commands</code> which will be executed after computing the priorities by using <code>{N}</code> where <code>N</code> corresponds to the number of the element in the list of the <code>group_mapping</code>.
+For instance, for <code>group1</code>, the string <code>{1}</code> indicates <code>part1</code> while for <code>group2</code> the same string <code>{1}</code> indicates <code>part2</code>.
+The group name can be accessed via the <code>{group}</code> string.
+The <code>commands</code> field in the configuration illustrates the usage of these mappings.
+This allows one to adapt the commands for the various groups involved.
+In the <code>commands</code> field one can also see a string <code>{priority}</code>, which will be replaced by the computed priority for the group.
+Another special string, <code>{resources}</code> is available, which is replaced by the computed provided resource per group.
+The command is executed for each group separately and multiple commands can be provided with a list.
+The verbosity of logging can be set with the <code>log_level</code> option. Possible values are <code>trace</code>, <code>debug</code>, <code>info</code> (default), <code>warn</code>, and <code>error</code>.
+The priority plugin allows for real-time monitoring of the computed resources and priorities via a prometheus endpoint.
+Per default, the prometheus endpoint is disabled.
+It can be enabled by adding the <code>prometheus</code> block to the configuration or by setting the <code>enable</code> field of this block to <code>true</code>.
+Inside the <code>prometheus</code> block, the address and port of the HTTP server that provides the prometheus metrics can be specified via the <code>addr</code> and <code>port</code> fields.
+The metrics will then be available at <code>&lt;addr&gt;:&lt;port&gt;/metrics</code>
+The <code>metrics</code> list specifies the metrics that are exported.
+Right now the values <code>ResourceUsage</code> (for the amount of provided resources in the given duration)
+and <code>Priority</code> (for the calculated priority value) are supported.</p>
+<h3 id="priority-computation-modes">Priority computation modes</h3>
+<p>As stated above, the priorities are computed from the provided resources of each group.
+However, the computed resources and the priorities are in different units and span different ranges.
+Therefore a mapping between resources and priorities needs to be in place.
+This plugin offers two <code>computation_modes</code>: <code>FullSpread</code> and <code>ScaledBySum</code>.
+Via <code>min_priority</code> and <code>max_priority</code>, lower and upper limits on the computed priority are set.</p>
+<ul>
+<li><code>FullSpread</code>:  This mode will spread the resources on the full range given by <code>min_priority</code> and <code>max_priority</code>, such that the group with the least provided resources will be assigned a priority equal to <code>min_priority</code> and the group with the most provided resources will be assigned a priority equal to <code>max_priority</code>. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorities of two consecutive runs can be substantially different, leading to large jumps in priorities.</li>
+<li><code>ScaledBySum</code>: Computes the priorities such that <code>max_priority</code> is equal to the sum of all provide resources plus <code>min_priority</code>. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources.</li>
+</ul>
+<h1 id="auditor-clients">Auditor Clients</h1>
+<p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
+For details please consult the respective documentation pages for <a href="https://docs.rs/auditor/">the Rust client</a> and <a href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
+<h1 id="api">API</h1>
+<p>While the client libraries provide an interface to communicate with the Auditor server, it is also possible to directly use the REST API provided by the Auditor server.
+The following table provides an overview of the different API endpoints that are provided.
+The individual endpoints are further detailed down below.</p>
+<table><thead><tr><th>Action</th><th>Endpoint</th></tr></thead><tbody>
+<tr><td>Health check</td><td><code>GET /health_check</code></td></tr>
+<tr><td>Get Prometheus metrics</td><td><code>GET /metrics</code></td></tr>
+<tr><td>Add single record</td><td><code>POST /record</code></td></tr>
+<tr><td>Add multiple records</td><td><code>POST /records</code></td></tr>
+<tr><td>Update record</td><td><code>PUT /record</code></td></tr>
+<tr><td>Get single record by <code>record_id</code></td><td><code>GET /record/&lt;record_id&gt;</code></td></tr>
+<tr><td>Get all records</td><td><code>GET /records</code></td></tr>
+<tr><td>Get subset of records</td><td><code>GET /records?&lt;query_string&gt;</code></td></tr>
+</tbody></table>
+<ul>
+<li>Health check: This endpoint is used to check the health status of the Auditor server.
+A successful response (<code>200 OK</code>) indicates that the server is running and reachable.</li>
+<li>Add single record: This endpoint is used to add a single record to the database.
+The record data should be included in the request body in JSON format and needs to be serializable into the <a href="https://docs.rs/auditor/latest/auditor/domain/struct.RecordAdd.html">RecordAdd</a> struct.</li>
+<li>Add multiple records: Similar to the previous endpoint, but it's used to add multiple records at once.
+The request body should contain an array of records in JSON format.</li>
+<li>Update record: This endpoint is used to update an existing record.
+The record data should be included in the request body in JSON format and needs to be serializable into the <a href="https://docs.rs/auditor/latest/auditor/domain/struct.RecordUpdate.html">RecordUpdate</a> struct.
+Currently, only the <code>stop_time</code> of a record is updateable.</li>
+<li>Get single record by <code>record_id</code>: This endpoint is used to retrieve a single record by its <code>record_id</code>.</li>
+<li>Get all records: This endpoint is used to retrieve all records from the database.
+Consider using the filter options (see the next item below) instead of querying the complete set of records, as this method can take a long time if there are large amounts of records stored in the database.</li>
+<li>Get subset of records: This endpoint is used to retrieve a subset of records with filters applied on the server side.
+The filter options need to be provided as query string and are detailed in the <a href="https://docs.rs/auditor/latest/auditor/index.html#advanced-query">client tutorial</a>.
+In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (<code>400 BAD REQUEST</code>).</li>
+</ul>
+<p>In the event of unforeseen errors, the server will respond with a <code>500 INTERNAL SERVER ERROR</code>.</p>
+<h1 id="license">License</h1>
+<p>Licensed under either of</p>
+<ul>
+<li>Apache License, Version 2.0, (<a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/LICENSE-APACHE">LICENSE-APACHE</a> or <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>)</li>
+<li>MIT License (<a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/LICENSE-MIT">LICENSE-MIT</a> or <a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>)</li>
+</ul>
+<p>at your option.</p>
+<h2 id="contribution">Contribution</h2>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.</p>
+
+            
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
