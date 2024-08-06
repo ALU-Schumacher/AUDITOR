@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.23.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.1 to 8.3.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.5.4 to 0.5.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 71.1.0 to 72.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240724 ([@dirksammel](https://github.com/dirksammel))
