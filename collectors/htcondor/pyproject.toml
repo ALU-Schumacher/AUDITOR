@@ -12,7 +12,7 @@ description = "AUDITOR collector for aggregating data from the HTCondor batch sy
 version = "0.6.2"
 requires-python = ">=3.8"
 dependencies = [
-    "pyyaml==6.0.1",
+    "pyyaml==6.0.2",
     "python-auditor==0.6.2"
 ]
 readme = "README.md"
