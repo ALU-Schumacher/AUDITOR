@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check CHANGELOG.md
-        uses: tarides/changelog-check-action@v2
+        uses: tarides/changelog-check-action@v3
         with:
           changelog: CHANGELOG.md
