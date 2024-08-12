@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update black from 24.4.2 to 24.8.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.23.3 to 1.23.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.23.3 to 1.23.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.1 to 8.3.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
