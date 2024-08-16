@@ -1,14 +1,14 @@
 # Note: If you update the rust version below, make sure that the debian version which is used there matches the one in the runtime stage
-FROM lukemathwalker/cargo-chef:latest-rust-1.75-slim-bookworm as chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.75-slim-bookworm AS chef
 WORKDIR /auditor
 RUN apt update && apt install lld clang -y
 
-FROM chef as planner
+FROM chef AS planner
 COPY . .
 # Creates a lock file
 RUN cargo chef prepare --recipe-path recipe.json
 
-FROM chef as builder
+FROM chef AS builder
 # Install sqlx-cli
 RUN cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
@@ -16,7 +16,7 @@ COPY --from=planner /auditor/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
 COPY . .
-ENV SQLX_OFFLINE true
+ENV SQLX_OFFLINE=true
 RUN cargo build --release --bin auditor
 
 # Runtime stage
@@ -39,6 +39,6 @@ COPY --from=builder /auditor/containers/auditor/health_check.sh health_check.sh
 
 COPY auditor/configuration configuration
 
-ENV AUDITOR_ENVIRONMENT production
+ENV AUDITOR_ENVIRONMENT=production
 HEALTHCHECK --start-period=3s CMD [ "/auditor/health_check.sh" ]
 ENTRYPOINT ["./entrypoint.sh"]
