@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20240914 ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
 - Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
+- Docker files: Linting ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
