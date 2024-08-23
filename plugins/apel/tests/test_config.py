@@ -1,22 +1,24 @@
+from datetime import datetime, timezone
+from pathlib import Path, PurePath
+
+import pyauditor
 import pytest
 import yaml
+from pydantic import ValidationError
+
 from auditor_apel_plugin.config import (
-    Config,
-    Field,
-    MetaField,
     ComponentField,
-    ScoreField,
-    NormalisedField,
+    Config,
     ConstantField,
-    RecordField,
-    PluginConfig,
+    Field,
     MessageType,
+    MetaField,
+    NormalisedField,
+    PluginConfig,
+    RecordField,
+    ScoreField,
     get_loaders,
 )
-import pyauditor
-from datetime import datetime, timezone
-from pydantic import ValidationError
-from pathlib import Path, PurePath
 
 test_dir = PurePath(__file__).parent
 

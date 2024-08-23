@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-from pyauditor import AuditorClientBuilder, Record
 import datetime
+
 from tzlocal import get_localzone
+
+from pyauditor import AuditorClientBuilder, Record
 
 
 def main():

@@ -1,7 +1,8 @@
-import requests
-import unittest
 import time
+import unittest
 from datetime import datetime, timedelta
+
+import requests
 
 
 class TestMultipleEntries(unittest.TestCase):

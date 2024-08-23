@@ -1,7 +1,6 @@
 import sqlite3
-
-from typing import Generator, Optional, Tuple
 from contextlib import contextmanager
+from typing import Generator, Optional, Tuple
 
 
 class StateDB(object):

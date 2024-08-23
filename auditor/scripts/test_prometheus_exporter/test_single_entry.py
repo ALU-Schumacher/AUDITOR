@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import requests
 import time
 import unittest
+
+import requests
 
 
 class TestSingleEntry(unittest.TestCase):
