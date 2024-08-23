@@ -3,27 +3,29 @@
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
+import json
 import logging
 import sqlite3
-from sqlite3 import Error
-from datetime import datetime, timedelta, time, timezone
-from time import sleep
-import json
 import sys
-import requests
 import urllib
+from datetime import datetime, time, timedelta, timezone
+from sqlite3 import Error
+from time import sleep
+from typing import Dict, List, Tuple
+
+import requests
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
-from pyauditor import Value, Operator, MetaOperator, MetaQuery, QueryBuilder, Record
-from auditor_apel_plugin.config import Field, MessageType, Config
+from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, Value
+
+from auditor_apel_plugin.config import Config, Field, MessageType
 from auditor_apel_plugin.message import (
+    Message,
+    SingleJobMessage,
     SummaryMessage,
     SyncMessage,
-    SingleJobMessage,
-    Message,
 )
-from typing import Dict, List, Tuple
 
 logger = logging.getLogger("apel_plugin")
 

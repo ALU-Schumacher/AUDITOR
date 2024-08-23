@@ -1,5 +1,4 @@
 import re
-
 from typing import Any, AnyStr, Generator, Union
 
 from .custom_types import Config as T_Config

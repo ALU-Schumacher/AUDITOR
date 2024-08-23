@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 
 ### Added
+- CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -49,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
-- CI: Add integration test for db migraiton ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- CI: Add integration test for db migration ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add contribution guidelines ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Changed

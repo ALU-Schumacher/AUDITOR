@@ -1,9 +1,8 @@
 import asyncio
-
 from time import sleep
 
-from .collector import CondorHistoryCollector
 from .cli import CLI
+from .collector import CondorHistoryCollector
 from .config import Config
 
 

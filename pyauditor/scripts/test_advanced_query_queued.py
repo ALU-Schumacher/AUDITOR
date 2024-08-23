@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
 
 import asyncio
-from pyauditor import AuditorClientBuilder, Record, Meta, Component, Score, SortBy
 import datetime
+
 from tzlocal import get_localzone
+
 from pyauditor import (
-    Operator,
-    QueryBuilder,
-    Value,
+    AuditorClientBuilder,
+    Component,
+    ComponentQuery,
+    Meta,
     MetaOperator,
     MetaQuery,
-    ComponentQuery,
+    Operator,
+    QueryBuilder,
+    Record,
+    Score,
+    SortBy,
+    Value,
 )
 
 

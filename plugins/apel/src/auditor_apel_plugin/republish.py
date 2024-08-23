@@ -3,26 +3,28 @@
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
-import logging
-from logging import Logger
-from pyauditor import AuditorClientBuilder
 import argparse
-from datetime import datetime
-import yaml
 import base64
+import logging
 import sys
+from datetime import datetime
+from logging import Logger
+
+import yaml
+from pyauditor import AuditorClientBuilder
+
+from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
-    get_token,
-    create_db,
-    fill_db,
-    group_db,
-    create_message,
-    sign_msg,
     build_payload,
-    send_payload,
+    create_db,
+    create_message,
+    fill_db,
     get_records,
+    get_token,
+    group_db,
+    send_payload,
+    sign_msg,
 )
-from auditor_apel_plugin.config import get_loaders, Config
 
 TRACE = logging.DEBUG - 5
 

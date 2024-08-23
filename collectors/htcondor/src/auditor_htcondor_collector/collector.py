@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 
 import logging
-
-from datetime import datetime as dt, timezone
-from typing import Optional, Tuple, List
-from urllib.parse import quote
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
+from datetime import datetime as dt
+from datetime import timezone
+from typing import List, Optional, Tuple
+from urllib.parse import quote
 
 from pyauditor import (
-    AuditorClientBuilder,
     AuditorClient,
-    Record,
+    AuditorClientBuilder,
     Component,
-    Score,
     Meta,
+    Record,
+    Score,
 )
 
-
-from .utils import maybe_convert, get_value
 from .config import Config
-from .state_db import StateDB
 from .exceptions import RecordGenerationException
+from .state_db import StateDB
+from .utils import get_value, maybe_convert
 
 
 class CondorHistoryCollector(object):
