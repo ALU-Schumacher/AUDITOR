@@ -59,3 +59,6 @@ filterwarnings = ["ignore::DeprecationWarning"]
 [[tool.mypy.overrides]]
 module = "pyauditor"
 ignore_missing_imports = true
+
+[tool.ruff.lint]
+extend-select = ["I"]
