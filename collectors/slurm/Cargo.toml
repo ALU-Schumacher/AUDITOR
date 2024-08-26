@@ -51,7 +51,7 @@ tracing.workspace = true
 uuid.workspace = true
 
 [dependencies.sqlx]
-version = "0.7.4"
+version = "0.8.1"
 default-features = false
 features = [
     "runtime-tokio-rustls",
