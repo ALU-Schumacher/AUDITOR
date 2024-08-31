@@ -19,8 +19,8 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # activate python env
-ENV VIRTUAL_ENV /env
-ENV PATH /env/bin:$PATH
+ENV VIRTUAL_ENV=/env
+ENV PATH=/env/bin:$PATH
 
 # copy code
 COPY . /code
@@ -42,9 +42,9 @@ RUN    pip install --no-cache-dir /code/pyauditor/*.whl \
 FROM python:3.8.17-slim-bookworm AS runner
 
 # prevent python from writing *.pyc files to disc
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONDONTWRITEBYTECODE=1
 # prevent python from buffering stdout and stderr
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # install run dependencies
 RUN set -ex                                                          \
@@ -57,8 +57,8 @@ RUN set -ex                                                          \
 COPY --from=builder /env /env
 
 # activate python env
-ENV VIRTUAL_ENV /env
-ENV PATH /env/bin:$PATH
+ENV VIRTUAL_ENV=/env
+ENV PATH=/env/bin:$PATH
 
 WORKDIR /app
 CMD ["/bin/bash"]
