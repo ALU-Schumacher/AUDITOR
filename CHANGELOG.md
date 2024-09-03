@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 
 ### Added
 
 ### Changed
+- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.4.2 to 24.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.2.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.24.5 ([@dirksammel](https://github.com/dirksammel))
