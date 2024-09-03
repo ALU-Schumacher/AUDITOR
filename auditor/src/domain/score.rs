@@ -33,6 +33,7 @@ use std::cmp::Ordering;
 /// # }
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, Clone)]
 #[sqlx(type_name = "score")]
+#[sqlx(no_pg_array)]
 pub struct Score {
     pub name: ValidName,
     pub value: ValidValue,
