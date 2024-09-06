@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update black from 24.4.2 to 24.8.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update build from 1.2.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.23.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 43.0.0 to 43.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
