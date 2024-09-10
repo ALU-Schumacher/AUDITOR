@@ -215,10 +215,9 @@ fn set_priorities(
 
                 debug!(?cmd, "Constructed command");
 
-                let status = cmd.status().map_err(|e| {
-                    error!("Executing command failed!");
-                    e
-                })?;
+                let status = cmd
+                    .status()
+                    .inspect_err(|_x| error!("Executing command failed!"))?;
 
                 debug!(?status, "Command status");
 

@@ -333,10 +333,7 @@ impl ParsableType {
             ParsableType::Integer => AllowedTypes::Integer(
                 input
                     .parse()
-                    .map_err(|e| {
-                        tracing::error!("Cannot parse {input} into i64.");
-                        e
-                    })
+                    .inspect_err(|_e| tracing::error!("Cannot parse {input} into i64."))
                     .context(format!("Parsing of {input} into i64 failed."))?,
             ),
             ParsableType::IntegerMega => {
@@ -346,10 +343,7 @@ impl ParsableType {
                 AllowedTypes::Integer(
                     input
                         .parse()
-                        .map_err(|e| {
-                            tracing::error!("Cannot parse {input} into i64.");
-                            e
-                        })
+                        .inspect_err(|_e| tracing::error!("Cannot parse {input} into i64."))
                         .context(format!("Parsing of {input} into i64 failed."))?,
                 )
             }
