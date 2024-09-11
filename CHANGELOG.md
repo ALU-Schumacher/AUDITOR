@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 43.0.0 to 43.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.11.0 to 1.11.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pytest from 8.3.1 to 8.3.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest from 8.3.1 to 8.3.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.5.4 to 0.6.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 71.1.0 to 73.0.1 ([@dirksammel](https://github.com/dirksammel))
