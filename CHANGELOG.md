@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20241016 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: update wiremock from 0.6.1 to 0.6.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
 - Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
 - Docker files: Linting ([@dirksammel](https://github.com/dirksammel))
