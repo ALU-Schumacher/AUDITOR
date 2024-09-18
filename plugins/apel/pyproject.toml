@@ -26,7 +26,7 @@ tests = [
       "pytest-cov==5.0.0",
       "mypy==1.11.2",	
       "types-pyyaml==6.0.12.20240917",
-      "types-requests==2.32.0.20240907",
+      "types-requests==2.32.0.20240914",
 ]
 build = [
       "build==1.2.2",
