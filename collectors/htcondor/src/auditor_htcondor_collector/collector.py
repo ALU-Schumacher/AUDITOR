@@ -205,7 +205,7 @@ class CondorHistoryCollector(object):
                 comp = Component(name=component["name"], amount=amount)
                 for score in component.get("scores", []):
                     value = get_value(score, job) or "0.0"
-                    comp.with_score(Score(score["name"], maybe_convert(value)))
+                    comp.with_score(Score(score["name"], float(value)))
                 components.append(comp)
             else:
                 self.logger.warning(
