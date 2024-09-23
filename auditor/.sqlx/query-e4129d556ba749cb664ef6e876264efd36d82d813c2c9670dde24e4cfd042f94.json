@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT count(*) as \"count!\" FROM auditor;",
+  "query": "SELECT count(*) as \"count!\" FROM auditor_accounting;",
   "describe": {
     "columns": [
       {
@@ -16,5 +16,5 @@
       null
     ]
   },
-  "hash": "2fd7111ca6a9819d4bfffa0280413bf144dc11f6d890a9558dd07dc6c92b45de"
+  "hash": "e4129d556ba749cb664ef6e876264efd36d82d813c2c9670dde24e4cfd042f94"
 }

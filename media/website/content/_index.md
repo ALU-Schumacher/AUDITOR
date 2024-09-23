@@ -726,107 +726,79 @@ auditor:
 summary_fields:
   mandatory:
     NormalisedWallDuration: !NormalisedWallDurationField
-      datatype_in_message: INT
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
-      datatype_in_message: INT
       divide_by: 1000
     NormalisedCpuDuration: !NormalisedField
-      datatype_in_message: INT
       base_value: !ComponentField
         name: TotalCPU
-        datatype_in_message: INT
         divide_by: 1000
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     
   optional:
     GlobalUserName: !MetaField
       name: subject
-      datatype_in_message: TEXT
     VO: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?<=%2F).*?\S(?=%2F)
     VOGroup: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=%2F).*?\S(?=%2F)
     VORole: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=Role).*
     SubmitHost: !MetaField
       name: headnode
-      datatype_in_message: TEXT
     Infrastructure: !ConstantField
       value: grid
-      datatype_in_message: TEXT
     NodeCount: !ComponentField
       name: NNodes
-      datatype_in_message: INT
     Processors: !ComponentField
       name: Cores
-      datatype_in_message: INT
 
 
 individual_job_fields:
   mandatory:
     CpuDuration: !ComponentField
       name: TotalCPU
-      datatype_in_message: INT
       divide_by: 1000
 
   optional:
     GlobalUserName: !MetaField
       name: subject
-      datatype_in_message: TEXT
     VO: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?<=%2F).*?\S(?=%2F)
     VOGroup: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=%2F).*?\S(?=%2F)
     VORole: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=Role).*
     SubmitHost: !MetaField
       name: headnode
-      datatype_in_message: TEXT
     InfrastructureType: !ConstantField
       value: grid
-      datatype_in_message: TEXT
     NodeCount: !ComponentField
       name: NNodes
-      datatype_in_message: INT
     Processors: !ComponentField
       name: Cores
-      datatype_in_message: INT
     LocalUserId: !MetaField
       name: user_id
-      datatype_in_message: TEXT
     FQAN: !MetaField
       name: voms
-      datatype_in_message: TEXT
     InfrastructureDescription: !ConstantField
       value: AUDITOR-ARC-SLURM
-      datatype_in_message: TEXT
     ServiceLevel: !ScoreField
       name: hepscore23
-      datatype_in_message: FLOAT
       component_name: Cores
     ServiceLevelType: !ConstantField
       value: hepscore23
-      datatype_in_message: TEXT
 ```
 
 The individual parameters in the config file are:
@@ -836,7 +808,7 @@ The individual parameters in the config file are:
 | `plugin`         | `log_level`       | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
 | `plugin`         | `time_json_path`  | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
 | `plugin`         | `report_interval` | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
-| `plugin`         | `message_type`    | Type of mesasge to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
+| `plugin`         | `message_type`    | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
 | `site`           | `publish_since`   | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                                                                                     |
 | `site`           | `sites_to_report` | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                                                                       |
 | `authentication` | `auth_url`        | URL from which the APEL authentication token is received.                                                                                                                                                                                           |
@@ -852,38 +824,38 @@ The individual parameters in the config file are:
 
 The main sections `summary_fields` and `individual_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
 
-```
-CpuDuration
-NormalisedCpuDuration (only for summary_job_fields)
-NormalisedWallDuration (only for summary_job_fields)
-```
+| Name                                                | Data type |
+|:----------------------------------------------------|:---------:|
+| `CpuDuration`                                       | `int`     |
+| `NormalisedCpuDuration` (only for summary\_fields)  | `int`     |
+| `NormalisedWallDuration` (only for summary\_fields) | `int`     |
 
-There are actually more mandatory fields, but they are handlded internally and don't need any input from the user.
+There are actually more mandatory fields, but they are handled internally and don't need any input from the user.
 
 `optional` fields can be used to provide additional information to APEL:
 
-```
-GlobalUserName
-VO
-VOGroup
-VORole
-SubmitHost
-Infrastructure (only for summary_job_fields)
-InfrastructureType (only for individual_job_fields)
-InfrastructureDescription (only for individual_job_fields)
-NodeCount
-Processors
-LocalUserId (only for individual_job_fields)
-FQAN (only for individual_job_fields)
-ServiceLevel (only for individual_job_fields)
-ServiceLevelType (only for individual_job_fields)
-```
+| Name                                                           | Data type |
+|:---------------------------------------------------------------|:---------:|
+| `GlobalUserName`                                               | `str`     |
+| `VO`                                                           | `str`     |
+| `VOGroup`                                                      | `str`     |
+| `VORole`                                                       | `str`     |
+| `SubmitHost`                                                   | `str`     |
+| `Infrastructure` (only for summary\_fields)                    | `str`     |
+| `InfrastructureType` (only for individual\_job\_fields)        | `str`     |
+| `InfrastructureDescription` (only for individual\_job\_fields) | `str`     |
+| `NodeCount`                                                    | `int`     |
+| `Processors`                                                   | `int`     |
+| `LocalUserId` (only for individual\_job\_fields)               | `str`     |
+| `FQAN` (only for individual\_job\_fields)                      | `str`     |
+| `ServiceLevel` (only for individual\_job\_fields)              | `float`   |
+| `ServiceLevelType` (only for individual\_job\_fields)          | `str`     |
 
-The information about the possible fields, and what is mandatory or optional, is taken from [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records), where the former also contains explanations and examples for the field content.
+The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records).
+
+Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!
 
 Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, `NormalisedField`, and `NormalisedWallDurationField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
-
-All fields have the mandatory parameter `datatype_in_message`, which indicates the data type of the field in the APEL message (see [https://wiki.egi.eu/wiki/APEL/MessageFormat](https://wiki.egi.eu/wiki/APEL/MessageFormat)). Possible types are `FLOAT`, `TEXT`, and `INT`.
 
 `ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
 

@@ -27,103 +27,75 @@ auditor:
 summary_fields:
   mandatory:
     NormalisedWallDuration: !NormalisedWallDurationField
-      datatype_in_message: INT
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
-      datatype_in_message: INT
       divide_by: 1000
     NormalisedCpuDuration: !NormalisedField
-      datatype_in_message: INT
       base_value: !ComponentField
         name: TotalCPU
-        datatype_in_message: INT
         divide_by: 1000
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     
   optional:
     GlobalUserName: !MetaField
       name: subject
-      datatype_in_message: TEXT
     VO: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?<=%2F).*?\S(?=%2F)
     VOGroup: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=%2F).*?\S(?=%2F)
     VORole: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=Role).*
     SubmitHost: !MetaField
       name: headnode
-      datatype_in_message: TEXT
     Infrastructure: !ConstantField
       value: grid
-      datatype_in_message: TEXT
     NodeCount: !ComponentField
       name: NNodes
-      datatype_in_message: INT
     Processors: !ComponentField
       name: Cores
-      datatype_in_message: INT
 
 individual_job_fields:
   mandatory:
     NormalisedWallDuration: !NormalisedWallDurationField
-      datatype_in_message: INT
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
-      datatype_in_message: INT
       divide_by: 1000
     NormalisedCpuDuration: !NormalisedField
-      datatype_in_message: INT
       base_value: !ComponentField
         name: TotalCPU
-        datatype_in_message: INT
         divide_by: 1000
       score:
         name: hepscore23
-        datatype_in_message: FLOAT
         component_name: Cores
     
   optional:
     GlobalUserName: !MetaField
       name: subject
-      datatype_in_message: TEXT
     VO: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?<=%2F).*?\S(?=%2F)
     VOGroup: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=%2F).*?\S(?=%2F)
     VORole: !MetaField
       name: voms
-      datatype_in_message: TEXT
       regex: (?=Role).*
     SubmitHost: !MetaField
       name: headnode
-      datatype_in_message: TEXT
     InfrastructureType: !ConstantField
       value: grid
-      datatype_in_message: TEXT
     NodeCount: !ComponentField
       name: NNodes
-      datatype_in_message: INT
     Processors: !ComponentField
       name: Cores
-      datatype_in_message: INT

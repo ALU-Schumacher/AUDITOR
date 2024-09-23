@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        INSERT INTO auditor (\n            record_id, start_time, stop_time, meta, components, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7)\n        RETURNING id;\n        ",
+  "query": "\n        INSERT INTO auditor_accounting (\n            record_id, start_time, stop_time, meta, components, runtime, updated_at\n        )\n        VALUES ($1, $2, $3, $4, $5, $6, $7)\n        RETURNING id;\n        ",
   "describe": {
     "columns": [
       {
@@ -24,5 +24,5 @@
       false
     ]
   },
-  "hash": "4f6f0c4610070485bff505ce1207a4b77e206ab1558a7540e23a64165b95638e"
+  "hash": "26a72be3c4ba0fddc30f53a71e0317e21982fde8bd24d8b5714439c1af835080"
 }

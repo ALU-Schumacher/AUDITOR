@@ -258,8 +258,7 @@ def create_db(
             )
             raise ValueError
         else:
-            data_type = v.datatype_in_message
-            field_list.append(f"{k} {data_type} NOT NULL")
+            field_list.append(f"{k} NOT NULL")
 
     field_list_str = ",".join(field_list)
 
@@ -364,7 +363,7 @@ def get_data_tuple(
     for v in fields_dict.values():
         value = v.get_value(record)
 
-        if v.datatype_in_message == "TEXT":
+        if isinstance(value, str):
             value = replace_record_string(value)
 
         value_list.append(value)
@@ -450,6 +449,7 @@ def get_token(config):
     client_cert = config.authentication.client_cert
     client_key = config.authentication.client_key
     verify_ca = config.authentication.verify_ca
+
     if verify_ca:
         ca_path = config.authentication.ca_path
     else:
@@ -500,11 +500,11 @@ def build_payload(msg):
 
 
 def send_payload(config, token, payload):
-    ams_url = config["authentication"]["ams_url"]
-    verify_ca = config["authentication"]["verify_ca"]
+    ams_url = config.authentication.ams_url
+    verify_ca = config.authentication.verify_ca
 
     if verify_ca:
-        ca_path = config["authentication"]["ca_path"]
+        ca_path = config.authentication.ca_path
     else:
         ca_path = False
 

@@ -36,7 +36,7 @@ impl TestApp {
 
     pub async fn add_record<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
         reqwest::Client::new()
-            .post(&format!("{}/record", &self.address))
+            .post(format!("{}/record", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -46,7 +46,7 @@ impl TestApp {
 
     pub async fn bulk_insert<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
         reqwest::Client::new()
-            .post(&format!("{}/records", &self.address))
+            .post(format!("{}/records", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -56,7 +56,7 @@ impl TestApp {
 
     pub async fn get_records(&self) -> reqwest::Response {
         reqwest::Client::new()
-            .get(&format!("{}/records", &self.address))
+            .get(format!("{}/records", &self.address))
             .send()
             .await
             .expect("Failed to execute request.")
@@ -69,7 +69,7 @@ impl TestApp {
         let timestamp_str = timestamp.as_ref();
         let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
-            .get(&format!(
+            .get(format!(
                 "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
@@ -85,7 +85,7 @@ impl TestApp {
         let timestamp_str = timestamp.as_ref();
         let encoded_since = encode(timestamp_str);
         reqwest::Client::new()
-            .get(&format!(
+            .get(format!(
                 "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
@@ -99,7 +99,7 @@ impl TestApp {
         query_string: T,
     ) -> reqwest::Response {
         reqwest::Client::new()
-            .get(&format!("{}/records?{}", &self.address, query_string))
+            .get(format!("{}/records?{}", &self.address, query_string))
             .send()
             .await
             .expect("Failed to execute queries.")
@@ -110,7 +110,7 @@ impl TestApp {
         record_id: T,
     ) -> reqwest::Response {
         reqwest::Client::new()
-            .get(&format!("{}/record/{}", &self.address, record_id))
+            .get(format!("{}/record/{}", &self.address, record_id))
             .send()
             .await
             .expect("Failed to execute queries.")

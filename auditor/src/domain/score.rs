@@ -33,6 +33,7 @@ use std::cmp::Ordering;
 /// # }
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, Clone)]
 #[sqlx(type_name = "score")]
+#[sqlx(no_pg_array)]
 pub struct Score {
     pub name: ValidName,
     pub value: ValidValue,
@@ -44,7 +45,7 @@ impl Score {
     /// # Errors
     ///
     /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `name`
-    /// or if a negative `value` was given.
+    ///     or if a negative `value` was given.
     pub fn new<T: AsRef<str>>(name: T, value: f64) -> Result<Self, Error> {
         Ok(Score {
             name: ValidName::parse(name.as_ref().to_string())

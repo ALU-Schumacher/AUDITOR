@@ -95,7 +95,7 @@ pub async fn advanced_record_filtering(
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
                ",
     );
 
@@ -299,7 +299,7 @@ pub async fn get_one_record(
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            WHERE record_id = $1
         "#,
             &record_id,

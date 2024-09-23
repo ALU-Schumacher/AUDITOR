@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT record_id,\n                  meta,\n                  components,\n                  start_time,\n                  stop_time,\n                  runtime\n           FROM auditor_accounting\n           WHERE record_id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "record_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "meta",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 2,
+        "name": "components",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 3,
+        "name": "start_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "stop_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "runtime",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "e88b5acb79055b5c307e15481bc270e47d65b525ef6d98376455a267972be532"
+}

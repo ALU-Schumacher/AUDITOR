@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
+### Security
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+
+### Added
+
+### Changed
+- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update black from 24.4.2 to 24.8.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update build from 1.2.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.23.3 to 1.24.6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 43.0.0 to 43.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update mypy from 1.11.0 to 1.11.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.8.2 to 2.9.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest from 8.3.1 to 8.3.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.5.4 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 71.1.0 to 75.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20240914 ([@dirksammel](https://github.com/dirksammel))
+- HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
+
+### Removed
+
+## [0.6.2] - 2024-07-29
+
+### Breaking changes
 - AUDITOR: Run `sqlx migrate run` to migrate to new schema for AUDITOR accounting db. ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Use class structure for config and messages ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Change `month` and `year` parameters of republish script to `begin_date` and `end_date` ([@dirksammel](https://github.com/dirksammel))
@@ -19,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
+- CI: Add integration test for db migraiton ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add contribution guidelines ([@QuantumDancer](https://github.com/QuantumDancer))
 - Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))
 
@@ -26,21 +57,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Use common logger in the code base ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Add TRACE level for logging ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Re-use records fetched for sync message for individual jobs reporting ([@dirksammel](https://github.com/dirksammel))
+- Auditor: Use workspace dependencies ([@dirksammel](https://github.com/dirksammel))
+- Auditor & auditor-client: Resolve circular dependency with auditor and auditor-client ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor: Refactor auditor database table to `auditor_accounting` ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Auditor & auditor-client: Add test to check query metadata & add missing sqlx query metadata ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Benchmark: Add `num_of_records` and `sample size` config fields for benchmark script ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update actix-web from 4.6.0 to 4.8.0 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update anyhow from 1.0.82 to 1.0.86 ([@dirksammel](https://github.com/dirksammel))
+- Slurm collector: Remove fields `collector_addr` and `collector_port` in settings struct ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.2.0 to 24.4.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.20.7 to 1.21.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 42.0.5 to 42.0.7 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update mypy from 1.9.0 to 1.10.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.20.7 to 1.23.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update criterion-macro from 0.3.4 to 0.4.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 42.0.5 to 43.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/build-push-action from 5 to 6 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update itertools from 0.12.1 to 0.13.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update mypy from 1.9.0 to 1.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update num-traits from 0.2.18 to 0.2.19 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update pydantic from 2.6.4 to 2.7.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pytest from 8.1.1 to 8.2.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update requests from 2.31.0 to 2.32.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update ruff from 0.3.2 to 0.4.6 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update serde from 1.0.198 to 1.0.200 ([@QuantumDancer](https://github.com/QuantumDancer))
+- Dependencies: Update opentelemetry from 0.22.0 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update opentelemetry-prometheus from 0.15.0 to 0.16.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update opentelemetry_sdk from 0.22.1 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.6.4 to 2.8.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update regex from 1.10.4 to 1.10.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update pytest from 8.1.1 to 8.3.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update requests from 2.31.0 to 2.32.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay), [@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.3.2 to 0.5.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde from 1.0.203 to 1.0.204 ([@QuantumDancer](https://github.com/QuantumDancer), [@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update serde_json from 1.0.117 to 1.0.120 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.7.0 to 3.8.1 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update setuptools from 69.2.0 to 70.0.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update types-requests from 2.31.0.20240406 to 2.32.0.20240523 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 69.2.0 to 71.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update shalzz/zola-deploy-action from 0.18.0 to 0.19.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update thiserror from from 1.0.61 to 1.0.63 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tracing-actix-web from 0.7.10 to 0.7.11 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update types-requests from 2.31.0.20240406 to 2.32.0.20240712 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update requests from 2.31.0 to 2.32.2 in /plugins/apel ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update reqwest from 0.12.4 to 0.12.5 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update prometheus from 0.13.3 to 0.13.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.9.1 to 1.10.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Switch to stable toolchain for clippy job (#793) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Client: Moved the client to a dedicated package `auditor-client` due to limitations of sqlx ([@rkleinem](https://github.com/rkleinem))
+- Docs: Fix clippy issues for indentation ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
@@ -95,7 +150,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde from 1.0.196 to 1.0.198 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde-aux from 4.4.0 to 4.5.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_json from 1.0.113 to 1.0.116 ([@QuantumDancer](https://github.com/QuantumDancer))
-- Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer)
+- Dependencies: Update serde_qs from 0.12.0 to 0.13.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update serde_with from 3.6.0 to 3.7.0 ([@QuantumDancer](https://github.com/QuantumDancer))
 - Dependencies: Update setuptools from 69.0.3 to 69.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
@@ -120,7 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Remove `site_name_mapping` config parameter and change structure of `sites_to_report` config parameter ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
-- [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer)
+- [RUSTSEC-2023-0071]: Ignored, because vulnerable code is not actually used by us ([@QuantumDancer](https://github.com/QuantumDancer))
 - [RUSTSEC-2023-0074]: Update zerocopy from 0.7.26 to 0.7.31 ([@QuantumDancer](https://github.com/QuantumDancer))
 
 ### Added
@@ -131,8 +186,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auditor: Remove get_since.rs and clean up dead code (#624) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - pyauditor: Add string representation to python Record Object (#596) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - CI: Added new workflow to define reusable parameters for other workflows ([@dirksammel](https://github.com/dirksammel))
-- Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer)
-- Docs: Add overview of API endpoints (#597) ([@QuantumDancer](https://github.com/QuantumDancer)
+- Docs: Add versioning of GitHub Pages and pyauditor docs (#551) ([@QuantumDancer](https://github.com/QuantumDancer))
+- Docs: Add overview of API endpoints (#597) ([@QuantumDancer](https://github.com/QuantumDancer))
 - Apel plugin: Add optional config setting for style of summary message ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
@@ -514,7 +569,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.2...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -528,3 +583,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.3.1
 [0.4.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0
 [0.5.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0
+[0.6.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.2

@@ -96,7 +96,7 @@ impl DatabaseMetricsWatcher {
 
     #[tracing::instrument(name = "Update record count for database metrics", skip(self))]
     async fn update_record_count(&self) -> Result<(), anyhow::Error> {
-        let num = sqlx::query_scalar!(r#"SELECT count(*) as "count!" FROM auditor;"#)
+        let num = sqlx::query_scalar!(r#"SELECT count(*) as "count!" FROM auditor_accounting;"#)
             .fetch_one(&self.db_pool)
             .await?;
         let mut data_lock = self.data.lock().unwrap();
@@ -110,7 +110,7 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"
             SELECT jsonb_array_elements_text(meta->'site_id') AS "name!", COUNT(*) AS "num!"
-            FROM auditor
+            FROM auditor_accounting
             GROUP BY jsonb_array_elements_text(meta->'site_id');
             "#
         )
@@ -134,7 +134,7 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"
             SELECT jsonb_array_elements_text(meta->'group_id') AS "name!", COUNT(*) AS "num!"
-            FROM auditor
+            FROM auditor_accounting
             GROUP BY jsonb_array_elements_text(meta->'group_id');
             "#
         )
@@ -155,7 +155,7 @@ impl DatabaseMetricsWatcher {
             AggregatedColumns,
             r#"
             SELECT jsonb_array_elements_text(meta->'user_id') AS "name!", COUNT(*) AS "num!"
-            FROM auditor
+            FROM auditor_accounting
             GROUP BY jsonb_array_elements_text(meta->'user_id');
             "#
         )

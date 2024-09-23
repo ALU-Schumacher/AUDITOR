@@ -1,0 +1,90 @@
+name: db-migration-tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  test:
+    name: Migration test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    env:
+      SQLX_VERSION: 0.7.4
+      SQLX_FEATURES: postgres,rustls,sqlite
+      RUSTFLAGS: -C link-arg=-s
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: cache-dependencies
+
+      - name: Massage sqlx features env variable...
+        run: |
+          TMP=${{ env.SQLX_FEATURES }}
+          SQLX_FEATURES_CACHE="${TMP//,/_}"
+          echo "SQLX_FEATURES_CACHE=${SQLX_FEATURES_CACHE}" >> $GITHUB_ENV
+
+      - name: Cache sqlx
+        id: cache_sqlx
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: cache-sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES_CACHE }}
+          cache-directories: |
+            ~/.cargo/bin/sqlx
+            ~/.cargo/bin/cargo-sqlx
+
+      - name: Install sqlx-cli 
+        # if: ${{ steps.cache_sqlx.outputs.cache-hit }}
+        run: cargo install sqlx-cli --version=${{ env.SQLX_VERSION }} --features=${{ env.SQLX_FEATURES }} --no-default-features --locked
+
+      - name: Checkout to main branch
+        run: git checkout main
+
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          SKIP_DOCKER=true ./scripts/init_db.sh
+
+      - name: Migrate auditor client sqlite database
+        run: |
+          ./scripts/init_slurm_collector_sqlite.sh
+          ./scripts/init_client_sqlite.sh
+
+      - name: Compile auditor
+        run: |
+          cargo build --bin auditor
+
+      - name: Checkout to current branch
+        run: |
+          git checkout -
+
+      - name: Install musl
+        run: |
+          sudo apt-get install musl musl-tools
+      
+      - name: Test priority plugin
+        run: SKIP_COMPILATION=true ./scripts/test_db_migration.sh
+

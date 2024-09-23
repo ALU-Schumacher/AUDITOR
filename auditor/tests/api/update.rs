@@ -12,7 +12,7 @@ async fn update_returns_a_404_for_non_existing_record() {
     let body: RecordTest = Faker.fake();
 
     let response = client
-        .put(&format!("{}/record", &app.address))
+        .put(format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()
@@ -35,7 +35,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     body.stop_time = None;
 
     let response = client
-        .post(&format!("{}/record", &app.address))
+        .post(format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()
@@ -48,7 +48,7 @@ async fn update_returns_a_200_for_valid_form_data() {
     let body = body.with_stop_time("2022-03-01T13:00:00-00:00");
 
     let response = client
-        .put(&format!("{}/record", &app.address))
+        .put(format!("{}/record", &app.address))
         .header("Content-Type", "application/json")
         .json(&body)
         .send()
@@ -65,7 +65,7 @@ async fn update_returns_a_200_for_valid_form_data() {
                   start_time,
                   stop_time,
                   runtime
-           FROM auditor
+           FROM auditor_accounting
            WHERE record_id = $1
         "#,
         body.record_id.as_ref().unwrap()

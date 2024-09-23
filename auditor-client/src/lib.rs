@@ -522,10 +522,12 @@
 //! # }
 //! ```
 
+mod constants;
 use auditor::{
-    constants::{ERR_INVALID_TIME_INTERVAL, ERR_RECORD_EXISTS},
+    constants::ERR_RECORD_EXISTS,
     domain::{Record, RecordAdd, RecordUpdate},
 };
+use constants::ERR_INVALID_TIME_INTERVAL;
 
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
@@ -722,7 +724,7 @@ impl AuditorClientBuilder {
     /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration or send interval is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     /// * [`ClientError::DatabaseError`] - If there was an error while opening or creating the
-    /// database
+    ///     database
     pub async fn build_queued(self) -> Result<QueuedAuditorClient, ClientError> {
         let interval = self.send_interval;
         let client = QueuedAuditorClient::new(
@@ -1218,7 +1220,7 @@ impl AuditorClient {
     pub async fn health_check(&self) -> bool {
         match self
             .client
-            .get(&format!("{}/health_check", &self.address))
+            .get(format!("{}/health_check", &self.address))
             .send()
             .await
         {
@@ -1242,7 +1244,7 @@ impl AuditorClient {
     pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(&format!("{}/record", &self.address))
+            .post(format!("{}/record", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -1268,7 +1270,7 @@ impl AuditorClient {
     pub async fn bulk_insert(&self, records: &Vec<RecordAdd>) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(&format!("{}/records", &self.address))
+            .post(format!("{}/records", &self.address))
             .header("Content-Type", "application/json")
             .json(records)
             .send()
@@ -1294,7 +1296,7 @@ impl AuditorClient {
     )]
     pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
-            .put(&format!("{}/record", &self.address))
+            .put(format!("{}/record", &self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -1312,7 +1314,7 @@ impl AuditorClient {
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/records", &self.address))
+            .get(format!("{}/records", &self.address))
             .send()
             .await?
             .error_for_status()?
@@ -1340,7 +1342,7 @@ impl AuditorClient {
         let encoded_since = encode(&since_str);
         Ok(self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
@@ -1370,7 +1372,7 @@ impl AuditorClient {
         let encoded_since = encode(&since_str);
         Ok(self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
@@ -1393,7 +1395,7 @@ impl AuditorClient {
     pub async fn advanced_query(&self, query_string: String) -> Result<Vec<Record>, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/records?{}", &self.address, query_string))
+            .get(format!("{}/records?{}", &self.address, query_string))
             .send()
             .await?
             .error_for_status()?
@@ -1413,7 +1415,7 @@ impl AuditorClient {
     pub async fn get_single_record(&self, record_id: String) -> Result<Record, ClientError> {
         Ok(self
             .client
-            .get(&format!("{}/record/{}", &self.address, record_id))
+            .get(format!("{}/record/{}", &self.address, record_id))
             .send()
             .await?
             .error_for_status()?

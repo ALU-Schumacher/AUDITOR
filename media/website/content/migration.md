@@ -4,7 +4,13 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.5.0 to unreleased/0.6.0
+# From 0.6.2 to unreleased/0.7.0
+
+### Update to [sqlx 0.8.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.8.2
+- `cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
+
+# From 0.5.0 to 0.6.2
 
 ## Auditor DB:
 - WARNING: Please create a backup of the database before running the migration script.

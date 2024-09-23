@@ -56,8 +56,6 @@ class AuthConfig(Configurable):
 
 
 class Field(Configurable):
-    datatype_in_message: str
-
     def get_value(self, record: Optional[Record]) -> Union[str, int, float]:
         raise NotImplementedError()
 
@@ -195,7 +193,7 @@ class NormalisedField(Field):
     base_value: Union[ComponentField, RecordField]
     score: ScoreField
 
-    def get_value(self, record: Record) -> float:
+    def get_value(self, record: Record) -> int:
         base_value = self.base_value.get_value(record)
         score_value = self.score.get_value(record)
 
@@ -205,13 +203,13 @@ class NormalisedField(Field):
                 "Multiplication not possible!"
             )
             raise TypeError
-        value = base_value * score_value
+        value = round(base_value * score_value)
 
         return value
 
 
 class NormalisedWallDurationField(NormalisedField):
-    base_value: RecordField = RecordField(name="runtime", datatype_in_message="INT")
+    base_value: RecordField = RecordField(name="runtime")
 
 
 class ConstantField(Field):
