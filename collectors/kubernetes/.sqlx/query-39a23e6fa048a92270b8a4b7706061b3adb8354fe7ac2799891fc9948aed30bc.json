@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO lastcheck (time) VALUES ($1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "39a23e6fa048a92270b8a4b7706061b3adb8354fe7ac2799891fc9948aed30bc"
+}

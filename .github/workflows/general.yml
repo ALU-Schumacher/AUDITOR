@@ -67,6 +67,9 @@ jobs:
         run: |
           ./scripts/init_slurm_collector_sqlite.sh
 
+      - name: Migrate kubernetes collector sqlite database
+        run: ./scripts/init_kubernetes_collector_sqlite.sh
+
       - name: Check sqlx-data.json for auditor is up-to-date
         run: |
           cd auditor
@@ -141,6 +144,9 @@ jobs:
 
       - name: Migrate slurm collector sqlite database
         run: ./scripts/init_slurm_collector_sqlite.sh
+
+      - name: Migrate kubernetes collector sqlite database
+        run: ./scripts/init_kubernetes_collector_sqlite.sh
 
       - name: Clippy
         run: cargo clippy --all-targets --all-features -- -D warnings

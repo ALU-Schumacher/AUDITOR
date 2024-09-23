@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM mergequeue WHERE rid=$1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "cf0335f5bcacbf3a2a85be5d5419d43d4a158abb12cf524688575e6c62a1c250"
+}
