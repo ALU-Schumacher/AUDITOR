@@ -1,0 +1,80 @@
+{{ if .Values.fullSetup }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auditor-prometheus.fullname" . }}
+  labels:
+    app: {{ include "auditor-prometheus.fullname" . }}
+    {{- include "auditor-prometheus.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.prometheus.annotations | nindent 4 }}
+spec:
+  replicas: 1
+  #revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ include "auditor-prometheus.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "auditor-prometheus.fullname" . }}
+    spec:
+      {{/*#{{ if .Values.persistentVolume.use }}
+      #initContainers:
+      #- name: init-storage
+      #  image: {{ tpl .Values.prometheus.image $ }} #busybox
+      #  securityContext:
+      #    #privileged: true
+      #    runAsUser: 0
+      #  env:
+      #  - name: PROMUSER
+      #    value: {{ quote .Values.prometheus.uid }}
+      #  - name: PROMGROUP
+      #    value: {{ quote .Values.prometheus.gid }}
+      #  command:
+      #    - 'sh'
+      #    - '-c'
+      #    - 'chown $PROMUSER:$PROMGROUP /prometheus'
+      #  volumeMounts:
+      #  - name: prometheus-data
+      #    mountPath: /prometheus
+      #{{ end }}*/}}
+      securityContext:
+        runAsUser: {{ .Values.prometheus.uid }}
+        runAsGroup: {{ .Values.prometheus.gid }}
+        fsGroup: {{ .Values.prometheus.gid }}
+        #allowPrivilegeEscalation: false
+      containers:
+      - name: prometheus
+        image: {{ include "auditor-prometheus.image" . }}
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+          - name: config
+            mountPath: /etc/prometheus/prometheus.yml
+            subPath: prometheus.yml
+            readOnly: true
+          {{- if .Values.persistentVolume.use }}
+          - name: prometheus-data
+            mountPath: /prometheus
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "auditor-prometheus.fullname" . }}
+        {{- if .Values.persistentVolume.use }}
+        - name: prometheus-data
+          persistentVolumeClaim:
+            claimName: {{ include "auditor-prometheus.fullname" . }}
+        {{- end }}
+      #nodeSelector:
+      #  kubernetes.io/os: linux
+      serviceAccountName: {{ include "auditor-prometheus.serviceAccountName" . }}
+      automountServiceAccountToken: true
+{{ end }}

@@ -1,6 +1,5 @@
 use std::env;
 use std::sync::OnceLock;
-use std::time::Duration;
 
 //use auditor::domain::{RecordAdd, ValidName};
 use auditor_client::AuditorClientBuilder;
@@ -20,9 +19,9 @@ use tokio::{signal, sync::broadcast};
 
 static CONFIG: OnceLock<Config> = OnceLock::new();
 
-fn init() {
+fn init() -> anyhow::Result<()> {
     if CONFIG.get().is_some() {
-        return;
+        return Ok(());
     };
 
     let args: Vec<String> = env::args().collect();
@@ -31,8 +30,8 @@ fn init() {
     } else {
         "config.yml"
     };
-    if CONFIG.set(load_configuration(config_path)).is_err() {
-        return;
+    if CONFIG.set(load_configuration(config_path)?).is_err() {
+        return Ok(());
     };
 
     // Tracing
@@ -42,14 +41,14 @@ fn init() {
         .with_line_number(true)
         .pretty()
         //.compact()
-        //.with_span_events(tracing_subscriber::fmt::format::FmtSpan::FULL)
         .init();
+    Ok(())
 }
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     ensure_lazies();
-    init();
+    init()?;
     println!("Loaded config {:?}", CONFIG.get());
     let config = CONFIG.get().unwrap();
 
@@ -62,6 +61,7 @@ async fn main() -> anyhow::Result<()> {
     // Make AUDITOR Client
     let client = AuditorClientBuilder::new()
         .address(&config.auditor_addr, config.auditor_port)
+        .timeout(config.auditor_timeout.num_seconds())
         .build()?;
 
     // Prometheus Client
@@ -71,13 +71,8 @@ async fn main() -> anyhow::Result<()> {
             config.prometheus_addr.clone(),
             config.prometheus_port
         ),
-        Duration::from_secs(30),
+        config.prometheus_timeout.to_std()?
     )?;
-    //let pclient = PClient::try_from(format!(
-    //    "http://{}:{}",
-    //    config.prometheus_addr.clone(),
-    //    config.prometheus_port
-    //))?;
 
     // Database
     let database = Database::new(

@@ -1,4 +1,7 @@
 use std::fs;
+use std::io;
+use std::error::Error;
+use std::fmt::{self, Display};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::time::Duration;
@@ -7,10 +10,36 @@ use chrono::{DateTime, Local, TimeDelta};
 use serde::Deserialize;
 use tracing_subscriber::filter::LevelFilter;
 
-pub fn load_configuration(p: impl AsRef<Path>) -> Config {
-    let yaml = fs::read_to_string(p.as_ref()).expect("Cannot open config file");
-    let config: DeConfig = serde_yaml::from_str(&yaml).expect("Config is not valid yaml");
-    config.into()
+#[derive(Debug)]
+pub enum ConfigError {
+    FileOpenError(io::Error),
+    InvalidYaml(serde_yaml::Error),
+}
+
+impl Display for ConfigError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        //write!(f, "{:?}", self)
+        match self {
+            ConfigError::FileOpenError(e) =>
+                write!(f, "Cannot open configuration: {}", e),
+            ConfigError::InvalidYaml(e) =>
+                write!(f, "Cannot parse configuration: {}", e),
+        }
+    }
+}
+impl Error for ConfigError {}
+
+//pub fn load_configuration(p: impl AsRef<Path>) -> Config {
+//    let yaml = fs::read_to_string(p.as_ref()).expect("Cannot open config file");
+//    let config: DeConfig = serde_yaml::from_str(&yaml).expect("Config is not valid yaml");
+//    config.into()
+//}
+pub fn load_configuration(p: impl AsRef<Path>) -> Result<Config, ConfigError> {
+    let yaml = fs::read_to_string(p.as_ref())
+        .map_err(|e| ConfigError::FileOpenError(e))?;
+    let config: DeConfig = serde_yaml::from_str(&yaml)
+        .map_err(|e| ConfigError::InvalidYaml(e))?;
+    Ok(config.into())
 }
 
 #[derive(Deserialize)]
@@ -56,7 +85,7 @@ pub struct Config {
     pub collect_interval: TimeDelta,
     #[serde(default = "default_send_interval")]
     #[serde(deserialize_with = "deserialize_timedelta")]
-    pub send_interval: TimeDelta,
+    pub merge_interval: TimeDelta,
     #[serde(default = "default_database_path")]
     pub database_path: PathBuf,
     #[serde(default)]

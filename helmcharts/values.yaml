@@ -1,0 +1,37 @@
+# Default values for auditor-on-k8s.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+auditor:
+  enabled: true
+  postgres:
+    host: # Hostname
+    port: "5433"
+    user: auditor
+    password: super_safe
+    dbName: auditor
+  service:
+    name: auditor-svc
+  config:
+    logLevel: info
+
+auditor-prometheus:
+  enabled: true
+  service:
+    name: prom-svc
+  config:
+    namespaces:
+      - default
+
+auditor-collector:
+  enabled: true
+  collector:
+    config:
+      auditorAddress : auditor-svc
+      prometheusAddress: prom-svc
+
+auditor-apel:
+  enabled: false
+  config:
+    auditor:
+      ip: auditor-svc
