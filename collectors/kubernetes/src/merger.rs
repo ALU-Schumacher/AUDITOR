@@ -76,7 +76,7 @@ pub fn run_merger(
     aclient: AClient,
     pclient: PClient,
 ) -> anyhow::Result<()> {
-    let interval: std::time::Duration = CONFIG.get().unwrap().backlog_interval;
+    let interval: std::time::Duration = CONFIG.get().unwrap().merge_interval.to_std()?;
 
     tokio::spawn(process_queue(
         //rx,

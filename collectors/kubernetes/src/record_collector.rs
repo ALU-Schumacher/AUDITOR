@@ -32,6 +32,7 @@ where
     C: RecordCollector + Send + 'static,
 {
     let _interval: std::time::Duration = CONFIG.get().unwrap().collect_interval.to_std()?;
+    let earliest_datetime: DateTime<Utc> = CONFIG.get().unwrap().earliest_datetime.into();
     tokio::spawn(async move {
         let mut interval = tokio::time::interval(_interval);
         loop {
@@ -43,7 +44,7 @@ where
                 }
             }
             let lastcheck = match database.get_lastcheck().await {
-                Ok(last) => last,
+                Ok(last) => std::cmp::max(last, Some(earliest_datetime)),
                 Err(e) => {
                     tracing::error!("Record collector failed reading from db: {}", e);
                     shutdown_tx.send(()).expect("Shutdown channel lost");

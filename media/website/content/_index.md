@@ -590,45 +590,56 @@ components:
     key: "RemoteUserCpu"
 ```
 
-## Kubernetes
-This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via i's API. This means that the collector needs to be able to access the API as well as Prometheus.
+## Kubernetes Collector
+This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via it's API. This means that the collector needs to be able to access the API as well as Prometheus.
 
-A preconfigured Prometheus can be deployed via a Helm Chart:
+The easiest way to ensure access to the API is by running the collector directly on Kubernetes via the provided Helm Chart. Prometheus needs to be able to access the Kubelets of your cluster. If it is installed on Kubernetes, make sure it has some persistent storage. A small tutorial for an example setup can be found [here](#kubernetes).
+The following section explains the configuration of the collector.
+
+The collector can be started manually
 ```bash
-helm install prometheus helmcharts/charts/auditor-prometheus/ -n auditor
+./auditor-kubernetes-collector config.yaml
 ```
-or
+
+Or it can be installed on Kubernetes via the single Helm Chart
+
 ```bash
-helm install prometheus helmcharts/charts/auditor-prometheus/ -n auditor --set service.type=NodePort
+helm install auditor-collector helmcharts/charts/auditor-collector/ -n auditor
+```
+
+or through the parent Chart
+
+```bash
+helm install auditor helmcharts/ -n auditor
 ```
 
 ### Configuration
-A yaml-file is used for configuration. The parameters are as follows:
+Configuration settings can be provided via a yaml file when run manually or through the Helm Chart. The parameters are as follows:
 
 | Parameter | Default | Description |
 | --------- | ------- | ----------- |
-| auditor_addr | | Address of AUDITOR instance |
-| auditor_port | 8000 | Port of AUDITOR |
-| prometheus_addr | | Address of Prometheus |
-| prometheus_port | | Port of Prometheus |
-| record_prefix | "" | Is prepended to all record IDs |
-| earliest_datetime | Now | Collector will ignore all pods finished before this time. Should be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) |
-| auditor_timeout | 10s | Timeout for connecting to AUDITOR |
-| prometheus_timeout | 60s | Timeout for a single Prometheus query |
-| collect_interval | 60s | Interval for collecting pod info from Kubernetes |
-| send_interval | 60s | Interval for sending records to AUDITOR |
-| database_path | "." | Directory to house the persistent sender queue |
-| job_filter | | Sets which pods to account. See below |
-| backlog_interval | 300s | How long to wait before retrying to fetch metrics from Prometheus |
-| backlog_maxretries | 2 | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this |
-| log_level | INFO | Logging level |
+| `auditor_addr`    |       | Address of AUDITOR instance |
+| `auditor_port`    | `8000`  | Port of AUDITOR |
+| `prometheus_addr` |       | Address of Prometheus |
+| `prometheus_port` |       | Port of Prometheus |
+| `record_prefix`   | `""`    | Is prepended to all record IDs |
+| `earliest_datetime` | `Now` | Collector will ignore all pods finished before this time. Should be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Note that the collector will save the timestamp of the last successful request to Kubernetes and will always choose the later time between this timestamp and `earliest_datetime`. |
+| `auditor_timeout` | `10s`   | Timeout for connecting to AUDITOR |
+| `prometheus_timeout` | `60s` | Timeout for a single Prometheus query |
+| `collect_interval` | `60s`  | Interval for collecting pod info from Kubernetes |
+| `merge_interval`   | `60s`   | Interval for collecting info from Prometheus. This also sets how often records will be sent to AUDITOR. |
+| `database_path`   | `"."`   | Directory to house the persistent sender queue |
+| `job_filter`      |       | Sets which pods to account. See below |
+| `backlog_interval` | `300s` | How long to wait before retrying to fetch metrics from Prometheus |
+| `backlog_maxretries` | `2`  | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this |
+| `log_level`       | `INFO`  | Logging level |
 
 Job filter settings:
 
 | Parameter | Default | Description |
 | --------- | ------- | ----------- |
-| namespace | ["default"] | A whitelist of namespaces to consider |
-| labels | [] | A list of labels. A pod will be accounted if *all* conditions are true |
+| `namespace`   | `["default"]` | A whitelist of namespaces to consider |
+| `labels`      | `[]` | A list of labels. A pod will be accounted if *all* conditions are true |
 
 ### Example Config
 ```yaml
@@ -1019,6 +1030,104 @@ The individual endpoints are further detailed down below.
   In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (`400 BAD REQUEST`).
 
 In the event of unforeseen errors, the server will respond with a `500 INTERNAL SERVER ERROR`.
+
+# Examples
+## Kubernetes
+To install an AUDITOR stack on a Kubernetes cluster we provide a Helm Chart in `./helmcharts/` that includes the subcharts
+- `auditor` for the AUDITOR server
+- `auditor-collector` for the Kubernetes collector
+- `auditor-prometheus` for a Prometheus to scrape the kubelets
+- `auditor-apel` for the APEL plugin
+
+All charts can be (de-)activated in the partent charts `values.yaml` individually, so everything can be run on Kubernetes or separately.
+With the exception of the server chart, all deployments should be provided with persistent storage, while the `auditor` chart requires a Postgres.
+
+For the sake of this example we will provide a small Docker compose setup to run a Postgres instance and install all other components on Kubernetes.
+
+To set up Postgres we use the following files:
+```
+# .env
+AUDITOR_VERSION=0.6.2
+
+POSTGRES_USER="auditor"
+POSTGRES_PASSWORD="super_safe"
+POSTGRES_DB="auditor"
+POSTGRES_HOST="postgres"
+POSTGRES_PORT="5433"
+```
+```
+# docker-compose.yml
+services:
+
+  postgres:
+    image: postgres:16.2-alpine
+    hostname: postgres
+    volumes:
+      - vol_postgres:/var/lib/postgresql/data
+    # Note: During init the server is ready but only accepts connections via
+    # socket. Specifying localhost makes sure init is done.
+    healthcheck:
+      test:
+        - "CMD"
+        - "pg_isready"
+        - "--dbname=$POSTGRES_DB"
+        - "--username=$POSTGRES_USER"
+        - "--host=localhost"
+      interval: 60s
+      timeout: 3s
+      start_period: 60s
+      start_interval: 2s
+      retries: 1
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - auditor-on-kubernetes
+
+volumes:
+  vol_postgres:
+
+networks:
+  auditor-on-kubernetes:
+```
+```
+# docker-compose-setup.yml
+services:
+  migrate:
+    image: aluschumacher/auditor:${AUDITOR_VERSION}
+    environment:
+      AUDITOR_DATABASE__USERNAME: ${POSTGRES_USER}
+      AUDITOR_DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
+      AUDITOR_DATABASE__DATABASE_NAME: ${POSTGRES_DB}
+      AUDITOR_DATABASE__HOST: postgres
+      AUDITOR_DATABASE__PORT: 5432
+    command: migrate
+    networks:
+      - auditor-on-kubernetes
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+```
+The first start of Postgres is done with
+```
+docker compose -f docker-compose.yml -f docker-compose-setup.yml up
+```
+to run the migration.
+
+The configuration of the AUDITOR stack is done through the `values.yaml` files of the charts.
+In particular, ee then need to provide the Postgres address in the parent chart or the `auditor` chart.
+
+We then install everything via the Helm Charts:
+```
+kubectl create namespace auditor
+helm install -n auditor auditor-stack helmcharts/
+```
+
 
 # License
 
