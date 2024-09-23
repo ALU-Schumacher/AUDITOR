@@ -517,7 +517,7 @@ mod tests {
     #[test]
     fn test_pod_to_record() {
         crate::constants::ensure_lazies();
-        let _ = CONFIG.set(load_configuration("testconfig.yml"));
+        let _ = CONFIG.set(load_configuration("testconfig.yml").unwrap());
         let rec = pod_to_record(testpod()).unwrap().unwrap();
         assert_eq!(rec.record_id.as_ref(), "KUBE_-testns-testpod-testuuid");
         assert_eq!(rec.start_time, DateTime::<Utc>::default());
