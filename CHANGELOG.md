@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- AUDITOR client: rename function `does_not_contains` to `does_not_contain`
 
 ### Security
 - [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
@@ -32,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20240914 ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
+- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
 
 ### Removed
 

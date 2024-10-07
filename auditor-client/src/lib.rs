@@ -213,7 +213,7 @@
 //!
 //! #### Meta Operators
 //! - `c` (contains)
-//! - `dnc` (does not contains)
+//! - `dnc` (does not contain)
 //!
 //! #### SortBy Operators
 //! - `asc` (ascending order)
@@ -233,14 +233,14 @@
 //!| `start_time` | Start time of the event (`DateTime<Utc>`)                              | `gt`, `gte`, `lt`, `lte`               | `start_time[gt]=<timestamp>`               |
 //!| `stop_time`  | Stop time of the event (`DateTime<Utc>`)                               | `gt`, `gte`, `lt`, `lte`               | `stop_time[gt]=<timestamp>`                |
 //!| `runtime`    | Runtime of the event (in seconds)                                      | `gt`, `gte`, `lt`, `lte`               | `runtime[gt]=<u64>`                        |
-//!| `meta`       | Meta information (<meta_key>, MetaOperator(<meta_value>))              | `d`, `dnc`                             | `meta[<meta_key>][c]=<meta_value>`         |
+//!| `meta`       | Meta information (<meta_key>, MetaOperator(<meta_value>))              | `c`, `dnc`                             | `meta[<meta_key>][c]=<meta_value>`         |
 //!| `component`  | Component identifier (<component_name>, Operator(<component_amount>))  | `gt`, `gte`, `lt`, `lte`, `equals`     | `component[<component_name>][gt]=<amount>` |
 //!| `sort_by`    | Sort query results (SortBy(<column_name>))                             | `asc`, `desc`                          | `sort_by[desc]=<column_name>`              |
 //!| `limit`      | limit query records (number)                                           |                                        | `limit=5000`                               |
 //!
 //! Meta field can be used to query records by specifying the meta key and [`MetaOperator`]  must be used
 //! to specify meta values. The [`MetaOperator`] must be used to specify whether the value is
-//! contained or does not contained for the specific Metakey.
+//! contained or is not contained for the specific Metakey.
 //!
 //! Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
 //! to specify the amount.
@@ -248,7 +248,7 @@
 //! To query records based on a range, specify the field with two operators
 //! Either with gt or gte and lt or lte.
 //!
-//! For example, to query a records with start_time ranging between two timestamps:
+//! For example, to query records with start_time ranging between two timestamps:
 //!
 //! ```text
 //! GET records?start_time[gt]=timestamp1&start_time[lt]=timestamp2
@@ -1080,7 +1080,7 @@ impl Serialize for MetaQuery {
 pub struct MetaOperator {
     /// `contains` - Specifies if the meta key contains the value.
     pub c: Option<String>,
-    /// `does not contains` - Specifies if the meta key does not contains the value.
+    /// `does not contain` - Specifies if the meta key does not contain the value.
     pub dnc: Option<String>,
 }
 
@@ -1108,7 +1108,7 @@ impl MetaOperator {
     /// # Returns
     ///
     /// A new `MetaOperator` instance with the specified condition.
-    pub fn does_not_contains(mut self, dnc: String) -> Self {
+    pub fn does_not_contain(mut self, dnc: String) -> Self {
         self.dnc = Some(dnc);
         self
     }
