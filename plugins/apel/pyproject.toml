@@ -29,7 +29,7 @@ tests = [
       "types-requests==2.32.0.20240914",
 ]
 build = [
-      "build==1.2.2",
+      "build==1.2.2.post1",
       "setuptools==75.1.0",
 ]
 
