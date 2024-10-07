@@ -287,21 +287,21 @@ impl MetaOperator {
         self_
     }
 
-    /// Sets the meta value using  does not contains operator. This checks if the value does not exists for the
+    /// Sets the meta value using does not contain operator. This checks if the value does not exist for the
     /// corresponding metadata key
     ///
     /// :param query_id: Metadata key
     /// :type query_id: string
     ///
-    /// :param c: Metadata value to be checked if it does not exists
+    /// :param c: Metadata value to be checked if it does not exist
     /// :type c: string
     ///
     /// **Example**
     ///
     /// .. code-block:: python
     ///     
-    ///     operator = MetaOperator().does_not_contains("group_1")
-    fn does_not_contains(mut self_: PyRefMut<Self>, dnc: String) -> PyRefMut<Self> {
+    ///     operator = MetaOperator().does_not_contain("group_1")
+    fn does_not_contain(mut self_: PyRefMut<Self>, dnc: String) -> PyRefMut<Self> {
         self_.inner.dnc = Some(dnc);
         self_
     }
