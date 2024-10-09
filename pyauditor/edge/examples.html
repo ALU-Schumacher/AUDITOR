@@ -246,7 +246,7 @@ Fields other than the stop time cannot be updated.</p>
 <h3>Meta Operators<a class="headerlink" href="#meta-operators" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><cite>c</cite> (contains)</p></li>
-<li><p><cite>dnc</cite> (does not contains)</p></li>
+<li><p><cite>dnc</cite> (does not contain)</p></li>
 </ul>
 </section>
 <section id="sortby-operators">
@@ -301,7 +301,7 @@ The following columns are supported for sortby option
 </tr>
 <tr class="row-even"><td><p><cite>meta</cite></p></td>
 <td><p>Meta information</p></td>
-<td><p><cite>d</cite>, <cite>dnc</cite></p></td>
+<td><p><cite>c</cite>, <cite>dnc</cite></p></td>
 <td><p>meta[&lt;meta_key&gt;][c]=&lt;meta_value&gt;</p></td>
 </tr>
 <tr class="row-odd"><td><p><cite>component</cite></p></td>
@@ -323,13 +323,13 @@ The following columns are supported for sortby option
 </table>
 <p>Meta field can be used to query records by specifying the meta key and MetaOperator must be used
 to specify meta values. The MetaOperator must be used to specify whether the value is
-contained or does not contained for the specific Metakey.</p>
+contained or is not contained for the specific Metakey.</p>
 <p>Component field can be used to query records by specifying the component name (CPU) and [‘Operator’] must be used
 to specify the amount.</p>
 <p>To query records based on a range, specify the field with two operators
 Either with gt or gte and lt or lte.</p>
 <p>For example,
-To query a records with start_time ranging between two timestamps.</p>
+To query records with start_time ranging between two timestamps.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`text</span>
 <span class="pre">Get</span> <span class="pre">records?start_time[gt]=timestamp1&amp;start_time[lt]=timestamp2</span>
 <span class="pre">`</span></code></p>

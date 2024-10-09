@@ -102,7 +102,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.MetaOperator"><code class="docutils literal notranslate"><span class="pre">MetaOperator</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaOperator.contains"><code class="docutils literal notranslate"><span class="pre">MetaOperator.contains()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaOperator.does_not_contains"><code class="docutils literal notranslate"><span class="pre">MetaOperator.does_not_contains()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaOperator.does_not_contain"><code class="docutils literal notranslate"><span class="pre">MetaOperator.does_not_contain()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.ComponentQuery"><code class="docutils literal notranslate"><span class="pre">ComponentQuery</span></code></a><ul>
@@ -793,20 +793,20 @@ corresponding metadata key</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyauditor.MetaOperator.does_not_contains">
-<span class="sig-name descname"><span class="pre">does_not_contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.MetaOperator.does_not_contains" title="Link to this definition"></a></dt>
-<dd><p>Sets the meta value using  does not contains operator. This checks if the value does not exists for the
+<dt class="sig sig-object py" id="pyauditor.MetaOperator.does_not_contain">
+<span class="sig-name descname"><span class="pre">does_not_contain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.MetaOperator.does_not_contain" title="Link to this definition"></a></dt>
+<dd><p>Sets the meta value using does not contain operator. This checks if the value does not exist for the
 corresponding metadata key</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query_id</strong> (<em>string</em>) – Metadata key</p></li>
-<li><p><strong>c</strong> (<em>string</em>) – Metadata value to be checked if it does not exists</p></li>
+<li><p><strong>c</strong> (<em>string</em>) – Metadata value to be checked if it does not exist</p></li>
 </ul>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">does_not_contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">does_not_contain</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
