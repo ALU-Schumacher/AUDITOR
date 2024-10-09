@@ -116,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
+- CI: Add tests for Python 3.13 ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))
