@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.8.2 to 2.9.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.1 to 8.3.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.5.4 to 0.6.8 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.5.4 to 0.6.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustsec/audit-check from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 71.1.0 to 75.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
