@@ -36,7 +36,7 @@ jobs:
   build-pyauditor-linux:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     uses: ./.github/workflows/build_pyauditor_linux.yml
     with:
       python-version: ${{ matrix.python-version }}
@@ -44,7 +44,7 @@ jobs:
   build-pyauditor-windows:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     uses: ./.github/workflows/build_pyauditor_windows.yml
     with:
       python-version: ${{ matrix.python-version }}
@@ -52,7 +52,7 @@ jobs:
   build-pyauditor-macos:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     uses: ./.github/workflows/build_pyauditor_macos.yml
     with:
       python-version: ${{ matrix.python-version }}
@@ -60,7 +60,7 @@ jobs:
   python-code-tests:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     needs: build-pyauditor-linux
     uses: ./.github/workflows/python_code_tests.yml
     with:
