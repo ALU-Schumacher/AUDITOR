@@ -62,7 +62,10 @@ impl AuditorClientBlocking {
     ///
     ///     records = client.get_stopped_since(start_since)
     ///
-    fn get_started_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
+    fn get_started_since(
+        self_: PyRef<'_, Self>,
+        timestamp: &Bound<'_, PyDateTime>,
+    ) -> PyResult<Vec<Record>> {
         let since: DateTime<Utc> = timestamp.extract()?;
         let query_string = auditor_client::QueryBuilder::new()
             .with_start_time(auditor_client::Operator::default().gte(since.into()))
@@ -99,7 +102,10 @@ impl AuditorClientBlocking {
     ///
     ///     records = client.get_stopped_since(stop_since)
     ///
-    fn get_stopped_since(self_: PyRef<'_, Self>, timestamp: &PyDateTime) -> PyResult<Vec<Record>> {
+    fn get_stopped_since(
+        self_: PyRef<'_, Self>,
+        timestamp: &Bound<'_, PyDateTime>,
+    ) -> PyResult<Vec<Record>> {
         let since: DateTime<Utc> = timestamp.extract()?;
         let query_string = auditor_client::QueryBuilder::new()
             .with_stop_time(auditor_client::Operator::default().gte(since.into()))
