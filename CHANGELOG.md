@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.5.4 to 0.6.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustsec/audit-check from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 71.1.0 to 75.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 71.1.0 to 75.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
