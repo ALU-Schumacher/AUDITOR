@@ -1,0 +1,19 @@
+{{- if and .Values.fullSetup .Values.persistentVolume.use }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "auditor-prometheus.fullname" . }}
+  labels:
+    {{- include "auditor-prometheus.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.persistentVolume.annotations | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOncePod
+  nodeAffinity:
+  {{- toYaml .Values.persistentVolume.nodeAffinity | nindent 4 }}
+  capacity:
+    storage: {{ .Values.persistentVolume.size }}
+  storageClassName: {{ include "auditor-prometheus.fullname" . }}
+  {{- toYaml .Values.persistentVolume.type | nindent 2 }}
+{{- end }}

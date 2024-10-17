@@ -1,0 +1,143 @@
+# Default values for auditor-prometheus.
+
+# nameOverride overrides the name of the chart
+nameOverride: ""
+# fullnameOverride overrides the fully qualified name of the chart
+fullnameOverride: ""
+
+# fullSetup specifies whether to run Prometheus on Kubernetes.
+# If set to false only a ServiceAccount will be created to
+# provide a token for accessing the Kubelets.
+fullSetup: true
+
+## Prometheus image to use
+registry: null
+repository: "prom/prometheus"
+# Overrides the image tag whose default is the chart appVersion.
+tag: null
+pullPolicy: IfNotPresent
+
+prometheus:
+  annotations: {}
+  uid: 65534
+  gid: 65534
+  config:
+    # How often Prometheus will scrape each Kubelet
+    scrapeInterval: 1m
+    scrapeTimeout: 15s
+    # Which metrics will be saved
+    # No filter will be applied if empty
+    series:
+      - pod_cpu_usage_seconds_total
+      - pod_memory_working_set_bytes
+    # For which namespaces data will be collected
+    # No filter will be applied if empty
+    namespaces:
+      - default
+    # Whether to include the namespace of this chart
+    includeOwnNamespace: true
+    scrape_cadvisor: false
+    scrape_probes: false
+
+service:
+  annotations: {}
+  # Change if you want to run the collector outside of Kubernetes
+  type: ClusterIP
+  name: ""
+  port: 9090
+  nodePort: 31000
+
+nodeName: ""
+nodeSelector: {}
+
+persistentVolume:
+  use: true
+  #annotations:
+  #  pv.beta.kubernetes.io/gid: "210"
+  size: "3Gi"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: [""] # Hostname
+  type:
+    local:
+      path: /srv/auditor/prometheus
+
+serviceAccount:
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+
+clusterRole:
+  annotations: {}
+  name: ""
+
+
+##################################
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+
+tolerations: []
+
+affinity: {}

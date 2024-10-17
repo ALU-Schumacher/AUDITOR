@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auditor-collector.fullname" . }}
+  labels:
+    app: {{ include "auditor-collector.fullname" . }}
+    {{- include "auditor-collector.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.collector.annotations | nindent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  #strategy:
+  #  type: RollingUpdate
+  #  rollingUpdate:
+  #    maxSurge: 1
+  #    maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ include "auditor-collector.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "auditor-collector.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "auditor-collector.serviceAccountName" . }}
+      automountServiceAccountToken: true
+      securityContext:
+        runAsUser: {{ .Values.collector.uid }}
+        runAsGroup: {{ .Values.collector.gid }}
+        fsGroup: {{ .Values.collector.gid }}
+      containers:
+      - name: collector
+        image: {{ include "auditor-collector.image" . }}
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        volumeMounts:
+          - name: config
+            mountPath: /auditor/config.yaml
+            subPath: config.yaml
+            readOnly: true
+          {{- if .Values.persistentVolume.use }}
+          - name: persistent-data
+            mountPath: /auditor/data
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "auditor-collector.fullname" . }}
+        {{- if .Values.persistentVolume.use }}
+        - name: persistent-data
+          persistentVolumeClaim:
+            claimName: {{ include "auditor-collector.fullname" . }}
+        {{- end }}
+      nodeSelector:
+        kubernetes.io/os: linux

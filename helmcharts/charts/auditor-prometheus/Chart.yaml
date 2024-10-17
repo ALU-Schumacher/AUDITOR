@@ -1,0 +1,8 @@
+apiVersion: v2
+name: auditor-prometheus
+description: A Prometheus instance for use by the AUDITOR collector
+type: application
+version: 0.6.2.0
+appVersion: "v2.53.2"
+kubeVersion: ">=1.28.0-0"
+home: https://alu-schumacher.github.io/AUDITOR
