@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.2.1 to 1.2.2.post1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.26.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 43.0.0 to 43.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 43.0.0 to 43.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.11.0 to 1.12.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.8.2 to 2.9.2 ([@dirksammel](https://github.com/dirksammel))
