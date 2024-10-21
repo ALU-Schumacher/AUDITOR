@@ -124,11 +124,11 @@ impl AuditorClientBuilder {
     }
 
     /// Build a ``QueuedAuditorClient`` from ``AuditorClientBuilder``
-    pub fn build_queued<'a>(&'a self, py: Python<'a>) -> PyResult<&'a PyAny> {
+    pub fn build_queued<'a>(&'a self, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         // Must clone here because `build` moves the builder, but python
         // does not allow that. Doesn't matter, Python is slow anyways.
         let builder = self.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(QueuedAuditorClient {
                 inner: builder
                     .build_queued()
