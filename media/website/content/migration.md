@@ -8,7 +8,8 @@ weight = 3
 
 ## Apel plugin
 
-Due to the switch to the ARGO AMS library, the config file has to be adjusted. The `authentication` section needs to be replaced with the new `messaging` section. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin).
+- Due to the switch to the ARGO AMS library, the config file has to be adjusted. The `authentication` section needs to be replaced with the new `messaging` section. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin).
+- The `NormalisedWallDurationField` class was removed, but the default `base_value` of the `NormalisedField` class is now the `runtime` of the record. Replace `NormalisedWallDuration: !NormalisedWallDurationField` with `NormalisedWallDuration: !NormalisedField` in the config file.
 
 # From 0.7.0 to 0.7.1
 

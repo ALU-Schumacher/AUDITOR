@@ -228,7 +228,7 @@ class RecordField(Field):
 
 
 class NormalisedField(Field):
-    base_value: Union[ComponentField, RecordField]
+    base_value: Union[ComponentField, RecordField] = RecordField(name="runtime")
     score: ScoreField
 
     def get_value(self, record: Record) -> int:
@@ -244,10 +244,6 @@ class NormalisedField(Field):
         value = round(base_value * score_value)
 
         return value
-
-
-class NormalisedWallDurationField(NormalisedField):
-    base_value: RecordField = RecordField(name="runtime")
 
 
 class ConstantField(Field):
@@ -304,8 +300,5 @@ def get_loaders():
     loader.add_constructor("!ScoreField", ScoreField.from_yaml)
     loader.add_constructor("!ConstantField", ConstantField.from_yaml)
     loader.add_constructor("!NormalisedField", NormalisedField.from_yaml)
-    loader.add_constructor(
-        "!NormalisedWallDurationField", NormalisedWallDurationField.from_yaml
-    )
     loader.add_constructor("!RecordField", RecordField.from_yaml)
     return loader
