@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - Apel plugin: `authentication` part of the config is now `messaging` and has different content ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Remove `NormalisedWallDurationField` class ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
 ### Added
 - Apel plugin + HTCondor collector: added RPM creation to workflows ([@dirksammel](https://github.com/dirksammel))
-- Docs: Add instructions for manual migration of db using psql (command line)
+- CI: Add tests for Python 3.13 ([@dirksammel](https://github.com/dirksammel))
+- Docs: Add instructions for manual migration of db using psql (command line) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Apel plugin: Switch to the Argo AMS library for messaging ([@dirksammel](https://github.com/dirksammel))
@@ -116,7 +118,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
-- CI: Add tests for Python 3.13 ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))

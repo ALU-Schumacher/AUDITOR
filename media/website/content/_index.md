@@ -908,7 +908,7 @@ auditor:
 
 summary_fields:
   mandatory:
-    NormalisedWallDuration: !NormalisedWallDurationField
+    NormalisedWallDuration: !NormalisedField
       score:
         name: hepscore23
         component_name: Cores
@@ -1044,7 +1044,7 @@ The information about the possible fields, their required data types, and what i
 
 Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/).
 
-Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, `NormalisedField`, and `NormalisedWallDurationField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
+Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, and `NormalisedField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
 
 `ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
 
@@ -1054,9 +1054,7 @@ Different field types are available, depending on the source of the value that i
 
 `ScoreField` extracts the score value from a given component from the AUDITOR record. The mandatory parameters are `name`, the name of the score, and `component_name`, the name of the component.
 
-`NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` a `ComponentField`. The resulting value is the product of the score and the base value.
-
-`NormalisedWallDurationField` has the parameter `score`, which is a `ScoreField`. The value of the score is multiplied with the `runtime` of the AUDITOR record.
+`NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` either a `ComponentField` or a `RecordField`. The resulting value is the product of the score and the base value. The default `base_value` is the `runtime` of the record. This is used to retrieve the `NormalisedWallDuration`.
 
 ## Priority Plugin
 
