@@ -33,6 +33,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: plugins/apel/dist/
+          attestations: false
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
@@ -63,6 +64,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: collectors/htcondor/dist/
+          attestations: false
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
