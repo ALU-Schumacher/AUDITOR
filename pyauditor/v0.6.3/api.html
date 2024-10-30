@@ -1,0 +1,1407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Documentation &mdash; pyauditor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Tutorial" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyauditor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClientBuilder"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.address"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.address()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build_blocking"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build_blocking()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.build_queued"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.build_queued()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.connection_string"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.connection_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.database_path"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.database_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.send_interval"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.send_interval()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.timeout"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.timeout()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClient"><code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.add"><code class="docutils literal notranslate"><span class="pre">AuditorClient.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.advanced_query"><code class="docutils literal notranslate"><span class="pre">AuditorClient.advanced_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.bulk_insert"><code class="docutils literal notranslate"><span class="pre">AuditorClient.bulk_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_single_record"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_single_record()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_started_since"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_started_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">AuditorClient.get_stopped_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.health_check"><code class="docutils literal notranslate"><span class="pre">AuditorClient.health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClient.update"><code class="docutils literal notranslate"><span class="pre">AuditorClient.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Value"><code class="docutils literal notranslate"><span class="pre">Value</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Value.set_count"><code class="docutils literal notranslate"><span class="pre">Value.set_count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Value.set_datetime"><code class="docutils literal notranslate"><span class="pre">Value.set_datetime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Value.set_runtime"><code class="docutils literal notranslate"><span class="pre">Value.set_runtime()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Operator"><code class="docutils literal notranslate"><span class="pre">Operator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Operator.equals"><code class="docutils literal notranslate"><span class="pre">Operator.equals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Operator.gt"><code class="docutils literal notranslate"><span class="pre">Operator.gt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Operator.gte"><code class="docutils literal notranslate"><span class="pre">Operator.gte()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Operator.lt"><code class="docutils literal notranslate"><span class="pre">Operator.lt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Operator.lte"><code class="docutils literal notranslate"><span class="pre">Operator.lte()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.QueryBuilder"><code class="docutils literal notranslate"><span class="pre">QueryBuilder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.build"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.limit"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.limit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.sort_by"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.sort_by()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_component_query"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_component_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_meta_query"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_meta_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_record_id"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_record_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_runtime"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_runtime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_start_time"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_start_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueryBuilder.with_stop_time"><code class="docutils literal notranslate"><span class="pre">QueryBuilder.with_stop_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.MetaQuery"><code class="docutils literal notranslate"><span class="pre">MetaQuery</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaQuery.meta_operator"><code class="docutils literal notranslate"><span class="pre">MetaQuery.meta_operator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.MetaOperator"><code class="docutils literal notranslate"><span class="pre">MetaOperator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaOperator.contains"><code class="docutils literal notranslate"><span class="pre">MetaOperator.contains()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.MetaOperator.does_not_contain"><code class="docutils literal notranslate"><span class="pre">MetaOperator.does_not_contain()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.ComponentQuery"><code class="docutils literal notranslate"><span class="pre">ComponentQuery</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.ComponentQuery.component_operator"><code class="docutils literal notranslate"><span class="pre">ComponentQuery.component_operator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.SortBy"><code class="docutils literal notranslate"><span class="pre">SortBy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.SortBy.ascending"><code class="docutils literal notranslate"><span class="pre">SortBy.ascending()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.SortBy.descending"><code class="docutils literal notranslate"><span class="pre">SortBy.descending()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClientBlocking"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.add"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.advanced_query"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.advanced_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.bulk_insert"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.bulk_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_single_record"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_single_record()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_started_since"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_started_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.get_stopped_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.health_check"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBlocking.update"><code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.QueuedAuditorClient"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.add"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.advanced_query"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.advanced_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.bulk_insert"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.bulk_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_single_record"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_single_record()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_started_since"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_started_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.get_stopped_since"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.get_stopped_since()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.health_check"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.stop"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.stop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.QueuedAuditorClient.update"><code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Record"><code class="docutils literal notranslate"><span class="pre">Record</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.components"><code class="docutils literal notranslate"><span class="pre">Record.components</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.meta"><code class="docutils literal notranslate"><span class="pre">Record.meta</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.record_id"><code class="docutils literal notranslate"><span class="pre">Record.record_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.runtime"><code class="docutils literal notranslate"><span class="pre">Record.runtime</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.start_time"><code class="docutils literal notranslate"><span class="pre">Record.start_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.stop_time"><code class="docutils literal notranslate"><span class="pre">Record.stop_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.to_json"><code class="docutils literal notranslate"><span class="pre">Record.to_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_component"><code class="docutils literal notranslate"><span class="pre">Record.with_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_meta"><code class="docutils literal notranslate"><span class="pre">Record.with_meta()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Record.with_stop_time"><code class="docutils literal notranslate"><span class="pre">Record.with_stop_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Meta"><code class="docutils literal notranslate"><span class="pre">Meta</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Meta.get"><code class="docutils literal notranslate"><span class="pre">Meta.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Meta.insert"><code class="docutils literal notranslate"><span class="pre">Meta.insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.amount"><code class="docutils literal notranslate"><span class="pre">Component.amount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.name"><code class="docutils literal notranslate"><span class="pre">Component.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.scores"><code class="docutils literal notranslate"><span class="pre">Component.scores</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Component.with_score"><code class="docutils literal notranslate"><span class="pre">Component.with_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyauditor.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.name"><code class="docutils literal notranslate"><span class="pre">Score.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.Score.value"><code class="docutils literal notranslate"><span class="pre">Score.value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyauditor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyauditor">
+<span id="api-documentation"></span><span id="ref-api"></span><h1>API Documentation<a class="headerlink" href="#module-pyauditor" title="Link to this heading"></a></h1>
+<p>pyauditor is a client for interacting with an Auditor instance via Python.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">AuditorClientBuilder</span></span><a class="headerlink" href="#pyauditor.AuditorClientBuilder" title="Link to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code> class is used to build an instance of <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code>.</p>
+<p><strong>Examples</strong></p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">address</span></code> and <code class="docutils literal notranslate"><span class="pre">port</span></code> of the Auditor instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create an instance of the builder</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span>
+
+<span class="c1"># Configure the builder</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Build the client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Using an connection string:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">connection_string</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.address">
+<span class="sig-name descname"><span class="pre">address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.address" title="Link to this definition"></a></dt>
+<dd><p>Set the address of the Auditor server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<em>str</em>) – Host name / IP address of the Auditor instance</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Port of the Auditor instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.build" title="Link to this definition"></a></dt>
+<dd><p>Build an <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> from <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.build_blocking">
+<span class="sig-name descname"><span class="pre">build_blocking</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.build_blocking" title="Link to this definition"></a></dt>
+<dd><p>Build an <code class="docutils literal notranslate"><span class="pre">AuditorClientBlocking</span></code> from <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.build_queued">
+<span class="sig-name descname"><span class="pre">build_queued</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.build_queued" title="Link to this definition"></a></dt>
+<dd><p>Build a <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code> from <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.connection_string">
+<span class="sig-name descname"><span class="pre">connection_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.connection_string" title="Link to this definition"></a></dt>
+<dd><p>Set a connection string of the form <code class="docutils literal notranslate"><span class="pre">http://&lt;auditor_address&gt;:&lt;auditor_port&gt;</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection_string</strong> (<em>str</em>) – Connection string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.database_path">
+<span class="sig-name descname"><span class="pre">database_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.database_path" title="Link to this definition"></a></dt>
+<dd><p>Set the file path for the persistent storage sqlite db.
+This setting is only relevant to the <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the database (SQLite) file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.send_interval">
+<span class="sig-name descname"><span class="pre">send_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.send_interval" title="Link to this definition"></a></dt>
+<dd><p>Set an interval in seconds for periodic updates to AUDITOR.
+This setting is only relevant to the <code class="docutils literal notranslate"><span class="pre">QueuedAuditorClient</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>interval</strong> (<em>int</em>) – Interval in sections</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.timeout" title="Link to this definition"></a></dt>
+<dd><p>Set a timeout in seconds for HTTP requests</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>int</em>) – Timeout in sections</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">AuditorClient</span></span><a class="headerlink" href="#pyauditor.AuditorClient" title="Link to this definition"></a></dt>
+<dd><p>The <cite>AuditorClient</cite> handles the interaction with the Auditor instances and allows one to add
+records to the database, update records in the database and retrieve the records from the
+database.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.add" title="Link to this definition"></a></dt>
+<dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.advanced_query">
+<span class="sig-name descname"><span class="pre">advanced_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.advanced_query" title="Link to this definition"></a></dt>
+<dd><p>Get records from the database depending on the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_string</strong> (<em>string</em>) – query_string constructed with QueryBuilder using .build() method</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value1</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">value2</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
+<span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.get" title="Link to this definition"></a></dt>
+<dd><p>Gets all records from the Auditors database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.get_single_record">
+<span class="sig-name descname"><span class="pre">get_single_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.get_single_record" title="Link to this definition"></a></dt>
+<dd><p>get_one_record(record_id: string)
+Get one record using record_id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<em>string</em>) – record_id</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span>
+<span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_one_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.get_started_since">
+<span class="sig-name descname"><span class="pre">get_started_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.get_started_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a started timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">start_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.get_stopped_since">
+<span class="sig-name descname"><span class="pre">get_stopped_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.get_stopped_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a stopped timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">stop_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.health_check">
+<span class="sig-name descname"><span class="pre">health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.health_check" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the Auditor instance is healthy, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClient.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClient.update" title="Link to this definition"></a></dt>
+<dd><p>Update an existing record in the Auditor instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Value">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Value</span></span><a class="headerlink" href="#pyauditor.Value" title="Link to this definition"></a></dt>
+<dd><p>Value is used to specify the type of the value which is used in the query</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Value.set_count">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Value.set_count" title="Link to this definition"></a></dt>
+<dd><p>Sets the count value
+Sets the runtime value to query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> (<em>int</em>) – int</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Value.set_datetime">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Value.set_datetime" title="Link to this definition"></a></dt>
+<dd><p>Sets datetime for start_time and stop_time queries</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Value.set_runtime">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_runtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runtime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Value.set_runtime" title="Link to this definition"></a></dt>
+<dd><p>Sets the runtime value to query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>runtime</strong> (<em>int</em>) – int</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">runtime_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_runtime</span><span class="p">(</span><span class="n">runtime_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Operator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Operator</span></span><a class="headerlink" href="#pyauditor.Operator" title="Link to this definition"></a></dt>
+<dd><p>The <cite>Operator</cite> is used to specify the operators on the query parameters</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Operator.equals">
+<span class="sig-name descname"><span class="pre">equals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Operator.equals" title="Link to this definition"></a></dt>
+<dd><p>Sets equal to (<cite>equals</cite>) operator value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<cite>Value</cite> object) – The value for greater than operator</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Operator.gt">
+<span class="sig-name descname"><span class="pre">gt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Operator.gt" title="Link to this definition"></a></dt>
+<dd><p>Sets the greater than (<cite>gt</cite>) operator Value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<cite>Value</cite> object) – The value for greater than operator</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Operator.gte">
+<span class="sig-name descname"><span class="pre">gte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Operator.gte" title="Link to this definition"></a></dt>
+<dd><p>Sets the greater than or equal to (<cite>gte</cite>) operator value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<cite>Value</cite> object) – The value for greater than or equal to operator</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Operator.lt">
+<span class="sig-name descname"><span class="pre">lt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Operator.lt" title="Link to this definition"></a></dt>
+<dd><p>Sets the lesser than (<cite>lt</cite>) operator value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<cite>Value</cite> object) – The value for lesser than operator</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Operator.lte">
+<span class="sig-name descname"><span class="pre">lte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Operator.lte" title="Link to this definition"></a></dt>
+<dd><p>Sets lesser than or equal to (<cite>lte</cite>) operator value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<cite>Value</cite> object) – The value for greater than operator</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count_value</span> <span class="o">=</span> <span class="mi">100000</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="n">count_value</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">QueryBuilder</span></span><a class="headerlink" href="#pyauditor.QueryBuilder" title="Link to this definition"></a></dt>
+<dd><p>The <cite>QueryBuilder</cite> is used to construct <cite>QueryParameters</cite> using the builder pattern.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.build" title="Link to this definition"></a></dt>
+<dd><p>Builds the query string for the given query parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.limit">
+<span class="sig-name descname"><span class="pre">limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.limit" title="Link to this definition"></a></dt>
+<dd><p>Limits the query records</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number</strong> (<em>int</em>) – number specifying the number of records that needs to be returned</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">records</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.sort_by">
+<span class="sig-name descname"><span class="pre">sort_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_by</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.sort_by" title="Link to this definition"></a></dt>
+<dd><p>SortBy provides options on sorting the query records</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sort_by</strong> – SortBy object instantiatied with the sorting order(asc or desc) and column</p>
+</dd>
+</dl>
+<p>name
+:type sort_by: SortBy object</p>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_component_query">
+<span class="sig-name descname"><span class="pre">with_component_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_component_query" title="Link to this definition"></a></dt>
+<dd><p>Sets the component query in the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>component</strong> (<em>ComponentQuery object</em>) – ComponentQuery object instantiated with component name and amount</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_component_query</span><span class="p">(</span><span class="n">component_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_meta_query">
+<span class="sig-name descname"><span class="pre">with_meta_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_meta_query" title="Link to this definition"></a></dt>
+<dd><p>Sets the meta query in the query parameters</p>
+<p>:param meta- meta contains the meta key and value
+:type meta- MetaQuery object</p>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_meta_query</span><span class="p">(</span><span class="n">meta_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_record_id">
+<span class="sig-name descname"><span class="pre">with_record_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_record_id" title="Link to this definition"></a></dt>
+<dd><p>Sets the exact record_id to retrieve</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<em>string</em>) – Exact record_id to be retrieved</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;r101&quot;</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="n">record_id</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_runtime">
+<span class="sig-name descname"><span class="pre">with_runtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_runtime" title="Link to this definition"></a></dt>
+<dd><p>Sets the runtime in the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operator</strong> (<em>Operator object</em>) – Operator object containing runtime value</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
+ <span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+<span class="p">)</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_runtime</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_runtime</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_start_time">
+<span class="sig-name descname"><span class="pre">with_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_start_time" title="Link to this definition"></a></dt>
+<dd><p>Sets the start time in the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operator</strong> (<em>Operator object</em>) – Operator object containing <cite>DateTime&lt;Utc&gt;</cite></p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
+ <span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+<span class="p">)</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueryBuilder.with_stop_time">
+<span class="sig-name descname"><span class="pre">with_stop_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueryBuilder.with_stop_time" title="Link to this definition"></a></dt>
+<dd><p>Sets the stop time in the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operator</strong> (<em>Operator object</em>) – Operator object containing <cite>DateTime&lt;Utc&gt;</cite></p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stop_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
+ <span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+<span class="p">)</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.MetaQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">MetaQuery</span></span><a class="headerlink" href="#pyauditor.MetaQuery" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.MetaQuery.meta_operator">
+<span class="sig-name descname"><span class="pre">meta_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_operator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.MetaQuery.meta_operator" title="Link to this definition"></a></dt>
+<dd><p>Sets meta operator Value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_id</strong> (<em>string</em>) – Metadata key</p></li>
+<li><p><strong>meta_operator</strong> (<cite>MetaOperator</cite> object) – Metadata value which is set using MetaOperator object</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.MetaOperator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">MetaOperator</span></span><a class="headerlink" href="#pyauditor.MetaOperator" title="Link to this definition"></a></dt>
+<dd><p>The <cite>MetaOperator</cite> struct represents operators for metadata queries, specifying conditions for filtering</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.MetaOperator.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.MetaOperator.contains" title="Link to this definition"></a></dt>
+<dd><p>Sets the meta value using contains operator. This checks if the value exists for the
+corresponding metadata key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_id</strong> (<em>string</em>) – Metadata key</p></li>
+<li><p><strong>c</strong> (<em>string</em>) – Metadata value to be checked if it exists</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.MetaOperator.does_not_contain">
+<span class="sig-name descname"><span class="pre">does_not_contain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.MetaOperator.does_not_contain" title="Link to this definition"></a></dt>
+<dd><p>Sets the meta value using does not contain operator. This checks if the value does not exist for the
+corresponding metadata key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_id</strong> (<em>string</em>) – Metadata key</p></li>
+<li><p><strong>c</strong> (<em>string</em>) – Metadata value to be checked if it does not exist</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">does_not_contain</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.ComponentQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">ComponentQuery</span></span><a class="headerlink" href="#pyauditor.ComponentQuery" title="Link to this definition"></a></dt>
+<dd><p>The <cite>ComponentQuery</cite> struct represents a set of component queries associated with specific query IDs.
+It is used to filter records based on component-related conditions</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.ComponentQuery.component_operator">
+<span class="sig-name descname"><span class="pre">component_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.ComponentQuery.component_operator" title="Link to this definition"></a></dt>
+<dd><p>Adds a new component operator to the <cite>ComponentQuery</cite> instance for a specific query ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_id</strong> (<em>string</em>) – Component name</p></li>
+<li><p><strong>operator</strong> (<em>int</em>) – component amount</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.SortBy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">SortBy</span></span><a class="headerlink" href="#pyauditor.SortBy" title="Link to this definition"></a></dt>
+<dd><p>SortBy provides options on sorting the query records</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.SortBy.ascending">
+<span class="sig-name descname"><span class="pre">ascending</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.SortBy.ascending" title="Link to this definition"></a></dt>
+<dd><p>Specify the column by which the query records must be sorted in ascending order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>string</em>) – Name of the column by which the records must be sorted. One of four values (<cite>start_time</cite>, <cite>stop_time</cite>, <cite>runtime</cite>, <cite>record_id</cite>).</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.SortBy.descending">
+<span class="sig-name descname"><span class="pre">descending</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.SortBy.descending" title="Link to this definition"></a></dt>
+<dd><p>Specify the column by which the query records must be sorted in descending order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>string</em>) – Name of the column by which the records must be sorted. One of three values (<cite>start_time</cite>, <cite>stop_time</cite>, <cite>runtime</cite>, <cite>record_id</cite>).</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">AuditorClientBlocking</span></span><a class="headerlink" href="#pyauditor.AuditorClientBlocking" title="Link to this definition"></a></dt>
+<dd><p>The <cite>AuditorClientBlocking</cite> handles the interaction with the Auditor instances and allows one to add
+records to the database, update records in the database and retrieve the records from the
+database. In contrast to <cite>AuditorClient</cite>, no async runtime is needed here.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.add" title="Link to this definition"></a></dt>
+<dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.advanced_query">
+<span class="sig-name descname"><span class="pre">advanced_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.advanced_query" title="Link to this definition"></a></dt>
+<dd><p>Get records from the database depending on the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_string</strong> (<em>string</em>) – query_string constructed with QueryBuilder using .build() method</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value1</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">value2</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
+<span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.get" title="Link to this definition"></a></dt>
+<dd><p>Gets all records from the Auditors database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.get_single_record">
+<span class="sig-name descname"><span class="pre">get_single_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.get_single_record" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.get_started_since">
+<span class="sig-name descname"><span class="pre">get_started_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.get_started_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a started timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">start_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.get_stopped_since">
+<span class="sig-name descname"><span class="pre">get_stopped_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.get_stopped_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a stopped timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">stop_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.health_check">
+<span class="sig-name descname"><span class="pre">health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.health_check" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the Auditor instance is healthy, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBlocking.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBlocking.update" title="Link to this definition"></a></dt>
+<dd><p>Update an existing record in the Auditor instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">QueuedAuditorClient</span></span><a class="headerlink" href="#pyauditor.QueuedAuditorClient" title="Link to this definition"></a></dt>
+<dd><p>The <cite>QueuedAuditorClient</cite> handles the interaction with the Auditor instances. All
+data to be sent is transparently saved in a persistent local database.</p>
+<p>When records are sent to Auditor, this client will transparently buffer them in a
+(persistent) local database.
+A background task will then periodically send records from the local database to
+Auditor, deleting them from the local database only after they have been successfully
+send to Auditor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>There are some quirks that need to be observed when using this client:</dt><dd><ul class="simple">
+<li><p>Uses an in-memory database by default. It is strongly
+recommended to provide a path.
+See <a class="reference internal" href="#pyauditor.AuditorClientBuilder.database_path" title="pyauditor.AuditorClientBuilder.database_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AuditorClientBuilder.database_path()</span></code></a>.</p></li>
+<li><p>Since sending and updating records is delayed, there is no guarantee that a record
+can be retrieved from Auditor right after it has been “sent” by this client.</p></li>
+<li><p>The background task of this client should be stopped by invoking
+<a class="reference internal" href="#pyauditor.QueuedAuditorClient.stop" title="pyauditor.QueuedAuditorClient.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueuedAuditorClient.stop()</span></code></a>
+before the client is dropped.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.add" title="Link to this definition"></a></dt>
+<dd><p>Push a record to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.advanced_query">
+<span class="sig-name descname"><span class="pre">advanced_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.advanced_query" title="Link to this definition"></a></dt>
+<dd><p>Get records from the database depending on the query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_string</strong> (<em>string</em>) – query_string constructed with QueryBuilder using .build() method</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value1</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+<span class="n">value2</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">stop_time</span><span class="p">)</span>
+<span class="n">operator1</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>
+<span class="n">operator2</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_start_time</span><span class="p">(</span><span class="n">operator1</span><span class="p">)</span><span class="o">.</span><span class="n">with_stop_time</span><span class="p">(</span><span class="n">operator2</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.bulk_insert">
+<span class="sig-name descname"><span class="pre">bulk_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.bulk_insert" title="Link to this definition"></a></dt>
+<dd><p>add(record: Record)
+Push a list of records to the Auditor instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get" title="Link to this definition"></a></dt>
+<dd><p>Gets all records from the Auditors database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_single_record">
+<span class="sig-name descname"><span class="pre">get_single_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_single_record" title="Link to this definition"></a></dt>
+<dd><p>get_one_record(record_id: string)
+Get one record using record_id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<em>string</em>) – record_id</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span>
+<span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_one_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_started_since">
+<span class="sig-name descname"><span class="pre">get_started_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_started_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a started timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">start_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">start_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.get_stopped_since">
+<span class="sig-name descname"><span class="pre">get_stopped_since</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.get_stopped_since" title="Link to this definition"></a></dt>
+<dd><p>Get all records in the database with a stopped timestamp after <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> MUST be in UTC!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – Timestamp in UTC</p>
+</dd>
+</dl>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If the date/time is already in UTC:</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="c1"># If it is in local time:</span>
+<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
+<span class="n">stop_since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_stopped_since</span><span class="p">(</span><span class="n">stop_since</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.health_check">
+<span class="sig-name descname"><span class="pre">health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.health_check" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the Auditor instance is healthy, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.stop" title="Link to this definition"></a></dt>
+<dd><p>Stops the background sync task</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.QueuedAuditorClient.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Record" title="pyauditor.Record"><span class="pre">Record</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.QueuedAuditorClient.update" title="Link to this definition"></a></dt>
+<dd><p>Update an existing record in the Auditor instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Record">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record" title="Link to this definition"></a></dt>
+<dd><p>A Record represents a single accountable unit. It consists of meta information such as</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">record_id</span></code>: Uniquely identifies the record</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code>: Timestamp from when the resource was available.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All strings must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>,
+<code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All timestamps must be in UTC! Make sure to create time stamps in UTC or translate them to
+UTC before using them in a <code class="docutils literal notranslate"><span class="pre">Record</span></code>.</p>
+</div>
+<p>Records can be sent to and received from Auditor.</p>
+<p>When created using the constructor for sending to Auditor, the record is already valid in terms
+of all checks that Auditor performs when receiving it.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">stop_time</span></code> can be added via the <code class="docutils literal notranslate"><span class="pre">with_stop_time</span></code> method.</p>
+<p>Components are added via <code class="docutils literal notranslate"><span class="pre">with_component</span></code>. Call this method multiple times for adding
+multiple components.</p>
+<p>Meta information is added via <code class="docutils literal notranslate"><span class="pre">with_meta</span></code>.</p>
+<p>The individual fields of the record can be accessed using the getter methods described below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record_id</strong> (<em>str</em>) – Unique record identifier</p></li>
+<li><p><strong>start_time</strong> – Timestamp from which the resource became available</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.components">
+<span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#pyauditor.Record.components" title="Link to this definition"></a></dt>
+<dd><p>Returns the components</p>
+<p>Returns None if no components are attached, otherwise returns a list of <code class="docutils literal notranslate"><span class="pre">Component</span></code> s.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#pyauditor.Record.meta" title="Link to this definition"></a></dt>
+<dd><p>Returns the meta object</p>
+<p>Returns None if no meta is available, otherwise returns a meta object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.record_id">
+<span class="sig-name descname"><span class="pre">record_id</span></span><a class="headerlink" href="#pyauditor.Record.record_id" title="Link to this definition"></a></dt>
+<dd><p>Returns the record_id</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.runtime">
+<span class="sig-name descname"><span class="pre">runtime</span></span><a class="headerlink" href="#pyauditor.Record.runtime" title="Link to this definition"></a></dt>
+<dd><p>Returns the runtime of a record.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.start_time">
+<span class="sig-name descname"><span class="pre">start_time</span></span><a class="headerlink" href="#pyauditor.Record.start_time" title="Link to this definition"></a></dt>
+<dd><p>Returns the start_time</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Record.stop_time">
+<span class="sig-name descname"><span class="pre">stop_time</span></span><a class="headerlink" href="#pyauditor.Record.stop_time" title="Link to this definition"></a></dt>
+<dd><p>Returns the stop_time</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Record.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.to_json" title="Link to this definition"></a></dt>
+<dd><p>Output content of Record as JSON-encoded string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Record.with_component">
+<span class="sig-name descname"><span class="pre">with_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Component" title="pyauditor.Component"><span class="pre">Component</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_component" title="Link to this definition"></a></dt>
+<dd><p>Adds a component to the record. Use this method multiple times to attach multiple
+components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>component</strong> (<a class="reference internal" href="#pyauditor.Component" title="pyauditor.Component"><em>Component</em></a>) – Component which is to be added</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Record.with_meta">
+<span class="sig-name descname"><span class="pre">with_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Meta" title="pyauditor.Meta"><span class="pre">Meta</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_meta" title="Link to this definition"></a></dt>
+<dd><p>Adds Meta to the record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>meta</strong> (<a class="reference internal" href="#pyauditor.Meta" title="pyauditor.Meta"><em>Meta</em></a>) – Meta datastructure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Record.with_stop_time">
+<span class="sig-name descname"><span class="pre">with_stop_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Record.with_stop_time" title="Link to this definition"></a></dt>
+<dd><p>Adds a stop_time to the record. This is the time when the resource stopped being available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stop_time</strong> (<em>datetime.datetime</em>) – Timestamp when resource stopped being available</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Meta</span></span><a class="headerlink" href="#pyauditor.Meta" title="Link to this definition"></a></dt>
+<dd><p>Meta stores a list of key value pairs of the form <cite>String -&gt; [String]</cite>.</p>
+<p>The strings must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Meta.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.get" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of string values matching the given key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – Key to get</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Meta.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Meta.insert" title="Link to this definition"></a></dt>
+<dd><p>Insert a key-value pair into Meta</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Key</p></li>
+<li><p><strong>value</strong> (<em>[</em><em>str</em><em>]</em>) – Value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Component">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Component" title="Link to this definition"></a></dt>
+<dd><p>A component represents a single component which is to be accounted for. It consists at least
+of a <code class="docutils literal notranslate"><span class="pre">name</span></code> and an <code class="docutils literal notranslate"><span class="pre">amount</span></code> (how many or how much of this component is to be accounted
+for).
+Multiple scores can be attached to a single <code class="docutils literal notranslate"><span class="pre">Component</span></code>.</p>
+<p>The amount must be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0</span></code> and the name must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the component</p></li>
+<li><p><strong>amount</strong> (<em>int</em>) – Amount</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Component.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#pyauditor.Component.amount" title="Link to this definition"></a></dt>
+<dd><p>Returns the amount of the component</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Component.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyauditor.Component.name" title="Link to this definition"></a></dt>
+<dd><p>Returns the name of the component</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Component.scores">
+<span class="sig-name descname"><span class="pre">scores</span></span><a class="headerlink" href="#pyauditor.Component.scores" title="Link to this definition"></a></dt>
+<dd><p>Returns all scores attached to the component</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.Component.with_score">
+<span class="sig-name descname"><span class="pre">with_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyauditor.Score" title="pyauditor.Score"><span class="pre">Score</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Component.with_score" title="Link to this definition"></a></dt>
+<dd><p>Attaches a score to the <code class="docutils literal notranslate"><span class="pre">Component</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyauditor.Score">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyauditor.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.Score" title="Link to this definition"></a></dt>
+<dd><p>An individual score which consists of a <code class="docutils literal notranslate"><span class="pre">name</span></code> (str) and a <code class="docutils literal notranslate"><span class="pre">value</span></code> (float).
+Scores are attached to a <code class="docutils literal notranslate"><span class="pre">Component</span></code> and are used to relate different components of the same
+kind to each other in some kind of performance characteristic. For instance, in case of CPUs, a
+score could be the corresponding HEPSPEC06 values.</p>
+<p>The value must be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0.0</span></code> and the name must not include the characters. <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the score</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – Value</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Score.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyauditor.Score.name" title="Link to this definition"></a></dt>
+<dd><p>Returns the name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyauditor.Score.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#pyauditor.Score.value" title="Link to this definition"></a></dt>
+<dd><p>Returns the value</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Auditor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
