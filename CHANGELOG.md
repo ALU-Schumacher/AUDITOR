@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- [CVE-2024-45311]: Update quinn-proto from 0.11.3 to 0.11.8 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
 - CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
