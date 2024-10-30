@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
+### Security
+
+### Changed
+
+### Removed
+
+## [0.6.3] - 2024-10-30
+
+### Breaking changes
 - AUDITOR client: rename function `does_not_contains` to `does_not_contain`
 
 ### Security
@@ -577,7 +587,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.3...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -592,3 +602,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.4.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.4.0
 [0.5.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0
 [0.6.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.2
+[0.6.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.3
