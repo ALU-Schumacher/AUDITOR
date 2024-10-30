@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.8.2 to 2.9.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.1 to 8.3.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update regex from 1.10.5 to 1.11.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update ruff from 0.5.4 to 0.7.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustsec/audit-check from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.121 to 1.0.132 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
