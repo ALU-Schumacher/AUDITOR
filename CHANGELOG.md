@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.7.1 to 0.7.2 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
