@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Changed
+- Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
