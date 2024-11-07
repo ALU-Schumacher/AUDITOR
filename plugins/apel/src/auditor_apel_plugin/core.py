@@ -26,6 +26,7 @@ from auditor_apel_plugin.message import (
     SummaryMessage,
     SyncMessage,
 )
+
 from .utility import write_transaction
 
 logger = logging.getLogger("apel_plugin")
