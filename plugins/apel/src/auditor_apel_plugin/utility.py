@@ -22,6 +22,11 @@ def write_transaction(
 ):
     """Open `path` for overwriting but discard the new content if an exception occurs"""
     tmp_path = pathlib.Path(path).parent / f".{pathlib.Path(path).name}.tmp"
-    with open(tmp_path, mode, **kwargs) as out_stream:
-        yield out_stream
-    tmp_path.rename(path)
+    try:
+        with open(tmp_path, mode, **kwargs) as out_stream:
+            yield out_stream
+    except BaseException:
+        tmp_path.unlink(True)
+        raise
+    else:
+        tmp_path.rename(path)
