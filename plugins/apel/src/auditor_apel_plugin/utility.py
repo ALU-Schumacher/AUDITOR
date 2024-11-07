@@ -6,19 +6,19 @@ from typing import IO, ContextManager, Literal, overload
 
 @overload
 def write_transaction(
-    path: str | os.PathLike[str], mode: Literal["w"] = ..., **kwargs
+    path: "str | os.PathLike[str]", mode: Literal["w"] = ..., **kwargs
 ) -> ContextManager[IO[str]]: ...
 
 
 @overload
 def write_transaction(
-    path: str | os.PathLike[str], mode: Literal["wb"], **kwargs
+    path: "str | os.PathLike[str]", mode: Literal["wb"], **kwargs
 ) -> ContextManager[IO[bytes]]: ...
 
 
 @contextmanager
 def write_transaction(
-    path: str | os.PathLike[str], mode: Literal["w", "wb"] = "w", **kwargs
+    path: "str | os.PathLike[str]", mode: Literal["w", "wb"] = "w", **kwargs
 ):
     """Open `path` for overwriting but discard the new content if an exception occurs"""
     tmp_path = pathlib.Path(path).parent / f".{pathlib.Path(path).name}.tmp"
