@@ -1,7 +1,7 @@
 import os
 import pathlib
 from contextlib import contextmanager
-from typing import Literal, overload, IO, ContextManager
+from typing import IO, ContextManager, Literal, overload
 
 
 @overload

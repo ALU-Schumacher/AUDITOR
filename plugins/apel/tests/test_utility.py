@@ -5,7 +5,6 @@ import pytest
 
 from auditor_apel_plugin.utility import write_transaction
 
-
 CONTENT = [
     "Hello World!",
     "  \t  \n \t\n",
