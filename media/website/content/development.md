@@ -82,7 +82,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ### sqlx
 
 ```bash
-cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls
+cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls
 ```
 
 ### bunyan
@@ -218,6 +218,7 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
 
 - Update the version number in all `Cargo.toml` files
 - Run `cargo update` to update dependencies in `Cargo.lock`
+- If `sqlx` is updated, don't forget to also change the version in all workflows, containers, documentation, etc.
 - Update the version number in all `pyproject.toml` files
 - Finalize the [changelog](https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md)
   - Rename `Unreleased` to version number, add date
