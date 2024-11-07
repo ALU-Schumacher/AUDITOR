@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 

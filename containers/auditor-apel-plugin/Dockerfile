@@ -2,7 +2,7 @@
 # BUILDER IMAGE #
 #################
 
-FROM python:3.8.17-slim-bookworm AS builder
+FROM python:3.9-slim-bookworm AS builder
 
 # install build dependencies and create python env
 RUN set -ex                                                          \
@@ -39,7 +39,7 @@ RUN    pip install --no-cache-dir /code/pyauditor/*.whl \
 # RUNNER IMAGE #
 ################
 
-FROM python:3.8.17-slim-bookworm AS runner
+FROM python:3.9-slim-bookworm AS runner
 
 # prevent python from writing *.pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE=1
