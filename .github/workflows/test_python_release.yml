@@ -26,9 +26,8 @@ jobs:
       - name: Generate dynamic version
         id: version
         run: |
-          timestamp=$(date +%Y%m%d%H%M%S)
           short_sha=$(git rev-parse --short HEAD)
-          echo "version=0.0.0dev${timestamp}+${short_sha}" >> $GITHUB_OUTPUT
+          echo "version=0.0.0-dev+${short_sha}" >> $GITHUB_OUTPUT
 
       - name: Update version in pyproject.toml
         run: |
