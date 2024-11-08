@@ -1,0 +1,22 @@
+{{- if .Values.persistentVolume.use }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "auditor-apel.fullname" . }}
+  labels:
+    {{- include "auditor-apel.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.persistentVolume.annotations | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    name: {{ include "auditor-apel.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+  nodeAffinity:
+  {{- toYaml .Values.persistentVolume.nodeAffinity | nindent 4 }}
+  capacity:
+    storage: {{ .Values.persistentVolume.size }}
+  storageClassName: {{ include "auditor-apel.fullname" . }}
+  {{- toYaml .Values.persistentVolume.type | nindent 2 }}
+{{- end }}

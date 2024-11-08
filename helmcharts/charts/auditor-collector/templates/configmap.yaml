@@ -13,7 +13,7 @@ data:
     {{ end -}}
     prometheus_addr: {{ quote .prometheusAddress }}
     prometheus_port: {{ .prometheusPort }}
-    database_path: /auditor/data
+    database_path: /data
     {{ if .recordPrefix -}}
     record_prefix: {{ quote .recordPrefix }}
     {{ end -}}

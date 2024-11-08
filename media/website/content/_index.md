@@ -1120,13 +1120,20 @@ docker compose -f docker-compose.yml -f docker-compose-setup.yml up
 to run the migration.
 
 The configuration of the AUDITOR stack is done through the `values.yaml` files of the charts.
-In particular, ee then need to provide the Postgres address in the parent chart or the `auditor` chart.
+In particular, we need to provide the Postgres address in the parent chart or the `auditor` chart.
 
 We then install everything via the Helm Charts:
 ```
 kubectl create namespace auditor
 helm install -n auditor auditor-stack helmcharts/
 ```
+
+Note that, per default, none of the pods will have a persistent storage. It is however advised to provide the collector, the APEL plugin and especially the Prometheus instance with persistent storage.
+The `value.yaml` files contain a section with a simple example for this, using local paths.
+If you want to use it, set `persistentVolume.use` to `true` in the appropriate `values.yaml` and add the node to use in `persistentVolume.nodeAffinity`.
+Then, on the nodes in question the directory `/srv/auditor/{apel,collector,prometheus}` should exists.
+
+If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files `ca.pem`, `client.pem` and `client.key` in the `files` directory of its chart.
 
 
 # License

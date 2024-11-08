@@ -10,6 +10,7 @@ auditor:
     user: auditor
     password: super_safe
     dbName: auditor
+    requireSsl: false
   service:
     name: auditor-svc
   config:
@@ -20,6 +21,8 @@ auditor-prometheus:
   service:
     name: prom-svc
   config:
+    # For which namespaces data will be collected
+    # No filter will be applied if empty
     namespaces:
       - default
 

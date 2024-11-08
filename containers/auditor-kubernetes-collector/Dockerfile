@@ -26,7 +26,8 @@ RUN cargo build --release --bin auditor-kubernetes-collector
 FROM debian:bookworm-slim AS runtime
 
 WORKDIR /auditor
-RUN mkdir data
+# Mapped users must be able to access the data dir if nothing else is mounted there
+RUN mkdir --mode=777 /data
 
 RUN apt-get update -y \
 && apt-get install -y --no-install-recommends openssl ca-certificates \

@@ -21,9 +21,12 @@ collector:
   # See https://alu-schumacher.github.io/AUDITOR/latest/#collectors
   # Leaving a value empty will apply the default
   config:
-    auditorAddress: auditor
+    # Is set by the parent chart. Specify, if you want to use this chart
+    # as stand-alone.
+    auditorAddress:
     auditorPort: 8000
-    prometheusAddress: prom-auditor-prometheus
+    # Set by the parent chart
+    prometheusAddress:
     prometheusPort: 9090
     recordPrefix: KUBE_
     earliestDatetime: ""
@@ -42,7 +45,7 @@ collector:
     logLevel: info
 
 persistentVolume:
-  use: true
+  use: false
   #annotations:
   #  pv.beta.kubernetes.io/gid: "210"
   size: "100Mi"
@@ -68,45 +71,5 @@ serviceAccount:
 
 clusterRole:
   annotations: {}
+  # Overrides the default name
   name: ""
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
-
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
