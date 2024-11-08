@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+### Added
+- CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
+
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.2 ([@dirksammel](https://github.com/dirksammel))
