@@ -32,8 +32,8 @@ jobs:
 
       - name: Update version in pyproject.toml
         run: |
-          sed -i "s/version = .*/version = \"${{ steps.version.outputs.version }}\"/" pyauditor/pyproject.toml
-          cat pyauditor/pyproject.toml
+          sed -i "s/version = .*/version = \"${{ steps.version.outputs.version }}\"/" pyauditor/Cargo.toml
+          cat pyauditor/Cargo.toml
           
       - name: Maturin
         uses: messense/maturin-action@v1
