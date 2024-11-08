@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.7.1 to 0.7.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
