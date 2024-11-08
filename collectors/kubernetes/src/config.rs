@@ -1,7 +1,7 @@
-use std::fs;
-use std::io;
 use std::error::Error;
 use std::fmt::{self, Display};
+use std::fs;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::time::Duration;
@@ -20,10 +20,8 @@ impl Display for ConfigError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         //write!(f, "{:?}", self)
         match self {
-            ConfigError::FileOpenError(e) =>
-                write!(f, "Cannot open configuration: {}", e),
-            ConfigError::InvalidYaml(e) =>
-                write!(f, "Cannot parse configuration: {}", e),
+            ConfigError::FileOpenError(e) => write!(f, "Cannot open configuration: {}", e),
+            ConfigError::InvalidYaml(e) => write!(f, "Cannot parse configuration: {}", e),
         }
     }
 }
@@ -35,10 +33,8 @@ impl Error for ConfigError {}
 //    config.into()
 //}
 pub fn load_configuration(p: impl AsRef<Path>) -> Result<Config, ConfigError> {
-    let yaml = fs::read_to_string(p.as_ref())
-        .map_err(|e| ConfigError::FileOpenError(e))?;
-    let config: DeConfig = serde_yaml::from_str(&yaml)
-        .map_err(|e| ConfigError::InvalidYaml(e))?;
+    let yaml = fs::read_to_string(p.as_ref()).map_err(ConfigError::FileOpenError)?;
+    let config: DeConfig = serde_yaml::from_str(&yaml).map_err(ConfigError::InvalidYaml)?;
     Ok(config.into())
 }
 

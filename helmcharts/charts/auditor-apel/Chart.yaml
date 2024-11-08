@@ -1,6 +1,6 @@
 apiVersion: v2
-name: auditor-collector
-description: AUDITOR collector for Kubernetes
+name: auditor-apel
+description: APEL plugin for AUDITOR
 type: application
 version: 0.7.0
 appVersion: "0.7.0"

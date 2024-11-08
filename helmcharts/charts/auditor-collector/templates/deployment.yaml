@@ -40,7 +40,7 @@ spec:
             readOnly: true
           {{- if .Values.persistentVolume.use }}
           - name: persistent-data
-            mountPath: /auditor/data
+            mountPath: /data
           {{- end }}
       volumes:
         - name: config
