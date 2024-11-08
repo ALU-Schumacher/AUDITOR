@@ -169,7 +169,7 @@ Meta Operators
 --------------
 
 - `c` (contains)
-- `dnc` (does not contains)
+- `dnc` (does not contain)
 
 SortBy Operators
 ----------------
@@ -202,7 +202,7 @@ The table shows the fields and the corresponding operators available for each fi
 +--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
 | `runtime`    | Runtime of the event (in seconds)             | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<int>                        |
 +--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `meta`       | Meta information                              | `d`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
+| `meta`       | Meta information                              | `c`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
 +--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
 | `component`  | Component identifier                          | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount> |
 +--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
@@ -214,7 +214,7 @@ The table shows the fields and the corresponding operators available for each fi
 
 Meta field can be used to query records by specifying the meta key and MetaOperator must be used
 to specify meta values. The MetaOperator must be used to specify whether the value is
-contained or does not contained for the specific Metakey.
+contained or is not contained for the specific Metakey.
 
 Component field can be used to query records by specifying the component name (CPU) and ['Operator'] must be used
 to specify the amount. 
@@ -223,7 +223,7 @@ To query records based on a range, specify the field with two operators
 Either with gt or gte and lt or lte.
 
 For example,
-To query a records with start_time ranging between two timestamps.
+To query records with start_time ranging between two timestamps.
 
 ```text
 Get records?start_time[gt]=timestamp1&start_time[lt]=timestamp2

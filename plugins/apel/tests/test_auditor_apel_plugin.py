@@ -1,29 +1,31 @@
+import json
+import os
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path, PurePath
+from unittest.mock import PropertyMock, patch
+
+import pyauditor
 import pytest
+import yaml
+
+from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
-    get_begin_previous_month,
-    get_begin_current_month,
+    check_sites_in_records,
+    convert_to_seconds,
     create_time_json,
-    get_time_json,
-    sign_msg,
-    get_start_time,
+    get_begin_current_month,
+    get_begin_previous_month,
+    get_records,
     get_report_time,
-    update_time_json,
+    get_site_id,
+    get_start_time,
+    get_time_json,
     get_voms_info,
     replace_record_string,
-    get_records,
-    get_site_id,
-    convert_to_seconds,
-    check_sites_in_records,
+    sign_msg,
+    update_time_json,
 )
-from datetime import datetime, timezone
-import os
-import json
-import subprocess
-import pyauditor
-from unittest.mock import patch, PropertyMock
-from pathlib import Path, PurePath
-from auditor_apel_plugin.config import Config, get_loaders
-import yaml
 
 test_dir = PurePath(__file__).parent
 
@@ -96,7 +98,6 @@ class TestAuditorApelPlugin:
         assert result == datetime(1969, 12, 1, 00, 00, 00, tzinfo=timezone.utc)
 
     def test_get_begin_current_month(self):
-
         time_a = datetime(2022, 10, 23, 12, 23, 55)
         time_b = datetime(1970, 1, 1, 00, 00, 00)
 

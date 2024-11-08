@@ -3,11 +3,12 @@
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
-import yaml
 import argparse
-import sqlite3
 import json
+import sqlite3
 from datetime import datetime, timezone
+
+import yaml
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--config", required=True, help="Path to the config file")

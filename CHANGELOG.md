@@ -7,30 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- AUDITOR client: rename function `does_not_contains` to `does_not_contain`
 
 ### Security
 - [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 
 ### Added
+- CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update black from 24.4.2 to 24.8.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update build from 1.2.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.23.3 to 1.24.6 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 43.0.0 to 43.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update build from 1.2.1 to 1.2.2.post1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.23.3 to 1.26.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 43.0.0 to 43.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EmbarkStudios/cargo-deny-action from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update mypy from 1.11.0 to 1.11.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update mypy from 1.11.0 to 1.13.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.8.2 to 2.9.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.1 to 8.3.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.1 to 6.0.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.5.4 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 71.1.0 to 75.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.5.4 to 0.7.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update rustsec/audit-check from 1 to 2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 71.1.0 to 75.2.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20240914 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20241016 ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
+- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
+- Docker files: Linting ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
@@ -49,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client: Added a `QueuedAuditorClient` that queues records to be sent in a local SQLite database ([@rkleinem](https://github.com/rkleinem))
 - Apel plugin: Add option to send individual job messages ([@dirksammel](https://github.com/dirksammel))
 - CI: Add mypy workflow for type checking ([@dirksammel](https://github.com/dirksammel))
-- CI: Add integration test for db migraiton ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- CI: Add integration test for db migration ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add contribution guidelines ([@QuantumDancer](https://github.com/QuantumDancer))
 - Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))
 

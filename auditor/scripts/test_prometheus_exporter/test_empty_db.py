@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import requests
 import unittest
+
+import requests
 
 
 class TestEmptyDB(unittest.TestCase):

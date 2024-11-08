@@ -1,18 +1,20 @@
-import yaml
 import re
-
 from argparse import Namespace
+from datetime import date
+from datetime import datetime as dt
 from functools import reduce
-from typing import List, Tuple, Union, Iterator
-from datetime import date, datetime as dt
+from typing import Iterator, List, Tuple, Union
 
-from .utils import extract_values
+import yaml
+
+from .custom_types import Config as T_Config
+from .custom_types import Keys
 from .exceptions import (
     MalformedConfigEntryError,
-    MissingConfigEntryError,
     MissingConfigDependencyError,
+    MissingConfigEntryError,
 )
-from .custom_types import Keys, Config as T_Config
+from .utils import extract_values
 
 
 class Config(object):

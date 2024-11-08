@@ -4,13 +4,14 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import logging
-import yaml
+import re
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel
-from typing import Optional, Union, Dict, List, Callable
+from typing import Callable, Dict, List, Optional, Union
+
+import yaml
 from pyauditor import Record
-import re
+from pydantic import BaseModel
 
 logger = logging.getLogger("apel_plugin")
 

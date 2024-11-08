@@ -3,8 +3,9 @@
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
 
 
 class Message(BaseModel):
