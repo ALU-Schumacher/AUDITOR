@@ -1,14 +1,12 @@
 [package]
 name = "auditor-kubernetes-collector"
-version = "0.5.0"
+version = "0.6.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-#auditor = { path = "../../auditor", version = "0.5.0", default-features = false }
-#auditor-client = { path = "../../auditor-client", version = "0.5.0" }
 anyhow.workspace = true
 auditor-client.workspace = true
 auditor.workspace = true

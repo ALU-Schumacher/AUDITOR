@@ -71,7 +71,7 @@ async fn main() -> anyhow::Result<()> {
             config.prometheus_addr.clone(),
             config.prometheus_port
         ),
-        config.prometheus_timeout.to_std()?
+        config.prometheus_timeout.to_std()?,
     )?;
 
     // Database

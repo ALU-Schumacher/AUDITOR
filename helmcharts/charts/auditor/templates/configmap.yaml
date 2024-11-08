@@ -14,8 +14,8 @@ data:
       port: {{ .Values.postgres.port }}
       username: "{{ .Values.postgres.user }}"
       password: "{{ .Values.postgres.password }}"
-      database_name: "auditor"
-      require_ssl: false
+      database_name: "{{ .Values.postgres.dbName }}"
+      require_ssl: "{{ .Values.postgres.requireSsl }}"
     metrics:
       database:
         frequency: 60
