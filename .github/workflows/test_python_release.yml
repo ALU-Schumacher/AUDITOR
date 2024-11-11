@@ -1,0 +1,76 @@
+name: test-python-release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-pyauditor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cache-dependencies-pyauditor
+
+      # We need to somehow get the SQLX_OFFLINE env variable into the container.
+      # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
+      # via its configuration.
+      - name: Create fake .cargo/config.toml
+        run: |
+          mkdir -p .cargo
+          echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
+
+      - name: Generate dynamic version
+        id: version
+        run: |
+          timestamp=$(date +%Y%m%d%H%M%S)
+          echo "version=0.0.0-dev.${timestamp}" >> $GITHUB_OUTPUT
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/version = .*/version = \"${{ steps.version.outputs.version }}\"/" pyauditor/Cargo.toml
+          cat pyauditor/Cargo.toml
+          
+      - name: Maturin
+        uses: messense/maturin-action@v1
+        with:
+          maturin-version: v1.2.3
+          target: x86_64
+          manylinux: auto
+          command: build
+          args: --release -o dist --interpreter python3.9 --manifest-path pyauditor/Cargo.toml
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist
+          name: pyauditor-wheels-linux-3.9
+          
+  release-pyauditor:
+    needs: build-pyauditor
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Download pyauditor wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pyauditor-wheels-*
+          path: dist
+          merge-multiple: true
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
+          verbose: true

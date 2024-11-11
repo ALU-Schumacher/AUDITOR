@@ -20,7 +20,7 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.7.4
+      SQLX_VERSION: 0.8.2
       SQLX_FEATURES: postgres,rustls,sqlite
       RUSTFLAGS: -C link-arg=-s
     steps:

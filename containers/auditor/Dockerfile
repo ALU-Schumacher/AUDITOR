@@ -1,5 +1,5 @@
 # Note: If you update the rust version below, make sure that the debian version which is used there matches the one in the runtime stage
-FROM lukemathwalker/cargo-chef:latest-rust-1.75-slim-bookworm AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-slim-bookworm AS chef
 WORKDIR /auditor
 RUN apt update && apt install lld clang -y
 
@@ -10,7 +10,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
 # Install sqlx-cli
-RUN cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite
+RUN cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
 COPY --from=planner /auditor/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json

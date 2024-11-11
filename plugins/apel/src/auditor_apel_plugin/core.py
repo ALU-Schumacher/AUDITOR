@@ -27,6 +27,8 @@ from auditor_apel_plugin.message import (
     SyncMessage,
 )
 
+from .utility import write_transaction
+
 logger = logging.getLogger("apel_plugin")
 
 
@@ -127,7 +129,7 @@ def create_time_json(time_json_path):
     }
 
     try:
-        with open(time_json_path, "w", encoding="utf-8") as f:
+        with write_transaction(time_json_path, encoding="utf-8") as f:
             json.dump(time_dict, f)
     except FileNotFoundError:
         logger.critical(f"Path {time_json_path} not found, could not create time json")
@@ -158,7 +160,7 @@ def update_time_json(config, time_dict, site, stop_time, report_time):
     time_dict["site_end_times"][site] = stop_time.isoformat()
 
     try:
-        with open(time_json_path, "w", encoding="utf-8") as f:
+        with write_transaction(time_json_path, encoding="utf-8") as f:
             json.dump(time_dict, f)
     except FileNotFoundError:
         logger.critical(f"Path {time_json_path} not found, could not update time json")
