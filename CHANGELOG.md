@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ### Removed
+- Dependencies: Remove opentelemetry_api (replaced by opentelemetry) ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.6.3] - 2024-10-30
 
