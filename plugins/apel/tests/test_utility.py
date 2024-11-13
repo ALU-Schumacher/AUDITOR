@@ -3,7 +3,7 @@ import secrets
 
 import pytest
 
-from auditor_apel_plugin.utility import write_transaction
+from auditor_apel_plugin.utility import vo_mapping, write_transaction
 
 CONTENT = [
     "Hello World!",
@@ -51,3 +51,28 @@ def test_write_transaction_failure(
             assert file_path.read_text() == initial
         raise failure
     assert file_path.read_text() == final
+
+
+class TestUtility:
+    def test_vo_mapping(self):
+        vo_dict = {"atlpr": "atlas", "atlsg": "ops", "ops": "ops"}
+
+        user = "atlpr000"
+        value = vo_mapping(user, vo_dict)
+
+        assert value == "atlas"
+
+        user = "atlsg001"
+        value = vo_mapping(user, vo_dict)
+
+        assert value == "ops"
+
+        user = "ops"
+        value = vo_mapping(user, vo_dict)
+
+        assert value == "ops"
+
+        user = "ilc002"
+        value = vo_mapping(user, vo_dict)
+
+        assert value == "None"

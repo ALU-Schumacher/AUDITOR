@@ -11,6 +11,7 @@ from auditor_apel_plugin.config import (
     Config,
     ConstantField,
     Field,
+    Function,
     MessageType,
     MetaField,
     NormalisedField,
@@ -67,7 +68,7 @@ class TestConfig:
 
         value = all_fields["VO"].name
 
-        assert value == "voms"
+        assert value == "user"
 
         value = all_fields["CpuDuration"].name
 
@@ -131,7 +132,9 @@ class TestConfig:
 
         assert value == "None"
 
-        meta_field = MetaField(name="meta_test", function="missing_function")
+        meta_field = MetaField(
+            name="meta_test", function=Function(name="missing_function")
+        )
 
         with pytest.raises(Exception) as pytest_error:
             meta_field.get_value(record)
@@ -336,3 +339,53 @@ class TestConfig:
         value = config.name
 
         assert value == "test_field"
+
+    def test_vo_mapping(self):
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        vo_dict = {"atlpr": "atlas", "atlsg": "ops", "ops": "ops"}
+
+        meta = pyauditor.Meta()
+        meta.insert("user", ["atlpr000"])
+        record.with_meta(meta)
+
+        meta_field = MetaField(
+            name="user", function=Function(name="vo_mapping", parameters=vo_dict)
+        )
+        value = meta_field.get_value(record)
+
+        assert value == "atlas"
+
+        with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
+            config: Config = yaml.load(f, Loader=get_loaders())
+
+        value = config.summary_fields.optional["VO"].get_value(record)
+
+        assert value == "atlas"
+
+        meta = pyauditor.Meta()
+        meta.insert("user", ["atlsg000"])
+        record.with_meta(meta)
+
+        value = config.summary_fields.optional["VO"].get_value(record)
+
+        assert value == "ops"
+
+        meta = pyauditor.Meta()
+        meta.insert("user", ["ops000"])
+        record.with_meta(meta)
+
+        value = config.summary_fields.optional["VO"].get_value(record)
+
+        assert value == "ops"
+
+        meta = pyauditor.Meta()
+        meta.insert("user", ["ilc000"])
+        record.with_meta(meta)
+
+        value = config.summary_fields.optional["VO"].get_value(record)
+
+        assert value == "None"
