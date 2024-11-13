@@ -7,11 +7,13 @@ import logging
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import yaml
 from pyauditor import Record
 from pydantic import BaseModel
+
+from .utility import vo_mapping
 
 logger = logging.getLogger("apel_plugin")
 
@@ -26,6 +28,11 @@ class Configurable(BaseModel):
     @classmethod
     def from_yaml(cls, loader: yaml.SafeLoader, node: yaml.nodes.MappingNode):
         return cls(**loader.construct_mapping(node, deep=True))
+
+
+class Function(Configurable):
+    name: str
+    parameters: Any = None
 
 
 class PluginConfig(Configurable):
@@ -94,10 +101,12 @@ class ComponentField(Field):
 class MetaField(Field):
     name: str
     regex: Optional[str] = None
-    function: Optional[str] = None
+    function: Optional[Function] = None
 
     def get_value(self, record: Record) -> Union[str, int, float]:
-        function_dict: Dict[str, Callable[[str], Union[str, int, float]]] = {}
+        function_dict: Dict[str, Callable[[str, Any], Union[str, int, float]]] = {
+            "vo_mapping": vo_mapping
+        }
 
         try:
             value = record.meta.get(self.name)[0]
@@ -116,14 +125,14 @@ class MetaField(Field):
                 return "None"
         elif self.function is not None:
             try:
-                function = function_dict[self.function]
+                function = function_dict[self.function.name]
             except KeyError:
                 logger.critical(
-                    f"Function {self.function} not found in dictionary of allowed "
+                    f"Function {self.function.name} not found in dictionary of allowed "
                     "functions"
                 )
                 raise
-            value = function(value)
+            value = function(value, self.function.parameters)
             return value
 
         return value

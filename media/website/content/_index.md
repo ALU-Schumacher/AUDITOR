@@ -682,8 +682,13 @@ summary_fields:
     GlobalUserName: !MetaField
       name: subject
     VO: !MetaField
-      name: voms
-      regex: (?<=%2F).*?\S(?=%2F)
+      name: user
+      function:
+        name: vo_mapping
+        parameters:
+          atlpr: atlas
+          atlsg: ops
+          ops: ops
     VOGroup: !MetaField
       name: voms
       regex: (?=%2F).*?\S(?=%2F)
@@ -797,7 +802,7 @@ Different field types are available, depending on the source of the value that i
 
 `ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
 
-`MetaField` extracts the value from the `meta` information in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters `regex` or `function` can be used. `regex` takes a regular expression, searches the value for this expression, and returns the complete match, `function` takes the name of a function and applies it to the value. The function has to be present in `config.py` and can be added via a pull request.
+`MetaField` extracts the value from the `meta` information in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters `regex` or `function` can be used. `regex` takes a regular expression, searches the value for this expression, and returns the complete match, `function` has the parameters `name` and `parameters`, where the latter is optional and can be used to provide additional parameters to the function. If you want to manipulate the value of the `Metafield` with a custom function, it has to be present in `utility.py` and can be added via a pull request.
 
 `ConstantField` has the mandatory parameter `value`, which is exactly what will be written in the message field.
 

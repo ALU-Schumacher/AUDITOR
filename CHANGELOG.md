@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2024-0402]: Update hashbrown from 0.15.0 to 0.15.2 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- Apel plugin: Add function for user->VO mapping to config ([@dirksammel](https://github.com/dirksammel))
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
