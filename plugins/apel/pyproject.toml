@@ -11,7 +11,7 @@ dependencies = [
 	     "requests==2.32.3",
 	     "cryptography==43.0.3",
 	     "pyyaml==6.0.2",
-	     "pydantic==2.9.2",
+	     "pydantic==2.10.1",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
 readme = "README.md"
