@@ -40,7 +40,6 @@ config.workspace = true
 num-traits.workspace = true
 opentelemetry-prometheus.workspace = true
 opentelemetry.workspace = true
-opentelemetry_api.workspace = true
 opentelemetry_sdk.workspace = true
 prometheus.workspace = true
 serde-aux.workspace = true
