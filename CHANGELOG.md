@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
+- Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))

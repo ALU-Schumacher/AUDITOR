@@ -79,7 +79,7 @@ jobs:
 
       - name: Checkout to current branch
         run: |
-          git checkout -
+          git checkout --force -
 
       - name: Install musl
         run: |

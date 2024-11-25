@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM inserts WHERE rowid=$1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "f36fa62228e6ca304003dbd75448e95558f544fdbd602173af16c4bada2a3daf"
+}
