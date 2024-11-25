@@ -1,5 +1,5 @@
 # Note: If you update the rust version below, make sure that the debian version which is used there matches the one in the runtime stage
-FROM lukemathwalker/cargo-chef:latest-rust-1.75-slim-bookworm AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-slim-bookworm AS chef
 WORKDIR /auditor
 RUN apt update && apt install lld clang -y
 
