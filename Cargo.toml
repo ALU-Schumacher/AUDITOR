@@ -45,7 +45,7 @@ serde_qs = { version = "0.13.0", features = ["actix4"] }
 serde_with = { version = "3.8.1", features = ["chrono_0_4"] }
 shell-words = "1.1.0"
 thiserror = "1.0.63"
-tokio = "1.38.0"
+tokio = "1.41.1"
 tracing = { version = "0.1.40", features = ["log"] }
 tracing-actix-web = "0.7.11"
 tracing-bunyan-formatter = "0.3.9"
