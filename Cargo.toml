@@ -29,8 +29,8 @@ opentelemetry = "0.23.0"
 opentelemetry-prometheus = "0.16.0"
 opentelemetry_sdk = "0.23.0"
 prometheus = "0.13.4"
-pyo3 = { version = "0.20.3", features = ["chrono", "extension-module", "anyhow"] }
-pyo3-asyncio = { version = "0.20.0", features = ["attributes", "tokio-runtime"] }
+pyo3 = { version = "0.22.5", features = ["chrono", "extension-module", "anyhow"] }
+pyo3-async-runtimes = { version = "0.22.0", features = ["attributes", "tokio-runtime"] }
 quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
 rand = "0.8.5"
