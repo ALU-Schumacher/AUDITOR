@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2024-0399]: Update rustls from 0.23.16 to 0.23.19 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
@@ -38,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
-- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.2.1 to 1.2.2.post1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.26.8 ([@dirksammel](https://github.com/dirksammel))
@@ -55,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_json from 1.0.121 to 1.0.132 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update setuptools from 71.1.0 to 75.3.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20241016 ([@dirksammel](https://github.com/dirksammel))

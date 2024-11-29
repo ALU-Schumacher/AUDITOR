@@ -361,7 +361,6 @@ dependencies = [
  "once_cell",
  "opentelemetry 0.23.0",
  "opentelemetry-prometheus 0.16.0",
- "opentelemetry_api",
  "opentelemetry_sdk 0.23.0",
  "prometheus",
  "quickcheck",
@@ -434,7 +433,6 @@ dependencies = [
  "num-traits",
  "opentelemetry 0.23.0",
  "opentelemetry-prometheus 0.16.0",
- "opentelemetry_api",
  "opentelemetry_sdk 0.23.0",
  "prometheus",
  "serde",
@@ -2054,22 +2052,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9ab5bd6c42fb9349dcf28af2ba9a0667f697f9bdcca045d39f2cec5543e2910"
 
 [[package]]
-name = "opentelemetry_api"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a81f725323db1b1206ca3da8bb19874bbd3f57c3bcd59471bfb04525b265b9b"
-dependencies = [
- "futures-channel",
- "futures-util",
- "indexmap 1.9.3",
- "js-sys",
- "once_cell",
- "pin-project-lite",
- "thiserror",
- "urlencoding",
-]
-
-[[package]]
 name = "opentelemetry_sdk"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2815,9 +2797,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.16"
+version = "0.23.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eee87ff5d9b36712a58574e12e9f0ea80f915a5b0ac518d322b24a465617925e"
+checksum = "934b404430bb06b3fae2cba809eb45a1ab1aecd64491213d7c3301b88393f8d1"
 dependencies = [
  "once_cell",
  "ring",
