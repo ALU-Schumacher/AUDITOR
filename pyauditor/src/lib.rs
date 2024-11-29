@@ -17,7 +17,7 @@ mod queued_client;
 
 /// pyauditor is a client for interacting with an Auditor instance via Python.
 #[pymodule]
-fn pyauditor(_py: Python, m: &PyModule) -> PyResult<()> {
+fn pyauditor(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<crate::builder::AuditorClientBuilder>()?;
     m.add_class::<crate::client::AuditorClient>()?;
     m.add_class::<crate::client::Value>()?;

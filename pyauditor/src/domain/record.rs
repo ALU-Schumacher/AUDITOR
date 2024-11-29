@@ -56,7 +56,7 @@ pub struct Record {
 #[pymethods]
 impl Record {
     #[new]
-    fn new(record_id: String, start_time: &PyDateTime) -> Result<Self, Error> {
+    fn new(record_id: String, start_time: &Bound<'_, PyDateTime>) -> Result<Self, Error> {
         let start_time: DateTime<Utc> = start_time.extract()?;
         Ok(Record {
             inner: auditor::domain::Record {
@@ -106,7 +106,7 @@ impl Record {
     /// :type stop_time: datetime.datetime
     fn with_stop_time<'a>(
         mut self_: PyRefMut<'a, Self>,
-        stop_time: &'a PyDateTime,
+        stop_time: &Bound<'a, PyDateTime>,
     ) -> Result<PyRefMut<'a, Self>, Error> {
         let stop_time: DateTime<Utc> = stop_time.extract()?;
         self_.inner.stop_time = Some(stop_time);

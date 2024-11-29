@@ -58,7 +58,7 @@ impl Value {
     ///
     ///     value = Value.set_datetime(start_time)
     #[staticmethod]
-    fn set_datetime(datetime: &PyDateTime) -> Result<Self, Error> {
+    fn set_datetime(datetime: &Bound<'_, PyDateTime>) -> Result<Self, Error> {
         let date_time: DateTime<Utc> = datetime.extract()?;
         Ok(Value {
             inner: auditor_client::Value::Datetime(auditor_client::DateTimeUtcWrapper(date_time)),
@@ -606,9 +606,9 @@ pub struct AuditorClient {
 impl AuditorClient {
     /// health_check()
     /// Returns ``true`` if the Auditor instance is healthy, ``false`` otherwise
-    fn health_check<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<&'a PyAny> {
+    fn health_check<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         let inner = self_.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(inner.health_check().await)
             // Ok(Python::with_gil(|py| py.None()))
         })
@@ -616,9 +616,9 @@ impl AuditorClient {
 
     /// get()
     /// Gets all records from the Auditors database
-    fn get<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<&'a PyAny> {
+    fn get<'a>(self_: PyRef<'a, Self>, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         let inner = self_.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(inner
                 .get()
                 .await
@@ -654,11 +654,11 @@ impl AuditorClient {
     ///
     fn get_started_since<'a>(
         self_: PyRef<'a, Self>,
-        timestamp: &PyDateTime,
+        timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
-    ) -> PyResult<&'a PyAny> {
-        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn(py, message, "get_started_since is depreciated", 0)?;
+    ) -> PyResult<Bound<'a, PyAny>> {
+        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn_bound(py, &message, "get_started_since is depreciated", 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
@@ -666,7 +666,7 @@ impl AuditorClient {
             .with_start_time(auditor_client::Operator::default().gte(since.into()))
             .build();
 
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(inner
                 .advanced_query(query_string.to_string())
                 .await
@@ -702,18 +702,18 @@ impl AuditorClient {
     ///
     fn get_stopped_since<'a>(
         self_: PyRef<'a, Self>,
-        timestamp: &PyDateTime,
+        timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
-    ) -> PyResult<&'a PyAny> {
-        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn(py, message, "get_stopped_since_since is depreciated", 0)?;
+    ) -> PyResult<Bound<'a, PyAny>> {
+        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn_bound(py, &message, "get_stopped_since_since is depreciated", 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
         let query_string = auditor_client::QueryBuilder::new()
             .with_stop_time(auditor_client::Operator::default().gte(since.into()))
             .build();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(inner
                 .advanced_query(query_string.to_string())
                 .await
@@ -744,9 +744,9 @@ impl AuditorClient {
         self_: PyRef<'a, Self>,
         query_string: String,
         py: Python<'a>,
-    ) -> PyResult<&'a PyAny> {
+    ) -> PyResult<Bound<'a, PyAny>> {
         let inner = self_.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             Ok(inner
                 .advanced_query(query_string)
                 .await
@@ -773,9 +773,9 @@ impl AuditorClient {
         self_: PyRef<'a, Self>,
         record_id: String,
         py: Python<'a>,
-    ) -> PyResult<&'a PyAny> {
+    ) -> PyResult<Bound<'a, PyAny>> {
         let inner = self_.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             inner
                 .get_single_record(record_id)
                 .await
@@ -786,9 +786,9 @@ impl AuditorClient {
 
     /// add(record: Record)
     /// Push a record to the Auditor instance
-    fn add<'a>(&self, record: Record, py: Python<'a>) -> PyResult<&'a PyAny> {
+    fn add<'a>(&self, record: Record, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         let inner = self.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             inner
                 .add(&auditor::domain::RecordAdd::try_from(record.inner)?)
                 .await
@@ -798,7 +798,7 @@ impl AuditorClient {
 
     /// add(record: Record)
     /// Push a list of records to the Auditor instance
-    fn bulk_insert<'a>(&self, records: Vec<Record>, py: Python<'a>) -> PyResult<&'a PyAny> {
+    fn bulk_insert<'a>(&self, records: Vec<Record>, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         let inner = self.inner.clone();
 
         let bulk_insert_records: Result<Vec<auditor::domain::RecordAdd>, anyhow::Error> = records
@@ -806,7 +806,7 @@ impl AuditorClient {
             .map(|r| auditor::domain::RecordAdd::try_from(r.inner))
             .collect();
 
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             let bul = bulk_insert_records?;
             inner
                 .bulk_insert(&bul)
@@ -817,9 +817,9 @@ impl AuditorClient {
 
     /// update(record: Record)
     /// Update an existing record in the Auditor instance
-    fn update<'a>(&self, record: Record, py: Python<'a>) -> PyResult<&'a PyAny> {
+    fn update<'a>(&self, record: Record, py: Python<'a>) -> PyResult<Bound<'a, PyAny>> {
         let inner = self.inner.clone();
-        pyo3_asyncio::tokio::future_into_py(py, async move {
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
             inner
                 .update(&auditor::domain::RecordUpdate::try_from(record.inner)?)
                 .await

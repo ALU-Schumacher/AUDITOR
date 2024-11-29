@@ -12,6 +12,10 @@ weight = 3
 Use this command to update the sqlx-cli to 0.8.2
 - `cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
 
+## Apel plugin
+
+- The `NormalisedWallDurationField` class was removed, but the default `base_value` of the `NormalisedField` class is now the `runtime` of the record. Replace `NormalisedWallDuration: !NormalisedWallDurationField` with `NormalisedWallDuration: !NormalisedField` in the config file.
+
 # From 0.5.0 to 0.6.2
 
 ## Auditor DB:
