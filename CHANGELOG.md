@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Switch from pyo3-asyncio 0.20.0 to pyo3-async-runtimes 0.22.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.26.8 to 1.28.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.9.2 to 2.10.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
