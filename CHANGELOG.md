@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2024-0399]: Update rustls from 0.23.16 to 0.23.19 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2024-0402]: Update hashbrown from 0.15.0 to 0.15.2 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
