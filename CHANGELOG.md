@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Switch from pyo3-asyncio 0.20.0 to pyo3-async-runtimes 0.22.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.7.1 to 0.7.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.7.1 to 0.8.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.3.0 to 75.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR client: rename function `does_not_contains` to `does_not_contain`
 
 ### Security
-- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - [CVE-2024-45311]: Update quinn-proto from 0.11.3 to 0.11.8 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20241016 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: update wiremock from 0.6.1 to 0.6.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
-- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
+- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel))
 - Docker files: Linting ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
@@ -276,7 +276,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
- 
+
 ### Added
 - Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
@@ -294,7 +294,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2023-11-17
 
 ### Breaking changes
-- Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: New filter options to filter slurm jobs are added. The `job_status` key in the config is moved to the `job_filter` section and is renamed to `status` (#472) ([@QuantumDancer](https://github.com/QuantumDancer))
 
