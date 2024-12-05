@@ -753,8 +753,13 @@ See below for all currently available collectors.</p>
 </span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
 </span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user
+</span><span>      </span><span style="color:#00a33f;">function</span><span>:
+</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">vo_mapping
+</span><span>        </span><span style="color:#00a33f;">parameters</span><span>:
+</span><span>          </span><span style="color:#00a33f;">atlpr</span><span>: </span><span style="color:#00a33f;">atlas
+</span><span>          </span><span style="color:#00a33f;">atlsg</span><span>: </span><span style="color:#00a33f;">ops
+</span><span>          </span><span style="color:#00a33f;">ops</span><span>: </span><span style="color:#00a33f;">ops
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
@@ -856,7 +861,7 @@ See below for all currently available collectors.</p>
 <p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!</p>
 <p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, <code>NormalisedField</code>, and <code>NormalisedWallDurationField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
 <p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
-<p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> takes the name of a function and applies it to the value. The function has to be present in <code>config.py</code> and can be added via a pull request.</p>
+<p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> has the parameters <code>name</code> and <code>parameters</code>, where the latter is optional and can be used to provide additional parameters to the function. If you want to manipulate the value of the <code>Metafield</code> with a custom function, it has to be present in <code>utility.py</code> and can be added via a pull request.</p>
 <p><code>ConstantField</code> has the mandatory parameter <code>value</code>, which is exactly what will be written in the message field.</p>
 <p><code>ScoreField</code> extracts the score value from a given component from the AUDITOR record. The mandatory parameters are <code>name</code>, the name of the score, and <code>component_name</code>, the name of the component.</p>
 <p><code>NormalisedField</code> has the parameters <code>base_value</code> and <code>score</code>, where <code>score</code> is a <code>ScoreField</code> and <code>base_value</code> a <code>ComponentField</code>. The resulting value is the product of the score and the base value.</p>
