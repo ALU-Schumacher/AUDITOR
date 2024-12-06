@@ -33,7 +33,7 @@ jobs:
       - name: Run pytest
         run: pytest
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./plugins/apel/lcov.info
           fail_ci_if_error: true
