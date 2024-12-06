@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.7.1 to 0.8.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 75.3.0 to 75.4.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 75.3.0 to 75.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
 
