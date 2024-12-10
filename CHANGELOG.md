@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update setuptools from 75.3.0 to 75.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
+- Slurm collector: Fix timezone offset of local timestamp `lastcheck` (#681, #178) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore `.extern` steps instead of handling them as separate jobs (#812) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore cancelled jobs which have never been started (#811) ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 - Dependencies: Remove opentelemetry_api (replaced by opentelemetry) ([@dirksammel](https://github.com/dirksammel))
