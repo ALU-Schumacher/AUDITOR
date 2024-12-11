@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==75.4.0"]
+requires = ["setuptools==75.6.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,9 +9,9 @@ requires-python = ">=3.9"
 dependencies = [
 	     "python-auditor==0.6.3",
 	     "requests==2.32.3",
-	     "cryptography==43.0.3",
+	     "cryptography==44.0.0",
 	     "pyyaml==6.0.2",
-	     "pydantic==2.9.2",
+	     "pydantic==2.10.3",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
 readme = "README.md"
@@ -19,10 +19,10 @@ readme = "README.md"
 [project.optional-dependencies]
 style = [
       "black==24.10.0",
-      "ruff==0.7.3",
+      "ruff==0.8.2",
 ]
 tests = [
-      "pytest==8.3.3",
+      "pytest==8.3.4",
       "pytest-cov==6.0.0",
       "mypy==1.13.0",	
       "types-pyyaml==6.0.12.20240917",
@@ -30,7 +30,7 @@ tests = [
 ]
 build = [
       "build==1.2.2.post1",
-      "setuptools==75.4.0",
+      "setuptools==75.6.0",
 ]
 
 [project.scripts]

@@ -892,7 +892,7 @@ impl Operator {
     }
 }
 
-/// Implementations of conversion traits for the `Value` enum.
+// Implementations of conversion traits for the `Value` enum.
 
 /// Conversion from chrono DateTime to Value::Datetime.
 impl From<chrono::DateTime<Utc>> for Value {

@@ -10,18 +10,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2024-0399]: Update rustls from 0.23.16 to 0.23.19 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2024-0402]: Update hashbrown from 0.15.0 to 0.15.2 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- Apel plugin: Add function for user->VO mapping to config ([@dirksammel](https://github.com/dirksammel))
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
 - Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.26.8 to 1.27.3 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.7.1 to 0.7.3 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 75.3.0 to 75.4.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Switch from pyo3-asyncio 0.20.0 to pyo3-async-runtimes 0.22.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update codecov/codecov-action from 3 to 5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.26.8 to 1.28.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 43.0.3 to 44.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.9.2 to 2.10.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.7.1 to 0.8.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 75.3.0 to 75.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
+- Slurm collector: Fix timezone offset of local timestamp `lastcheck` (#681, #178) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore `.extern` steps instead of handling them as separate jobs (#812) ([@rkleinem](https://github.com/rkleinem))
+- Slurm collector: Ignore cancelled jobs which have never been started (#811) ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 - Dependencies: Remove opentelemetry_api (replaced by opentelemetry) ([@dirksammel](https://github.com/dirksammel))
@@ -32,14 +45,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR client: rename function `does_not_contains` to `does_not_contain`
 
 ### Security
-- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - [CVE-2024-45311]: Update quinn-proto from 0.11.3 to 0.11.8 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
 - CI: Add checks for import sorting and formatting to python linting workflow ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
-- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 24.4.2 to 24.10.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.2.1 to 1.2.2.post1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.23.3 to 1.26.8 ([@dirksammel](https://github.com/dirksammel))
@@ -56,12 +68,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_json from 1.0.121 to 1.0.132 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update setuptools from 71.1.0 to 75.3.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.1 to 0.19.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update sqlx from 0.7.4 to 0.8.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tarides/changelog-check-action from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240311 to 6.0.12.20240917 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-requests from 2.32.0.20240712 to 2.32.0.20241016 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: update wiremock from 0.6.1 to 0.6.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix bug that the machine score was stored as an integer, not as a float ([@mschnepf](https://github.com/mschnepf))
-- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel)) 
+- Docs: Typo fixes in query documentation ([@dirksammel](https://github.com/dirksammel))
 - Docker files: Linting ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
@@ -271,7 +284,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
- 
+
 ### Added
 - Docs: Add steps for creating a new release ([@QuantumDancer](https://github.com/QuantumDancer))
 - CI: Add Python 3.12 to workflows ([@dirksammel](https://github.com/dirksammel))
@@ -289,7 +302,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2023-11-17
 
 ### Breaking changes
-- Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
+- Auditor: Standardize REST APIs. Routes have changed to single endpoint '/record' with methods such as 'GET', 'PUT', 'POST' (#465) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Priority plugin: 'auditor' configuration has to be present in the config file. 'prometheus' configuration is optional (#456) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: New filter options to filter slurm jobs are added. The `job_status` key in the config is moved to the `job_filter` section and is renamed to `status` (#472) ([@QuantumDancer](https://github.com/QuantumDancer))
 

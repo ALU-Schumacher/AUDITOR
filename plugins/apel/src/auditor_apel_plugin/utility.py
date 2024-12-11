@@ -1,6 +1,9 @@
+import logging
 import pathlib
 from contextlib import contextmanager
-from typing import IO, ContextManager, Literal, overload
+from typing import IO, ContextManager, Dict, Literal, overload
+
+logger = logging.getLogger("apel_plugin")
 
 
 @overload
@@ -29,3 +32,13 @@ def write_transaction(
         raise
     else:
         tmp_path.rename(path)
+
+
+def vo_mapping(user: str, vo_dict: Dict[str, str]) -> str:
+    for k, v in vo_dict.items():
+        if user.startswith(k):
+            return v
+
+    logger.warning(f"No VO for user {user} found, will use None")
+
+    return "None"
