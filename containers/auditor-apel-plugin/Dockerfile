@@ -56,6 +56,10 @@ RUN set -ex                                                          \
 # copy python env from builder image
 COPY --from=builder /env /env
 
+# For the local persistent queue.
+# Mapped users must be able to access the data dir if nothing else is mounted there
+RUN mkdir --mode=777 /data
+
 # activate python env
 ENV VIRTUAL_ENV=/env
 ENV PATH=/env/bin:$PATH

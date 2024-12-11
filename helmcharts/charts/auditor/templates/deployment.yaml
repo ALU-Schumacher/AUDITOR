@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auditor.fullname" . }}
+  labels:
+    app: {{ include "auditor.fullname" . }}
+    {{- include "auditor.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.auditor.annotations.toYaml | nindent 4 }}
+spec:
+  replicas: 1
+  #revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ include "auditor.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "auditor.fullname" . }}
+    spec:
+      containers:
+      - name: auditor
+        image: {{ tpl .Values.auditor.image $ }}
+        ports:
+          - containerPort: 8000
+        volumeMounts:
+          - name: config
+            mountPath: /auditor/config.yaml
+            subPath: auditor.yml
+            readOnly: true
+        env:
+          - name: AUDITOR_DATABASE__DATABASE_NAME
+            value: {{ .Values.postgres.dbName }}
+          - name: AUDITOR_DATABASE__USERNAME
+            value: {{ .Values.postgres.user }}
+          - name: AUDITOR_DATABASE__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: password
+          - name: AUDITOR_DATABASE__PORT
+            value: {{ quote .Values.postgres.port }}
+          - name: AUDITOR_DATABASE__HOST
+            value: {{ .Values.postgres.host }}
+          - name: AUDITOR_DATABASE__REQUIRE_SSL
+            value: "false"
+        lifecycle:
+          postStart:
+            exec:
+              command: ["./entrypoint.sh", "migrate"]
+        readinessProbe:
+          httpGet:
+            path: /health_check
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+      #- name: postgres
+      #  image: {{ .Values.postgres.image }}
+      #  ports:
+      #    - containerPort: 5432
+      #  volumeMounts:
+      #    {- if .Values.persistentVolume.use }}
+      #    - name: postgres-data
+      #      mountPath: /var/lib/postgresql/data
+      #    {- end }}
+      #  env:
+      #    - name: PGDATA
+      #      value: /var/lib/postgresql/data/pgdata
+      #    - name: POSTGRES_USER
+      #      value: auditor
+      #    - name: POSTGRES_DB
+      #      value: auditor
+      #    - name: POSTGRES_PASSWORD
+      #      valueFrom:
+      #        secretKeyRef:
+      #          name: postgres-secret
+      #          key: password
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "auditor.fullname" . }}
+        #{- if .Values.persistentVolume.use }}
+        #- name: postgres-data
+        #  persistentVolumeClaim:
+        #    claimName: {{ include "auditor.fullname" . }}
+        #{- end }}
+      #nodeSelector:
+      #  kubernetes.io/os: linux

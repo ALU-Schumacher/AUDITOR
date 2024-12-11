@@ -23,6 +23,7 @@ jobs:
         containers:
           - auditor
           - auditor-apel-plugin
+          - auditor-kubernetes-collector
 
     steps:
       - name: Checkout repository
