@@ -79,30 +79,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-/// Create a record with an invalid ID:
-///
-/// ```
-/// # use auditor::domain::{Component, RecordAdd, Score};
-/// # use chrono::{DateTime, TimeZone, Utc};
-/// # use std::collections::HashMap;
-/// #
-/// # fn main() -> Result<(), anyhow::Error> {
-/// # let start_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
-/// #
-/// # let component_cpu = Component::new("CPU", 10)?
-/// #     .with_score(Score::new("HEPSPEC06", 9.2)?);
-/// # let component_mem = Component::new("MEM", 32)?;
-/// # let components = vec![component_cpu, component_mem];
-/// #
-/// # let mut meta = HashMap::new();
-/// # meta.insert("site_id", vec!["site1"]);
-/// # meta.insert("features", vec!["ssd", "gpu"]);
-/// #
-/// let record = RecordAdd::new("123/456", meta, components, start_time);
-/// assert!(record.is_err());
-/// Ok(())
-/// # }
-/// ```
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RecordAdd {
     /// Unique identifier of the record.
@@ -149,19 +125,6 @@ pub struct RecordAdd {
 /// let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 12, 0, 0).unwrap();
 /// let record = RecordUpdate::new("123456", HashMap::new(), Vec::new(), stop_time)?;
 /// # Ok(())
-/// # }
-/// ```
-/// Create a record with an invalid ID:
-///
-/// ```
-/// # use auditor::domain::{Component, RecordUpdate};
-/// # use chrono::{DateTime, TimeZone, Utc};
-/// # use std::collections::HashMap;
-/// #
-/// # fn main() {
-/// # let stop_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
-/// let record = RecordUpdate::new("123/456", HashMap::new(), Vec::new(), stop_time);
-/// assert!(record.is_err());
 /// # }
 /// ```
 

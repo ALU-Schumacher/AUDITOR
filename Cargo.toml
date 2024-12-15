@@ -9,6 +9,10 @@ members = [
     "plugins/priority",
 ]
 
+exclude = [
+  "auditor/scripts/slurm_revert_encoding",
+  ]
+
 [workspace.dependencies]
 actix-web = "4.8.0"
 actix-tls = "3.4.0" 

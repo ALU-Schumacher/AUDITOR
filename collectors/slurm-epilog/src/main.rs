@@ -6,7 +6,6 @@
 // copied, modified, or distributed except according to those terms.
 
 use anyhow::Error;
-use auditor::constants::FORBIDDEN_CHARACTERS;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use auditor_client::AuditorClientBuilder;
@@ -14,7 +13,6 @@ use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
 use regex::Regex;
 use std::collections::HashMap;
 use std::env;
-use std::fmt;
 use std::process::Command;
 use tracing::{debug, info};
 use uuid::Uuid;
@@ -62,11 +60,6 @@ fn parse_slurm_timestamp<T: AsRef<str> + std::fmt::Debug>(
     ))
 }
 
-#[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
-fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
-    input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
-}
-
 #[tracing::instrument(
     name = "Construct components from job info and configuration",
     level = "debug"
@@ -86,7 +79,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
         .cloned()
         .map(|c| {
             Component::new(
-                make_string_valid(c.name),
+                c.name,
                 job[&c.key].parse().unwrap_or_else(|_| {
                     panic!(
                         "Cannot parse key {} (value: {}) into u64.",
@@ -169,23 +162,16 @@ async fn main() -> Result<(), Error> {
     debug!(?job, "Acquired SLURM job info");
 
     let record = RecordAdd::new(
-        format!("{}-{job_id}", make_string_valid(&config.record_prefix)),
+        format!("{}-{job_id}", &config.record_prefix),
         HashMap::from([
-            (
-                "site_id".to_string(),
-                vec![make_string_valid(&config.site_id)],
-            ),
+            ("site_id".to_string(), vec![config.site_id.clone()]),
             (
                 "user_id".to_string(),
-                vec![make_string_valid(
-                    job["UserId"].split('(').take(1).collect::<Vec<_>>()[0],
-                )],
+                vec![job["UserId"].split('(').take(1).collect::<Vec<_>>()[0].to_string()],
             ),
             (
                 "group_id".to_string(),
-                vec![make_string_valid(
-                    job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0],
-                )],
+                vec![job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0].to_string()],
             ),
         ]),
         construct_components(&config, &job),
