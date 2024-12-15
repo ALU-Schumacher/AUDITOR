@@ -5,13 +5,10 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::{collections::HashMap, fmt};
+use std::collections::HashMap;
 
 use anyhow::anyhow;
-use auditor::{
-    constants::FORBIDDEN_CHARACTERS,
-    domain::{Component, RecordAdd, Score},
-};
+use auditor::domain::{Component, RecordAdd, Score};
 use chrono::{DateTime, Local, Utc};
 use color_eyre::eyre::{eyre, Result};
 use itertools::Itertools;
@@ -307,7 +304,7 @@ fn construct_record(
         return Ok(None);
     };
 
-    let record_id = make_string_valid(format!("{}-{job_id}", &CONFIG.record_prefix));
+    let record_id = format!("{}-{job_id}", &CONFIG.record_prefix);
     // We don't want this record, we have already seen it in a previous run.
     if record_id == last_record_id {
         return Ok(None);
@@ -321,20 +318,14 @@ fn construct_record(
                         val.extract_map()?
                             .iter()
                             .map(|(k, v)| -> Result<(String, Vec<String>)> {
-                                Ok((
-                                    make_string_valid(k.extract_string()?),
-                                    vec![make_string_valid(v.extract_string()?)],
-                                ))
+                                Ok((k.extract_string()?, vec![v.extract_string()?]))
                             })
                             .collect::<Result<Vec<(_, _)>>>()?
                     } else {
                         vec![]
                     }
                 } else {
-                    vec![(
-                        m.name.clone(),
-                        vec![make_string_valid(map[&m.key].extract_as_string()?)],
-                    )]
+                    vec![(m.name.clone(), vec![map[&m.key].extract_as_string()?])]
                 };
                 Ok(map)
             })
@@ -346,15 +337,9 @@ fn construct_record(
         HashMap::new()
     };
 
-    meta.insert("site_id".to_string(), vec![make_string_valid(site)]);
-    meta.insert(
-        "user_id".to_string(),
-        vec![make_string_valid(map[USER].extract_string()?)],
-    );
-    meta.insert(
-        "group_id".to_string(),
-        vec![make_string_valid(map[GROUP].extract_string()?)],
-    );
+    meta.insert("site_id".to_string(), vec![site]);
+    meta.insert("user_id".to_string(), vec![map[USER].extract_string()?]);
+    meta.insert("group_id".to_string(), vec![map[GROUP].extract_string()?]);
 
     let components = if let Ok(components) = construct_components(map, &config.components) {
         components
@@ -373,11 +358,6 @@ fn construct_record(
     ))
 }
 
-#[tracing::instrument(name = "Remove forbidden characters from string", level = "debug")]
-fn make_string_valid<T: AsRef<str> + fmt::Debug>(input: T) -> String {
-    input.as_ref().replace(&FORBIDDEN_CHARACTERS[..], "")
-}
-
 #[tracing::instrument(name = "Obtain site from job info and configuration", level = "debug")]
 fn identify_site(job: &Job) -> Option<String> {
     CONFIG
@@ -394,7 +374,7 @@ fn identify_site(job: &Job) -> Option<String> {
             }
         })
         .cloned()
-        .map(|s| make_string_valid(s.name))
+        .map(|s| s.name)
         .collect::<Vec<_>>()
         .first()
         .cloned()
@@ -425,7 +405,7 @@ fn construct_components(
         .map(|c| {
             if !job.contains_key(&c.key) {
                 if let Some(default_value) = c.default_value {
-                    Ok(Component::new(make_string_valid(&c.name), default_value)
+                    Ok(Component::new(&c.name, default_value)
                         .expect("Cannot construct component")
                         .with_scores(construct_component_scores(job, &c)))
                 } else {
@@ -435,7 +415,7 @@ fn construct_components(
                 }
             } else {
                 Ok(Component::new(
-                    make_string_valid(&c.name),
+                    &c.name,
                     job[&c.key].extract_i64().unwrap_or_else(|_| {
                         panic!(
                             "Cannot parse key {} (value: {:?}) into i64.",

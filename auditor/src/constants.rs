@@ -5,6 +5,5 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-pub const FORBIDDEN_CHARACTERS: [char; 9] = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
 pub const ERR_RECORD_EXISTS: &str = "RECORD_EXISTS";
 pub const ERR_UNEXPECTED_ERROR: &str = "UNEXPECTED_ERROR";
