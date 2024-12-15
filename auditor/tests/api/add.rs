@@ -39,40 +39,6 @@ async fn add_returns_a_200_for_valid_json_data() {
 }
 
 #[tokio::test]
-async fn add_returns_a_400_for_invalid_json_data() {
-    // Arrange
-    let app = spawn_app().await;
-
-    let forbidden_strings: Vec<String> = ['/', '(', ')', '"', '<', '>', '\\', '{', '}']
-        .into_iter()
-        .map(|s| format!("test{s}test"))
-        .collect();
-
-    for _field in ["record_id"] {
-        for fs in forbidden_strings.iter() {
-            // Act
-            let mut body: RecordTest = Faker.fake();
-            // match field {
-            //     "record_id" => body.record_id = Some(fs.clone()),
-            //     _ => (),
-            // }
-            body.record_id = Some(fs.clone());
-
-            let response = app.add_record(&body).await;
-
-            assert_eq!(400, response.status().as_u16());
-
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
-                .fetch_all(&app.db_pool)
-                .await
-                .expect("Failed to fetch data");
-
-            assert_eq!(saved.len(), 0);
-        }
-    }
-}
-
-#[tokio::test]
 async fn add_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
@@ -161,39 +127,6 @@ async fn bulk_insert_records() {
         .expect("Failed to convert from RecordDatabase to Record");
 
         assert_eq!(record, saved);
-    }
-}
-
-#[tokio::test]
-async fn bulk_insert_returns_a_400_for_invalid_json_data() {
-    let app = spawn_app().await;
-
-    let forbidden_strings: Vec<String> = ['/', '(', ')', '"', '<', '>', '\\', '{', '}']
-        .into_iter()
-        .map(|s| format!("test{s}test"))
-        .collect();
-
-    for _field in ["record_id"] {
-        for fs in forbidden_strings.iter() {
-            let records: Vec<RecordTest> = (0..100)
-                .map(|_| {
-                    let mut record: RecordTest = Faker.fake();
-                    record.record_id = Some(fs.clone());
-                    record
-                })
-                .collect();
-
-            let response = app.bulk_insert(&records).await;
-
-            assert_eq!(400, response.status().as_u16());
-
-            let saved: Vec<_> = sqlx::query!(r#"SELECT record_id FROM auditor_accounting"#,)
-                .fetch_all(&app.db_pool)
-                .await
-                .expect("Failed to fetch data");
-
-            assert_eq!(saved.len(), 0);
-        }
     }
 }
 

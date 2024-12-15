@@ -5,7 +5,6 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::constants::FORBIDDEN_CHARACTERS;
 use crate::domain::ValidationError;
 use anyhow::Context;
 use std::fmt;
@@ -26,9 +25,7 @@ impl ValidName {
         let is_empty_or_whitespace = s.trim().is_empty();
         // count characters
         let is_too_long = s.graphemes(true).count() > 256;
-        // check for forbidden characters
-        let contains_forbidden_characters = s.chars().any(|g| FORBIDDEN_CHARACTERS.contains(&g));
-        if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
+        if is_empty_or_whitespace || is_too_long {
             Err(ValidationError(format!("Invalid Name: {s}")))
         } else {
             Ok(Self(s))
@@ -117,14 +114,6 @@ mod tests {
     fn empty_string_is_rejected() {
         let name = "".to_string();
         assert_err!(ValidName::parse(name));
-    }
-
-    #[test]
-    fn names_containing_an_invalid_character_are_rejected() {
-        for name in &['/', '(', ')', '"', '<', '>', '\\', '{', '}'] {
-            let name = name.to_string();
-            assert_err!(ValidName::parse(name));
-        }
     }
 
     #[quickcheck]
