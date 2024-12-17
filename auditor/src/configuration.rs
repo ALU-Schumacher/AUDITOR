@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::telemetry::deserialize_log_level;
+use rustls::ServerConfig;
 use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
@@ -21,6 +22,54 @@ pub struct Settings {
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
+    pub tls_config: Option<TLSConfig>,
+}
+
+// Set the default values for TLSConfig options
+#[derive(serde::Deserialize, Debug)]
+pub struct TLSConfig {
+    pub use_tls: bool,
+    #[serde(default = "default_https_addr")]
+    pub https_addr: String,
+    #[serde(default = "default_https_port")]
+    pub https_port: u16,
+    pub ca_cert_path: Option<String>,
+    pub server_cert_path: Option<String>,
+    pub server_key_path: Option<String>,
+}
+
+impl TLSConfig {
+    /// Checks if TLS is enabled and required paths are provided.
+    pub fn validate_tls_paths(&self) -> Result<(), &'static str> {
+        if self.use_tls {
+            if self.ca_cert_path.is_none() {
+                return Err("ca_cert_path is required when use_tls is true");
+            }
+            if self.server_cert_path.is_none() {
+                return Err("server_cert_path is required when use_tls is true");
+            }
+            if self.server_key_path.is_none() {
+                return Err("server_key_path is required when use_tls is true");
+            }
+        }
+        Ok(())
+    }
+}
+
+fn default_https_addr() -> String {
+    "127.0.0.1".to_string()
+}
+
+fn default_https_port() -> u16 {
+    8443u16
+}
+
+#[derive(Debug)]
+pub struct TLSParams {
+    pub config: ServerConfig,
+    pub https_addr: String,
+    pub https_port: u16,
+    pub use_tls: bool,
 }
 
 fn default_log_level() -> LevelFilter {

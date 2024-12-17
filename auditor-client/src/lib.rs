@@ -75,6 +75,25 @@
 //! # }
 //! ```
 //!
+//! ## Connecting to Auditor using tls
+//!
+//! The [`AuditorClientBuilder`] is used to build an [`AuditorClient`] object
+//! that can be used for interacting with Auditor with tls enabled.
+//!
+//! ```no_run
+//! # use auditor_client::AuditorClientBuilder;
+//! # use auditor_client::ClientError;
+//! #
+//! # fn main() -> Result<(), ClientError> {
+//! # let client = AuditorClientBuilder::new()
+//! #     .address(&"localhost", 8000)
+//! #     .timeout(20)
+//! #     .with_tls("client_cert_path", "client_key_path", "ca_cert_path")
+//! #     .build()?;
+//! # Ok(())
+//! # }
+//! ```
+//!
 //! ## Pushing one record to Auditor
 //!
 //! Assuming that a record and a client were already created,
@@ -541,6 +560,9 @@ use urlencoding::encode;
 mod database;
 use database::Database;
 
+use reqwest::{Certificate, Identity};
+use std::fs;
+
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
 #[derive(Debug, thiserror::Error)]
@@ -630,6 +652,7 @@ pub struct AuditorClientBuilder {
     database_path: PathBuf,
     timeout: Duration,
     send_interval: Duration,
+    tls_config: Option<TlsConfig>,
 }
 
 impl AuditorClientBuilder {
@@ -640,6 +663,7 @@ impl AuditorClientBuilder {
             database_path: PathBuf::from("sqlite::memory:"),
             timeout: Duration::try_seconds(30).expect("This should never fail"),
             send_interval: Duration::try_seconds(60).expect("This should never fail"),
+            tls_config: None,
         }
     }
 
@@ -701,6 +725,40 @@ impl AuditorClientBuilder {
         self
     }
 
+    pub fn with_tls<P: AsRef<Path>>(
+        mut self,
+        client_cert_path: P,
+        client_key_path: P,
+        ca_cert_path: P,
+    ) -> Self {
+        let mut tls_config = TlsConfig::new();
+
+        match (fs::read(client_cert_path), fs::read(client_key_path)) {
+            (Ok(client_cert), Ok(client_key)) => {
+                match Identity::from_pem(&[client_cert, client_key].concat()) {
+                    Ok(identity) => tls_config.identity = Some(identity),
+                    Err(e) => {
+                        eprintln!("Failed to create identity from client cert and key: {}", e)
+                    }
+                }
+            }
+            (Err(e), _) | (_, Err(e)) => {
+                eprintln!("Failed to read client certificate or key: {}", e);
+            }
+        }
+
+        match fs::read(ca_cert_path) {
+            Ok(ca_cert) => match Certificate::from_pem(&ca_cert) {
+                Ok(ca_certificate) => tls_config.ca_certificate = Some(ca_certificate),
+                Err(e) => eprintln!("Failed to parse CA certificate PEM: {}", e),
+            },
+            Err(e) => eprintln!("Failed to read CA certificate file: {}", e),
+        }
+
+        self.tls_config = Some(tls_config);
+        self
+    }
+
     /// Build an [`AuditorClient`] from `AuditorClientBuilder`.
     ///
     /// # Errors
@@ -708,12 +766,27 @@ impl AuditorClientBuilder {
     /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     pub fn build(self) -> Result<AuditorClient, ClientError> {
-        Ok(AuditorClient {
-            address: self.address,
-            client: reqwest::ClientBuilder::new()
+        let client = match self.tls_config {
+            Some(tls_config) => reqwest::ClientBuilder::new()
+                .identity(tls_config.identity.expect(
+                    "Error while setting up the client identity using client cert and key pem",
+                ))
+                .add_root_certificate(
+                    tls_config
+                        .ca_certificate
+                        .expect("Error while setting up the root certificate"),
+                )
+                .timeout(self.timeout.to_std()?)
+                .build()?,
+            None => reqwest::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
                 .timeout(self.timeout.to_std()?)
                 .build()?,
+        };
+
+        Ok(AuditorClient {
+            address: self.address,
+            client,
         })
     }
 
@@ -754,13 +827,43 @@ impl AuditorClientBuilder {
     ///
     /// This method panics if it is called from an async runtime.
     pub fn build_blocking(self) -> Result<AuditorClientBlocking, ClientError> {
-        Ok(AuditorClientBlocking {
-            address: self.address,
-            client: reqwest::blocking::ClientBuilder::new()
+        let client = match self.tls_config {
+            Some(tls_config) => reqwest::blocking::ClientBuilder::new()
+                .identity(tls_config.identity.expect(
+                    "Error while setting up the client identity using client cert and key pem",
+                ))
+                .add_root_certificate(
+                    tls_config
+                        .ca_certificate
+                        .expect("Error while setting up the root certificate"),
+                )
+                .timeout(self.timeout.to_std()?)
+                .build()?,
+            None => reqwest::blocking::ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
                 .timeout(self.timeout.to_std()?)
                 .build()?,
+        };
+
+        Ok(AuditorClientBlocking {
+            address: self.address,
+            client,
         })
+    }
+}
+
+#[derive(Debug, Clone)]
+struct TlsConfig {
+    identity: Option<Identity>,
+    ca_certificate: Option<Certificate>,
+}
+
+impl TlsConfig {
+    fn new() -> Self {
+        TlsConfig {
+            identity: None,
+            ca_certificate: None,
+        }
     }
 }
 

@@ -58,11 +58,32 @@ async fn main() -> anyhow::Result<()> {
     let shutdown_rx1 = shutdown_tx.subscribe();
     let shutdown_rx2 = shutdown_tx.subscribe();
 
-    // Make AUDITOR Client
-    let client = AuditorClientBuilder::new()
-        .address(&config.auditor_addr, config.auditor_port)
-        .timeout(config.auditor_timeout.num_seconds())
-        .build()?;
+    // AuditorClient
+    let client = if config.tls_config.use_tls {
+        let tls_config = &config.tls_config;
+        let _ = tls_config
+            .validate_tls_paths()
+            .map_err(|e| tracing::error!("Configuration error: {}", e));
+
+        let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
+        let client_key_path = tls_config.client_key_path.as_ref().unwrap();
+        let client_cert_path = tls_config.client_cert_path.as_ref().unwrap();
+
+        // Build client with TLS
+        AuditorClientBuilder::new()
+            .address(&config.auditor_addr, config.auditor_port)
+            .timeout(config.auditor_timeout.num_seconds())
+            .with_tls(client_cert_path, client_key_path, ca_cert_path)
+            .build()
+            .map_err(|e| tracing::error!("Error {:?}", e))
+    } else {
+        // Build client without TLS
+        AuditorClientBuilder::new()
+            .address(&config.auditor_addr, config.auditor_port)
+            .timeout(config.auditor_timeout.num_seconds())
+            .build()
+            .map_err(|e| tracing::error!("Error {:?}", e))
+    };
 
     // Prometheus Client
     let pclient = merger::build_pclient(
@@ -100,7 +121,9 @@ async fn main() -> anyhow::Result<()> {
         database,
         shutdown_tx.clone(),
         shutdown_rx2,
-        client.clone(),
+        client
+            .clone()
+            .expect("Error while setting up AuditorClientBuilder"),
         pclient,
     )?;
 

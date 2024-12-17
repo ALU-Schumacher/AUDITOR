@@ -47,6 +47,33 @@ pub struct Settings {
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
+    pub tls_config: TLSConfig,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct TLSConfig {
+    pub use_tls: bool,
+    pub ca_cert_path: Option<String>,
+    pub client_cert_path: Option<String>,
+    pub client_key_path: Option<String>,
+}
+
+impl TLSConfig {
+    /// Checks if TLS is enabled and required paths are provided.
+    pub fn validate_tls_paths(&self) -> Result<(), &'static str> {
+        if self.use_tls {
+            if self.ca_cert_path.is_none() {
+                return Err("ca_cert_path is required when use_tls is true");
+            }
+            if self.client_cert_path.is_none() {
+                return Err("client_cert_path is required when use_tls is true");
+            }
+            if self.client_key_path.is_none() {
+                return Err("client_key_path is required when use_tls is true");
+            }
+        }
+        Ok(())
+    }
 }
 
 fn default_log_level() -> LevelFilter {

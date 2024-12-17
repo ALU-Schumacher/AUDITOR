@@ -73,6 +73,7 @@ class Config(object):
             (["meta"], dict),
             (["meta", "site"], list),
             (["components"], list),
+            (["tls_config"], dict),
         ]:
             _cfg = _get(keys)
             if _cfg is None:
@@ -110,6 +111,25 @@ class Config(object):
                     raise MalformedConfigEntryError(
                         [*keys, i], "Must be a non-empty string"
                     )
+
+        for keys in [["tls_config"]]:
+            entries = _get(keys)
+            if not isinstance(entries["use_tls"], bool):
+                raise MalformedConfigEntryError(["use_tls"], "Must be a bool")
+            if "use_tls" not in entries:
+                raise MissingConfigDependencyError(["use_tls"])
+
+            if entries["use_tls"]:
+                certs = ["ca_cert_path", "client_cert_path", "client_key_path"]
+                for cert_path in certs:
+                    if not isinstance(entries[cert_path], str):
+                        raise MalformedConfigEntryError([cert_path], "Must be a string")
+                    if len(entries[cert_path].strip() == 0):
+                        raise MalformedConfigEntryError(
+                            [cert_path], "Must be a non-empty string"
+                        )
+                    if cert_path not in entries:
+                        raise MissingConfigDependencyError([cert_path])
 
         # If "job_status" is present, check that it is a list of integers
         if "job_status" in self._config:

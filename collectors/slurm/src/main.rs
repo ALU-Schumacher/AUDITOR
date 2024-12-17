@@ -113,10 +113,29 @@ async fn main() -> Result<()> {
     .await;
 
     // AuditorClient
-    let client = AuditorClientBuilder::new()
-        .address(&CONFIG.addr, CONFIG.port)
-        .build()
-        .map_err(|e| eyre!("Error {:?}", e))?;
+    let client = if CONFIG.tls_config.use_tls {
+        let tls_config = &CONFIG.tls_config;
+        tls_config
+            .validate_tls_paths()
+            .map_err(|e| eyre!("Configuration error: {}", e))?;
+
+        let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
+        let client_key_path = tls_config.client_key_path.as_ref().unwrap();
+        let client_cert_path = tls_config.client_cert_path.as_ref().unwrap();
+
+        // Build client with TLS
+        AuditorClientBuilder::new()
+            .address(&CONFIG.addr, CONFIG.port)
+            .with_tls(client_cert_path, client_key_path, ca_cert_path)
+            .build()
+            .map_err(|e| eyre!("Error {:?}", e))?
+    } else {
+        // Build client without TLS
+        AuditorClientBuilder::new()
+            .address(&CONFIG.addr, CONFIG.port)
+            .build()
+            .map_err(|e| eyre!("Error {:?}", e))?
+    };
 
     // AuditorSender
     AuditorSender::run(

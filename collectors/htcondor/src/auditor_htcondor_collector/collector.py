@@ -42,7 +42,17 @@ class CondorHistoryCollector(object):
         if timeout:
             self.logger.info(f"Using timeout of {timeout} seconds for AUDITOR client.")
             builder.timeout(timeout)
-        return builder.build()
+        tls_config = self.config.get("tls_config")
+        if tls_config["use_tls"]:
+            ca_cert_path = tls_config["ca_cert_path"]
+            client_cert_path = tls_config["client_cert_path"]
+            client_key_path = tls_config["client_key_path"]
+
+            return builder.with_tls(
+                client_cert_path, client_key_path, ca_cert_path
+            ).build()
+        else:
+            return builder.build()
 
     def setup_logger(self) -> logging.Logger:
         """Sets up the logger for the collector."""

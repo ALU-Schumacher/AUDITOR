@@ -159,6 +159,9 @@ We offer versioned tags (starting from `0.2.0`) or the `edge` tag, which corresp
 
 Besides environment variables, a YAML configuration file can be used:
 
+Without TLS
+
+
 ```yaml
 application:
   addr: 0.0.0.0
@@ -179,6 +182,20 @@ metrics:
       - RecordCountPerGroup
       - RecordCountPerUser
 log_level: info
+tls_config:
+  use_tls: false
+```
+
+To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```
+tls_config:
+  use_tls: true
+  ca_cert_path: "/path/rootCA.pem"
+  server_cert_path: "/path/server-cert.pem"
+  server_key_path: "/path/server-key.pem"
+  https_addr: "0.0.0.0"
+  https_port: 8005
 ```
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
@@ -289,6 +306,10 @@ The Slurm collector is configured using a yaml-file. Configuration parameters ar
 | `meta`             | A list of meta objects that are added to the record. Each meta object needs to have a `name` that is used as the name of the meta object, and a `key`, that corresponds to a field in the job information. The type of the data can be specified with `key_type`. Possible values are `Integer` (default), `IntegerMega` (integer with a `M` behind the number), `Time`, `String`, `DateTime`, `Id`, `Json`. Per default, empty values are not allowed. This can be changed by setting `key_allow_empty` to `true`. Alternatively, a default value can be specified with `default_value`. Setting meta information can optionally be limited to a subset of records using the `only_if` syntax, as described above . |
 | `components`       | A list of components that is added to the record. A component needs to have a `name`, `key`, and `key_type`, similar to the `meta` configuration. One or multiple scores can be added to a component with the `scores` option. Each score config needs to have a `name` and a `value`. Setting scores can optionally be limited to a subset of records using the `only_if` syntax, as described above.                                                                                                                                                                                                                                         |
 | `log_level`        | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `use_tls`          | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 #### Job filter
 
@@ -304,6 +325,8 @@ The following filters are supported:
 | `account`   | A list of accounts. Per default no filter is applied.                                                                                                                                                             |
 
 ### Example configuration
+
+without TLS
 
 ```yaml
 addr: "auditor_host_addr"
@@ -354,6 +377,18 @@ components:
   - name: "NNodes"
     key: "NNodes"
 log_level: info
+tls_config:
+  use_tls: false
+```
+
+To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```
+tls_config:
+  use_tls: true
+  ca_cert_path: "/path/rootCA.pem"
+  client_cert_path: "/path/client-cert.pem"
+  client_key_path: "/path/client-key.pem"
 ```
 
 ## SLURM Epilog Collector
@@ -426,6 +461,8 @@ components:
   - name: "Memory"
     key: "Mem"
 log_level: info
+tls_config:
+  use_tls: false
 ```
 
 Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
@@ -458,6 +495,18 @@ components:
     only_if:
       key: "Partition"
       matches: "^part2$"
+tls_config:
+  use_tls: false
+```
+
+To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```yaml
+tls_config:
+  use_tls: true
+  ca_cert_path: "/path/rootCA.pem"
+  client_cert_path: "/path/client-cert.pem"
+  client_key_path: "/path/client-key.pem"
 ```
 
 ## HTCondor Collector
@@ -497,16 +546,20 @@ Command line arguments override the values set in the config file.
 
 The collector is configured using a yaml-file. Configuration parameters are as follows:
 
-| Parameter       | Description                                                                                                                                                                                                                                                                                                                                           |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `state_db`      | Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.                                                                                                                                                                                                                                               |
-| `record_prefix` | Prefix used for all records put into the AUDITOR-database.                                                                                                                                                                                                                                                                                            |
-| `interval`      | Interval in seconds between runs of the collector.                                                                                                                                                                                                                                                                                                    |
-| `pool`          | The `-pool` argument used for the invocation of `condor_history`.                                                                                                                                                                                                                                                                                     |
-| `schedd_names`  | List of the schedulers used for the `-name` argument of the invocation of `condor_history`.                                                                                                                                                                                                                                                           |
-| `job_status`    | List of job statuses considered. See [HTCondor magic numbers](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers).                                                                                                                                                                                                                       |
-| `meta`          | Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are [`entry`](#entry)s.<br>If multiple [`entry`](#entry)s are given for specified name, the values are appended to a list. A special case is `site`, which is a list of [`entry`](#entry)s, but only the first match is used. |
-| `components`    | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score)s ([`entry`](#entry)s).                                            |
+| Parameter          | Description                                                                                                                                                                                                                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `state_db`         | Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.                                                                                                                                                                                                                                               |
+| `record_prefix`    | Prefix used for all records put into the AUDITOR-database.                                                                                                                                                                                                                                                                                            |
+| `interval`         | Interval in seconds between runs of the collector.                                                                                                                                                                                                                                                                                                    |
+| `pool`             | The `-pool` argument used for the invocation of `condor_history`.                                                                                                                                                                                                                                                                                     |
+| `schedd_names`     | List of the schedulers used for the `-name` argument of the invocation of `condor_history`.                                                                                                                                                                                                                                                           |
+| `job_status`       | List of job statuses considered. See [HTCondor magic numbers](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers).                                                                                                                                                                                                                       |
+| `meta`             | Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are [`entry`](#entry)s.<br>If multiple [`entry`](#entry)s are given for specified name, the values are appended to a list. A special case is `site`, which is a list of [`entry`](#entry)s, but only the first match is used. |
+| `components`       | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score)s ([`entry`](#entry)s).                                            |
+| `use_tls`          | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                                                                                                                                                                                                                                                      |
+| `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                     |
+| `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                    |
+| `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                       |
 
 The following parameters are optional:
 
@@ -588,7 +641,20 @@ components:
     key: "MemoryProvisioned"
   - name: "UserCPU"
     key: "RemoteUserCpu"
+tls_config:
+  use_tls: False
 ```
+
+To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```
+tls_config:
+  use_tls: True
+  ca_cert_path: "/path/rootCA.pem"
+  client_cert_path: "/path/client-cert.pem"
+  client_key_path: "/path/client-key.pem"
+```
+
 
 ## Kubernetes Collector
 This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via it's API. This means that the collector needs to be able to access the API as well as Prometheus.
@@ -633,6 +699,10 @@ Configuration settings can be provided via a yaml file when run manually or thro
 | `backlog_interval` | `300s` | How long to wait before retrying to fetch metrics from Prometheus |
 | `backlog_maxretries` | `2`  | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this |
 | `log_level`       | `INFO`  | Logging level |
+| `use_tls`          | 'false' |Specifies whether TLS is enabled (`true`) or disabled (`false`) |
+| `ca_cert_path`     |   | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`. |
+| `client_cert_path` |  | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`. |
+| `client_key_path`  |  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.
 
 Job filter settings:
 
@@ -661,7 +731,20 @@ send_interval: 60
 backlog_interval: 300
 backlog_maxretries: 2
 log_level: debug
+tls_config:
+  use_tls: false
 ```
+
+To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```
+tls_config:
+  use_tls: true
+  ca_cert_path: "/path/rootCA.pem"
+  client_cert_path: "/path/client-cert.pem"
+  client_key_path: "/path/client-key.pem"
+```
+
 
 # Plugins
 
@@ -948,7 +1031,20 @@ prometheus:
   metrics:
     - ResourceUsage
     - Priority
+tls_config:
+  use_tls: false
 ```
+
+To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
+
+```
+tls_config:
+  use_tls: true
+  ca_cert_path: "/path/rootCA.pem"
+  client_cert_path: "/path/client-cert.pem"
+  client_key_path: "/path/client-key.pem"
+```
+
 
 The Auditor instance that is providing the records can be configured with the `auditor` block.
 Here, `addr` refers to the address of the machine that hosts the Auditor instance. The port can be specified with `port`.
@@ -979,6 +1075,11 @@ The metrics will then be available at `<addr>:<port>/metrics`
 The `metrics` list specifies the metrics that are exported.
 Right now the values `ResourceUsage` (for the amount of provided resources in the given duration)
 and `Priority` (for the calculated priority value) are supported.
+Set `use_tls` to `true` to enable TLS encryption. If `use_tls` is `false`, TLS will not be used, and the remaining parameters will not take effect.
+If TLS is enabled:
+- **`ca_cert_path`:** This parameter should point to the trusted CA certificate used to verify the server's certificate.
+- **`client_cert_path`:** This parameter should point to the client’s TLS certificate, used for mutual TLS (mTLS) authentication.
+- **`client_key_path`:** This parameter should point to the private key corresponding to the client’s certificate.
 
 ### Priority computation modes
 

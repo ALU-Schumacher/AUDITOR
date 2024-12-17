@@ -48,3 +48,5 @@ components:
   - name: "Memory"
     key: "ReqMem"
     key_type: IntegerMega
+tls_config:
+  use_tls: false

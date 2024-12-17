@@ -15,3 +15,5 @@ merge_interval: 60
 backlog_interval: 300
 backlog_maxretries: 2
 log_level: info
+tls_config:
+  use_tls: false

@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::configuration::TLSParams;
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
 use actix_web::dev::Server;
@@ -20,6 +21,7 @@ pub fn run(
     listener: TcpListener,
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
+    tls_params: Option<TLSParams>,
 ) -> Result<Server, anyhow::Error> {
     let request_metrics: PrometheusExporterConfig = PrometheusExporterBuilder::new()
         .with_database_watcher(db_watcher)
@@ -27,7 +29,8 @@ pub fn run(
     global::set_meter_provider(request_metrics.provider);
 
     let db_pool = web::Data::new(db_pool);
-    let server = HttpServer::new(move || {
+
+    let app_config = move || {
         App::new()
             // Logging middleware
             .wrap(TracingLogger::default())
@@ -53,8 +56,20 @@ pub fn run(
                     .route(web::get().to(query_records)),
             )
             .app_data(db_pool.clone())
-    })
-    .listen(listener)?
-    .run();
-    Ok(server)
+    };
+
+    let server = HttpServer::new(app_config).listen(listener)?;
+
+    match tls_params {
+        Some(params) if params.use_tls => {
+            println!("********* AUDITOR running in TLS mode *********");
+            Ok(server
+                .bind_rustls_0_23((params.https_addr, params.https_port), params.config)?
+                .run())
+        }
+        _ => {
+            println!("********* AUDITOR running without TLS *********");
+            Ok(server.run())
+        }
+    }
 }
