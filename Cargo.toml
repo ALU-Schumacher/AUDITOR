@@ -11,6 +11,7 @@ members = [
 
 [workspace.dependencies]
 actix-web = "4.8.0"
+actix-tls = "3.4.0" 
 actix-web-opentelemetry = { version = "0.17", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.86"
 auditor = { path = "./auditor", version = "0.6.3", default-features = false }
@@ -38,6 +39,8 @@ rand = "0.8.5"
 rand_distr = "0.4.3"
 regex = "1.11.1"
 reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+rustls = "0.23"
+rustls-pemfile = "2"
 secrecy = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.204", features = ["derive"] }
 serde-aux = "4.5.0"

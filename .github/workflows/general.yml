@@ -252,3 +252,6 @@ jobs:
 
       - name: Run priority-plugin tests
         run: SKIP_COMPILATION=true ./scripts/test_priority_plugin_prometheus_exporter.sh
+
+      - name: Run TLS tests
+        run: ./scripts/test_mtls.sh

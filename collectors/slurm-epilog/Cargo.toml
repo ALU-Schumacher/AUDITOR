@@ -34,6 +34,7 @@ anyhow.workspace = true
 auditor-client.workspace = true
 auditor.workspace = true
 chrono.workspace = true
+color-eyre.workspace = true
 config.workspace = true
 regex.workspace = true
 serde-aux.workspace = true

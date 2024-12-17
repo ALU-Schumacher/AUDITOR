@@ -29,3 +29,5 @@ prometheus:
   metrics:
     - ResourceUsage
     - Priority
+tls_config:
+  use_tls: false

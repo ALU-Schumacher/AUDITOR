@@ -114,6 +114,28 @@ impl AuditorClientBuilder {
         self_
     }
 
+    /// Set the ca_certificate path, client_certificate path and the client key path
+    ///
+    /// :param ca_cert_path: Path to the ca_certificate
+    /// :param client_cert_path: Path to the client_certificate
+    /// :param client_key_path: Path to the client_key_path
+    pub fn with_tls(
+        mut self_: PyRefMut<Self>,
+        ca_cert_path: String,
+        client_cert_path: String,
+        client_key_path: String,
+    ) -> PyRefMut<Self> {
+        let ca_cert_path = std::path::PathBuf::from(ca_cert_path);
+        let client_cert_path = std::path::PathBuf::from(client_cert_path);
+        let client_key_path = std::path::PathBuf::from(client_key_path);
+
+        self_.inner = self_
+            .inner
+            .clone()
+            .with_tls(client_cert_path, client_key_path, ca_cert_path);
+        self_
+    }
+
     /// Build an ``AuditorClient`` from ``AuditorClientBuilder``
     pub fn build(&self) -> Result<AuditorClient, Error> {
         Ok(AuditorClient {

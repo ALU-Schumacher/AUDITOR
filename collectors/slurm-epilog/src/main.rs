@@ -137,9 +137,28 @@ async fn main() -> Result<(), Error> {
 
     debug!(?config, "Loaded config");
 
-    let client = AuditorClientBuilder::new()
-        .address(&config.addr, config.port)
-        .build()?;
+    let client = if config.tls_config.use_tls {
+        let tls_config = &config.tls_config;
+
+        let _ = tls_config
+            .validate_tls_paths()
+            .map_err(|e| format!("Configuration error: {}", e));
+
+        let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
+        let client_key_path = tls_config.client_key_path.as_ref().unwrap();
+        let client_cert_path = tls_config.client_cert_path.as_ref().unwrap();
+
+        // Build client with TLS
+        AuditorClientBuilder::new()
+            .address(&config.addr, config.port)
+            .with_tls(client_cert_path, client_key_path, ca_cert_path)
+            .build()?
+    } else {
+        // Build client without TLS
+        AuditorClientBuilder::new()
+            .address(&config.addr, config.port)
+            .build()?
+    };
 
     let job_id = get_slurm_job_id().expect("Collector not run in the context of a Slurm epilog");
 

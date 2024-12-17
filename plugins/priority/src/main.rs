@@ -251,10 +251,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     let _span_guard = span.enter();
 
-    let client = AuditorClientBuilder::new()
-        .address(&config.auditor.addr, config.auditor.port)
-        .timeout(config.timeout)
-        .build()?;
+    //let client = AuditorClientBuilder::new()
+    //    .address(&config.auditor.addr, config.auditor.port)
+    //    .timeout(config.timeout)
+    //    .build()?;
+
+    let client = if config.tls_config.use_tls {
+        let tls_config = &config.tls_config;
+        let _ = tls_config
+            .validate_tls_paths()
+            .map_err(|e| format!("Configuration error: {}", e));
+
+        let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
+        let client_key_path = tls_config.client_key_path.as_ref().unwrap();
+        let client_cert_path = tls_config.client_cert_path.as_ref().unwrap();
+
+        // Build client with TLS
+        AuditorClientBuilder::new()
+            .address(&config.auditor.addr, config.auditor.port)
+            .timeout(config.timeout)
+            .with_tls(client_cert_path, client_key_path, ca_cert_path)
+            .build()?
+    } else {
+        // Build client without TLS
+        AuditorClientBuilder::new()
+            .address(&config.auditor.addr, config.auditor.port)
+            .timeout(config.timeout)
+            .build()?
+    };
 
     let request_metrics = PrometheusExporterConfig::build()?;
 
@@ -340,6 +364,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::configuration::TLSConfig;
     use crate::configuration::{AuditorSettings, PrometheusSettings};
     use tracing_subscriber::filter::LevelFilter;
 
@@ -374,6 +399,12 @@ mod tests {
                     PrometheusMetricsOptions::Priority,
                 ],
             }),
+            tls_config: TLSConfig {
+                use_tls: false,
+                ca_cert_path: None,
+                client_cert_path: None,
+                client_key_path: None,
+            },
         };
 
         let prios = compute_priorities(&resources, &config);
@@ -414,6 +445,12 @@ mod tests {
                     PrometheusMetricsOptions::Priority,
                 ],
             }),
+            tls_config: TLSConfig {
+                use_tls: false,
+                ca_cert_path: None,
+                client_cert_path: None,
+                client_key_path: None,
+            },
         };
 
         let prios = compute_priorities(&resources, &config);

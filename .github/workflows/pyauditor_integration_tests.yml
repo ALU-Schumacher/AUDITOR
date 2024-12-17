@@ -74,3 +74,6 @@ jobs:
 
       - name: Run integration tests
         run: SKIP_COMPILATION=true SKIP_PYAUDITOR_COMPILATION=true ./scripts/test_pyauditor.sh
+
+      - name: Run tls pyauditor tests
+        run: SKIP_COMPILATION=true SKIP_PYAUDITOR_COMPILATION=true ./scripts/test_tls_pyauditor.sh

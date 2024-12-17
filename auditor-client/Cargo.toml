@@ -35,6 +35,7 @@ reqwest.workspace = true
 serde.workspace = true
 rand.workspace = true
 rand_distr.workspace = true
+rustls.workspace = true
 serde-aux.workspace = true
 serde_qs.workspace = true
 thiserror.workspace = true

@@ -21,3 +21,5 @@ components:
           matches: "^part2$"
   - name: "Memory"
     key: "Mem"
+tls_config:
+  use_tls: false

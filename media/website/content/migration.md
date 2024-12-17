@@ -6,6 +6,35 @@ weight = 3
 
 # From 0.6.3 to unreleased/0.7.0
 
+### New feature - TLS
+
+TLS is added to AUDITOR, all collectors and plugins. A new config section called tls_config is required by all config files. `use_tls` is a compulsory field of type bool that defines whether to use the TLS or not.
+
+## TLS Configuration Table for AUDITOR (AUDITOR is referred to as the server)
+
+| Parameter           | Type    | Description                                                                                    | Example Value                  | Required if `use_tls` is `true`  |
+|---------------------|---------|------------------------------------------------------------------------------------------------|--------------------------------|----------------------------------|
+| `use_tls`           | Boolean | Specifies whether TLS is enabled (`true`) or disabled (`false`).                               | `true` or `false`              | Yes                              |
+| `ca_cert_path`      | String  | Path to the root Certificate Authority (CA) certificate for validating client certificates.    | `/path/rootCA.pem`             | Yes                              |
+| `server_cert_path`  | String  | Path to the server's TLS certificate.                                                          | `/path/server-cert.pem`        | Yes                              |
+| `server_key_path`   | String  | Path to the server's private key used for TLS.                                                 | `/path/server-key.pem`         | Yes                              |
+| `https_addr`        | String  | The HTTPS address where the server will listen. Defaults to a pre-configured value if not set. | `"0.0.0.0"`                    | No                               |
+| `https_port`        | Integer | The HTTPS port where the server will listen. Defaults to a pre-configured value if not set.    | `8003`                         | No                               |
+
+An example config is provided at the following directory in the github repository `auditor/configuration/tls_config.yaml`
+
+---
+
+## TLS Configuration Table for Collectors and Plugins (All collectors and plugins are referred to as the clients)
+
+| Parameter            | Type            | Description                                                                                 | Example Value                  | Required if `use_tls` is `true`  |
+|----------------------|-----------------|---------------------------------------------------------------------------------------------|--------------------------------|----------------------------------|
+| `use_tls`            | Boolean         | Specifies whether TLS is enabled (`true`) or disabled (`false`).                            | `true` or `false`              | Yes                              |
+| `ca_cert_path`       | String          | Path to the root Certificate Authority (CA) certificate for validating server certificates. | `/path/rootCA.pem`             | Yes                              |
+| `client_cert_path`   | String          | Path to the client's TLS certificate.                                                       | `/path/client-cert.pem`        | Yes                              |
+| `client_key_path`    | String          | Path to the client's private key used for TLS.                                              | `/path/client-key.pem`         | Yes                              |
+Please have a look at the AUDITOR documentation for the new changes in the config files for [collectors](https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=release%20page.-,Collectors,-Collectors%20are%20used) and [plugins](https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=%3A%20%22RemoteUserCpu%22-,Plugins,-Plugins%20are%20used)
+
 # From 0.6.2 to 0.6.3
 
 ### Update to [sqlx 0.8.2](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
