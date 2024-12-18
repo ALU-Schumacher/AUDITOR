@@ -6,7 +6,6 @@ from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
 from typing import List, Optional, Tuple
-from urllib.parse import quote
 
 from pyauditor import (
     AuditorClient,
@@ -231,7 +230,7 @@ class CondorHistoryCollector(object):
             for item in entry if isinstance(entry, list) else [entry]:
                 value = get_value(item, job)
                 if value is not None:
-                    values.append(quote(value, safe=""))
+                    values.append(value)
                     if key == "site":  # site is a special case
                         break
             if values:
@@ -270,9 +269,7 @@ class CondorHistoryCollector(object):
         meta = self._get_meta(job)
 
         try:
-            record_id = (
-                f"{self.config.record_prefix}-{quote(job_id.encode('utf-8'), safe='')}"
-            )
+            record_id = f"{self.config.record_prefix}-{job_id}"
             record = Record(
                 record_id=record_id,
                 start_time=dt.fromtimestamp(start_time, tz=timezone.utc),
