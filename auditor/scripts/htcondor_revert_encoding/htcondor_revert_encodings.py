@@ -1,6 +1,7 @@
 import json
 import os
 from urllib.parse import unquote
+from json.decoder import JSONDecodeError
 
 import psycopg2
 from dotenv import load_dotenv
@@ -27,8 +28,8 @@ def decode_record(record_id, meta):
         decoded_meta = {
             key: [unquote(value) for value in values] for key, values in meta.items()
         }
-    except json.JSONDecodeError:
-        decoded_meta = {}  # If JSON decoding fails, return an empty dict
+    except Exception as e:
+        raise JSONDecodeError(f"Error decoding meta: {e}", str(meta), 0)
     return decoded_record_id, json.dumps(decoded_meta)
 
 
