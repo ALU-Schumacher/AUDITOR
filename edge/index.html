@@ -175,6 +175,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#htcondor-collector"><small>- HTCondor Collector</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#kubernetes-collector"><small>- Kubernetes Collector</small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -200,6 +204,17 @@
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#api">API</a>
                 </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#examples">Examples</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#kubernetes"><small>- Kubernetes</small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -676,6 +691,63 @@ In case the regex contains a group, the value is set to the (first) matching gro
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;RemoteUserCpu&quot;
 </span></code></pre>
+<h2 id="kubernetes-collector">Kubernetes Collector</h2>
+<p>This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via it's API. This means that the collector needs to be able to access the API as well as Prometheus.</p>
+<p>The easiest way to ensure access to the API is by running the collector directly on Kubernetes via the provided Helm Chart. Prometheus needs to be able to access the Kubelets of your cluster. If it is installed on Kubernetes, make sure it has some persistent storage. A small tutorial for an example setup can be found <a href="https://alu-schumacher.github.io/AUDITOR//edge/#kubernetes">here</a>.
+The following section explains the configuration of the collector.</p>
+<p>The collector can be started manually</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>./auditor-kubernetes-collector config.yaml
+</span></code></pre>
+<p>Or it can be installed on Kubernetes via the single Helm Chart</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>helm install auditor-collector helmcharts/charts/auditor-collector/ -n auditor
+</span></code></pre>
+<p>or through the parent Chart</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>helm install auditor helmcharts/ -n auditor
+</span></code></pre>
+<h3 id="configuration-2">Configuration</h3>
+<p>Configuration settings can be provided via a yaml file when run manually or through the Helm Chart. The parameters are as follows:</p>
+<table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>auditor_addr</code></td><td></td><td>Address of AUDITOR instance</td></tr>
+<tr><td><code>auditor_port</code></td><td><code>8000</code></td><td>Port of AUDITOR</td></tr>
+<tr><td><code>prometheus_addr</code></td><td></td><td>Address of Prometheus</td></tr>
+<tr><td><code>prometheus_port</code></td><td></td><td>Port of Prometheus</td></tr>
+<tr><td><code>record_prefix</code></td><td><code>""</code></td><td>Is prepended to all record IDs</td></tr>
+<tr><td><code>earliest_datetime</code></td><td><code>Now</code></td><td>Collector will ignore all pods finished before this time. Should be <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>. Note that the collector will save the timestamp of the last successful request to Kubernetes and will always choose the later time between this timestamp and <code>earliest_datetime</code>.</td></tr>
+<tr><td><code>auditor_timeout</code></td><td><code>10s</code></td><td>Timeout for connecting to AUDITOR</td></tr>
+<tr><td><code>prometheus_timeout</code></td><td><code>60s</code></td><td>Timeout for a single Prometheus query</td></tr>
+<tr><td><code>collect_interval</code></td><td><code>60s</code></td><td>Interval for collecting pod info from Kubernetes</td></tr>
+<tr><td><code>merge_interval</code></td><td><code>60s</code></td><td>Interval for collecting info from Prometheus. This also sets how often records will be sent to AUDITOR.</td></tr>
+<tr><td><code>database_path</code></td><td><code>"."</code></td><td>Directory to house the persistent sender queue</td></tr>
+<tr><td><code>job_filter</code></td><td></td><td>Sets which pods to account. See below</td></tr>
+<tr><td><code>backlog_interval</code></td><td><code>300s</code></td><td>How long to wait before retrying to fetch metrics from Prometheus</td></tr>
+<tr><td><code>backlog_maxretries</code></td><td><code>2</code></td><td>How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this</td></tr>
+<tr><td><code>log_level</code></td><td><code>INFO</code></td><td>Logging level</td></tr>
+</tbody></table>
+<p>Job filter settings:</p>
+<table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>namespace</code></td><td><code>["default"]</code></td><td>A whitelist of namespaces to consider</td></tr>
+<tr><td><code>labels</code></td><td><code>[]</code></td><td>A list of labels. A pod will be accounted if <em>all</em> conditions are true</td></tr>
+</tbody></table>
+<h3 id="example-config-1">Example Config</h3>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">auditor_addr</span><span>: </span><span style="color:#00a33f;">localhost
+</span><span style="color:#00a33f;">auditor_port</span><span>: 8000
+</span><span style="color:#00a33f;">prometheus_addr</span><span>: </span><span style="color:#00a33f;">localhost
+</span><span style="color:#00a33f;">prometheus_port</span><span>: 31000
+</span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;KUBE&quot;
+</span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2024-04-18T12:00:00Z&quot;
+</span><span style="color:#00a33f;">job_filter</span><span>:
+</span><span>  </span><span style="color:#00a33f;">namespace</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;default&quot;
+</span><span>  </span><span style="color:#00a33f;">labels</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">app==test
+</span><span style="color:#00a33f;">auditor_timeout</span><span>: 10
+</span><span style="color:#00a33f;">prometheus_timeout</span><span>: 90
+</span><span style="color:#00a33f;">collect_interval</span><span>: 30
+</span><span style="color:#00a33f;">send_interval</span><span>: 60
+</span><span style="color:#00a33f;">backlog_interval</span><span>: 300
+</span><span style="color:#00a33f;">backlog_maxretries</span><span>: 2
+</span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">debug
+</span></code></pre>
 <h1 id="plugins">Plugins</h1>
 <p>Plugins are used to retrieve data from Auditor for further processing.
 See below for all currently available collectors.</p>
@@ -989,6 +1061,99 @@ The filter options need to be provided as query string and are detailed in the <
 In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (<code>400 BAD REQUEST</code>).</li>
 </ul>
 <p>In the event of unforeseen errors, the server will respond with a <code>500 INTERNAL SERVER ERROR</code>.</p>
+<h1 id="examples">Examples</h1>
+<h2 id="kubernetes">Kubernetes</h2>
+<p>To install an AUDITOR stack on a Kubernetes cluster we provide a Helm Chart in <code>./helmcharts/</code> that includes the subcharts</p>
+<ul>
+<li><code>auditor</code> for the AUDITOR server</li>
+<li><code>auditor-collector</code> for the Kubernetes collector</li>
+<li><code>auditor-prometheus</code> for a Prometheus to scrape the kubelets</li>
+<li><code>auditor-apel</code> for the APEL plugin</li>
+</ul>
+<p>All charts can be (de-)activated in the partent charts <code>values.yaml</code> individually, so everything can be run on Kubernetes or separately.
+With the exception of the server chart, all deployments should be provided with persistent storage, while the <code>auditor</code> chart requires a Postgres.</p>
+<p>For the sake of this example we will provide a small Docker compose setup to run a Postgres instance and install all other components on Kubernetes.</p>
+<p>To set up Postgres we use the following files:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span># .env
+</span><span>AUDITOR_VERSION=0.6.2
+</span><span>
+</span><span>POSTGRES_USER=&quot;auditor&quot;
+</span><span>POSTGRES_PASSWORD=&quot;super_safe&quot;
+</span><span>POSTGRES_DB=&quot;auditor&quot;
+</span><span>POSTGRES_HOST=&quot;postgres&quot;
+</span><span>POSTGRES_PORT=&quot;5433&quot;
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#000000;"><code><span># docker-compose.yml
+</span><span>services:
+</span><span>
+</span><span>  postgres:
+</span><span>    image: postgres:16.2-alpine
+</span><span>    hostname: postgres
+</span><span>    volumes:
+</span><span>      - vol_postgres:/var/lib/postgresql/data
+</span><span>    # Note: During init the server is ready but only accepts connections via
+</span><span>    # socket. Specifying localhost makes sure init is done.
+</span><span>    healthcheck:
+</span><span>      test:
+</span><span>        - &quot;CMD&quot;
+</span><span>        - &quot;pg_isready&quot;
+</span><span>        - &quot;--dbname=$POSTGRES_DB&quot;
+</span><span>        - &quot;--username=$POSTGRES_USER&quot;
+</span><span>        - &quot;--host=localhost&quot;
+</span><span>      interval: 60s
+</span><span>      timeout: 3s
+</span><span>      start_period: 60s
+</span><span>      start_interval: 2s
+</span><span>      retries: 1
+</span><span>    ports:
+</span><span>      - ${POSTGRES_PORT}:5432
+</span><span>    networks:
+</span><span>      - auditor-on-kubernetes
+</span><span>
+</span><span>volumes:
+</span><span>  vol_postgres:
+</span><span>
+</span><span>networks:
+</span><span>  auditor-on-kubernetes:
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#000000;"><code><span># docker-compose-setup.yml
+</span><span>services:
+</span><span>  migrate:
+</span><span>    image: aluschumacher/auditor:${AUDITOR_VERSION}
+</span><span>    environment:
+</span><span>      AUDITOR_DATABASE__USERNAME: ${POSTGRES_USER}
+</span><span>      AUDITOR_DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
+</span><span>      AUDITOR_DATABASE__DATABASE_NAME: ${POSTGRES_DB}
+</span><span>      AUDITOR_DATABASE__HOST: postgres
+</span><span>      AUDITOR_DATABASE__PORT: 5432
+</span><span>    command: migrate
+</span><span>    networks:
+</span><span>      - auditor-on-kubernetes
+</span><span>    depends_on:
+</span><span>      postgres:
+</span><span>        condition: service_healthy
+</span><span>
+</span><span>  postgres:
+</span><span>    environment:
+</span><span>      POSTGRES_USER: ${POSTGRES_USER}
+</span><span>      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+</span><span>      POSTGRES_DB: ${POSTGRES_DB}
+</span></code></pre>
+<p>The first start of Postgres is done with</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>docker compose -f docker-compose.yml -f docker-compose-setup.yml up
+</span></code></pre>
+<p>to run the migration.</p>
+<p>The configuration of the AUDITOR stack is done through the <code>values.yaml</code> files of the charts.
+In particular, we need to provide the Postgres address in the parent chart or the <code>auditor</code> chart.</p>
+<p>We then install everything via the Helm Charts:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>kubectl create namespace auditor
+</span><span>helm install -n auditor auditor-stack helmcharts/
+</span></code></pre>
+<p>Note that, per default, none of the pods will have a persistent storage. It is however advised to provide the collector, the APEL plugin and especially the Prometheus instance with persistent storage.
+The <code>value.yaml</code> files contain a section with a simple example for this, using local paths.
+If you want to use it, set <code>persistentVolume.use</code> to <code>true</code> in the appropriate <code>values.yaml</code> and add the node to use in <code>persistentVolume.nodeAffinity</code>.
+Then, on the nodes in question the directory <code>/srv/auditor/{apel,collector,prometheus}</code> should exists.</p>
+<p>If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files <code>ca.pem</code>, <code>client.pem</code> and <code>client.key</code> in the <code>files</code> directory of its chart.</p>
 <h1 id="license">License</h1>
 <p>Licensed under either of</p>
 <ul>
