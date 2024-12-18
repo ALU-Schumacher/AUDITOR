@@ -4,7 +4,9 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.6.3 to unreleased/0.7.0 
+# From 0.6.3 to unreleased/0.7.0
+
+Please backup your db before proceeding with any changes that are listed below.
 
 ## Remove forbidden characters:
 The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier).

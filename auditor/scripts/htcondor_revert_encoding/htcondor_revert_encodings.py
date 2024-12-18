@@ -1,5 +1,6 @@
 import json
 import os
+from json.decoder import JSONDecodeError
 from urllib.parse import unquote
 
 import psycopg2
@@ -27,8 +28,8 @@ def decode_record(record_id, meta):
         decoded_meta = {
             key: [unquote(value) for value in values] for key, values in meta.items()
         }
-    except json.JSONDecodeError:
-        decoded_meta = {}  # If JSON decoding fails, return an empty dict
+    except Exception as e:
+        raise JSONDecodeError(f"Error decoding meta: {e}", str(meta), 0)
     return decoded_record_id, json.dumps(decoded_meta)
 
 
