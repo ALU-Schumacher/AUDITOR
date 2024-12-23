@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Auditor Docker container: Switch from fixed to latest Rust version ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Switch from pyo3-asyncio 0.20.0 to pyo3-async-runtimes 0.22.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update anyhow from 1.0.94 to 1.0.95 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update codecov/codecov-action from 3 to 5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.26.8 to 1.28.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 43.0.3 to 44.0.0 ([@dirksammel](https://github.com/dirksammel))
