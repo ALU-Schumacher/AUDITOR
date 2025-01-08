@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorial &mdash; pyauditor  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -127,7 +127,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <p>pyauditor is an async library and as such requires an event loop.</p>
 <section id="creating-a-record">
 <h2>Creating a Record<a class="headerlink" href="#creating-a-record" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">score</span>
 
 <span class="c1"># Define meta information</span>
 <span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span> <span class="c1"># Must be unique for all records in Auditor!</span>
@@ -169,7 +169,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <section id="connecting-to-auditor">
 <h2>Connecting to Auditor<a class="headerlink" href="#connecting-to-auditor" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder</span></code> is used to build an <code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code> object which can be used for interacting with Auditor:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">AuditorClientBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuditorClientBuilder</span>
 
 <span class="c1"># Create the builder</span>
 <span class="n">builder</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span>
@@ -342,7 +342,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="examples-1">
 <h3>Examples 1:<a class="headerlink" href="#examples-1" title="Link to this heading"></a></h3>
 <p>Query all records</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span>
 
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
@@ -352,7 +352,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="example-2">
 <h3>Example 2:<a class="headerlink" href="#example-2" title="Link to this heading"></a></h3>
 <p>Query records with start_time greater than the timestamp</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">QueryBuilder</span>
 
 <span class="c1"># Set the datetime value in Utc using Value object</span>
 <span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_datetime</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
@@ -371,7 +371,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="example-3">
 <h3>Example 3:<a class="headerlink" href="#example-3" title="Link to this heading"></a></h3>
 <p>Query records with meta key = site_id and value = site1</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">MetaOperator</span><span class="p">,</span> <span class="n">MetaQuery</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaOperator</span><span class="p">,</span> <span class="n">MetaQuery</span><span class="p">,</span> <span class="n">QueryBuilder</span>
 
 <span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;site1&quot;</span><span class="p">)</span>
 <span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
@@ -383,7 +383,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="example-4">
 <h3>Example 4:<a class="headerlink" href="#example-4" title="Link to this heading"></a></h3>
 <p>Query records with component name = CPU and amount = 10</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">ComponentQuery</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Operator</span><span class="p">,</span> <span class="n">ComponentQuery</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">QueryBuilder</span>
 
 <span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -396,7 +396,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="example-5">
 <h3>Example 5:<a class="headerlink" href="#example-5" title="Link to this heading"></a></h3>
 <p>Query records sorted by stop_time in descending order and limit the query to 500 records</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span><span class="p">,</span> <span class="n">SortBy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span><span class="p">,</span> <span class="n">SortBy</span>
 
 <span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">&quot;stop_time&quot;</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
@@ -407,7 +407,7 @@ as an argument to advanced_query function to get the records.</p>
 <section id="id1">
 <h3>Example 5:<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Query records by exact record_id</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyauditor</span> <span class="kn">import</span> <span class="n">QueryBuilder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span>
 
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="s2">&quot;record-1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
@@ -442,19 +442,19 @@ Only the actual numbers for hours, minutes, and so on matter.</p>
 <h3>Timestamp in local time<a class="headerlink" href="#timestamp-in-local-time" title="Link to this heading"></a></h3>
 <p>This requires the python modules <code class="docutils literal notranslate"><span class="pre">tzlocal</span></code>.</p>
 <p>Assuming that you are creating the timestamp yourself (it is not obtained from an external source), you need to attach the local timezone to the timestamp and then convert it to UTC:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tzlocal</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_localzone</span>
 <span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
 <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">48942</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you have a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> object from some external source, the timezone can be attached like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tzlocal</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_localzone</span>
 <span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
 <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime_from_somewhere_else</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When using <code class="docutils literal notranslate"><span class="pre">datetime.now()</span></code> the local timezone also has to be provided explicitly. However, the parameter is now called <code class="docutils literal notranslate"><span class="pre">tz</span></code> instead of <code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> because who needs consistency anyways?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tzlocal</span> <span class="kn">import</span> <span class="n">get_localzone</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tzlocal</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_localzone</span>
 <span class="n">local_tz</span> <span class="o">=</span> <span class="n">get_localzone</span><span class="p">()</span>
 <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 </pre></div>
