@@ -27,7 +27,10 @@ class MessageType(Enum):
 class Configurable(BaseModel):
     @classmethod
     def from_yaml(cls, loader: yaml.SafeLoader, node: yaml.nodes.MappingNode):
-        return cls(**loader.construct_mapping(node, deep=True))
+        mapping = loader.construct_mapping(node, deep=True)
+        string_mapping = {str(k): v for k, v in mapping.items()}
+
+        return cls(**string_mapping)
 
 
 class Function(Configurable):
