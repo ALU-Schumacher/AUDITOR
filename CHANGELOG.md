@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update crate-ci/typos from 1.26.8 to 1.28.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 43.0.3 to 44.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.13.0 to 1.14.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update pydantic from 2.9.2 to 2.10.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.9.2 to 2.10.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.7.1 to 0.9.0 ([@dirksammel](https://github.com/dirksammel))
