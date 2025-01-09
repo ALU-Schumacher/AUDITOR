@@ -212,7 +212,7 @@ def main():
     assert len(records) == 34
 
     for i in range(0, 10):
-        assert records[i].record_id == f"record2-{9-i:02d}"
+        assert records[i].record_id == f"record2-{9 - i:02d}"
 
     query_string = QueryBuilder().limit(4).build()
 

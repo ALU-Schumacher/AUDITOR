@@ -22,7 +22,7 @@ pub(crate) struct AuditorSender {
     hold_till_shutdown: Option<mpsc::Sender<()>>,
 }
 
-impl<'a> AuditorSender {
+impl AuditorSender {
     #[tracing::instrument(
         name = "Starting AuditorSender",
         skip(database, rx, shutdown_notifier, shutdown, channel, client)
