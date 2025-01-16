@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.9.2 to 2.10.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.7.1 to 0.9.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.7.1 to 0.9.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.3.0 to 75.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20240917 to 6.0.12.20241230 ([@dirksammel](https://github.com/dirksammel))
