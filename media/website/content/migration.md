@@ -11,20 +11,12 @@ Please backup your db before proceeding with any changes that are listed below.
 ## Remove forbidden characters:
 The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier).
 
-### HTCondor collector v0.6.3 and earlier
-- If you are running HTCondor collector (v0.6.3 and earlier), you have to run the python script which reverts the encodings for the records in the db. 
-- The script is in the following directory `auditor/scripts/htcondor_revert_encoding/htcondor_revert_encodings.py`.
+### HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier
+- If you are running HTCondor collector (v0.6.3 and earlier) or Slurm collector v0.6.3 and earlier, you have to run the python script which reverts the encodings for the records in the db. 
+- The script is in the following directory `auditor/scripts/revert_encoding`.
 - You can install the required dependencies with `pip install -r requirements.txt`
-- Run `python htcondor_revert_encodings.py`
-- Please add your database config to the .env file which is present in this directory `auditor/scripts/htcondor_revert_encoding`
-
-### Slurm collector v0.6.3 and earlier
-- If you are running the slurm collector (v0.6.3 and earlier), a rust program is included revert the `%2F` encoding to `/` for the meta info in the records in the db.
-- The rust program is in the following directory `auditor/scripts/slurm_revert_encoding`. Run `cargo run` to reverse the encoding.
-- Please add your database config to the .env file which is present in this directory `auditor/scripts/slurm_revert_encoding`
-
-
-Both these scripts connect directly to the database, therefore please provide the db configs to which you want to connect and revert the changes.
+- Run `python revert_encodings.py`
+- Please replace your database config to the .env file which is present in this directory `auditor/scripts/revert_encoding`
 
 ### New feature - TLS
 
