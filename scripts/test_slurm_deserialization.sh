@@ -59,12 +59,11 @@ function fill_auditor_db() {
 }
 
 function replace_encoded_string_in_db() {
-  cd auditor/scripts/slurm_revert_encoding/
-  cargo run
+  python auditor/scripts/revert_encoding/revert_encodings.py
 }
 
 function check_if_records_are_correctly_reverted() {
-  python ../test_valid_names/test_slurm_decoding.py
+  python auditor/scripts/test_valid_names/test_slurm_decoding.py
 }
 
 trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT

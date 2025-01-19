@@ -59,7 +59,7 @@ function fill_auditor_db() {
 }
 
 function replace_encoded_string_in_db() {
-  python auditor/scripts/htcondor_revert_encoding/htcondor_revert_encodings.py
+  python auditor/scripts/revert_encoding/revert_encodings.py
 }
 
 function check_if_records_are_correctly_reverted() {
