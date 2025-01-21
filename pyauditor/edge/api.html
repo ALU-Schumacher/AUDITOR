@@ -56,6 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.database_path"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.database_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.send_interval"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.send_interval()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.timeout"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.timeout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyauditor.AuditorClientBuilder.with_tls"><code class="docutils literal notranslate"><span class="pre">AuditorClientBuilder.with_tls()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pyauditor.AuditorClient"><code class="docutils literal notranslate"><span class="pre">AuditorClient</span></code></a><ul>
@@ -295,6 +296,21 @@ This setting is only relevant to the <code class="docutils literal notranslate">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timeout</strong> (<em>int</em>) – Timeout in sections</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyauditor.AuditorClientBuilder.with_tls">
+<span class="sig-name descname"><span class="pre">with_tls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ca_cert_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_cert_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyauditor.AuditorClientBuilder.with_tls" title="Link to this definition"></a></dt>
+<dd><p>Set the ca_certificate path, client_certificate path and the client key path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ca_cert_path</strong> – Path to the ca_certificate</p></li>
+<li><p><strong>client_cert_path</strong> – Path to the client_certificate</p></li>
+<li><p><strong>client_key_path</strong> – Path to the client_key_path</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
