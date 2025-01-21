@@ -23,6 +23,7 @@ auditor:
   port: 3333
   timeout: 5000
   site_meta_field: site_in_meta
+  use_tls: False
   
 summary_fields:
   mandatory:
