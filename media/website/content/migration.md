@@ -9,14 +9,14 @@ weight = 3
 Please backup your db before proceeding with any changes that are listed below.
 
 ## Remove forbidden characters:
-The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier).
+The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:
 
 ### HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier
-- If you are running HTCondor collector (v0.6.3 and earlier) or Slurm collector v0.6.3 and earlier, you have to run the python script which reverts the encodings for the records in the db. 
-- The script is in the following directory `auditor/scripts/revert_encoding`.
-- You can install the required dependencies with `pip install -r requirements.txt`
+- Clone the github repository [git_repo](https://github.com/ALU-Schumacher/AUDITOR).
+- The script for reverting encodings is located at: `auditor/scripts/revert_encoding`.
+- Install the required dependencies with `pip install -r requirements.txt`
+- Replace the placeholder values in the .env file with the values corresponding to your database config.
 - Run `python revert_encodings.py`
-- Please replace your database config to the .env file which is present in this directory `auditor/scripts/revert_encoding`
 
 ### New feature - TLS
 
