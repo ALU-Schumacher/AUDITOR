@@ -342,6 +342,7 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <p>We offer versioned tags (starting from <code>0.2.0</code>) or the <code>edge</code> tag, which corresponds to the latest commit on the <code>main</code> branch.</p>
 <h2 id="configuration-files">Configuration files</h2>
 <p>Besides environment variables, a YAML configuration file can be used:</p>
+<p>Without TLS</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
 </span><span>  </span><span style="color:#00a33f;">addr</span><span>: 0.0.0.0
 </span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
@@ -361,6 +362,17 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span></code></pre>
+<p>To enable the TLS for the above config, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
+</span><span>  use_tls: true
+</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
+</span><span>  server_cert_path: &quot;/path/server-cert.pem&quot;
+</span><span>  server_key_path: &quot;/path/server-key.pem&quot;
+</span><span>  https_addr: &quot;0.0.0.0&quot;
+</span><span>  https_port: 8005
 </span></code></pre>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
 <p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
@@ -438,6 +450,10 @@ It can be installed from the provided RPM or can be built with this command:</p>
 <tr><td><code>meta</code></td><td>A list of meta objects that are added to the record. Each meta object needs to have a <code>name</code> that is used as the name of the meta object, and a <code>key</code>, that corresponds to a field in the job information. The type of the data can be specified with <code>key_type</code>. Possible values are <code>Integer</code> (default), <code>IntegerMega</code> (integer with a <code>M</code> behind the number), <code>Time</code>, <code>String</code>, <code>DateTime</code>, <code>Id</code>, <code>Json</code>. Per default, empty values are not allowed. This can be changed by setting <code>key_allow_empty</code> to <code>true</code>. Alternatively, a default value can be specified with <code>default_value</code>. Setting meta information can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above .</td></tr>
 <tr><td><code>components</code></td><td>A list of components that is added to the record. A component needs to have a <code>name</code>, <code>key</code>, and <code>key_type</code>, similar to the <code>meta</code> configuration. One or multiple scores can be added to a component with the <code>scores</code> option. Each score config needs to have a <code>name</code> and a <code>value</code>. Setting scores can optionally be limited to a subset of records using the <code>only_if</code> syntax, as described above.</td></tr>
 <tr><td><code>log_level</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>).</td></tr>
+<tr><td><code>use_tls</code></td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Example: <code>/path/rootCA.pem</code>.</td></tr>
+<tr><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: <code>/path/client-cert.pem</code>.</td></tr>
+<tr><td><code>client_key_path</code></td><td>Path to the client's private key used for TLS. Example: <code>/path/client-key.pem</code>.</td></tr>
 </tbody></table>
 <h4 id="job-filter">Job filter</h4>
 <p>Job filters can be used to filter the slurm jobs when calling the <code>sacct</code> command.
@@ -450,6 +466,7 @@ The following filters are supported:</p>
 <tr><td><code>account</code></td><td>A list of accounts. Per default no filter is applied.</td></tr>
 </tbody></table>
 <h3 id="example-configuration">Example configuration</h3>
+<p>without TLS</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;auditor_host_addr&quot;
 </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;slurm&quot;
@@ -498,6 +515,15 @@ The following filters are supported:</p>
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;NNodes&quot;
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span></code></pre>
+<p>To enable the TLS for the above config, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
+</span><span>  use_tls: true
+</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
+</span><span>  client_cert_path: &quot;/path/client-cert.pem&quot;
+</span><span>  client_key_path: &quot;/path/client-key.pem&quot;
 </span></code></pre>
 <h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
 <p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
@@ -552,6 +578,8 @@ The verbosity of logging can be set with the <code>log_level</code> option. Poss
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;Memory&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Mem&quot;
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
 </span></code></pre>
 <p>Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
 The matching is performed on values associated with certain keys in the <code>scontrol</code> output.
@@ -581,6 +609,15 @@ Regex is accepted.</p>
 </span><span>    </span><span style="color:#00a33f;">only_if</span><span>:
 </span><span>      </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;Partition&quot;
 </span><span>      </span><span style="color:#00a33f;">matches</span><span>: </span><span style="color:#00a33f;">&quot;^part2$&quot;
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span></code></pre>
+<p>To enable the TLS for both the above configs, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/rootCA.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">client_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/client-cert.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">client_key_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/client-key.pem&quot;
 </span></code></pre>
 <h2 id="htcondor-collector">HTCondor Collector</h2>
 <p>The collector relies on <code>condor_history</code> to retrieve the information about the jobs.
@@ -617,6 +654,10 @@ Further, optional arguments are</p>
 <tr><td><code>job_status</code></td><td>List of job statuses considered. See <a href="https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers">HTCondor magic numbers</a>.</td></tr>
 <tr><td><code>meta</code></td><td>Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s.<br>If multiple <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s are given for specified name, the values are appended to a list. A special case is <code>site</code>, which is a list of <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s, but only the first match is used.</td></tr>
 <tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s).</td></tr>
+<tr><td><code>use_tls</code></td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Example: <code>/path/rootCA.pem</code>.</td></tr>
+<tr><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: <code>/path/client-cert.pem</code>.</td></tr>
+<tr><td><code>client_key_path</code></td><td>Path to the client's private key used for TLS. Example: <code>/path/client-key.pem</code>.</td></tr>
 </tbody></table>
 <p>The following parameters are optional:</p>
 <table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
@@ -690,6 +731,15 @@ In case the regex contains a group, the value is set to the (first) matching gro
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;MemoryProvisioned&quot;
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;UserCPU&quot;
 </span><span>    </span><span style="color:#00a33f;">key</span><span>: </span><span style="color:#00a33f;">&quot;RemoteUserCpu&quot;
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">False
+</span></code></pre>
+<p>To enable the TLS for both the above configs, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
+</span><span>  use_tls: True
+</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
+</span><span>  client_cert_path: &quot;/path/client-cert.pem&quot;
+</span><span>  client_key_path: &quot;/path/client-key.pem&quot;
 </span></code></pre>
 <h2 id="kubernetes-collector">Kubernetes Collector</h2>
 <p>This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via it's API. This means that the collector needs to be able to access the API as well as Prometheus.</p>
@@ -722,6 +772,10 @@ The following section explains the configuration of the collector.</p>
 <tr><td><code>backlog_interval</code></td><td><code>300s</code></td><td>How long to wait before retrying to fetch metrics from Prometheus</td></tr>
 <tr><td><code>backlog_maxretries</code></td><td><code>2</code></td><td>How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this</td></tr>
 <tr><td><code>log_level</code></td><td><code>INFO</code></td><td>Logging level</td></tr>
+<tr><td><code>use_tls</code></td><td>'false'</td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>)</td></tr>
+<tr><td><code>ca_cert_path</code></td><td></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Example: <code>/path/rootCA.pem</code>.</td></tr>
+<tr><td><code>client_cert_path</code></td><td></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: <code>/path/client-cert.pem</code>.</td></tr>
+<tr><td><code>client_key_path</code></td><td></td><td>Path to the client's private key used for TLS. Example: <code>/path/client-key.pem</code>.</td></tr>
 </tbody></table>
 <p>Job filter settings:</p>
 <table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
@@ -747,6 +801,15 @@ The following section explains the configuration of the collector.</p>
 </span><span style="color:#00a33f;">backlog_interval</span><span>: 300
 </span><span style="color:#00a33f;">backlog_maxretries</span><span>: 2
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">debug
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span></code></pre>
+<p>To enable the TLS for both the above configs, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
+</span><span>  use_tls: true
+</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
+</span><span>  client_cert_path: &quot;/path/client-cert.pem&quot;
+</span><span>  client_key_path: &quot;/path/client-key.pem&quot;
 </span></code></pre>
 <h1 id="plugins">Plugins</h1>
 <p>Plugins are used to retrieve data from Auditor for further processing.
@@ -986,6 +1049,15 @@ Priorities are updated at a frequency that can be set via the configuration.</p>
 </span><span>  </span><span style="color:#00a33f;">metrics</span><span>:
 </span><span>    - </span><span style="color:#00a33f;">ResourceUsage
 </span><span>    - </span><span style="color:#00a33f;">Priority
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span></code></pre>
+<p>To enable the TLS for both the above configs, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
+</span><span>  use_tls: true
+</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
+</span><span>  client_cert_path: &quot;/path/client-cert.pem&quot;
+</span><span>  client_key_path: &quot;/path/client-key.pem&quot;
 </span></code></pre>
 <p>The Auditor instance that is providing the records can be configured with the <code>auditor</code> block.
 Here, <code>addr</code> refers to the address of the machine that hosts the Auditor instance. The port can be specified with <code>port</code>.
@@ -1015,7 +1087,14 @@ Inside the <code>prometheus</code> block, the address and port of the HTTP serve
 The metrics will then be available at <code>&lt;addr&gt;:&lt;port&gt;/metrics</code>
 The <code>metrics</code> list specifies the metrics that are exported.
 Right now the values <code>ResourceUsage</code> (for the amount of provided resources in the given duration)
-and <code>Priority</code> (for the calculated priority value) are supported.</p>
+and <code>Priority</code> (for the calculated priority value) are supported.
+Set <code>use_tls</code> to <code>true</code> to enable TLS encryption. If <code>use_tls</code> is <code>false</code>, TLS will not be used, and the remaining parameters will not take effect.
+If TLS is enabled:</p>
+<ul>
+<li><strong><code>ca_cert_path</code>:</strong> This parameter should point to the trusted CA certificate used to verify the server's certificate.</li>
+<li><strong><code>client_cert_path</code>:</strong> This parameter should point to the client’s TLS certificate, used for mutual TLS (mTLS) authentication.</li>
+<li><strong><code>client_key_path</code>:</strong> This parameter should point to the private key corresponding to the client’s certificate.</li>
+</ul>
 <h3 id="priority-computation-modes">Priority computation modes</h3>
 <p>As stated above, the priorities are computed from the provided resources of each group.
 However, the computed resources and the priorities are in different units and span different ranges.

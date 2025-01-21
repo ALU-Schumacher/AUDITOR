@@ -79,6 +79,20 @@
                 </div>
                 
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#new-feature-tls"><small>- New feature - TLS</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#tls-configuration-table-for-auditor-auditor-is-referred-to-as-the-server"><small>- TLS Configuration Table for AUDITOR (AUDITOR is referred to as the server)</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#tls-configuration-table-for-collectors-and-plugins-all-collectors-and-plugins-are-referred-to-as-the-clients"><small>- TLS Configuration Table for Collectors and Plugins (All collectors and plugins are referred to as the clients)</small></a>
+                </div>
+                
+                
+                
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-6-2-to-0-6-3">From 0.6.2 to 0.6.3</a>
                 </div>
@@ -210,6 +224,27 @@
             
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-6-3-to-unreleased-0-7-0">From 0.6.3 to unreleased/0.7.0</h1>
+<h3 id="new-feature-tls">New feature - TLS</h3>
+<p>TLS is added to AUDITOR, all collectors and plugins. A new config section called tls_config is required by all config files. <code>use_tls</code> is a compulsory field of type bool that defines whether to use the TLS or not.</p>
+<h2 id="tls-configuration-table-for-auditor-auditor-is-referred-to-as-the-server">TLS Configuration Table for AUDITOR (AUDITOR is referred to as the server)</h2>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th><th>Example Value</th><th>Required if <code>use_tls</code> is <code>true</code></th></tr></thead><tbody>
+<tr><td><code>use_tls</code></td><td>Boolean</td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td><td><code>true</code> or <code>false</code></td><td>Yes</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>String</td><td>Path to the root Certificate Authority (CA) certificate for validating client certificates.</td><td><code>/path/rootCA.pem</code></td><td>Yes</td></tr>
+<tr><td><code>server_cert_path</code></td><td>String</td><td>Path to the server's TLS certificate.</td><td><code>/path/server-cert.pem</code></td><td>Yes</td></tr>
+<tr><td><code>server_key_path</code></td><td>String</td><td>Path to the server's private key used for TLS.</td><td><code>/path/server-key.pem</code></td><td>Yes</td></tr>
+<tr><td><code>https_addr</code></td><td>String</td><td>The HTTPS address where the server will listen. Defaults to a pre-configured value if not set.</td><td><code>"0.0.0.0"</code></td><td>No</td></tr>
+<tr><td><code>https_port</code></td><td>Integer</td><td>The HTTPS port where the server will listen. Defaults to a pre-configured value if not set.</td><td><code>8003</code></td><td>No</td></tr>
+</tbody></table>
+<p>An example config is provided at the following directory in the github repository <code>auditor/configuration/tls_config.yaml</code></p>
+<hr />
+<h2 id="tls-configuration-table-for-collectors-and-plugins-all-collectors-and-plugins-are-referred-to-as-the-clients">TLS Configuration Table for Collectors and Plugins (All collectors and plugins are referred to as the clients)</h2>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th><th>Example Value</th><th>Required if <code>use_tls</code> is <code>true</code></th></tr></thead><tbody>
+<tr><td><code>use_tls</code></td><td>Boolean</td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td><td><code>true</code> or <code>false</code></td><td>Yes</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>String</td><td>Path to the root Certificate Authority (CA) certificate for validating server certificates.</td><td><code>/path/rootCA.pem</code></td><td>Yes</td></tr>
+<tr><td><code>client_cert_path</code></td><td>String</td><td>Path to the client's TLS certificate.</td><td><code>/path/client-cert.pem</code></td><td>Yes</td></tr>
+<tr><td><code>client_key_path</code></td><td>String</td><td>Path to the client's private key used for TLS.</td><td><code>/path/client-key.pem</code></td><td>Yes</td></tr>
+<tr><td>Please have a look at the AUDITOR documentation for the new changes in the config files for <a href="https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=release%20page.-,Collectors,-Collectors%20are%20used">collectors</a> and <a href="https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=%3A%20%22RemoteUserCpu%22-,Plugins,-Plugins%20are%20used">plugins</a></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
 <h1 id="from-0-6-2-to-0-6-3">From 0.6.2 to 0.6.3</h1>
 <h3 id="update-to-sqlx-0-8-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.2</p>
