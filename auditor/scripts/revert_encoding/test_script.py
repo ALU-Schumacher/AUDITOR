@@ -3,17 +3,20 @@ import unittest
 from unittest.mock import MagicMock, patch
 from urllib.parse import quote
 
-from htcondor_revert_encodings import decode_record, main
+from revert_encodings import decode_record, main
 
 
 class TestDecodeRecord(unittest.TestCase):
     def test_decode_record_success(self):
         # Test for successful decoding
-        record_id = quote("test_record_id")
-        meta = {"key1": [quote("value1"), quote("value2")], "key2": [quote("value3")]}
+        record_id = quote("test_record_id/")
+        meta = {
+            "key1": [quote("value1*"), quote("value2%")],
+            "key2": [quote("value3!")],
+        }
 
-        expected_record_id = "test_record_id"
-        expected_meta = {"key1": ["value1", "value2"], "key2": ["value3"]}
+        expected_record_id = "test_record_id/"
+        expected_meta = {"key1": ["value1*", "value2%"], "key2": ["value3!"]}
 
         decoded_record_id, decoded_meta = decode_record(record_id, meta)
 
@@ -43,8 +46,8 @@ def test_main(mock_connect):
 
     # Mock database rows
     rows = [
-        (1, quote("record1"), {"key1": [quote("value1")]}),
-        (2, quote("record2"), {"key2": [quote("value2")]}),
+        (1, quote("record1/"), {"key1": [quote("value1/")]}),
+        (2, quote("record2/"), {"key2": [quote("value2/")]}),
     ]
 
     mock_cursor.fetchall.side_effect = [rows, []]  # Return rows and then stop
@@ -52,9 +55,7 @@ def test_main(mock_connect):
     def mock_decode_record(record_id, meta):
         return record_id.replace("%20", " "), json.dumps(meta)
 
-    with patch(
-        "htcondor_revert_encodings.decode_record", side_effect=mock_decode_record
-    ):
+    with patch("revert_encodings.decode_record", side_effect=mock_decode_record):
         main()
 
     # Assertions
