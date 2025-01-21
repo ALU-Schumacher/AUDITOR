@@ -7,6 +7,7 @@ import yaml
 from pydantic import ValidationError
 
 from auditor_apel_plugin.config import (
+    AuditorConfig,
     ComponentField,
     Config,
     ConstantField,
@@ -83,7 +84,69 @@ class TestConfig:
                 report_interval=report_interval,
                 message_type=message_type,
             )
+
         assert pytest_error.type is ValidationError
+
+        ip = "127.0.0.1"
+        port = 8000
+        timeout = 60
+        site_meta_field = "site_id"
+        use_tls = False
+
+        auditorconfig = AuditorConfig(
+            ip=ip,
+            port=port,
+            timeout=timeout,
+            site_meta_field=site_meta_field,
+            use_tls=use_tls,
+        )
+
+        assert auditorconfig.use_tls == use_tls
+
+        use_tls = True
+
+        with pytest.raises(Exception) as pytest_error:
+            auditorconfig = AuditorConfig(
+                ip=ip,
+                port=port,
+                timeout=timeout,
+                site_meta_field=site_meta_field,
+                use_tls=use_tls,
+            )
+
+        assert pytest_error.type is ValidationError
+
+        ca_cert_path = "/test/path"
+
+        with pytest.raises(Exception) as pytest_error:
+            auditorconfig = AuditorConfig(
+                ip=ip,
+                port=port,
+                timeout=timeout,
+                site_meta_field=site_meta_field,
+                use_tls=use_tls,
+                ca_cert_path=ca_cert_path,
+            )
+
+        assert pytest_error.type is ValidationError
+
+        client_cert_path = "/test/path"
+        client_key_path = "/test/path"
+
+        auditorconfig = AuditorConfig(
+            ip=ip,
+            port=port,
+            timeout=timeout,
+            site_meta_field=site_meta_field,
+            use_tls=use_tls,
+            ca_cert_path=ca_cert_path,
+            client_cert_path=client_cert_path,
+            client_key_path=client_key_path,
+        )
+
+        assert auditorconfig.ca_cert_path == ca_cert_path
+        assert auditorconfig.client_cert_path == client_cert_path
+        assert auditorconfig.client_key_path == client_key_path
 
     def test_get_value_default(self):
         class TestField(Field):

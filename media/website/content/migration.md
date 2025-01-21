@@ -45,7 +45,7 @@ An example config is provided at the following directory in the github repositor
 | `ca_cert_path`       | String          | Path to the root Certificate Authority (CA) certificate for validating server certificates. | `/path/rootCA.pem`             | Yes                              |
 | `client_cert_path`   | String          | Path to the client's TLS certificate.                                                       | `/path/client-cert.pem`        | Yes                              |
 | `client_key_path`    | String          | Path to the client's private key used for TLS.                                              | `/path/client-key.pem`         | Yes                              |
-Please have a look at the AUDITOR documentation for the new changes in the config files for [collectors](https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=release%20page.-,Collectors,-Collectors%20are%20used) and [plugins](https://alu-schumacher.github.io/AUDITOR/latest/#:~:text=%3A%20%22RemoteUserCpu%22-,Plugins,-Plugins%20are%20used)
+Please have a look at the AUDITOR documentation for the new changes in the config files for [collectors](https://alu-schumacher.github.io/AUDITOR/latest/#collectors) and [plugins](https://alu-schumacher.github.io/AUDITOR/latest/#plugins)
 
 # From 0.6.2 to 0.6.3
 

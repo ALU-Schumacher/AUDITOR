@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 - AUDITOR: Remove forbidden characters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
+- AUDITOR, plugins and collectors: parameter use_tls has to be added to config files ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 - [RUSTSEC-2024-0421]: Update idna from 0.5.0 to 1.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -17,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2024-0402]: Update hashbrown from 0.15.0 to 0.15.2 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
-- AUDITOR: Add tls to AUDITOR, plugins and collectors ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add tls to AUDITOR, plugins and collectors ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Add function for user->VO mapping to config ([@dirksammel](https://github.com/dirksammel))
 - CI: Add workflow to test publishing to the PyPI test repo ([@dirksammel](https://github.com/dirksammel))
 - Kubernetes collector: Added a Kubernetes collector ([@rkleinem](https://github.com/rkleinem))

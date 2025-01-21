@@ -155,8 +155,18 @@ def main():
     auditor_ip = config.auditor.ip
     auditor_port = config.auditor.port
     auditor_timeout = config.auditor.timeout
+    auditor_tls = config.auditor.use_tls
 
     builder = AuditorClientBuilder()
+
+    if auditor_tls:
+        auditor_ca_cert = config.auditor.ca_cert_path
+        auditor_client_cert = config.auditor.client_cert_path
+        auditor_client_key = config.auditor.client_key_path
+        builder = builder.with_tls(
+            auditor_client_cert, auditor_client_key, auditor_ca_cert
+        )
+
     builder = builder.address(auditor_ip, auditor_port).timeout(auditor_timeout)
     client = builder.build_blocking()
 

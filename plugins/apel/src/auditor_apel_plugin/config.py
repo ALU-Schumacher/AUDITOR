@@ -11,7 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 import yaml
 from pyauditor import Record
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from .utility import vo_mapping
 
@@ -55,6 +55,29 @@ class AuditorConfig(Configurable):
     port: int
     timeout: int
     site_meta_field: str
+    use_tls: bool
+    ca_cert_path: Optional[str] = None
+    client_cert_path: Optional[str] = None
+    client_key_path: Optional[str] = None
+
+    @model_validator(mode="after")
+    def check_tls_config(self):
+        if self.use_tls:
+            missing_parameters = [
+                parameter_name
+                for parameter_name, value in {
+                    "ca_cert_path": self.ca_cert_path,
+                    "client_cert_path": self.client_cert_path,
+                    "client_key_path": self.client_key_path,
+                }.items()
+                if value == None
+            ]
+            if missing_parameters:
+                missing_parameters_str = ", ".join(missing_parameters)
+                raise ValueError(
+                    f"Parameters {missing_parameters_str} are required if use_tls: True"
+                )
+        return self
 
 
 class AuthConfig(Configurable):
