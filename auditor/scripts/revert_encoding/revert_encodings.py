@@ -36,6 +36,8 @@ def decode_record(record_id, meta):
 def main():
     BATCH_SIZE = 1000
     offset = 0
+    conn = None
+    cursor = None
 
     try:
         conn = psycopg2.connect(**DB_CONFIG)
