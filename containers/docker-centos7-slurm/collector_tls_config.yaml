@@ -1,0 +1,56 @@
+addr: "host.docker.internal"
+port: 8000
+record_prefix: "slurm"
+job_filter:
+  status:  # A list of acceptable job statuses
+    - "completed"
+sacct_frequency: 2 # in seconds
+sender_frequency: 1 # in seconds
+sites:
+  - name: "SiteA"
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
+  - name: "SiteB"
+    only_if:
+      key: "Partition"
+      matches: "^part2$"
+meta:
+  - name: Comment
+    key: "Comment"
+    key_type: Json
+components:
+  - name: "Cores"
+    key: "NCPUS"
+    scores:
+      - name: "HEPSPEC06"
+        value: 1.1
+        only_if:
+          key: "Partition"
+          matches: "^part1$"
+      - name: "HEPSPEC06"
+        value: 1.2
+        only_if:
+          key: "Partition"
+          matches: "^part2$"
+  - name: "SystemCPU"
+    key: "SystemCPU"
+    key_type: Time
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
+  - name: "UserCPU"
+    key: "UserCPU"
+    key_type: Time
+    only_if:
+      key: "Partition"
+      matches: "^part1$"
+  - name: "Memory"
+    key: "ReqMem"
+    key_type: IntegerMega
+tls_config:
+  use_tls: true
+  ca_cert_path: "/client_certs/rootCA.pem"
+  client_cert_path: "/client_certs/client-cert.pem"
+  client_key_path: "/client_certs/client-key.pem" 
+

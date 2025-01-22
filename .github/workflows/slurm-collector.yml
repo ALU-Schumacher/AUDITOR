@@ -80,3 +80,7 @@ jobs:
 
       - name: Test Slurm collector
         run: SKIP_COMPILATION=true ./scripts/test_slurm_collector.sh
+
+      - name: Test tls Slurm collector 
+        run: SKIP_COMPILATION=true ./scripts/test_tls_slurm_collector.sh
+
