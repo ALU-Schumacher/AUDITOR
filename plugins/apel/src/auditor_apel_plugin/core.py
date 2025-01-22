@@ -455,10 +455,15 @@ def get_token(config):
     except requests.Timeout:
         logger.critical("Timeout while getting token")
         raise
-
-    token = response.json()["token"]
-
-    return token
+    try:
+        return response.json()["token"]
+    except KeyError:
+        if error_message := response.json().get("error", {}).get("message"):
+            raise RuntimeError(
+                f"could not get authentication token: {error_message} [{response.status_code} {response.reason}]"
+            )
+        response.raise_for_status()
+        raise
 
 
 def sign_msg(config, msg):
