@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.9.2 to 2.10.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.20.3 to 0.22.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.3 to 8.3.4 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.7.1 to 0.9.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.7.1 to 0.9.3 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update rustls from 0.23.20 to 0.23.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde from 1.0.216 to 1.0.217 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update setuptools from 75.3.0 to 75.8.0 ([@dirksammel](https://github.com/dirksammel))
