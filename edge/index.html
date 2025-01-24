@@ -866,7 +866,11 @@ See below for all currently available collectors.</p>
 </span><span>  </span><span style="color:#00a33f;">port</span><span>: 3333
 </span><span>  </span><span style="color:#00a33f;">timeout</span><span>: 60
 </span><span>  </span><span style="color:#00a33f;">site_meta_field</span><span>: </span><span style="color:#00a33f;">site_id
-</span><span>  
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">True
+</span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">/path/rootCA.pem
+</span><span>  </span><span style="color:#00a33f;">client_cert_path</span><span>: </span><span style="color:#00a33f;">/path/client-cert.pem
+</span><span>  </span><span style="color:#00a33f;">client_key_path</span><span>: </span><span style="color:#00a33f;">/path/client-key.pem
+</span><span>
 </span><span style="color:#00a33f;">summary_fields</span><span>:
 </span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
 </span><span>    </span><span style="color:#00a33f;">NormalisedWallDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedWallDurationField
@@ -967,6 +971,10 @@ See below for all currently available collectors.</p>
 <tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
 <tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+<tr><td><code>auditor</code></td><td><code>use_tls</code></td><td>Specifies whether TLS is enabled (<code>True</code>) or disabled (<code>False</code>).</td></tr>
+<tr><td><code>auditor</code></td><td><code>ca_cert_path</code></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if <code>use_tls</code> is True.</td></tr>
+<tr><td><code>auditor</code></td><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if <code>use_tls</code> is True.</td></tr>
+<tr><td><code>auditor</code></td><td><code>client_key_path</code></td><td>Path to the client's private key used for TLS. Only needed if <code>use_tls</code> is True.</td></tr>
 </tbody></table>
 <p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
 <table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
