@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ruff from 0.7.1 to 0.9.3 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update rustls from 0.23.20 to 0.23.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde from 1.0.216 to 1.0.217 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update serde_json from 1.0.132 to 1.0.137 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.3.0 to 75.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from 1.0.69 to 2.0.7 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
