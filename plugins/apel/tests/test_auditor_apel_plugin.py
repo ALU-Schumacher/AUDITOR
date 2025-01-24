@@ -22,7 +22,6 @@ from auditor_apel_plugin.core import (
     get_start_time,
     get_time_json,
     get_voms_info,
-    replace_record_string,
     sign_msg,
     update_time_json,
 )
@@ -627,9 +626,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 15520000,
             "n_nodes": 1,
             "site": "test-site-1",
-            "submit_host": "https:%2F%2Ftest1.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test1: test1",
-            "voms": "%2Fatlas%2FRole=production",
+            "submit_host": "https://test1.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
+            "voms": "/atlas/Role=production",
         }
 
         rec_2_values = {
@@ -641,9 +640,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 12234325,
             "n_nodes": 2,
             "site": "test-site-2",
-            "submit_host": "https:%2F%2Ftest2.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas",
+            "submit_host": "https://test2.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas",
         }
 
         rec_3_values = {
@@ -657,8 +656,8 @@ class TestAuditorApelPlugin:
             "site": "test-site-2",
             "user": "second_user",
             "submit_host": None,
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas%2Fde%2FRole=production",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas/de/Role=production",
         }
 
         rec_4_values = {
@@ -672,8 +671,8 @@ class TestAuditorApelPlugin:
             "site": "test-site-2",
             "user": "second_user",
             "submit_host": None,
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas%2Fde",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas/de",
         }
 
         rec_5_values = {
@@ -687,7 +686,7 @@ class TestAuditorApelPlugin:
             "site": "test-site-2",
             "user": "second_user",
             "submit_host": None,
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
             "voms": None,
         }
 
@@ -702,7 +701,7 @@ class TestAuditorApelPlugin:
             "site": "test-site-2",
             "user": "second_user",
             "submit_host": None,
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
             "voms": "atlas",
         }
 
@@ -754,20 +753,6 @@ class TestAuditorApelPlugin:
         assert result["vo"] is None
         assert result["vogroup"] is None
         assert result["vorole"] is None
-
-    def test_replace_record_string(self):
-        test_str_1 = "abcd"
-        test_str_2 = "%2Fa%2Fb%2Fc%2Fd%2F"
-        test_str_3 = "El%20Ni%C3%B1o"
-
-        result = replace_record_string(test_str_1)
-        assert result == "abcd"
-
-        result = replace_record_string(test_str_2)
-        assert result == "/a/b/c/d/"
-
-        result = replace_record_string(test_str_3)
-        assert result == "El Niño"
 
     def test_get_records(self):
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
@@ -853,9 +838,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 15520000,
             "n_nodes": 1,
             "site": "test-site-1",
-            "submit_host": "https:%2F%2Ftest1.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test1: test1",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test1.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
+            "voms": "/atlas/de",
         }
 
         rec_2_values = {
@@ -867,9 +852,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 12234325,
             "n_nodes": 2,
             "site": "test-site-2",
-            "submit_host": "https:%2F%2Ftest2.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test2.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas/de",
         }
 
         rec_1 = create_rec(rec_1_values, conf["auditor"])
@@ -922,9 +907,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 15520000,
             "n_nodes": 1,
             "site": None,
-            "submit_host": "https:%2F%2Ftest1.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test1: test1",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test1.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
+            "voms": "/atlas/de",
         }
 
         rec_2_values = {
@@ -936,9 +921,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 12234325,
             "n_nodes": 2,
             "site": "test-site-2",
-            "submit_host": "https:%2F%2Ftest2.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test2.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas/de",
         }
 
         rec_1 = create_rec(rec_1_values, conf["auditor"])
@@ -1030,9 +1015,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 15520000,
             "n_nodes": 1,
             "site": "test-site-1",
-            "submit_host": "https:%2F%2Ftest1.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test1: test1",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test1.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
+            "voms": "/atlas/de",
         }
 
         rec_2_values = {
@@ -1044,9 +1029,9 @@ class TestAuditorApelPlugin:
             "tot_cpu": 12234325,
             "n_nodes": 2,
             "site": "test-site-2",
-            "submit_host": "https:%2F%2Ftest2.submit_host.de:1234%2Fxxx",
-            "user_name": "%2FDC=ch%2FDC=cern%2FOU=Users%2FCN=test2: test2",
-            "voms": "%2Fatlas%2Fde",
+            "submit_host": "https://test2.submit_host.de:1234/xxx",
+            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
+            "voms": "/atlas/de",
         }
 
         rec_value_list = [rec_1_values, rec_2_values]
