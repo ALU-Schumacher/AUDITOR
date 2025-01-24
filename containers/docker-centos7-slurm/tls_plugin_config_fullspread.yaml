@@ -1,0 +1,36 @@
+auditor:
+  addr: "host.docker.internal"
+  port: 8000
+components:
+  NumCPUs: "HEPSPEC"
+min_priority: 1
+max_priority: 65335
+computation_mode: FullSpread
+group_mapping:
+  group1: 
+    - "part1"
+  group2:
+    - "part2"
+  group3:
+    - "part3"
+  group4:
+    - "part4"
+  ## group 5 deliberately does not exist
+  ## group 6 has no records.
+  group6:
+    - "part6"
+command:
+  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+frequency: 3600
+prometheus:
+  enable: true
+  addr: 0.0.0.0
+  port: 9000
+  metrics:
+    - ResourceUsage
+    - Priority
+tls_config:
+  use_tls: true
+  ca_cert_path: "/client_certs/rootCA.pem"
+  client_cert_path: "/client_certs/client-cert.pem"
+  client_key_path: "/client_certs/client-key.pem"

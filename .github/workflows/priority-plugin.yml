@@ -78,3 +78,6 @@ jobs:
 
       - name: Test priority plugin
         run: SKIP_COMPILATION=true ./scripts/test_priority_plugin.sh
+
+      - name: Test tls priority plugin
+        run: SKIP_COMPILATION=true ./scripts/test_tls_priority_plugin.sh
