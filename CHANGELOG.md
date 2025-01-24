@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
-- AUDITOR: Remove forbidden characters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR, plugins and collectors: Remove forbidden characters ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
 - pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR, plugins and collectors: parameter use_tls has to be added to config files ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
 

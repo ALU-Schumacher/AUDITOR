@@ -7,7 +7,6 @@ import json
 import logging
 import sqlite3
 import sys
-import urllib
 from datetime import datetime, time, timedelta, timezone
 from sqlite3 import Error
 from time import sleep
@@ -167,12 +166,6 @@ def update_time_json(config, time_dict, site, stop_time, report_time):
         raise
 
 
-def replace_record_string(string):
-    updated_string = urllib.parse.unquote(string)
-
-    return updated_string
-
-
 def get_site_id(config, record):
     meta_key_site = config["auditor"]["meta_key_site"]
 
@@ -192,7 +185,7 @@ def get_voms_info(config, record):
     voms_dict = {}
 
     try:
-        voms_string = replace_record_string(record.meta.get(meta_key_voms)[0])
+        voms_string = record.meta.get(meta_key_voms)[0]
     except TypeError:
         logger.warning(
             f"No VOMS information found in {record.record_id}, "
@@ -356,7 +349,7 @@ def get_data_tuple(
         year = record.stop_time.replace(tzinfo=timezone.utc).year
         submithost_field = config.get_optional_fields().get("SubmitHost")
         if submithost_field is not None:
-            submithost = replace_record_string(submithost_field.get_value(record))
+            submithost = submithost_field.get_value(record)
         else:
             submithost = "None"
 
@@ -366,10 +359,6 @@ def get_data_tuple(
 
     for v in fields_dict.values():
         value = v.get_value(record)
-
-        if isinstance(value, str):
-            value = replace_record_string(value)
-
         value_list.append(value)
 
     data_tuple = tuple(value_list)
