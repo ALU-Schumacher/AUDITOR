@@ -79,3 +79,7 @@ jobs:
 
       - name: Test Slurm epilog collector
         run: SKIP_COMPILATION=true ./scripts/test_slurm_epilog_collector.sh
+      
+      - name: Test Slurm epilog tls collector
+        run: SKIP_COMPILATION=true ./scripts/test_tls_slurm_epilog_collector.sh
+
