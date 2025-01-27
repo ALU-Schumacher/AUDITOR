@@ -80,6 +80,10 @@
                 
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#update-to-sqlx-0-8-3"><small>- Update to sqlx 0.8.3</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#remove-forbidden-characters"><small>- Remove forbidden characters:</small></a>
                 </div>
                 
@@ -224,6 +228,11 @@
             
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-6-3-to-unreleased-0-7-0">From 0.6.3 to unreleased/0.7.0</h1>
+<h3 id="update-to-sqlx-0-8-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.3</a></h3>
+<p>Use this command to update the sqlx-cli to 0.8.3</p>
+<ul>
+<li><code>cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
 <p>Please backup your db before proceeding with any changes that are listed below.</p>
 <h2 id="remove-forbidden-characters">Remove forbidden characters:</h2>
 <p>The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:</p>
