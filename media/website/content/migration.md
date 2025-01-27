@@ -4,7 +4,9 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.6.3 to unreleased/0.7.0
+# From 0.7.0 to unreleased
+
+# From 0.6.3 to 0.7.0
 
 ### Update to [sqlx 0.8.3](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
 Use this command to update the sqlx-cli to 0.8.3

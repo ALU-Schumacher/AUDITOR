@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
+### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.7.0] - 2025-01-27
+
+### Breaking changes
 - AUDITOR, plugins and collectors: Remove forbidden characters ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
 - pyauditor + Apel plugin + HTCondor collector: drop support for Python 3.8 ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR, plugins and collectors: parameter use_tls has to be added to config files ([@raghuvar-vijay](https://github.com/raghuvar-vijay)), ([@dirksammel](https://github.com/dirksammel))
@@ -624,7 +636,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.7.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -640,3 +652,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.5.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.5.0
 [0.6.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.2
 [0.6.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.6.3
+[0.7.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.7.0
