@@ -29,5 +29,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
-* Mon Oct 28 2024 Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de>
-  - Release 0.6.0 - First version
+* Mon Jan 27 2025 Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de> - 0.7.0
+  - First version in a package

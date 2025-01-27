@@ -18,8 +18,8 @@ actix-web = "4.8.0"
 actix-tls = "3.4.0" 
 actix-web-opentelemetry = { version = "0.17", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.95"
-auditor = { path = "./auditor", version = "0.6.3", default-features = false }
-auditor-client = { path = "./auditor-client", version = "0.6.3" }
+auditor = { path = "./auditor", version = "0.7.0", default-features = false }
+auditor-client = { path = "./auditor-client", version = "0.7.0" }
 bincode = "1.3.3"
 chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
 claim = { version = "0.7.1", package = "claims" }

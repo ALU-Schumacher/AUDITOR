@@ -1,10 +1,13 @@
 [package]
 name = "auditor-kubernetes-collector"
-version = "0.6.3"
+version = "0.7.0"
+authors = ["Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Kubernetes collector for AUDITOR"
+documentation = "https://docs.rs/auditor/"
+homepage = "https://alu-schumacher.github.io/AUDITOR/"
+repository = "https://github.com/alu-schumacher/AUDITOR"
 
 [dependencies]
 anyhow.workspace = true
