@@ -6,6 +6,10 @@ weight = 3
 
 # From 0.6.3 to unreleased/0.7.0
 
+### Update to [sqlx 0.8.3](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.8.3
+- `cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
+
 Please backup your db before proceeding with any changes that are listed below.
 
 ## Remove forbidden characters:

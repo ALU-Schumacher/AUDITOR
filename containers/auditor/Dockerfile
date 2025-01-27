@@ -10,7 +10,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
 # Install sqlx-cli
-RUN cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite
+RUN cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
 COPY --from=planner /auditor/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json

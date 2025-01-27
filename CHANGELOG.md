@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - [RUSTSEC-2024-0421]: Update idna from 0.5.0 to 1.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- [RUSTSEC-2024-0363]: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2024-0399]: Update rustls from 0.23.16 to 0.23.19 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2024-0402]: Update hashbrown from 0.15.0 to 0.15.2 ([@dirksammel](https://github.com/dirksammel))
 
@@ -40,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_json from 1.0.132 to 1.0.137 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_with from 3.8.1 to 3.12.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.3.0 to 75.8.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update sqlx from 0.7.4 to 0.8.2 (missed some occurrences) ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update sqlx from 0.8.2 to 0.8.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from 1.0.69 to 2.0.7 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update types-pyyaml from 6.0.12.20240917 to 6.0.12.20241230 ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Update timestamp JSON atomically ([@maxfischer2781](https://github.com/maxfischer2781))
