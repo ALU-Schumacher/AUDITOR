@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Docs: Correct and enhance HTCondor collector documentation (#1021)
 
 ### Removed
 
