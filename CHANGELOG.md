@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- Docs: Correct and enhance HTCondor collector documentation (#1021)
+- Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
+- HTCondor collector: Fix config check for entries which do not contain a `name` field (#1021) ([@rfvc](https://github.com/rfvc))
 
 ### Removed
 
