@@ -514,10 +514,16 @@ tls_config:
 The collector relies on `condor_history` to retrieve the information about the jobs.
 The collector runs periodically, creating [records](https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record) and committing them to the AUDITOR-instance using [pyauditor](https://alu-schumacher.github.io/AUDITOR/pyauditor/).
 
-The collector is run as follows:
+The current version can be installed via pip:
+
+```
+pip install auditor-htcondor-collector
+```
+
+The collector can then be started by running
 
 ```bash
-python -m collectors.htcondor -c CONFIG_FILE
+auditor-htcondor-collector -c CONFIG_FILE
 ```
 
 `-c/--config CONFIG_FILE` is required to be set and of the form as stated below.
@@ -563,11 +569,14 @@ The collector is configured using a yaml-file. Configuration parameters are as f
 
 The following parameters are optional:
 
-| Parameter | Default            | Description                                                                     |
-| --------- | ------------------ | ------------------------------------------------------------------------------- |
-| `addr`    | `http://127.0.0.1` | Address of the AUDITOR-instance. If this is set, `port` must also be specified. |
-| `port`    | `8080`             | Port of the AUDITOR-instance. If this is set, `addr` must also be specified.    |
-| `timeout` | `30`               | Timeout in seconds for the connection to the AUDITOR-instance.                  |
+| Parameter           | Default            | Description                                                                                                                                                                                                                                |
+| ------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `addr`              | `http://127.0.0.1` | Address of the AUDITOR-instance. If this is set, `port` must also be specified.                                                                                                                                                            |
+| `port`              | `8080`             | Port of the AUDITOR-instance. If this is set, `addr` must also be specified.                                                                                                                                                               |
+| `timeout`           | `30`               | Timeout in seconds for the connection to the AUDITOR-instance.                                                                                                                                                                             |
+| `earliest_datetime` | Time of invocation | ISO 8601 datetime string. Only jobs completed after this timestamp are considered. This is only relevant for the very first invocation of the collector (as long as the state-DB does not contain a job id for the given `record_prefix`). |
+| `log_level`         | `INFO`             | Verbosity of logging. Possible values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`.                                                                                                                                              |
+| `log_file`          | None (stdout)      | File to write logs to. If not set, logs are directed to stdout.                                                                                                                                                                            |
 
 ### `entry`
 
