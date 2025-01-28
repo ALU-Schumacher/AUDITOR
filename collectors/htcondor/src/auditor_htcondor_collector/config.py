@@ -97,9 +97,20 @@ class Config(object):
                 if not isinstance(entry, dict):
                     raise MalformedConfigEntryError([*keys, i], "Must be a dictionary")
                 if "name" not in entry or len(entry["name"].strip()) == 0:
+                    if "matches" in entry:
+                        try:
+                            pattern = re.compile(entry["matches"])
+                        except re.error as e:
+                            raise MalformedConfigEntryError(
+                                [*keys, i, "matches"],
+                                "Is not a valid regular expression",
+                            ) from e
+                        if pattern.groups > 0:
+                            continue
                     raise MalformedConfigEntryError(
                         [*keys, i],
-                        "Must contain a non-empty string entry named 'name'",
+                        "Must contain a non-empty string entry named 'name', or a regular "
+                        "expression named 'matches' with a group matching the site name",
                     )
 
         # Check that certain config entries are lists of non-empty strings
