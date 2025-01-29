@@ -621,9 +621,12 @@ Regex is accepted.</p>
 </span></code></pre>
 <h2 id="htcondor-collector">HTCondor Collector</h2>
 <p>The collector relies on <code>condor_history</code> to retrieve the information about the jobs.
-The collector runs periodically, creating <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Record">records</a> and committing them to the AUDITOR-instance using <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor</a>.</p>
-<p>The collector is run as follows:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>python -m collectors.htcondor -c CONFIG_FILE
+The collector runs periodically, creating <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Record">records</a> and committing them to the AUDITOR-instance using <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/">pyauditor</a>.</p>
+<p>The current version can be installed via pip:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>pip install auditor-htcondor-collector
+</span></code></pre>
+<p>The collector can then be started by running</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>auditor-htcondor-collector -c CONFIG_FILE
 </span></code></pre>
 <p><code>-c/--config CONFIG_FILE</code> is required to be set and of the form as stated below.
 Further, optional arguments are</p>
@@ -653,7 +656,7 @@ Further, optional arguments are</p>
 <tr><td><code>schedd_names</code></td><td>List of the schedulers used for the <code>-name</code> argument of the invocation of <code>condor_history</code>.</td></tr>
 <tr><td><code>job_status</code></td><td>List of job statuses considered. See <a href="https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers">HTCondor magic numbers</a>.</td></tr>
 <tr><td><code>meta</code></td><td>Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s.<br>If multiple <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s are given for specified name, the values are appended to a list. A special case is <code>site</code>, which is a list of <a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s, but only the first match is used.</td></tr>
-<tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s).</td></tr>
+<tr><td><code>components</code></td><td>List of components (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s) put in the <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Component">records component</a>s. Each component can contain a list of <a href="https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Score">score</a>s (<a href="https://alu-schumacher.github.io/AUDITOR//edge/#entry"><code>entry</code></a>s).</td></tr>
 <tr><td><code>use_tls</code></td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
 <tr><td><code>ca_cert_path</code></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Example: <code>/path/rootCA.pem</code>.</td></tr>
 <tr><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: <code>/path/client-cert.pem</code>.</td></tr>
@@ -664,6 +667,9 @@ Further, optional arguments are</p>
 <tr><td><code>addr</code></td><td><code>http://127.0.0.1</code></td><td>Address of the AUDITOR-instance. If this is set, <code>port</code> must also be specified.</td></tr>
 <tr><td><code>port</code></td><td><code>8080</code></td><td>Port of the AUDITOR-instance. If this is set, <code>addr</code> must also be specified.</td></tr>
 <tr><td><code>timeout</code></td><td><code>30</code></td><td>Timeout in seconds for the connection to the AUDITOR-instance.</td></tr>
+<tr><td><code>earliest_datetime</code></td><td>Time of invocation</td><td>ISO 8601 datetime string. Only jobs completed after this timestamp are considered. This is only relevant for the very first invocation of the collector (as long as the state-DB does not contain a job id for the given <code>record_prefix</code>).</td></tr>
+<tr><td><code>log_level</code></td><td><code>INFO</code></td><td>Verbosity of logging. Possible values are <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code>.</td></tr>
+<tr><td><code>log_file</code></td><td>None (stdout)</td><td>File to write logs to. If not set, logs are directed to stdout.</td></tr>
 </tbody></table>
 <h3 id="entry"><code>entry</code></h3>
 <p>An <code>entry</code> describes how to get the value for a meta-var or component from the job.
