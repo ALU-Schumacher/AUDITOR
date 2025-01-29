@@ -442,11 +442,7 @@ def get_token(config):
     client_cert = config.authentication.client_cert
     client_key = config.authentication.client_key
     verify_ca = config.authentication.verify_ca
-
-    if verify_ca:
-        ca_path = config.authentication.ca_path
-    else:
-        ca_path = False
+    ca_path = config.authentication.ca_path if verify_ca else False
 
     try:
         response = requests.get(
