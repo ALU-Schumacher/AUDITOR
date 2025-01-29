@@ -452,18 +452,12 @@ def get_token(config):
         response = requests.get(
             auth_url, cert=(client_cert, client_key), verify=ca_path, timeout=10
         )
-    except requests.Timeout:
-        logger.critical("Timeout while getting token")
-        raise
-    try:
-        return response.json()["token"]
-    except KeyError:
-        if error_message := response.json().get("error", {}).get("message"):
-            raise RuntimeError(
-                f"could not get authentication token: {error_message} [{response.status_code} {response.reason}]"
-            )
         response.raise_for_status()
+    except requests.RequestException as e:
+        logger.critical(f"Could not get authentication token - {e}")
         raise
+    else:
+        return response.json()["token"]
 
 
 def sign_msg(config, msg):
