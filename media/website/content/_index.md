@@ -553,7 +553,7 @@ Command line arguments override the values set in the config file.
 The collector is configured using a yaml-file. Configuration parameters are as follows:
 
 | Parameter          | Description                                                                                                                                                                                                                                                                                                                                           |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `state_db`         | Path to the sqlite-database used for persistent storage of the job ids last processed by the collector.                                                                                                                                                                                                                                               |
 | `record_prefix`    | Prefix used for all records put into the AUDITOR-database.                                                                                                                                                                                                                                                                                            |
 | `interval`         | Interval in seconds between runs of the collector.                                                                                                                                                                                                                                                                                                    |
@@ -561,7 +561,7 @@ The collector is configured using a yaml-file. Configuration parameters are as f
 | `schedd_names`     | List of the schedulers used for the `-name` argument of the invocation of `condor_history`.                                                                                                                                                                                                                                                           |
 | `job_status`       | List of job statuses considered. See [HTCondor magic numbers](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers).                                                                                                                                                                                                                       |
 | `meta`             | Map key/value pairs put in the records meta field. The key is used as the key in the records meta-variables, the values are [`entry`](#entry)s.<br>If multiple [`entry`](#entry)s are given for specified name, the values are appended to a list. A special case is `site`, which is a list of [`entry`](#entry)s, but only the first match is used. |
-| `components`       | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Score)s ([`entry`](#entry)s).                                            |
+| `components`       | List of components ([`entry`](#entry)s) put in the [records component](https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Component)s. Each component can contain a list of [score](https://alu-schumacher.github.io/AUDITOR/pyauditor/latest/api.html#pyauditor.Score)s ([`entry`](#entry)s).                              |
 | `use_tls`          | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                                                                                                                                                                                                                                                      |
 | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                     |
 | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                    |
@@ -691,34 +691,34 @@ helm install auditor helmcharts/ -n auditor
 ### Configuration
 Configuration settings can be provided via a yaml file when run manually or through the Helm Chart. The parameters are as follows:
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `auditor_addr`    |       | Address of AUDITOR instance |
-| `auditor_port`    | `8000`  | Port of AUDITOR |
-| `prometheus_addr` |       | Address of Prometheus |
-| `prometheus_port` |       | Port of Prometheus |
-| `record_prefix`   | `""`    | Is prepended to all record IDs |
-| `earliest_datetime` | `Now` | Collector will ignore all pods finished before this time. Should be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Note that the collector will save the timestamp of the last successful request to Kubernetes and will always choose the later time between this timestamp and `earliest_datetime`. |
-| `auditor_timeout` | `10s`   | Timeout for connecting to AUDITOR |
-| `prometheus_timeout` | `60s` | Timeout for a single Prometheus query |
-| `collect_interval` | `60s`  | Interval for collecting pod info from Kubernetes |
-| `merge_interval`   | `60s`   | Interval for collecting info from Prometheus. This also sets how often records will be sent to AUDITOR. |
-| `database_path`   | `"."`   | Directory to house the persistent sender queue |
-| `job_filter`      |       | Sets which pods to account. See below |
-| `backlog_interval` | `300s` | How long to wait before retrying to fetch metrics from Prometheus |
-| `backlog_maxretries` | `2`  | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this |
-| `log_level`       | `INFO`  | Logging level |
-| `use_tls`          | 'false' |Specifies whether TLS is enabled (`true`) or disabled (`false`) |
-| `ca_cert_path`     |   | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`. |
-| `client_cert_path` |  | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`. |
-| `client_key_path`  |  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.
+| Parameter            | Default | Description                                                                                                                                                                                                                                                                                                |
+|----------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `auditor_addr`       |         | Address of AUDITOR instance                                                                                                                                                                                                                                                                                |
+| `auditor_port`       | `8000`  | Port of AUDITOR                                                                                                                                                                                                                                                                                            |
+| `prometheus_addr`    |         | Address of Prometheus                                                                                                                                                                                                                                                                                      |
+| `prometheus_port`    |         | Port of Prometheus                                                                                                                                                                                                                                                                                         |
+| `record_prefix`      | `""`    | Is prepended to all record IDs                                                                                                                                                                                                                                                                             |
+| `earliest_datetime`  | `Now`   | Collector will ignore all pods finished before this time. Should be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Note that the collector will save the timestamp of the last successful request to Kubernetes and will always choose the later time between this timestamp and `earliest_datetime`. |
+| `auditor_timeout`    | `10s`   | Timeout for connecting to AUDITOR                                                                                                                                                                                                                                                                          |
+| `prometheus_timeout` | `60s`   | Timeout for a single Prometheus query                                                                                                                                                                                                                                                                      |
+| `collect_interval`   | `60s`   | Interval for collecting pod info from Kubernetes                                                                                                                                                                                                                                                           |
+| `merge_interval`     | `60s`   | Interval for collecting info from Prometheus. This also sets how often records will be sent to AUDITOR.                                                                                                                                                                                                    |
+| `database_path`      | `"."`   | Directory to house the persistent sender queue                                                                                                                                                                                                                                                             |
+| `job_filter`         |         | Sets which pods to account. See below                                                                                                                                                                                                                                                                      |
+| `backlog_interval`   | `300s`  | How long to wait before retrying to fetch metrics from Prometheus                                                                                                                                                                                                                                          |
+| `backlog_maxretries` | `2`     | How often we will retry to fetch metrics from Prometheus for each pod. Will send an incomplete record after this                                                                                                                                                                                           |
+| `log_level`          | `INFO`  | Logging level                                                                                                                                                                                                                                                                                              |
+| `use_tls`            | `false` | Specifies whether TLS is enabled (`true`) or disabled (`false`)                                                                                                                                                                                                                                            |
+| `ca_cert_path`       |         | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                          |
+| `client_cert_path`   |         | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                         |
+| `client_key_path`    |         | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                            |
 
 Job filter settings:
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `namespace`   | `["default"]` | A whitelist of namespaces to consider |
-| `labels`      | `[]` | A list of labels. A pod will be accounted if *all* conditions are true |
+| Parameter   | Default       | Description                                                            |
+|-------------|---------------|------------------------------------------------------------------------|
+| `namespace` | `["default"]` | A whitelist of namespaces to consider                                  |
+| `labels`    | `[]`          | A list of labels. A pod will be accounted if *all* conditions are true |
 
 ### Example Config
 ```yaml

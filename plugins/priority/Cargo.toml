@@ -30,26 +30,26 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-actix-web-opentelemetry.workspace = true
 actix-web.workspace = true
+actix-web-opentelemetry.workspace = true
 anyhow.workspace = true
-auditor-client.workspace = true
 auditor.workspace = true
+auditor-client.workspace = true
 chrono.workspace = true
 config.workspace = true
 num-traits.workspace = true
-opentelemetry-prometheus.workspace = true
 opentelemetry.workspace = true
+opentelemetry-prometheus.workspace = true
 opentelemetry_sdk.workspace = true
 prometheus.workspace = true
-serde-aux.workspace = true
 serde.workspace = true
+serde-aux.workspace = true
 serde_with.workspace = true
 shell-words.workspace = true
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
+tracing.workspace = true
 tracing-actix-web.workspace = true
 tracing-subscriber.workspace = true
-tracing.workspace = true
 uuid.workspace = true
 
 [dev-dependencies]

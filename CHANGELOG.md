@@ -15,8 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Fix config check for entries which do not contain a `name` field (#1021) ([@rfvc](https://github.com/rfvc))
-
 - Apel plugin: Improved error messages when fetching security tokens ([@maxfischer2781](https://github.com/maxfischer2781))
+- Kubernetes collector: Move dependencies to workspace level, add meta information to Cargo.toml, add release instruction ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 

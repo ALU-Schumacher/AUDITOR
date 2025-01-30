@@ -232,8 +232,8 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
 - Publish `auditor` crate first (you will need a [crates.io API token](https://crates.io/settings/tokens))
   ```bash
   cd auditor
-  cargo publish --dry-run
-  cargo publish
+  SQLX_OFFLINE=true cargo publish --dry-run
+  SQLX_OFFLINE=true cargo publish
   cd ..
   ```
 - Then run the publish workflow for the `auditor-client` crate and all rust-based collectors/plugins (`cd` into corresponding dirs)
@@ -241,6 +241,7 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
   - `plugins/priority`
   - `collectors/slurm` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
   - `collectors/slurm_epilog`
+  - `collectors/kubernetes` (prepend `cargo` commands with `SQLX_OFFLINE=true`)
 - Merge PR
 - Create tag for version
   ```bash
