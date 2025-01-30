@@ -302,8 +302,8 @@ A local version of the documentation can be built with</p>
 <li>Update changelog in <a href="https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm">RPM <code>.spec</code> files</a></li>
 <li>Create PR and wait for approval from other team member</li>
 <li>Publish <code>auditor</code> crate first (you will need a <a href="https://crates.io/settings/tokens">crates.io API token</a>)<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a535ae;">cd</span><span> auditor
-</span><span>cargo publish --dry-run
-</span><span>cargo publish
+</span><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo publish --dry-run
+</span><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo publish
 </span><span style="color:#a535ae;">cd</span><span> ..
 </span></code></pre>
 </li>
@@ -313,6 +313,7 @@ A local version of the documentation can be built with</p>
 <li><code>plugins/priority</code></li>
 <li><code>collectors/slurm</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
 <li><code>collectors/slurm_epilog</code></li>
+<li><code>collectors/kubernetes</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
 </ul>
 </li>
 <li>Merge PR</li>
