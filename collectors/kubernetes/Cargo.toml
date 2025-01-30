@@ -8,36 +8,37 @@ description = "Kubernetes collector for AUDITOR"
 documentation = "https://docs.rs/auditor/"
 homepage = "https://alu-schumacher.github.io/AUDITOR/"
 repository = "https://github.com/alu-schumacher/AUDITOR"
+readme = "../../README.md"
+keywords = ["accounting", "opportunistic", "grid-computing", "batch-systems"]
+exclude = [
+    ".cargo",
+    ".dockerignore",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    ".pytest_cache",
+    "target",
+    "nohup.out"
+]
 
 [dependencies]
 anyhow.workspace = true
-auditor-client.workspace = true
 auditor.workspace = true
+auditor-client.workspace = true
 bincode.workspace = true
 chrono.workspace = true
+k8s-openapi = { workspace = true, features = ["v1_28"] }
+kube.workspace = true
+prometheus-http-query = { workspace = true, features = ["rustls-tls"] }
 reqwest = { workspace = true, features = ["rustls-tls"] }
 serde.workspace = true
+serde_yaml.workspace = true
+sqlx = { workspace = true, features = ["sqlite"] }
 tokio = { workspace = true, features = ["time"] }
 tracing-subscriber.workspace = true
 tracing.workspace = true
 uuid = { workspace = true, features = ["v7"] }
-
-kube = { version = "0.88" }
-k8s-openapi = { version = "0.21", features = ["v1_28"] }
-prometheus-http-query = { version = "0.8.0", default-features = false, features = ["rustls-tls"] }
-serde_yaml = "0.9"
-
-[dependencies.sqlx]
-version = "0.8.3"
-default-features = false
-features = [
-    "runtime-tokio-rustls",
-    "macros",
-    "sqlite",
-    "uuid",
-    "chrono",
-    "migrate"
-]
 
 [dev-dependencies]
 fake = { workspace = true, features = ["chrono", "derive"] }

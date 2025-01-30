@@ -31,8 +31,8 @@ strip = true
 
 [dependencies]
 anyhow.workspace = true
-auditor-client.workspace = true
 auditor.workspace = true
+auditor-client.workspace = true
 bincode.workspace = true
 chrono.workspace = true
 color-eyre.workspace = true
@@ -41,26 +41,14 @@ fake.workspace = true
 itertools.workspace = true
 once_cell.workspace = true
 regex.workspace = true
-serde-aux.workspace = true
 serde.workspace = true
+serde-aux.workspace = true
 serde_json.workspace = true
 serde_with.workspace = true
+sqlx = { workspace = true, features = ["postgres", "sqlite"] }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "process"] }
-tracing-subscriber.workspace = true
 tracing.workspace = true
+tracing-subscriber.workspace = true
 uuid.workspace = true
-
-[dependencies.sqlx]
-version = "0.8.3"
-default-features = false
-features = [
-    "runtime-tokio-rustls",
-    "macros",
-    "postgres",
-    "sqlite",
-    "uuid",
-    "chrono",
-    "migrate"
-]
 
 [dev-dependencies]

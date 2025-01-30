@@ -38,22 +38,11 @@ rand_distr.workspace = true
 rustls.workspace = true
 serde-aux.workspace = true
 serde_qs.workspace = true
+sqlx = { workspace = true, features = ["sqlite"] }
 thiserror.workspace = true
-tokio = { workspace = true, features = ["time"]}
+tokio = { workspace = true, features = ["time"] }
 tracing.workspace = true
 urlencoding.workspace = true
-
-[dependencies.sqlx]
-version = "0.8.3"
-default-features = false
-features = [
-    "runtime-tokio-rustls",
-    "macros",
-    "sqlite",
-    "uuid",
-    "chrono",
-    "migrate"
-]
 
 [dev-dependencies]
 claim.workspace = true

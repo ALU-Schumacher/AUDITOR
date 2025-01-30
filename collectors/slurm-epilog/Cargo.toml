@@ -31,17 +31,17 @@ strip = true
 
 [dependencies]
 anyhow.workspace = true
-auditor-client.workspace = true
 auditor.workspace = true
+auditor-client.workspace = true
 chrono.workspace = true
 color-eyre.workspace = true
 config.workspace = true
 regex.workspace = true
-serde-aux.workspace = true
 serde.workspace = true
+serde-aux.workspace = true
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
-tracing-subscriber.workspace = true
 tracing.workspace = true
+tracing-subscriber.workspace = true
 uuid.workspace = true
 
 [dev-dependencies]
