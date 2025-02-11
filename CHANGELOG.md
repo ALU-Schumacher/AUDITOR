@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Apel plugin + HTCondor collector: added RPM creation to workflows ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add instructions for manual migration of db using psql (command line)
 
 ### Changed

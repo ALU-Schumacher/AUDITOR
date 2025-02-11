@@ -1,0 +1,60 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#htcondor-collector
+# Please make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the job class ads you want to access.
+
+# addr: localhost
+# port: 8000
+# timeout: 10
+# state_db: htcondor_history_state.db
+# record_prefix: htcondor
+# interval: 900 # 15 minutes
+# pool: htcondor.example.com
+# schedd_names:
+#   - schedd1.example.com
+#   - schedd2.example.com
+# job_status: # See https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=MagicNumbers
+#   - 3 # Removed
+#   - 4 # Completed
+
+# meta:
+#   user:
+#     key: Owner
+#     matches: ^(.+)$
+#   group:
+#     key: VoName
+#     matches: ^(.+)$
+#   submithost:
+#     key: "GlobalJobId"
+#     matches: ^(.*)#\d+.\d+#\d+$  # As this regex contains a group, the value for 'submithost' is set to the matching group.
+
+#   # For `site` the first match is used.
+#   site:
+#     - name: "site1"  # This entry
+#       key: "LastRemoteHost"
+#       matches: ^slot.+@site1-.+$
+#     - key: "LastRemoteHost"
+#       matches: ^slot.+@(site2)-.+$  # This regex contains a group, the value for 'site' is set to the matching group ("site2").
+#     - name: "UNDEF"  # If no match is found, site is set to "UNDEF"
+
+# components:
+#   - name: "Cores"
+#     key: "CpusProvisioned"
+#     scores:
+#       - name: "HEPSPEC"
+#         key: "MachineAttrApelSpecs0"
+#         matches: HEPSPEC\D+(\d+(\.\d+)?)  # This regex matches the value of HEPSPEC in the corresponding ClassAd
+#         only_if:
+#           key: "LastRemoteHost"
+#           matches: ^slot.+@(?:site1)-.{10}@.+$  # This score is only attributed to the component on site1
+#       - name: "HEPscore23"
+#         key: "MachineAttrApelSpecs0"
+#         matches: HEPscore23\D+(\d+(\.\d+)?)
+#         only_if:
+#           key: "LastRemoteHost"
+#           matches: ^slot.+@(?:site1)-.{10}@.+$
+#   - name: "Memory"
+#     key: "MemoryProvisioned"
+#   - name: "UserCPU"
+#     key: "RemoteUserCpu"
+# tls_config:
+#   use_tls: False

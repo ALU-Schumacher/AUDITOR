@@ -228,6 +228,7 @@ Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.
 - Finalize the [migration guide](https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/migration.md)
   - Rename `Unreleased` to version number
 - Update changelog in [RPM `.spec` files](https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm)
+- Update the version number and the changelog in `rpm_config.json` for the APEL plugin and the HTCondor collector
 - Create PR and wait for approval from other team member
 - Publish `auditor` crate first (you will need a [crates.io API token](https://crates.io/settings/tokens))
   ```bash

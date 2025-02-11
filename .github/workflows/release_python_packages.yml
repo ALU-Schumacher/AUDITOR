@@ -23,10 +23,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
-      - name: Install build
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install .[build]
+          pip install .[build] uv rpmvenv
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
       - name: Publish to PyPI
@@ -34,10 +34,17 @@ jobs:
         with:
           packages-dir: plugins/apel/dist/
           attestations: false
+      - name: Build RPM
+        run: |
+          uv pip compile pyproject.toml -o requirements.txt
+          echo "." >> requirements.txt
+          QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: plugins/apel/dist/*
+          files: |
+            plugins/apel/dist/*
+            plugins/apel/*rpm
           
   release-htcondor-collector:
     runs-on: ubuntu-latest
@@ -54,10 +61,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
-      - name: Install build
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install .[build]
+          pip install .[build] uv rpmvenv
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
       - name: Publish to PyPI
@@ -65,7 +72,14 @@ jobs:
         with:
           packages-dir: collectors/htcondor/dist/
           attestations: false
+      - name: Build RPM
+        run: |
+          uv pip compile pyproject.toml -o requirements.txt
+          echo "." >> requirements.txt
+          QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: collectors/htcondor/dist/*
+          files: |
+            collectors/htcondor/dist/*
+            collectors/htcondor/*rpm

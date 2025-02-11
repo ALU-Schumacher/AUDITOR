@@ -1,0 +1,15 @@
+[Unit]
+Description=HTCondor collector for AUDITOR
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/auditor_htcondor_collector
+ExecStart=/opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml
+Restart=on-failure
+RestartSec=60

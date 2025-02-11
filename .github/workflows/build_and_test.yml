@@ -17,7 +17,13 @@ jobs:
 
   sqlx:
     uses: ./.github/workflows/sqlx.yml
-    
+
+  build-python-rpms:
+    needs: prepare-input-parameters
+    uses: ./.github/workflows/build_python_rpms.yml
+    with:
+      python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}
+
   build-pyauditor-source:
     uses: ./.github/workflows/build_pyauditor_source.yml
 
@@ -74,14 +80,14 @@ jobs:
 
   release-pyauditor:
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [build-pyauditor-source, test-pyauditor-source, build-pyauditor-linux, build-pyauditor-windows, build-pyauditor-macos, prepare-input-parameters]
+    needs: [build-pyauditor-source, test-pyauditor-source, pyauditor-integration-tests, build-pyauditor-linux, build-pyauditor-windows, build-pyauditor-macos, prepare-input-parameters]
     uses: ./.github/workflows/release_pyauditor.yml
     with:
       python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}
 
   release-python-packages:
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [release-pyauditor, prepare-input-parameters]
+    needs: [release-pyauditor, prepare-input-parameters, python-code-tests]
     uses: ./.github/workflows/release_python_packages.yml
     with:
       python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}
