@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update black from 24.10.0 to 25.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 44.0.0 to 44.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.137 to 1.0.138 ([@dirksammel](https://github.com/dirksammel))
 - Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Fix config check for entries which do not contain a `name` field (#1021) ([@rfvc](https://github.com/rfvc))
