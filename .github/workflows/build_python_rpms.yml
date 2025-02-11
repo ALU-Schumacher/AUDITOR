@@ -1,0 +1,71 @@
+name: build-python-rpms
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  build-apel-plugin-rpm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/apel
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+        
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install uv rpmvenv
+
+      - name: Build RPM
+        run: |
+          uv pip compile pyproject.toml -o requirements.txt
+          echo "." >> requirements.txt
+          QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./plugins/apel/*rpm
+          name: apel-plugin-rpm
+
+  build-htcondor-collector-rpm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./collectors/htcondor
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+        
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install uv rpmvenv
+
+      - name: Build RPM
+        run: |
+          uv pip compile pyproject.toml -o requirements.txt
+          echo "." >> requirements.txt
+          QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./collectors/htcondor/*rpm
+          name: htcondor-collector-rpm

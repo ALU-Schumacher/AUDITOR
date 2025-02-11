@@ -1,0 +1,43 @@
+{    
+    "extensions": {
+        "enabled": [
+            "blocks",
+	    "python_venv",
+	    "file_extras",
+	    "file_permissions"
+        ]
+    },
+    "core": {
+	"license": "BSD-2-Clause-Patent",
+	"name": "auditor_htcondor_collector",
+	"summary": "AUDITOR collector for aggregating data from the HTCondor batch system",
+	"version": "0.8.0"
+    },
+    "python_venv": {
+        "name": "venv",
+        "path": "/opt/auditor_htcondor_collector",
+	"require_setup_py": false
+    },
+    "blocks": {
+	"pre": "%define _build_id_links none",
+        "desc": "AUDITOR collector for aggregating data from the HTCondor batch system",
+	"changelog": ["* Fri Feb 28 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.8.0\n - First version in a package"]
+    },
+    "file_permissions": {
+	"user": "root",
+	"group": "root"
+    },
+    "file_extras": {
+	"files": [
+	    {
+		"src": "unit_files/auditor_htcondor_collector.service",
+		"dest": "/etc/systemd/system/auditor_htcondor_collector.service"
+	    },
+	    {
+		"src": "configs/auditor_htcondor_collector_template.yml",
+		"dest": "/opt/auditor_htcondor_collector/auditor_htcondor_collector.yml",
+		"config": "noreplace"
+	    }
+	]
+    }
+}

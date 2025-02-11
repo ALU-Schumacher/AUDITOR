@@ -588,6 +588,10 @@ Further, optional arguments are
 
 Command line arguments override the values set in the config file.
 
+### rpm
+
+The HTCondor collector is also available as rpm on the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases). The rpm will install a virtual environment including all dependencies in `/opt/auditor_htcondor_collector`. After installation, a unit file is available at `/etc/systemd/system/auditor_htcondor_collector.service`. This service runs the command `auditor-htcondor-collector` and expects a config file at `/opt/auditor_apel_plugin/auditor_htcondor_collector.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.
+
 ### Configuration
 
 The collector is configured using a yaml-file. Configuration parameters are as follows:
@@ -804,9 +808,9 @@ See below for all currently available collectors.
 
 The APEL plugin creates messages and sends them to the APEL server. The plugin can either create `summary messages` for the current month, or `individual job messages`. `Sync messages` for the current month are created in both cases.
 
-The plugin is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/) and as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin).
+The plugin is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/), as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin), or as a rpm from the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
 
-Two CLI commands are available after the installation via `pip`: `auditor-apel-publish` and `auditor-apel-republish`.
+Two CLI commands are available: `auditor-apel-publish` and `auditor-apel-republish`.
 
 `auditor-apel-publish` runs periodically at a given report interval.
 
@@ -833,6 +837,32 @@ options:
   -c CONFIG, --config CONFIG
                         Path to the config file
 ```
+
+### pip
+
+The plugin can be installed with `pip install auditor-apel-plugin`. The commands `auditor-apel-publish` and `auditor-apel-republish` are directly available after installation.
+
+### Docker
+
+When using the Docker container, `auditor-apel-publish` for example can be started with
+
+```bash
+docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
+```
+
+In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.yml`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The JSON file `time.json` will also be written in `config_folder`. The corresponding entries in the config file would be:
+
+```
+time_json_path: time.json
+client_cert: hostcert.pem
+client_key: hostkey.pem
+```
+
+### rpm
+
+The rpm will install a virtual environment including all dependencies in `/opt/auditor_apel_plugin`. After installation, a unit file is available at `/etc/systemd/system/auditor_apel_plugin.service`. This service runs the command `auditor-apel-publish` and expects a config file at `/opt/auditor_apel_plugin/auditor_apel_plugin.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at `/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish`.
+
+### Config
 
 The config file is written in YAML format and has the main sections `plugin`, `site`, `messaging`, `auditor`, and one of `summary_fields` or `individual_job_fields`.
 
@@ -1027,20 +1057,6 @@ Different field types are available, depending on the source of the value that i
 `NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` a `ComponentField`. The resulting value is the product of the score and the base value.
 
 `NormalisedWallDurationField` has the parameter `score`, which is a `ScoreField`. The value of the score is multiplied with the `runtime` of the AUDITOR record.
-
-When using the Docker container, `auditor-apel-publish` for example can be started with
-
-```bash
-docker run -it --rm --network host -u "$(id -u):$(id -g)" -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
-```
-
-In this example, the local directory `config_folder` contains the config file `auditor_apel_plugin.yml`, the client certificate `hostcert.pem`, and the client key `hostkey.pem`. The JSON file `time.json` will also be written in `config_folder`. The corresponding entries in the config file would be:
-
-```
-time_json_path: time.json
-client_cert: hostcert.pem
-client_key: hostkey.pem
-```
 
 ## Priority Plugin
 
