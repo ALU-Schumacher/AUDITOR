@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 44.0.0 to 44.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.14.1 to 1.15.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.3 to 0.9.6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update rustls from 0.23.21 to 0.23.23 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.137 to 1.0.138 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update uuid from 1.12.1 to 1.13.2 ([@dirksammel](https://github.com/dirksammel))
 - Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
