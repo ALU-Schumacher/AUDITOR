@@ -6,7 +6,7 @@ from urllib.parse import unquote
 import psycopg2
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="auditor/scripts/htcondor_revert_encodings")
+load_dotenv(dotenv_path="auditor/scripts/revert_encoding")
 
 
 DB_CONFIG = {
