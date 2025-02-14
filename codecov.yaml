@@ -23,6 +23,10 @@ component_management:
       name: slurm_epilog_collector
       paths:
         - collectors/slurm-epilog/**
+    - component_id: module_kubernetes_collector
+      name: kubernetes_collector
+      paths:
+        - collectors/kubernetes/**
     - component_id: module_htcondor_collector
       name: htcondor_collector
       paths:

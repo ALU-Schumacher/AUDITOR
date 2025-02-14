@@ -10,13 +10,15 @@ site:
   sites_to_report:
     TEST-SITE: ["test"]
 
-authentication:
-  auth_url: test_auth_url
-  ams_url: test_ams_url
+messaging:
+  host: test_host
+  port: 1337
   client_cert: test_client_cert
   client_key: test_client_key
-  ca_path: test_ca_path
-  verify_ca: False
+  project: test_project
+  topic: test_topic
+  timeout: 10
+  retry: 3
 
 auditor:
   ip: 127.0.0.1

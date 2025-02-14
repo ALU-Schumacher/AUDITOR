@@ -80,13 +80,15 @@ class AuditorConfig(Configurable):
         return self
 
 
-class AuthConfig(Configurable):
-    auth_url: str
-    ams_url: str
+class MessageConfig(Configurable):
+    host: str
+    port: int
     client_cert: str
     client_key: str
-    ca_path: str
-    verify_ca: bool
+    project: str
+    topic: str
+    timeout: int
+    retry: int
 
 
 class Field(Configurable):
@@ -259,7 +261,7 @@ class Config(Configurable):
     plugin: PluginConfig
     site: SiteConfig
     auditor: AuditorConfig
-    authentication: AuthConfig
+    messaging: MessageConfig
     summary_fields: Optional[FieldConfig] = None
     individual_job_fields: Optional[FieldConfig] = None
 
