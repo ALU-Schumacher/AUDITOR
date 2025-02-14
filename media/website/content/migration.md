@@ -6,6 +6,10 @@ weight = 3
 
 # From 0.7.1 to unreleased
 
+## Apel plugin
+
+Due to the switch to the ARGO AMS library, the config file has to be adjusted. The `authentication` section needs to be replaced with the new `messaging` section. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin).
+
 # From 0.7.0 to 0.7.1
 
 Please backup your db before proceeding with any changes that are listed below.
@@ -65,7 +69,7 @@ An example config is provided at the following directory in the github repositor
 | `ca_cert_path`       | String          | Path to the root Certificate Authority (CA) certificate for validating server certificates. | `/path/rootCA.pem`             | Yes                              |
 | `client_cert_path`   | String          | Path to the client's TLS certificate.                                                       | `/path/client-cert.pem`        | Yes                              |
 | `client_key_path`    | String          | Path to the client's private key used for TLS.                                              | `/path/client-key.pem`         | Yes                              |
-Please have a look at the AUDITOR documentation for the new changes in the config files for [collectors](https://alu-schumacher.github.io/AUDITOR/latest/#collectors) and [plugins](https://alu-schumacher.github.io/AUDITOR/latest/#plugins)
+Please have a look at the AUDITOR documentation for the new changes in the config files for [collectors](https://alu-schumacher.github.io/AUDITOR/latest/#collectors) and [plugins](https://alu-schumacher.github.io/AUDITOR/latest/#plugins).
 
 # From 0.6.2 to 0.6.3
 
@@ -77,7 +81,7 @@ Use this command to update the sqlx-cli to 0.8.2
 
 ## Auditor DB:
 - WARNING: Please create a backup of the database before running the migration script.
-- AUDITOR db should be migrated to use the new schema. Run `sqlx migrate run --source migration` from the AUDITOR home directory. It is also possible using the container which can be found here [Documentation](../#migrating-the-database)
+- AUDITOR db should be migrated to use the new schema. Run `sqlx migrate run --source migration` from the AUDITOR home directory. It is also possible using the container which can be found here [Documentation](../#migrating-the-database).
 
 ## Apel plugin
 

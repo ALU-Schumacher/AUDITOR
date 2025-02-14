@@ -12,7 +12,7 @@ from sqlite3 import Error
 from time import sleep
 from typing import Dict, List, Tuple
 
-import requests
+from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
@@ -383,28 +383,9 @@ def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) ->
     return apel_message
 
 
-def get_token(config):
-    auth_url = config.authentication.auth_url
-    client_cert = config.authentication.client_cert
-    client_key = config.authentication.client_key
-    verify_ca = config.authentication.verify_ca
-    ca_path = config.authentication.ca_path if verify_ca else False
-
-    try:
-        response = requests.get(
-            auth_url, cert=(client_cert, client_key), verify=ca_path, timeout=10
-        )
-        response.raise_for_status()
-    except requests.RequestException as e:
-        logger.critical(f"Could not get authentication token - {e}")
-        raise
-    else:
-        return response.json()["token"]
-
-
 def sign_msg(config, msg):
-    client_cert = config.authentication.client_cert
-    client_key = config.authentication.client_key
+    client_cert = config.messaging.client_cert
+    client_key = config.messaging.client_key
 
     with open(client_cert, "rb") as cc:
         cert = x509.load_pem_x509_certificate(cc.read())
@@ -428,29 +409,35 @@ def build_payload(msg):
     current_time = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     empaid = f"{current_time[:8]}/{current_time}"
 
-    payload = {"messages": [{"attributes": {"empaid": empaid}, "data": msg}]}
+    ams_message = AmsMessage(data=msg, attributes={"empaid": empaid})
 
-    return payload
+    return ams_message
 
 
-def send_payload(config, token, payload):
-    ams_url = config.authentication.ams_url
-    verify_ca = config.authentication.verify_ca
+def send_payload(config, payload):
+    host = config.messaging.host
+    port = config.messaging.port
+    client_cert = config.messaging.client_cert
+    client_key = config.messaging.client_key
+    project = config.messaging.project
+    topic = config.messaging.topic
+    retry = config.messaging.retry
+    timeout = config.messaging.timeout
 
-    if verify_ca:
-        ca_path = config.authentication.ca_path
-    else:
-        ca_path = False
-
-    logger.debug(f"{ams_url}{token}")
-    post = requests.post(
-        f"{ams_url}{token}",
-        json=payload,
-        headers={"Content-Type": "application/json"},
-        verify=ca_path,
+    ams = ArgoMessagingService(
+        endpoint=host,
+        authn_port=port,
+        project=project,
+        cert=client_cert,
+        key=client_key,
     )
 
-    return post
+    try:
+        post = ams.publish(topic, payload, retry=retry, timeout=timeout)
+        return post
+    except AmsException as e:
+        logger.critical(f"Could not send message: {e}")
+        raise
 
 
 def convert_to_seconds(config, cpu_time):

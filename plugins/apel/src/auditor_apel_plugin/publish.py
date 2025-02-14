@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import argparse
-import base64
 import logging
 from datetime import datetime, timedelta, timezone
 from logging import Logger
@@ -25,7 +24,6 @@ from auditor_apel_plugin.core import (
     get_report_time,
     get_start_time,
     get_time_json,
-    get_token,
     group_db,
     send_payload,
     sign_msg,
@@ -41,9 +39,6 @@ def run(logger: Logger, config: Config, client):
     message_type = config.plugin.message_type
     field_dict = config.get_all_fields()
     optional_fields = config.get_optional_fields()
-
-    token = get_token(config)
-    logger.debug(token)
 
     while True:
         time_dict = get_time_json(config)
@@ -82,12 +77,10 @@ def run(logger: Logger, config: Config, client):
             logger.debug(sync_message)
             signed_sync = sign_msg(config, sync_message)
             logger.debug(signed_sync)
-            encoded_sync = base64.b64encode(signed_sync).decode("utf-8")
-            logger.debug(encoded_sync)
-            payload_sync = build_payload(encoded_sync)
+            payload_sync = build_payload(signed_sync)
             logger.debug(payload_sync)
-            post_sync = send_payload(config, token, payload_sync)
-            logger.debug(post_sync.status_code)
+            post_sync = send_payload(config, payload_sync)
+            logger.debug(post_sync)
 
             if message_type == MessageType.individual_jobs:
                 start_time = get_start_time(config, time_dict, site)
@@ -109,12 +102,10 @@ def run(logger: Logger, config: Config, client):
             logger.log(TRACE, message)
             signed_message = sign_msg(config, message)
             logger.log(TRACE, signed_message)
-            encoded_message = base64.b64encode(signed_message).decode("utf-8")
-            logger.log(TRACE, encoded_message)
-            payload_message = build_payload(encoded_message)
+            payload_message = build_payload(signed_message)
             logger.log(TRACE, payload_message)
-            post_message = send_payload(config, token, payload_message)
-            logger.debug(post_message.status_code)
+            post_message = send_payload(config, payload_message)
+            logger.debug(post_message)
 
             latest_report_time = datetime.now()
             update_time_json(

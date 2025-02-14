@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- Apel plugin: `authentication` part of the config is now `messaging` and has different content ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
 ### Added
 
 ### Changed
+- Apel plugin: Switch to the Argo AMS library for messaging ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.7 to 0.9.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed

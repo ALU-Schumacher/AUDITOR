@@ -800,7 +800,11 @@ options:
                         Path to the config file
 ```
 
-The config file is written in YAML format and has the main sections `plugin`, `site`, `authentication`, `auditor`, and at least one of `summary_fields` or `individual_job_fields`.
+The config file is written in YAML format and has the main sections `plugin`, `site`, `messaging`, `auditor`, and one of `summary_fields` or `individual_job_fields`.
+
+Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access. 
+
+You only need the `summary_fields` OR the `individual_job_fields` section, depending on the value for `message_type` in the `plugin` section.
 
 Example config:
 
@@ -818,13 +822,15 @@ site:
     SITE_A: ["site_id_1", "site_id_2"]
     SITE_B: ["site_id_3"]
 
-authentication:
-  auth_url: https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
-  ams_url: https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+messaging:
+  host: msg.argo.grnet.gr
+  port: 8443
   client_cert: /etc/grid-security/hostcert.pem
   client_key: /etc/grid-security/hostkey.pem
-  ca_path: /etc/grid-security/certificates
-  verify_ca: True
+  project: accounting
+  topic: gLite-APEL
+  timeout: 10
+  retry: 3
 
 auditor:
   ip: 127.0.0.1
@@ -916,28 +922,30 @@ individual_job_fields:
 
 The individual parameters in the config file are:
 
-| Section          | Parameter          | Description                                                                                                                                                                                                                                         |
-|------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `plugin`         | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
-| `plugin`         | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
-| `plugin`         | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
-| `plugin`         | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
-| `site`           | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                                                                                     |
-| `site`           | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                                                                       |
-| `authentication` | `auth_url`         | URL from which the APEL authentication token is received.                                                                                                                                                                                           |
-| `authentication` | `ams_url`          | URL to which the reports are sent.                                                                                                                                                                                                                  |
-| `authentication` | `client_cert`      | Path of the host certificate.                                                                                                                                                                                                                       |
-| `authentication` | `client_key`       | Path of the host key.                                                                                                                                                                                                                               |
-| `authentication` | `ca_path`          | Path of the local certificate folder.                                                                                                                                                                                                               |
-| `authentication` | `verify_ca`        | Controls the verification of the certificate of the APEL server. Can be set to `True` or `False` (the latter might be necessary for local test setups).                                                                                             |
-| `auditor`        | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                                                                         |
-| `auditor`        | `port`             | Port of the AUDITOR instance.                                                                                                                                                                                                                       |
-| `auditor`        | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                                                                       |
-| `auditor`        | `site_meta_field`  | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                                                                          |
-| `auditor`        | `use_tls`          | Specifies whether TLS is enabled (`True`) or disabled (`False`).                                                                                                                                                                                    |
-| `auditor`        | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if `use_tls` is True.                                                                                                                              |
-| `auditor`        | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if `use_tls` is True.                                                                                                                                  |
-| `auditor`        | `client_key_path`  | Path to the client's private key used for TLS. Only needed if `use_tls` is True.                                                                                                                                                                    |
+| Section     | Parameter          | Description                                                                                                                                                                                                                                         |
+|-------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `plugin`    | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
+| `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
+| `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
+| `plugin`    | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
+| `site`      | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                                                                                     |
+| `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                                                                       |
+| `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                                                                                    |
+| `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                                                                               |
+| `messaging` | `client_cert`      | Path of the host certificate.                                                                                                                                                                                                                       |
+| `messaging` | `client_key`       | Path of the host key.                                                                                                                                                                                                                               |
+| `messaging` | `project`          | Name of the project registered in the AMS service.                                                                                                                                                                                                  |
+| `messaging` | `topic`            | Name of the topic to publish the message.                                                                                                                                                                                                           |
+| `messaging` | `timeout`          | Timeout in seconds for sending the message to APEL.                                                                                                                                                                                                 |
+| `messaging` | `retry`            | Number of retries for sending the message to APEL.                                                                                                                                                                                                  |
+| `auditor`   | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                                                                         |
+| `auditor`   | `port`             | Port of the AUDITOR instance.                                                                                                                                                                                                                       |
+| `auditor`   | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                                                                       |
+| `auditor`   | `site_meta_field`  | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                                                                          |
+| `auditor`   | `use_tls`          | Specifies whether TLS is enabled (`True`) or disabled (`False`).                                                                                                                                                                                    |
+| `auditor`   | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if `use_tls` is True.                                                                                                                              |
+| `auditor`   | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if `use_tls` is True.                                                                                                                                  |
+| `auditor`   | `client_key_path`  | Path to the client's private key used for TLS. Only needed if `use_tls` is True.                                                                                                                                                                    |
 
 The main sections `summary_fields` and `individual_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
 
@@ -970,7 +978,7 @@ There are actually more mandatory fields, but they are handled internally and do
 
 The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records).
 
-Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!
+Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/).
 
 Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, `NormalisedField`, and `NormalisedWallDurationField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
 

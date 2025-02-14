@@ -154,8 +154,8 @@ class TestAuditorApelPlugin:
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
-        config.authentication.client_cert = Path.joinpath(test_dir, "test_cert.cert")
-        config.authentication.client_key = Path.joinpath(test_dir, "test_key.key")
+        config.messaging.client_cert = Path.joinpath(test_dir, "test_cert.cert")
+        config.messaging.client_key = Path.joinpath(test_dir, "test_key.key")
 
         result = sign_msg(config, "test")
 
@@ -174,18 +174,16 @@ class TestAuditorApelPlugin:
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
-        config.authentication.client_cert = "tests/nodir/test_cert.cert"
-        config.authentication.client_key = "tests/no/dir/test_key.key"
+        config.messaging.client_cert = "tests/nodir/test_cert.cert"
+        config.messaging.client_key = "tests/no/dir/test_key.key"
 
         with pytest.raises(Exception) as pytest_error:
             sign_msg(config, "test")
 
         assert pytest_error.type is FileNotFoundError
 
-        config.authentication.client_cert = str(
-            Path.joinpath(test_dir, "test_cert.cert")
-        )
-        config.authentication.client_key = str(Path.joinpath(test_dir, "test_key.key"))
+        config.messaging.client_cert = str(Path.joinpath(test_dir, "test_cert.cert"))
+        config.messaging.client_key = str(Path.joinpath(test_dir, "test_key.key"))
 
         result = sign_msg(config, "test")
 

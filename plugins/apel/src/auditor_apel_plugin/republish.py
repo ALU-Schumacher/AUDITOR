@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import argparse
-import base64
 import logging
 import sys
 from datetime import datetime
@@ -20,7 +19,6 @@ from auditor_apel_plugin.core import (
     create_message,
     fill_db,
     get_records,
-    get_token,
     group_db,
     send_payload,
     sign_msg,
@@ -45,9 +43,6 @@ def run(logger: Logger, config, client, args):
         logger.critical("No records found!")
         sys.exit(1)
 
-    token = get_token(config)
-    logger.debug(token)
-
     db = create_db(field_dict, message_type)
     filled_db = fill_db(config, db, message_type, field_dict, site, records)
     grouped_db = group_db(filled_db, message_type, optional_fields)
@@ -55,12 +50,10 @@ def run(logger: Logger, config, client, args):
     logger.log(TRACE, message)
     signed_message = sign_msg(config, message)
     logger.log(TRACE, signed_message)
-    encoded_message = base64.b64encode(signed_message).decode("utf-8")
-    logger.log(TRACE, encoded_message)
-    payload_message = build_payload(encoded_message)
+    payload_message = build_payload(signed_message)
     logger.log(TRACE, payload_message)
-    post_message = send_payload(config, token, payload_message)
-    logger.debug(post_message.status_code)
+    post_message = send_payload(config, payload_message)
+    logger.debug(post_message)
 
 
 def main():
