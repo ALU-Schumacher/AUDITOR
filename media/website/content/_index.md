@@ -851,19 +851,14 @@ summary_fields:
     GlobalUserName: !MetaField
       name: subject
     VO: !MetaField
-      name: user
-      function:
-        name: vo_mapping
-        parameters:
-          atlpr: atlas
-          atlsg: ops
-          ops: ops
+      name: voms
+      regex: (?<=/).*?(?=/|$)
     VOGroup: !MetaField
       name: voms
-      regex: (?=%2F).*?\S(?=%2F)
+      regex: (?<=/).*?(?=/Role|$)
     VORole: !MetaField
       name: voms
-      regex: (?=Role).*
+      regex: '(?=Role).*?(?=/|$)'
     SubmitHost: !MetaField
       name: headnode
     Infrastructure: !ConstantField
@@ -885,13 +880,13 @@ individual_job_fields:
       name: subject
     VO: !MetaField
       name: voms
-      regex: (?<=%2F).*?\S(?=%2F)
+      regex: (?<=/).*?(?=/|$)
     VOGroup: !MetaField
       name: voms
-      regex: (?=%2F).*?\S(?=%2F)
+      regex: (?<=/).*?(?=/Role|$)
     VORole: !MetaField
       name: voms
-      regex: (?=Role).*
+      regex: '(?=Role).*?(?=/|$)'
     SubmitHost: !MetaField
       name: headnode
     InfrastructureType: !ConstantField
