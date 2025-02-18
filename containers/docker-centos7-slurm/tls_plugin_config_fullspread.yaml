@@ -1,6 +1,6 @@
 auditor:
   addr: "host.docker.internal"
-  port: 8000
+  port: 8443
 components:
   NumCPUs: "HEPSPEC"
 min_priority: 1

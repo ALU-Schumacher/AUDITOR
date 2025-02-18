@@ -32,9 +32,9 @@ function start_auditor() {
     compile_auditor
   fi
   if [ "$RELEASE_MODE" = true ]; then
-    AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/release/auditor auditor/configuration/tls_config.yaml &
+    AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_TLS_CONFIG__HTTPS_ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/release/auditor auditor/configuration/tls_config.yaml &
   else
-    AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor auditor/configuration/tls_config.yaml &
+    AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_TLS_CONFIG__HTTPS_ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor auditor/configuration/tls_config.yaml &
   fi
   AUDITOR_SERVER_PID=$!
   COUNTER=0
@@ -55,7 +55,7 @@ function test_tls_pyauditor() {
     DB_NAME=$(uuidgen)
     SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
     start_auditor
-    python3 ./pyauditor/scripts/test_tls.py
+    python3 ./pyauditor/scripts/tls_test/test_tls.py
     kill $AUDITOR_SERVER_PID
 }
 

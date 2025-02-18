@@ -23,7 +23,7 @@ async def main():
 
     client = (
         AuditorClientBuilder()
-        .address("localhost", 8000)
+        .address("localhost", 8443)
         .timeout(10)
         .with_tls(
             "scripts/certs/rootCA.pem",
