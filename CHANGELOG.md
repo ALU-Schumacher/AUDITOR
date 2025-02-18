@@ -19,14 +19,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update once_cell from 1.20.2 to 1.20.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.3 to 0.9.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.21 to 0.23.23 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde-aux from 4.5.0 to 4.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.137 to 1.0.138 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update uuid from 1.12.1 to 1.13.2 ([@dirksammel](https://github.com/dirksammel))
 - Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
+- Docs: Fix regex for VOMS in the APEL plugin config ([@maxfischer2781](https://github.com/maxfischer2781))
 - HTCondor collector: Fix config check for entries which do not contain a `name` field (#1021) ([@rfvc](https://github.com/rfvc))
 - Apel plugin: Improved error messages when fetching security tokens ([@maxfischer2781](https://github.com/maxfischer2781))
 - Kubernetes collector: Move dependencies to workspace level, add meta information to Cargo.toml, add release instruction ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
+- APEL plugin: Remove deprecated function `get_voms_info` ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ## [0.7.0] - 2025-01-27
 
