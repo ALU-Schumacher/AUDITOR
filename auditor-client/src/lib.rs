@@ -659,7 +659,7 @@ impl AuditorClientBuilder {
     /// Constructor.
     pub fn new() -> AuditorClientBuilder {
         AuditorClientBuilder {
-            address: "http://127.0.0.1:8080".into(),
+            address: "127.0.0.1:8080".into(),
             database_path: PathBuf::from("sqlite::memory:"),
             timeout: Duration::try_seconds(30).expect("This should never fail"),
             send_interval: Duration::try_seconds(60).expect("This should never fail"),
@@ -675,7 +675,9 @@ impl AuditorClientBuilder {
     /// * `port` - Port of the Auditor instance.
     #[must_use]
     pub fn address<T: AsRef<str>>(mut self, address: &T, port: u16) -> Self {
-        self.address = format!("http://{}:{}", address.as_ref(), port);
+        //self.address = format!("http://{}:{}", address.as_ref(), port);
+        //self
+        self.address = format!("{}:{}", address.as_ref(), port);
         self
     }
 
@@ -766,7 +768,7 @@ impl AuditorClientBuilder {
     /// * [`ClientError::InvalidTimeInterval`] - If the timeout duration is less than zero.
     /// * [`ClientError::ReqwestError`] - If there was an error building the HTTP client.
     pub fn build(self) -> Result<AuditorClient, ClientError> {
-        let client = match self.tls_config {
+        let client = match self.tls_config.clone() {
             Some(tls_config) => reqwest::ClientBuilder::new()
                 .identity(tls_config.identity.expect(
                     "Error while setting up the client identity using client cert and key pem",
@@ -784,8 +786,21 @@ impl AuditorClientBuilder {
                 .build()?,
         };
 
+        //let scheme = if self.tls_config.is_some() { "https" } else { "http" };
+        //let address = format!("{}://{}", scheme, self.address);
+
+        // The only reason we check if the address contains the protocol is because
+        // of the unit tests that uses mock to create connection uri.
+        let address = if self.address.starts_with("http://") || self.address.starts_with("https://") {
+        self.address.clone()
+    } else {
+        let scheme = if self.tls_config.is_some() { "https" } else { "http" };
+        format!("{}://{}", scheme, self.address)
+    };
+
+
         Ok(AuditorClient {
-            address: self.address,
+            address,
             client,
         })
     }
@@ -827,7 +842,7 @@ impl AuditorClientBuilder {
     ///
     /// This method panics if it is called from an async runtime.
     pub fn build_blocking(self) -> Result<AuditorClientBlocking, ClientError> {
-        let client = match self.tls_config {
+        let client = match self.tls_config.clone() {
             Some(tls_config) => reqwest::blocking::ClientBuilder::new()
                 .identity(tls_config.identity.expect(
                     "Error while setting up the client identity using client cert and key pem",
@@ -845,8 +860,20 @@ impl AuditorClientBuilder {
                 .build()?,
         };
 
+        //let scheme = if self.tls_config.is_some() { "https" } else { "http" };
+        //let address = format!("{}://{}", scheme, self.address);
+
+        // The only reason we check if the address contains the protocol is because
+        // of the unit tests that uses mock to create connection uri.
+        let address = if self.address.starts_with("http://") || self.address.starts_with("https://") {
+        self.address.clone()
+    } else {
+        let scheme = if self.tls_config.is_some() { "https" } else { "http" };
+        format!("{}://{}", scheme, self.address)
+    };
+
         Ok(AuditorClientBlocking {
-            address: self.address,
+            address,
             client,
         })
     }
