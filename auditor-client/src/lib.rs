@@ -786,23 +786,21 @@ impl AuditorClientBuilder {
                 .build()?,
         };
 
-        //let scheme = if self.tls_config.is_some() { "https" } else { "http" };
-        //let address = format!("{}://{}", scheme, self.address);
-
-        // The only reason we check if the address contains the protocol is because
+        // The only reason we check if the self.address contains the protocol is because
         // of the unit tests that uses mock to create connection uri.
-        let address = if self.address.starts_with("http://") || self.address.starts_with("https://") {
-        self.address.clone()
-    } else {
-        let scheme = if self.tls_config.is_some() { "https" } else { "http" };
-        format!("{}://{}", scheme, self.address)
-    };
+        let address = if self.address.starts_with("http://") || self.address.starts_with("https://")
+        {
+            self.address.clone()
+        } else {
+            let scheme = if self.tls_config.is_some() {
+                "https"
+            } else {
+                "http"
+            };
+            format!("{}://{}", scheme, self.address)
+        };
 
-
-        Ok(AuditorClient {
-            address,
-            client,
-        })
+        Ok(AuditorClient { address, client })
     }
 
     /// Build a [`QueuedAuditorClient`] from `AuditorClientBuilder`.
@@ -860,22 +858,21 @@ impl AuditorClientBuilder {
                 .build()?,
         };
 
-        //let scheme = if self.tls_config.is_some() { "https" } else { "http" };
-        //let address = format!("{}://{}", scheme, self.address);
-
-        // The only reason we check if the address contains the protocol is because
+        // The only reason we check if the self.address contains the protocol is because
         // of the unit tests that uses mock to create connection uri.
-        let address = if self.address.starts_with("http://") || self.address.starts_with("https://") {
-        self.address.clone()
-    } else {
-        let scheme = if self.tls_config.is_some() { "https" } else { "http" };
-        format!("{}://{}", scheme, self.address)
-    };
+        let address = if self.address.starts_with("http://") || self.address.starts_with("https://")
+        {
+            self.address.clone()
+        } else {
+            let scheme = if self.tls_config.is_some() {
+                "https"
+            } else {
+                "http"
+            };
+            format!("{}://{}", scheme, self.address)
+        };
 
-        Ok(AuditorClientBlocking {
-            address,
-            client,
-        })
+        Ok(AuditorClientBlocking { address, client })
     }
 }
 
