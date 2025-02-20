@@ -898,19 +898,14 @@ See below for all currently available collectors.</p>
 </span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
 </span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user
-</span><span>      </span><span style="color:#00a33f;">function</span><span>:
-</span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">vo_mapping
-</span><span>        </span><span style="color:#00a33f;">parameters</span><span>:
-</span><span>          </span><span style="color:#00a33f;">atlpr</span><span>: </span><span style="color:#00a33f;">atlas
-</span><span>          </span><span style="color:#00a33f;">atlsg</span><span>: </span><span style="color:#00a33f;">ops
-</span><span>          </span><span style="color:#00a33f;">ops</span><span>: </span><span style="color:#00a33f;">ops
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/|$)
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/Role|$)
 </span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">&#39;(?=Role).*?(?=/|$)&#39;
 </span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
 </span><span>    </span><span style="color:#00a33f;">Infrastructure</span><span>: </span><span style="color:#ff5600;">!ConstantField
@@ -932,13 +927,13 @@ See below for all currently available collectors.</p>
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
 </span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=%2F).*?\S(?=%2F)
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/|$)
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=%2F).*?\S(?=%2F)
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/Role|$)
 </span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?=Role).*
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">&#39;(?=Role).*?(?=/|$)&#39;
 </span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
 </span><span>    </span><span style="color:#00a33f;">InfrastructureType</span><span>: </span><span style="color:#ff5600;">!ConstantField
