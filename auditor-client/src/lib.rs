@@ -675,8 +675,6 @@ impl AuditorClientBuilder {
     /// * `port` - Port of the Auditor instance.
     #[must_use]
     pub fn address<T: AsRef<str>>(mut self, address: &T, port: u16) -> Self {
-        //self.address = format!("http://{}:{}", address.as_ref(), port);
-        //self
         self.address = format!("{}:{}", address.as_ref(), port);
         self
     }
