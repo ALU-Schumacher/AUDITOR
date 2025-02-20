@@ -129,17 +129,24 @@ After installing PostgreSQL, the database needs to be migrated with `sqlx`.
 
 AUDITORs configuration can be adapted with environment variables.
 
-| Variable                          | Description                                                                                               |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `AUDITOR_APPLICATION__ADDR`       | Address to bind to (default `0.0.0.0`)                                                                    |
-| `AUDITOR_APPLICATION__PORT`       | Port to bind to (default `8000`)                                                                          |
-| `AUDITOR_DATABASE__HOST`          | Host address of PostgreSQL database (default `localhost`)                                                 |
-| `AUDITOR_DATABASE__PORT`          | Port of PostgreSQL database (default `5432`)                                                              |
-| `AUDITOR_DATABASE__USERNAME`      | PostgreSQL database username (default `postgres`)                                                         |
-| `AUDITOR_DATABASE__PASSWORD`      | PostgreSQL database password (default `password`)                                                         |
-| `AUDITOR_DATABASE__DATABASE_NAME` | Name of the PostgreSQL database (default `auditor`)                                                       |
-| `AUDITOR_DATABASE__REQUIRE_SSL`   | Whether or not to use SSL (default `true`)                                                                |
-| `AUDITOR_LOG_LEVEL`               | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`) |
+| Variable                              | Description                                                                                               |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `AUDITOR_APPLICATION__ADDR`           | Address to bind to (default `0.0.0.0`). Supports both IPv4 and IPv6                                       |
+| `AUDITOR_APPLICATION__PORT`           | Port to bind to (default `8000`)                                                                          |
+| `AUDITOR_DATABASE__HOST`              | Host address of PostgreSQL database (default `localhost`)                                                 |
+| `AUDITOR_DATABASE__PORT`              | Port of PostgreSQL database (default `5432`)                                                              |
+| `AUDITOR_DATABASE__USERNAME`          | PostgreSQL database username (default `postgres`)                                                         |
+| `AUDITOR_DATABASE__PASSWORD`          | PostgreSQL database password (default `password`)                                                         |
+| `AUDITOR_DATABASE__DATABASE_NAME`     | Name of the PostgreSQL database (default `auditor`)                                                       |
+| `AUDITOR_DATABASE__REQUIRE_SSL`       | Whether or not to use SSL (default `true`)                                                                |
+| `AUDITOR_LOG_LEVEL`                   | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`) |
+| `AUDITOR_TLS_CONFIG__USE_TLS`         | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                          |
+| `AUDITOR_TLS_CONFIG__HTTPS_ADDR`      | The HTTPS address where the server will listen. Defaults to a pre-configured value if not set.            |
+| `AUDITOR_TLS_CONFIG__HTTPS_PORT`      | The HTTPS port where the server will listen. (default `8443`). Supports both IPv4 and IPv6                |
+| `AUDITOR_TLS_CONFIG__CA_CERT_PATH`    | Path to the root Certificate Authority (CA) certificate for validating client certificates.               |
+| `AUDITOR_TLS_CONFIG__SERVER_CERT_PATH`| Path to the server's TLS certificate.                                                                     |
+| `AUDITOR_TLS_CONFIG__SERVER_KEY_PATH` | Path to the server's private key used for TLS.                                                            |
+
 
 Use `docker run` to execute Auditor:
 
