@@ -354,7 +354,7 @@ mod tests {
         for r in recs.iter() {
             db.update(r).await.unwrap()
         }
-        let rowid = db.get_last_update_rowid().await.unwrap().take().unwrap();
+        let rowid = db.get_last_update_rowid().await.unwrap().unwrap();
 
         assert_eq!(rowid, 10);
     }

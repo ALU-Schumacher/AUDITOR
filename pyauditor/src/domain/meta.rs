@@ -7,6 +7,7 @@
 
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
+use pyo3::IntoPyObjectExt;
 
 /// Meta()
 ///
@@ -53,8 +54,8 @@ impl Meta {
     fn __richcmp__(&self, other: PyRef<Meta>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {
-            CompareOp::Eq => (self.inner == other.inner).into_py(py),
-            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            CompareOp::Eq => (self.inner == other.inner).into_py_any(py).unwrap(),
+            CompareOp::Ne => (self.inner != other.inner).into_py_any(py).unwrap(),
             _ => py.NotImplemented(),
         }
     }

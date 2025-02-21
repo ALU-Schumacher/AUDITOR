@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 44.0.0 to 44.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.14.1 to 1.15.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update once_cell from 1.20.2 to 1.20.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3 from 0.22.5 to 0.23.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3-async-runtimes from 0.22.0 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.3 to 0.9.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.21 to 0.23.23 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde-aux from 4.5.0 to 4.6.0 ([@dirksammel](https://github.com/dirksammel))

@@ -7,6 +7,7 @@
 
 use crate::domain::Record;
 use chrono::{DateTime, Utc};
+use pyo3::ffi::c_str;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
 
@@ -91,8 +92,8 @@ impl QueuedAuditorClient {
         timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
     ) -> PyResult<Bound<'a, PyAny>> {
-        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn_bound(py, &message, "get_started_since is depreciated", 0)?;
+        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn(py, &message, c_str!("get_started_since is depreciated"), 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
@@ -139,8 +140,8 @@ impl QueuedAuditorClient {
         timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
     ) -> PyResult<Bound<'a, PyAny>> {
-        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn_bound(py, &message, "get_stopped_since_since is depreciated", 0)?;
+        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn(py, &message, c_str!("get_stopped_since is depreciated"), 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();

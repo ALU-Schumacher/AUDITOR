@@ -14,6 +14,7 @@ use chrono::{DateTime, Utc};
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
+use pyo3::IntoPyObjectExt;
 
 /// Record(record_id: str, start_time: datetime.datetime)
 /// A Record represents a single accountable unit. It consists of meta information such as
@@ -147,7 +148,7 @@ impl Record {
         self.inner
             .start_time
             .as_ref()
-            .map(|start_time| start_time.naive_utc().into_py(py))
+            .map(|start_time| start_time.naive_utc().into_py_any(py).unwrap())
     }
 
     /// Returns the stop_time
@@ -156,7 +157,7 @@ impl Record {
         self.inner
             .stop_time
             .as_ref()
-            .map(|stop_time| stop_time.naive_utc().into_py(py))
+            .map(|stop_time| stop_time.naive_utc().into_py_any(py).unwrap())
     }
 
     /// Returns the runtime of a record.
@@ -173,8 +174,8 @@ impl Record {
     fn __richcmp__(&self, other: PyRef<Record>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {
-            CompareOp::Eq => (self.inner == other.inner).into_py(py),
-            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            CompareOp::Eq => (self.inner == other.inner).into_py_any(py).unwrap(),
+            CompareOp::Ne => (self.inner != other.inner).into_py_any(py).unwrap(),
             _ => py.NotImplemented(),
         }
     }
