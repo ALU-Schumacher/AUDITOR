@@ -17,7 +17,7 @@ exclude = [
 actix-web = "4.8.0"
 actix-tls = "3.4.0" 
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
-anyhow = "1.0.95"
+anyhow = "1.0.96"
 auditor = { path = "./auditor", version = "0.7.0", default-features = false }
 auditor-client = { path = "./auditor-client", version = "0.7.0" }
 bincode = "1.3.3"
