@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update anyhow from 1.0.95 to 1.0.96 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 24.10.0 to 25.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.0 to 44.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.14.1 to 1.15.0 ([@dirksammel](https://github.com/dirksammel))
