@@ -8,8 +8,10 @@
 use crate::domain::Record;
 use anyhow::Error;
 use chrono::{DateTime, Utc};
+use pyo3::ffi::c_str;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
+use pyo3::IntoPyObjectExt;
 use std::collections::HashMap;
 
 /// The `QueryBuilder` is used to construct `QueryParameters` using the builder pattern.
@@ -589,7 +591,7 @@ impl QueryBuilder {
     /// Builds the query string for the given query parameters
     fn build(self_: PyRef<Self>, py: Python) -> Py<PyAny> {
         let query_string: String = self_.inner.clone().build();
-        query_string.into_py(py)
+        query_string.into_py_any(py).unwrap()
     }
 }
 
@@ -657,8 +659,8 @@ impl AuditorClient {
         timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
     ) -> PyResult<Bound<'a, PyAny>> {
-        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn_bound(py, &message, "get_started_since is depreciated", 0)?;
+        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn(py, &message, c_str!("get_started_since is depreciated"), 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();
@@ -705,8 +707,8 @@ impl AuditorClient {
         timestamp: &Bound<'_, PyDateTime>,
         py: Python<'a>,
     ) -> PyResult<Bound<'a, PyAny>> {
-        let message = py.get_type_bound::<pyo3::exceptions::PyDeprecationWarning>();
-        PyErr::warn_bound(py, &message, "get_stopped_since_since is depreciated", 0)?;
+        let message = py.get_type::<pyo3::exceptions::PyDeprecationWarning>();
+        PyErr::warn(py, &message, c_str!("get_stopped_since is depreciated"), 0)?;
 
         let since: DateTime<Utc> = timestamp.extract()?;
         let inner = self_.inner.clone();

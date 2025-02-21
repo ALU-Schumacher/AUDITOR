@@ -8,6 +8,7 @@
 use crate::domain::Score;
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
+use pyo3::IntoPyObjectExt;
 
 /// Component(name: str, amount: int)
 /// A component represents a single component which is to be accounted for. It consists at least
@@ -65,8 +66,8 @@ impl Component {
     fn __richcmp__(&self, other: PyRef<Component>, op: CompareOp) -> Py<PyAny> {
         let py = other.py();
         match op {
-            CompareOp::Eq => (self.inner == other.inner).into_py(py),
-            CompareOp::Ne => (self.inner != other.inner).into_py(py),
+            CompareOp::Eq => (self.inner == other.inner).into_py_any(py).unwrap(),
+            CompareOp::Ne => (self.inner != other.inner).into_py_any(py).unwrap(),
             _ => py.NotImplemented(),
         }
     }
