@@ -6,6 +6,18 @@ weight = 3
 
 # From 0.7.0 to unreleased
 
+Please backup your db before proceeding with any changes that are listed below.
+
+## Remove forbidden characters:
+The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:
+
+### HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier
+- Clone the github repository [git_repo](https://github.com/ALU-Schumacher/AUDITOR).
+- Move into the cloned repository `cd AUDITOR`
+- Install the required dependencies with `pip install -r auditor/scripts/revert_encoding/requirements.txt`
+- Replace the placeholder values in the .env file present at `auditor/scripts/revert_encoding` with the values corresponding to your database config.
+- Run `python auditor/scripts/revert_encoding/revert_encodings.py`
+
 # From 0.6.3 to 0.7.0
 
 ### Update to [sqlx 0.8.3](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
