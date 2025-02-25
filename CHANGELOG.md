@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-<<<<<<< HEAD
 - Auditor: refactor- Use auditor address when https_addr is not specified & remove https_addr from example config ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update anyhow from 1.0.95 to 1.0.96 ([@dirksammel](https://github.com/dirksammel))
 - Auditor-client: Fix auditor-client to correctly enable https if TLS is configured ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
