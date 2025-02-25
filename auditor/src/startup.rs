@@ -18,7 +18,8 @@ use tracing_actix_web::TracingLogger;
 
 /// Configures and starts the HttpServer
 pub fn run(
-    listener: TcpListener,
+    addr: String,
+    port: u16,
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
     tls_params: Option<TLSParams>,
@@ -58,14 +59,23 @@ pub fn run(
             .app_data(db_pool.clone())
     };
 
+    let address = format!("{}:{}", addr, port);
+    let listener = TcpListener::bind(address)?;
+
     let server = HttpServer::new(app_config).listen(listener)?;
 
     match tls_params {
         Some(params) if params.use_tls => {
             println!("********* AUDITOR running in TLS mode *********");
-            Ok(server
-                .bind_rustls_0_23((params.https_addr, params.https_port), params.config)?
-                .run())
+
+            match params.https_addr {
+                Some(https_addr) => Ok(server
+                    .bind_rustls_0_23((https_addr, params.https_port), params.config)?
+                    .run()),
+                _ => Ok(server
+                    .bind_rustls_0_23((addr, params.https_port), params.config)?
+                    .run()),
+            }
         }
         _ => {
             println!("********* AUDITOR running without TLS *********");

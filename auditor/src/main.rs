@@ -10,7 +10,6 @@ use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::startup::run;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
-use std::net::TcpListener;
 
 use rustls::{pki_types::PrivateKeyDer, server::WebPkiClientVerifier, RootCertStore, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
@@ -40,13 +39,6 @@ async fn main() -> Result<(), anyhow::Error> {
     tokio::spawn(async move {
         db_metrics_watcher_task.monitor().await.unwrap();
     });
-
-    // Create a TcpListener for a given address and port
-    let address = format!(
-        "{}:{}",
-        configuration.application.addr, configuration.application.port
-    );
-    let listener = TcpListener::bind(address)?;
 
     if let Some(tls) = configuration.tls_config {
         // tls config if the use_tls option is set to true
@@ -107,7 +99,8 @@ async fn main() -> Result<(), anyhow::Error> {
             };
 
             run(
-                listener,
+                configuration.application.addr,
+                configuration.application.port,
                 connection_pool,
                 db_metrics_watcher,
                 Some(tls_params),
@@ -115,11 +108,25 @@ async fn main() -> Result<(), anyhow::Error> {
             .await?;
         } else {
             // Start server
-            run(listener, connection_pool, db_metrics_watcher, None)?.await?;
+            run(
+                configuration.application.addr,
+                configuration.application.port,
+                connection_pool,
+                db_metrics_watcher,
+                None,
+            )?
+            .await?;
         }
     } else {
         // Start server
-        run(listener, connection_pool, db_metrics_watcher, None)?.await?;
+        run(
+            configuration.application.addr,
+            configuration.application.port,
+            connection_pool,
+            db_metrics_watcher,
+            None,
+        )?
+        .await?;
     }
 
     Ok(())
