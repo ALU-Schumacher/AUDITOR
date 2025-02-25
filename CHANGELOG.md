@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3-async-runtimes from 0.22.0 to 0.23.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.3 to 0.9.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.21 to 0.23.23 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde from 1.0.217 to 1.0.218 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde-aux from 4.5.0 to 4.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.137 to 1.0.139 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.8.0 to 75.8.1 ([@dirksammel](https://github.com/dirksammel))
