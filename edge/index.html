@@ -323,7 +323,7 @@ Auditor requires a properly configured PostgreSQL database.
 After installing PostgreSQL, the database needs to be migrated with <code>sqlx</code>.</p>
 <p>AUDITORs configuration can be adapted with environment variables.</p>
 <table><thead><tr><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>AUDITOR_APPLICATION__ADDR</code></td><td>Address to bind to (default <code>0.0.0.0</code>)</td></tr>
+<tr><td><code>AUDITOR_APPLICATION__ADDR</code></td><td>Address to bind to (default <code>0.0.0.0</code>). Supports both IPv4 and IPv6</td></tr>
 <tr><td><code>AUDITOR_APPLICATION__PORT</code></td><td>Port to bind to (default <code>8000</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__HOST</code></td><td>Host address of PostgreSQL database (default <code>localhost</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__PORT</code></td><td>Port of PostgreSQL database (default <code>5432</code>)</td></tr>
@@ -332,6 +332,12 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_DATABASE__DATABASE_NAME</code></td><td>Name of the PostgreSQL database (default <code>auditor</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
 <tr><td><code>AUDITOR_LOG_LEVEL</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>)</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__USE_TLS</code></td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_ADDR</code></td><td>The HTTPS address where the server will listen. Defaults to a pre-configured value if not set.</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_PORT</code></td><td>The HTTPS port where the server will listen. (default <code>8443</code>). Supports both IPv4 and IPv6</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__CA_CERT_PATH</code></td><td>Path to the root Certificate Authority (CA) certificate for validating client certificates.</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__SERVER_CERT_PATH</code></td><td>Path to the server's TLS certificate.</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__SERVER_KEY_PATH</code></td><td>Path to the server's private key used for TLS.</td></tr>
 </tbody></table>
 <p>Use <code>docker run</code> to execute Auditor:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
