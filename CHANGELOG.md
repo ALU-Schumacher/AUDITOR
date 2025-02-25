@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_json from 1.0.137 to 1.0.139 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 75.8.0 to 75.8.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update uuid from 1.12.1 to 1.13.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update uuid from 1.12.1 to 1.14.0 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Correct and enhance HTCondor collector documentation (#1021) ([@rfvc](https://github.com/rfvc))
 - Docs: Fix regex for VOMS in the APEL plugin config ([@maxfischer2781](https://github.com/maxfischer2781))
 - HTCondor collector: Fix config check for entries which do not contain a `name` field (#1021) ([@rfvc](https://github.com/rfvc))
