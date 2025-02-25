@@ -194,7 +194,6 @@ tls_config:
   ca_cert_path: "/path/rootCA.pem"
   server_cert_path: "/path/server-cert.pem"
   server_key_path: "/path/server-key.pem"
-  https_addr: "0.0.0.0"
   https_port: 8005
 ```
 

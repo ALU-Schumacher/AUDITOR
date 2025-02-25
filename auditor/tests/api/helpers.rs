@@ -123,13 +123,20 @@ pub async fn spawn_app() -> TestApp {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{port}");
+    drop(listener);
 
     let mut configuration = get_configuration().expect("Failed to read configuration.");
     configuration.database.database_name = Uuid::new_v4().to_string();
     let connection_pool = configure_database(&configuration.database).await;
     let db_watcher = DatabaseMetricsWatcher::new(connection_pool.clone(), &configuration).unwrap();
-    let server = auditor::startup::run(listener, connection_pool.clone(), db_watcher, None)
-        .expect("Failed to bind address");
+    let server = auditor::startup::run(
+        "127.0.0.1".to_string(),
+        port,
+        connection_pool.clone(),
+        db_watcher,
+        None,
+    )
+    .expect("Failed to bind address");
     tokio::spawn(server);
     TestApp {
         address,

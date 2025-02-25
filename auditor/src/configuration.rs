@@ -29,13 +29,16 @@ pub struct Settings {
 #[derive(serde::Deserialize, Debug)]
 pub struct TLSConfig {
     pub use_tls: bool,
-    #[serde(default = "default_https_addr")]
-    pub https_addr: String,
+    pub https_addr: Option<String>,
     #[serde(default = "default_https_port")]
     pub https_port: u16,
     pub ca_cert_path: Option<String>,
     pub server_cert_path: Option<String>,
     pub server_key_path: Option<String>,
+}
+
+fn default_https_port() -> u16 {
+    8443u16
 }
 
 impl TLSConfig {
@@ -56,18 +59,10 @@ impl TLSConfig {
     }
 }
 
-fn default_https_addr() -> String {
-    "127.0.0.1".to_string()
-}
-
-fn default_https_port() -> u16 {
-    8443u16
-}
-
 #[derive(Debug)]
 pub struct TLSParams {
     pub config: ServerConfig,
-    pub https_addr: String,
+    pub https_addr: Option<String>,
     pub https_port: u16,
     pub use_tls: bool,
 }
