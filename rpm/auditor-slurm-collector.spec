@@ -29,6 +29,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Thu Feb 27 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.7.1
+  - Release v0.7.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Mon Jan 27 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.7.0
   - Release v0.7.0 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Wed Oct 30 2024 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.6.3
