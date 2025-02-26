@@ -5,13 +5,13 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use auditor::configuration::{get_configuration, TLSParams};
+use auditor::configuration::{TLSParams, get_configuration};
 use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::startup::run;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
 
-use rustls::{pki_types::PrivateKeyDer, server::WebPkiClientVerifier, RootCertStore, ServerConfig};
+use rustls::{RootCertStore, ServerConfig, pki_types::PrivateKeyDer, server::WebPkiClientVerifier};
 use rustls_pemfile::{certs, pkcs8_private_keys};
 
 use std::{fs::File, io::BufReader, sync::Arc};

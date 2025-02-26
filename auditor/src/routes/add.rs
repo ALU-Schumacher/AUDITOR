@@ -7,7 +7,7 @@
 
 use crate::constants::{ERR_RECORD_EXISTS, ERR_UNEXPECTED_ERROR};
 use crate::domain::RecordAdd;
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{HttpResponse, ResponseError, web};
 use chrono::Utc;
 use serde_json::Value;
 use sqlx::PgPool;

@@ -13,7 +13,7 @@ mod validamount;
 mod validname;
 mod validvalue;
 
-use actix_web::{http::StatusCode, ResponseError};
+use actix_web::{ResponseError, http::StatusCode};
 pub use component::{Component, ComponentTest};
 pub use meta::{Meta, ValidMeta};
 pub use record::{Record, RecordAdd, RecordDatabase, RecordTest, RecordUpdate};

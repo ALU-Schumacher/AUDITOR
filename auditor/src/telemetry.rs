@@ -5,13 +5,13 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use serde::{de, Deserialize};
+use serde::{Deserialize, de};
 use std::str::FromStr;
-use tracing::{subscriber::set_global_default, Subscriber};
+use tracing::{Subscriber, subscriber::set_global_default};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_log::LogTracer;
 use tracing_subscriber::{
-    filter::LevelFilter, fmt::MakeWriter, layer::SubscriberExt, EnvFilter, Registry,
+    EnvFilter, Registry, filter::LevelFilter, fmt::MakeWriter, layer::SubscriberExt,
 };
 
 /// Compose multiple layers into a `tracing`'s subscriber.

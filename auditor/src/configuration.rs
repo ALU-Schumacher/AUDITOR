@@ -9,8 +9,8 @@ use crate::telemetry::deserialize_log_level;
 use rustls::ServerConfig;
 use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
-use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use sqlx::ConnectOptions;
+use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug)]

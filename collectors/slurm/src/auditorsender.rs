@@ -12,7 +12,7 @@ use auditor_client::{AuditorClient, ClientError};
 use color_eyre::eyre::{Result, WrapErr};
 use tokio::sync::{mpsc, oneshot};
 
-use crate::{database::Database, shutdown::Shutdown, CONFIG};
+use crate::{CONFIG, database::Database, shutdown::Shutdown};
 
 pub(crate) struct AuditorSender {
     sender: QueuedSender,
