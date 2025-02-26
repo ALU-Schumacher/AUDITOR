@@ -368,7 +368,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "auditor"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "actix-tls",
  "actix-web",
@@ -414,7 +414,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -446,7 +446,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-kubernetes-collector"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -470,7 +470,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-priority-plugin"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "actix-web",
  "actix-web-opentelemetry",
@@ -497,7 +497,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-collector"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -523,7 +523,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-epilog-collector"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -3016,7 +3016,7 @@ dependencies = [
 
 [[package]]
 name = "python-auditor"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "auditor",

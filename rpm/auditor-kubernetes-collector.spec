@@ -29,5 +29,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{name}
 
 %changelog
+* Thu Feb 27 2025 Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de> - 0.7.1
+  - Release 0.7.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Mon Jan 27 2025 Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de> - 0.7.0
   - First version in a package
