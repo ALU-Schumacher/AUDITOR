@@ -5,13 +5,13 @@ use std::sync::OnceLock;
 use auditor_client::AuditorClientBuilder;
 
 mod config;
-use config::{load_configuration, Config};
+use config::{Config, load_configuration};
 mod constants;
 use constants::ensure_lazies;
 mod database;
 use database::Database;
 mod record_collector;
-use record_collector::{run_record_collector, KapiCollector};
+use record_collector::{KapiCollector, run_record_collector};
 mod merger;
 use merger::run_merger;
 

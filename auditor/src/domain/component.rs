@@ -11,8 +11,8 @@ use fake::{Dummy, Fake, Faker, StringFaker};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use sqlx::{
-    postgres::{PgHasArrayType, PgTypeInfo},
     Postgres, Type,
+    postgres::{PgHasArrayType, PgTypeInfo},
 };
 
 /// A `Component` represents a single component that is to be accounted for.

@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::domain::RecordUpdate;
-use actix_web::{web, HttpResponse};
+use actix_web::{HttpResponse, web};
 use chrono::Utc;
 use sqlx::PgPool;
 

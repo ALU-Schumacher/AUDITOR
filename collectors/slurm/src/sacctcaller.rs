@@ -10,17 +10,17 @@ use std::collections::HashMap;
 use anyhow::anyhow;
 use auditor::domain::{Component, RecordAdd, Score};
 use chrono::{DateTime, Local, Utc};
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::{Result, eyre};
 use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use tokio::{process::Command, sync::mpsc};
 
 use crate::{
+    CONFIG, END, GROUP, JOBID, KEYS, START, STATE, USER,
     configuration::{AllowedTypes, ComponentConfig, KeyConfig, ParsableType, Settings},
     database::Database,
     shutdown::Shutdown,
-    CONFIG, END, GROUP, JOBID, KEYS, START, STATE, USER,
 };
 
 type SacctRow = HashMap<String, Option<AllowedTypes>>;
@@ -298,9 +298,9 @@ fn construct_record(
         site
     } else {
         tracing::warn!(
-                "No configured site matched for job {}! Ignoring job. Consider adding a match-all at the end of the sites configuration.",
-                job_id
-            );
+            "No configured site matched for job {}! Ignoring job. Consider adding a match-all at the end of the sites configuration.",
+            job_id
+        );
         return Ok(None);
     };
 
@@ -460,8 +460,8 @@ mod tests {
 
     use super::*;
     use crate::{
-        configuration::{OnlyIf, ScoreConfig},
         STATE,
+        configuration::{OnlyIf, ScoreConfig},
     };
 
     #[test]

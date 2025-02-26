@@ -8,8 +8,8 @@
 use std::collections::HashMap;
 
 use auditor::telemetry::deserialize_log_level;
-use chrono::{offset::FixedOffset, DateTime, Duration, Local, NaiveDateTime, Utc};
-use color_eyre::eyre::{eyre, Report, Result, WrapErr};
+use chrono::{DateTime, Duration, Local, NaiveDateTime, Utc, offset::FixedOffset};
+use color_eyre::eyre::{Report, Result, WrapErr, eyre};
 use itertools::Itertools;
 use once_cell::unsync::Lazy;
 use regex::{Captures, Regex, RegexSet};
@@ -415,7 +415,10 @@ impl ParsableType {
                 }
 
                 if captures.len() > 1 {
-                    tracing::warn!("Multiple regex patterns matched when parsing time {}. This should not happen. Taking first one.", input);
+                    tracing::warn!(
+                        "Multiple regex patterns matched when parsing time {}. This should not happen. Taking first one.",
+                        input
+                    );
                 }
 
                 // Unwrap is fine because we have ensured that there is exactly one element.

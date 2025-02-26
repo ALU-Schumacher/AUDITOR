@@ -1,4 +1,4 @@
-use auditor::configuration::{get_configuration, DatabaseSettings};
+use auditor::configuration::{DatabaseSettings, get_configuration};
 use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use once_cell::sync::Lazy;

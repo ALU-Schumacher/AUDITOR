@@ -11,10 +11,10 @@ use crate::domain::{Component, Meta};
 use anyhow::Error;
 use auditor::domain::ValidName;
 use chrono::{DateTime, Utc};
+use pyo3::IntoPyObjectExt;
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
-use pyo3::IntoPyObjectExt;
 
 /// Record(record_id: str, start_time: datetime.datetime)
 /// A Record represents a single accountable unit. It consists of meta information such as

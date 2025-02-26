@@ -6,8 +6,8 @@ use kube::api::ListParams;
 
 use super::RecordCollector;
 use crate::{
-    constants::{KEY_NAMESPACE, KEY_PODNAME, KEY_STATUS},
     CONFIG,
+    constants::{KEY_NAMESPACE, KEY_PODNAME, KEY_STATUS},
 };
 use kubernetes::KubeApi;
 

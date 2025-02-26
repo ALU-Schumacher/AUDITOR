@@ -1,5 +1,5 @@
-use crate::routes::{advanced_record_filtering, get_one_record, Filters};
-use actix_web::{web, HttpRequest, HttpResponse, ResponseError};
+use crate::routes::{Filters, advanced_record_filtering, get_one_record};
+use actix_web::{HttpRequest, HttpResponse, ResponseError, web};
 use serde_json::json;
 use sqlx::PgPool;
 use thiserror::Error;
@@ -67,7 +67,7 @@ impl ResponseError for GetFilterError {
             GetFilterError::InvalidQuery => {
                 HttpResponse::BadRequest().json(json!({ "error": "Invalid query parameters" }))
             }
-            GetFilterError::UnexpectedError(ref err) => {
+            GetFilterError::UnexpectedError(err) => {
                 HttpResponse::InternalServerError().json(json!({ "error": err }))
             }
         }
