@@ -5,9 +5,9 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use pyo3::IntoPyObjectExt;
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::*;
-use pyo3::IntoPyObjectExt;
 
 /// Meta()
 ///

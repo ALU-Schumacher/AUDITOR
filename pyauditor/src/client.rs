@@ -8,10 +8,10 @@
 use crate::domain::Record;
 use anyhow::Error;
 use chrono::{DateTime, Utc};
+use pyo3::IntoPyObjectExt;
 use pyo3::ffi::c_str;
 use pyo3::prelude::*;
 use pyo3::types::PyDateTime;
-use pyo3::IntoPyObjectExt;
 use std::collections::HashMap;
 
 /// The `QueryBuilder` is used to construct `QueryParameters` using the builder pattern.

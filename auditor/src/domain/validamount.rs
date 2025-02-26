@@ -7,7 +7,7 @@
 
 use crate::domain::ValidationError;
 use anyhow::Context;
-use sqlx::{postgres::PgTypeInfo, Postgres, Type};
+use sqlx::{Postgres, Type, postgres::PgTypeInfo};
 use std::fmt;
 
 // never turn this into `ValidAmount(pub i64)`. By keeping the inner field private, it is not

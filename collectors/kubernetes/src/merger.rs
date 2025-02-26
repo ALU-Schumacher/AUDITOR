@@ -3,18 +3,18 @@ use std::fmt::{self, Display};
 use std::time::Duration;
 
 use crate::{
+    CONFIG,
     constants::{COMPONENT_CPU, COMPONENT_MEM, KEY_NAMESPACE, KEY_PODNAME},
     database::Database,
-    CONFIG,
 };
 use auditor::domain::{Component, RecordAdd, ValidMeta, ValidName};
 use auditor_client::{AuditorClient as AClient, ClientError};
 
 use anyhow::Context;
 use chrono::{DateTime, Utc};
+use prometheus_http_query::Client as PClient;
 use prometheus_http_query::error::Error as PError;
 use prometheus_http_query::error::PrometheusErrorType;
-use prometheus_http_query::Client as PClient;
 use reqwest::ClientBuilder;
 use tokio::sync::broadcast;
 

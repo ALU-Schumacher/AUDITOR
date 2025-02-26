@@ -8,9 +8,9 @@
 use std::str::FromStr;
 
 use auditor::domain::RecordAdd;
-use chrono::{offset::Local, offset::TimeZone, DateTime, LocalResult, NaiveDateTime};
-use color_eyre::eyre::{eyre, Result};
-use sqlx::{sqlite::SqliteJournalMode, SqlitePool};
+use chrono::{DateTime, LocalResult, NaiveDateTime, offset::Local, offset::TimeZone};
+use color_eyre::eyre::{Result, eyre};
+use sqlx::{SqlitePool, sqlite::SqliteJournalMode};
 
 use crate::CONFIG;
 
@@ -95,7 +95,11 @@ impl Database {
                 match Local.from_local_datetime(&lastcheck) {
                     LocalResult::Single(datetime) => Ok((datetime, jobid)),
                     LocalResult::Ambiguous(datetime1, datetime2) => {
-                        tracing::info!("Ambiguous local time, ranging from t1 = {:?} to t2 = {:?} . Choosing t1 as timestamp", datetime1, datetime2);
+                        tracing::info!(
+                            "Ambiguous local time, ranging from t1 = {:?} to t2 = {:?} . Choosing t1 as timestamp",
+                            datetime1,
+                            datetime2
+                        );
                         Ok((datetime1, jobid))
                     }
                     LocalResult::None => {

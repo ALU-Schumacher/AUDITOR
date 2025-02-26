@@ -2,7 +2,7 @@
 name = "auditor"
 version = "0.7.0"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
-edition = "2021"
+edition = "2024"
 default-run = "auditor"
 license = "MIT OR Apache-2.0"
 description = "AccoUnting Data handlIng Toolbox for Opportunistic Resources"

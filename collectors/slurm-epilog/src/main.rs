@@ -9,7 +9,7 @@ use anyhow::Error;
 use auditor::domain::{Component, RecordAdd, Score};
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use auditor_client::AuditorClientBuilder;
-use chrono::{offset::FixedOffset, DateTime, Local, NaiveDateTime, Utc};
+use chrono::{DateTime, Local, NaiveDateTime, Utc, offset::FixedOffset};
 use regex::Regex;
 use std::collections::HashMap;
 use std::env;

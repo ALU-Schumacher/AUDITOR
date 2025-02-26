@@ -13,7 +13,7 @@ mod shutdown;
 
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use auditor_client::AuditorClientBuilder;
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::{Result, eyre};
 use once_cell::sync::Lazy;
 use tokio::{
     signal,
@@ -23,7 +23,7 @@ use uuid::Uuid;
 
 use crate::{
     auditorsender::AuditorSender,
-    configuration::{get_configuration, KeyConfig, ParsableType, Settings},
+    configuration::{KeyConfig, ParsableType, Settings, get_configuration},
     database::Database,
     sacctcaller::run_sacct_monitor,
     shutdown::{Shutdown, ShutdownSender},

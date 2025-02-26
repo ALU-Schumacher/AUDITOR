@@ -11,7 +11,7 @@ use std::str::FromStr;
 
 use auditor::domain::{RecordAdd, RecordUpdate};
 
-use sqlx::{sqlite::SqliteJournalMode, QueryBuilder, Sqlite, SqlitePool};
+use sqlx::{QueryBuilder, Sqlite, SqlitePool, sqlite::SqliteJournalMode};
 
 // See https://docs.rs/sqlx/latest/sqlx/struct.QueryBuilder.html#method.push_bind
 const BULK_SIZE: usize = 16384;
