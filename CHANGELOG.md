@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Apel plugin: Switch to the Argo AMS library for messaging ([@dirksammel](https://github.com/dirksammel))
+- HTCondor collector: Numbers from class ads can now be inserted in Meta fields ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.7 to 0.9.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
