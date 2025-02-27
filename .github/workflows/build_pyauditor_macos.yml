@@ -17,7 +17,7 @@ jobs:
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: cache-dependencies-pyauditor
+          shared-key: cache-dependencies-pyauditor-2
 
       # We need to somehow get the SQLX_OFFLINE env variable into the container.
       # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
