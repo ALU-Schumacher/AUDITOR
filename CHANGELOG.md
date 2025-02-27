@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update ruff from 0.9.7 to 0.9.8 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
