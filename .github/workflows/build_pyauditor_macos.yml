@@ -14,11 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
+        
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: cache-dependencies-pyauditor
-
+          
       # We need to somehow get the SQLX_OFFLINE env variable into the container.
       # Since `maturin-action` doesn't enable us to do that, we have to tell cargo
       # via its configuration.
