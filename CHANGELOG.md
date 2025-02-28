@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Docs: Add instructions for manual migration of db using psql (command line)
 
 ### Changed
 - Apel plugin: Switch to the Argo AMS library for messaging ([@dirksammel](https://github.com/dirksammel))
