@@ -849,7 +849,9 @@ See below for all currently available collectors.</p>
 </span><span>  -c CONFIG, --config CONFIG
 </span><span>                        Path to the config file
 </span></code></pre>
-<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>authentication</code>, <code>auditor</code>, and at least one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
+<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
+<p>Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.</p>
+<p>You only need the <code>summary_fields</code> OR the <code>individual_job_fields</code> section, depending on the value for <code>message_type</code> in the <code>plugin</code> section.</p>
 <p>Example config:</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#ff5600;">!Config
 </span><span style="color:#00a33f;">plugin</span><span>:
@@ -864,13 +866,15 @@ See below for all currently available collectors.</p>
 </span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
 </span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
 </span><span>
-</span><span style="color:#00a33f;">authentication</span><span>:
-</span><span>  </span><span style="color:#00a33f;">auth_url</span><span>: </span><span style="color:#00a33f;">https://msg.argo.grnet.gr:8443/v1/service-types/ams/hosts/msg.argo.grnet.gr:authx509
-</span><span>  </span><span style="color:#00a33f;">ams_url</span><span>: </span><span style="color:#00a33f;">https://msg-devel.argo.grnet.gr:443/v1/projects/accounting/topics/gLite-APEL:publish?key=
+</span><span style="color:#00a33f;">messaging</span><span>:
+</span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">msg.argo.grnet.gr
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8443
 </span><span>  </span><span style="color:#00a33f;">client_cert</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostcert.pem
 </span><span>  </span><span style="color:#00a33f;">client_key</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/hostkey.pem
-</span><span>  </span><span style="color:#00a33f;">ca_path</span><span>: </span><span style="color:#00a33f;">/etc/grid-security/certificates
-</span><span>  </span><span style="color:#00a33f;">verify_ca</span><span>: </span><span style="color:#a535ae;">True
+</span><span>  </span><span style="color:#00a33f;">project</span><span>: </span><span style="color:#00a33f;">accounting
+</span><span>  </span><span style="color:#00a33f;">topic</span><span>: </span><span style="color:#00a33f;">gLite-APEL
+</span><span>  </span><span style="color:#00a33f;">timeout</span><span>: 10
+</span><span>  </span><span style="color:#00a33f;">retry</span><span>: 3
 </span><span>
 </span><span style="color:#00a33f;">auditor</span><span>:
 </span><span>  </span><span style="color:#00a33f;">ip</span><span>: 127.0.0.1
@@ -967,12 +971,14 @@ See below for all currently available collectors.</p>
 <tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of message to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
 <tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
 <tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
-<tr><td><code>authentication</code></td><td><code>auth_url</code></td><td>URL from which the APEL authentication token is received.</td></tr>
-<tr><td><code>authentication</code></td><td><code>ams_url</code></td><td>URL to which the reports are sent.</td></tr>
-<tr><td><code>authentication</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
-<tr><td><code>authentication</code></td><td><code>client_key</code></td><td>Path of the host key.</td></tr>
-<tr><td><code>authentication</code></td><td><code>ca_path</code></td><td>Path of the local certificate folder.</td></tr>
-<tr><td><code>authentication</code></td><td><code>verify_ca</code></td><td>Controls the verification of the certificate of the APEL server. Can be set to <code>True</code> or <code>False</code> (the latter might be necessary for local test setups).</td></tr>
+<tr><td><code>messaging</code></td><td><code>host</code></td><td>Host address of the AMS service.</td></tr>
+<tr><td><code>messaging</code></td><td><code>port</code></td><td>Port of the AMS host.</td></tr>
+<tr><td><code>messaging</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
+<tr><td><code>messaging</code></td><td><code>client_key</code></td><td>Path of the host key.</td></tr>
+<tr><td><code>messaging</code></td><td><code>project</code></td><td>Name of the project registered in the AMS service.</td></tr>
+<tr><td><code>messaging</code></td><td><code>topic</code></td><td>Name of the topic to publish the message.</td></tr>
+<tr><td><code>messaging</code></td><td><code>timeout</code></td><td>Timeout in seconds for sending the message to APEL.</td></tr>
+<tr><td><code>messaging</code></td><td><code>retry</code></td><td>Number of retries for sending the message to APEL.</td></tr>
 <tr><td><code>auditor</code></td><td><code>ip</code></td><td>IP of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
@@ -1007,7 +1013,7 @@ See below for all currently available collectors.</p>
 <tr><td style="text-align: left"><code>ServiceLevelType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
 </tbody></table>
 <p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>.</p>
-<p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!</p>
+<p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: <a href="https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/">https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/</a>.</p>
 <p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, <code>NormalisedField</code>, and <code>NormalisedWallDurationField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
 <p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
 <p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> has the parameters <code>name</code> and <code>parameters</code>, where the latter is optional and can be used to provide additional parameters to the function. If you want to manipulate the value of the <code>Metafield</code> with a custom function, it has to be present in <code>utility.py</code> and can be added via a pull request.</p>
