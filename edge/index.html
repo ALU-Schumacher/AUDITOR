@@ -294,6 +294,24 @@ The connection details for the database can be set using the <code>AUDITOR_DATAB
 </span></code></pre>
 <p>Replace the <code>DB_*</code> variables with your corresponding values.</p>
 <h3 id="manual-1">Manual</h3>
+<p>This guide explains how to manually apply SQL migrations to a PostgreSQL database using different methods:</p>
+<h4 id="using-psql-command-line">Using psql (Command Line)</h4>
+<p>Clone the repository and <code>cd</code> into the directory.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git clone git@github.com:ALU-Schumacher/AUDITOR.git
+</span><span style="color:#a535ae;">cd</span><span> AUDITOR
+</span></code></pre>
+<p>Use the following commands to apply migrations:</p>
+<p>Replace the hostname (-h), username (-U) and the database name (-d) with your specific PostgreSQL server configuration.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>psql -h localhost -U postgres -d auditor -f migrations/20220322080444_create_accounting_table.sql
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>psql -h localhost -U postgres -d auditor -f migrations/20240503141800_convert_meta_component_to_jsonb.sql`
+</span></code></pre>
+<p>If your database is inside a Docker container:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>`docker exec -i auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20220322080444_create_accounting_table.sql`
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker exec -i auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20240503141800_convert_meta_component_to_jsonb.sql
+</span></code></pre>
+<h4 id="using-rust-sqlx-for-database-migration">Using Rust (sqlx) for Database Migration</h4>
 <p>Migrating the database manually requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
 A prerequisite is a working Rust setup, which can be installed either via your distributions package manager or via the following command:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>curl --proto </span><span style="color:#00a33f;">&#39;=https&#39;</span><span> --tlsv1.2 -sSf https://sh.rustup.rs </span><span style="color:#ff5600;">| </span><span>sh
