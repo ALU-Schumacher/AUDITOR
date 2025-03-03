@@ -4,7 +4,9 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.7.1 to unreleased
+# From 0.8.0 to unreleased
+
+# From 0.7.1 to 0.8.0
 
 ## Apel plugin
 
