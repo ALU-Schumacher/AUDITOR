@@ -21,7 +21,7 @@
     "blocks": {
 	"pre": "%define _build_id_links none",
         "desc": "AUDITOR plugin for sending accounting data to APEL",
-	"changelog": ["* Fri Feb 28 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.8.0\n - First version in a package"]
+	"changelog": ["* Mon Mar 03 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.8.0\n - First version in a package"]
     },
     "file_permissions": {
 	"user": "root",

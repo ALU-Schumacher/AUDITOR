@@ -36,6 +36,7 @@ jobs:
           attestations: false
       - name: Build RPM
         run: |
+          sleep 60
           uv pip compile pyproject.toml -o requirements.txt
           echo "." >> requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
@@ -74,6 +75,7 @@ jobs:
           attestations: false
       - name: Build RPM
         run: |
+          sleep 60
           uv pip compile pyproject.toml -o requirements.txt
           echo "." >> requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
