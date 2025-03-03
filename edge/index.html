@@ -669,6 +669,8 @@ Further, optional arguments are</p>
 </span><span>-1, --one-shot        Run once and exit.
 </span></code></pre>
 <p>Command line arguments override the values set in the config file.</p>
+<h3 id="rpm">rpm</h3>
+<p>The HTCondor collector is also available as rpm on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>. The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_htcondor_collector</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_htcondor_collector.service</code>. This service runs the command <code>auditor-htcondor-collector</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_htcondor_collector.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.</p>
 <h3 id="configuration-1">Configuration</h3>
 <p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
@@ -845,8 +847,8 @@ The following section explains the configuration of the collector.</p>
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
 <p>The APEL plugin creates messages and sends them to the APEL server. The plugin can either create <code>summary messages</code> for the current month, or <code>individual job messages</code>. <code>Sync messages</code> for the current month are created in both cases.</p>
-<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a> and as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>.</p>
-<p>Two CLI commands are available after the installation via <code>pip</code>: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
+<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a>, as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>, or as a rpm from the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>.</p>
+<p>Two CLI commands are available: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
 <p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
 </span><span>
@@ -867,6 +869,20 @@ See below for all currently available collectors.</p>
 </span><span>  -c CONFIG, --config CONFIG
 </span><span>                        Path to the config file
 </span></code></pre>
+<h3 id="pip">pip</h3>
+<p>The plugin can be installed with <code>pip install auditor-apel-plugin</code>. The commands <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code> are directly available after installation.</p>
+<h3 id="docker">Docker</h3>
+<p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
+</span></code></pre>
+<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.yml</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path: time.json
+</span><span>client_cert: hostcert.pem
+</span><span>client_key: hostkey.pem
+</span></code></pre>
+<h3 id="rpm-1">rpm</h3>
+<p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>auditor-apel-publish</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
+<h3 id="config">Config</h3>
 <p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
 <p>Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.</p>
 <p>You only need the <code>summary_fields</code> OR the <code>individual_job_fields</code> section, depending on the value for <code>message_type</code> in the <code>plugin</code> section.</p>
@@ -1039,14 +1055,6 @@ See below for all currently available collectors.</p>
 <p><code>ScoreField</code> extracts the score value from a given component from the AUDITOR record. The mandatory parameters are <code>name</code>, the name of the score, and <code>component_name</code>, the name of the component.</p>
 <p><code>NormalisedField</code> has the parameters <code>base_value</code> and <code>score</code>, where <code>score</code> is a <code>ScoreField</code> and <code>base_value</code> a <code>ComponentField</code>. The resulting value is the product of the score and the base value.</p>
 <p><code>NormalisedWallDurationField</code> has the parameter <code>score</code>, which is a <code>ScoreField</code>. The value of the score is multiplied with the <code>runtime</code> of the AUDITOR record.</p>
-<p>When using the Docker container, <code>auditor-apel-publish</code> for example can be started with</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -it --rm --network host -u </span><span style="color:#00a33f;">&quot;$(id -u):$(id -g)&quot;</span><span> -v ./config_folder:/app/ aluschumacher/auditor-apel-plugin:edge auditor-apel-publish -c auditor_apel_plugin.yml
-</span></code></pre>
-<p>In this example, the local directory <code>config_folder</code> contains the config file <code>auditor_apel_plugin.yml</code>, the client certificate <code>hostcert.pem</code>, and the client key <code>hostkey.pem</code>. The JSON file <code>time.json</code> will also be written in <code>config_folder</code>. The corresponding entries in the config file would be:</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>time_json_path: time.json
-</span><span>client_cert: hostcert.pem
-</span><span>client_key: hostkey.pem
-</span></code></pre>
 <h2 id="priority-plugin">Priority Plugin</h2>
 <p>The priority plugin takes the resources provided by multiple groups and computes a priority for each of these groups based on how many resources were provided.
 This allows one to transfer provided resources on one system to priorities in another system.
