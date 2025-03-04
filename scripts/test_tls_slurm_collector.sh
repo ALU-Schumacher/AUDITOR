@@ -112,9 +112,9 @@ function start_auditor() {
 		compile_auditor
 	fi
 	if [ "$RELEASE_MODE" = true ]; then
-		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_TLS_CONFIG__HTTPS_ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/release/auditor auditor/configuration/tls_config.yaml &
+		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/release/auditor auditor/configuration/tls_config.yaml &
 	else
-		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_TLS_CONFIG__HTTPS_ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor auditor/configuration/tls_config.yaml &
+		AUDITOR_APPLICATION__ADDR=0.0.0.0 AUDITOR_DATABASE__DATABASE_NAME=$DB_NAME ./target/debug/auditor auditor/configuration/tls_config.yaml &
 	fi
 	AUDITOR_SERVER_PID=$!
 	COUNTER=0
