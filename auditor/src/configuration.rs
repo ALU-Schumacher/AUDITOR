@@ -12,6 +12,10 @@ use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::ConnectOptions;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use tracing_subscriber::filter::LevelFilter;
+use serde::{Deserializer, Deserialize};
+
+use serde::de::{self, Visitor};
+use std::fmt;
 
 #[derive(serde::Deserialize, Debug)]
 pub struct Settings {
@@ -29,7 +33,8 @@ pub struct Settings {
 #[derive(serde::Deserialize, Debug)]
 pub struct TLSConfig {
     pub use_tls: bool,
-    pub https_addr: Option<String>,
+    #[serde(default, deserialize_with = "deserialize_optional_addr")]
+    pub https_addr: Option<Vec<String>>,
     #[serde(default = "default_https_port")]
     pub https_port: u16,
     pub ca_cert_path: Option<String>,
@@ -62,7 +67,7 @@ impl TLSConfig {
 #[derive(Debug)]
 pub struct TLSParams {
     pub config: ServerConfig,
-    pub https_addr: Option<String>,
+    pub https_addr: Option<Vec<String>>,
     pub https_port: u16,
     pub use_tls: bool,
 }
@@ -73,14 +78,78 @@ fn default_log_level() -> LevelFilter {
 
 #[derive(serde::Deserialize, Debug)]
 pub struct AuditorSettings {
+    #[serde(deserialize_with = "deserialize_addr")]
     #[serde(default = "default_addr")]
-    pub addr: String,
+    pub addr: Vec<String>,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
 }
 
-fn default_addr() -> String {
-    "127.0.0.1".to_string()
+fn default_addr() -> Vec<String> {
+    vec!["127.0.0.1".to_string()]
+}
+
+fn deserialize_addr<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct StringOrVec;
+
+    impl<'de> Visitor<'de> for StringOrVec {
+        type Value = Vec<String>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a string (comma-separated) or a list of strings")
+        }
+
+        fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            Ok(value.split(',').map(|s| s.trim().to_string()).collect())
+        }
+
+        fn visit_seq<A>(self, seq: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>,
+        {
+            Deserialize::deserialize(serde::de::value::SeqAccessDeserializer::new(seq))
+        }
+    }
+
+    deserializer.deserialize_any(StringOrVec)
+}
+
+fn deserialize_optional_addr<'de, D>(deserializer: D) -> Result<Option<Vec<String>>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct StringOrVec;
+
+    impl<'de> Visitor<'de> for StringOrVec {
+        type Value = Vec<String>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a string (comma-separated) or a list of strings")
+        }
+
+        fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            Ok(value.split(',').map(|s| s.trim().to_string()).collect())
+        }
+
+        fn visit_seq<A>(self, seq: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>,
+        {
+            Deserialize::deserialize(serde::de::value::SeqAccessDeserializer::new(seq))
+        }
+    }
+
+    let parsed_value = deserializer.deserialize_any(StringOrVec);
+    parsed_value.map(Some).or(Ok(None)) // Convert `Err` to `None`
 }
 
 #[derive(serde::Deserialize, Debug)]

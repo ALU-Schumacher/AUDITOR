@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- AUDITOR: Auditor application config field `addr` is changed to a list for supporting IPv4/IPv6 dualstack operation ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Security
 
