@@ -130,7 +130,7 @@ pub async fn spawn_app() -> TestApp {
     let connection_pool = configure_database(&configuration.database).await;
     let db_watcher = DatabaseMetricsWatcher::new(connection_pool.clone(), &configuration).unwrap();
     let server = auditor::startup::run(
-        "127.0.0.1".to_string(),
+        vec!["127.0.0.1".to_string()],
         port,
         connection_pool.clone(),
         db_watcher,

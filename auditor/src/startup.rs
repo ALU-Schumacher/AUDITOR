@@ -13,12 +13,11 @@ use actix_web::{App, HttpServer, web};
 use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
 use opentelemetry::global;
 use sqlx::PgPool;
-use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 /// Configures and starts the HttpServer
 pub fn run(
-    addr: String,
+    addrs: Vec<String>,
     port: u16,
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
@@ -59,22 +58,34 @@ pub fn run(
             .app_data(db_pool.clone())
     };
 
-    let address = format!("{}:{}", addr, port);
-    let listener = TcpListener::bind(address)?;
+    let mut server = HttpServer::new(app_config);
 
-    let server = HttpServer::new(app_config).listen(listener)?;
+    for addr in &addrs {
+        let address = format!("{}:{}", addr, port);
+        server = server.bind(&address)?;
+    }
 
     match tls_params {
         Some(params) if params.use_tls => {
             println!("********* AUDITOR running in TLS mode *********");
 
             match params.https_addr {
-                Some(https_addr) => Ok(server
-                    .bind_rustls_0_23((https_addr, params.https_port), params.config)?
-                    .run()),
-                _ => Ok(server
-                    .bind_rustls_0_23((addr, params.https_port), params.config)?
-                    .run()),
+                Some(https_addrs) => {
+                    for https_addr in https_addrs {
+                        server = server.bind_rustls_0_23(
+                            (https_addr, params.https_port),
+                            params.config.clone(),
+                        )?
+                    }
+                    Ok(server.run())
+                }
+                _ => {
+                    for addr in addrs {
+                        server = server
+                            .bind_rustls_0_23((addr, params.https_port), params.config.clone())?
+                    }
+                    Ok(server.run())
+                }
             }
         }
         _ => {
