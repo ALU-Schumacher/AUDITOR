@@ -341,7 +341,7 @@ Auditor requires a properly configured PostgreSQL database.
 After installing PostgreSQL, the database needs to be migrated with <code>sqlx</code>.</p>
 <p>AUDITORs configuration can be adapted with environment variables.</p>
 <table><thead><tr><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>AUDITOR_APPLICATION__ADDR</code></td><td>Address to bind to (default <code>0.0.0.0</code>). Supports both IPv4 and IPv6</td></tr>
+<tr><td><code>AUDITOR_APPLICATION__ADDR</code></td><td>Address to bind to (default <code>0.0.0.0</code>). Supports (dualstack) IPv4 and IPv6 addresses as comma separated values</td></tr>
 <tr><td><code>AUDITOR_APPLICATION__PORT</code></td><td>Port to bind to (default <code>8000</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__HOST</code></td><td>Host address of PostgreSQL database (default <code>localhost</code>)</td></tr>
 <tr><td><code>AUDITOR_DATABASE__PORT</code></td><td>Port of PostgreSQL database (default <code>5432</code>)</td></tr>
@@ -351,8 +351,8 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_DATABASE__REQUIRE_SSL</code></td><td>Whether or not to use SSL (default <code>true</code>)</td></tr>
 <tr><td><code>AUDITOR_LOG_LEVEL</code></td><td>Set the verbosity of logging. Possible values: <code>trace</code>, <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code> (default <code>info</code>)</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__USE_TLS</code></td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
-<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_ADDR</code></td><td>The HTTPS address where the server will listen. Defaults to a pre-configured value if not set.</td></tr>
-<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_PORT</code></td><td>The HTTPS port where the server will listen. (default <code>8443</code>). Supports both IPv4 and IPv6</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_ADDR</code></td><td>The HTTPS address where the server will listen. Defaults to <code>AUDITOR_APPLICATION__ADDR</code> value if not set.</td></tr>
+<tr><td><code>AUDITOR_TLS_CONFIG__HTTPS_PORT</code></td><td>The HTTPS port where the server will listen. (default <code>8443</code>).</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__CA_CERT_PATH</code></td><td>Path to the root Certificate Authority (CA) certificate for validating client certificates.</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__SERVER_CERT_PATH</code></td><td>Path to the server's TLS certificate.</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__SERVER_KEY_PATH</code></td><td>Path to the server's private key used for TLS.</td></tr>
@@ -368,7 +368,8 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <p>Besides environment variables, a YAML configuration file can be used:</p>
 <p>Without TLS</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
-</span><span>  </span><span style="color:#00a33f;">addr</span><span>: 0.0.0.0
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: 
+</span><span>    - 0.0.0.0
 </span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">database</span><span>:
 </span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
@@ -390,12 +391,21 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
 </span></code></pre>
 <p>To enable the TLS for the above config, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
-<pre style="background-color:#ffffff;color:#000000;"><code><span>tls_config:
-</span><span>  use_tls: true
-</span><span>  ca_cert_path: &quot;/path/rootCA.pem&quot;
-</span><span>  server_cert_path: &quot;/path/server-cert.pem&quot;
-</span><span>  server_key_path: &quot;/path/server-key.pem&quot;
-</span><span>  https_port: 8005
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/rootCA.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/server-cert.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_key_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/server-key.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">https_port</span><span>: 8005
+</span></code></pre>
+<p>For dualstack operation, you can set the IPv4 and IPv6 addresses as a list in the auditor config file as shown below.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: 
+</span><span>    - 0.0.0.0
+</span><span>    - </span><span style="color:#00a33f;">::1
+</span></code></pre>
+<p>IPv4 and IPv6 addresses can also be specified as an ENV variable</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>AUDITOR_APPLICATION__ADDR</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">127.0.0.1,::1
 </span></code></pre>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
 <p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
