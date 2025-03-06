@@ -1,0 +1,24 @@
+application:
+  addr:
+    - 0.0.0.0
+    - ::1
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: false
+  ca_cert_path: "/path/rootCA.pem"
+  server_cert_path: "/path/server-cert.pem"
+  server_key_path: "/path/server-key.pem"
