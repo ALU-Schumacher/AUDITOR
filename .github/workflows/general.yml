@@ -256,5 +256,5 @@ jobs:
       - name: Run TLS tests
         run: ./scripts/test_mtls.sh
 
-      -name: Run Dualstack tests
-        run: ./scripts/dualstack.sh
+      - name: Run Dualstack tests
+        run: ./scripts/test_dualstack.sh

@@ -8,7 +8,7 @@ weight = 3
 
 ## Auditor
 
-- `AUDITOR_APPLICATION__ADDR` is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR//v0.8.0/#configuration-files)
+- `AUDITOR_APPLICATION__ADDR` is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files)
 
 # From 0.7.1 to 0.8.0
 
