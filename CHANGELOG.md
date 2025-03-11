@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dependencies: Update cryptography from 44.0.1 to 44.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.4 to 8.3.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ring from 0.7.11 to 0.7.13 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
