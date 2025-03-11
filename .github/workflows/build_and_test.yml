@@ -18,14 +18,14 @@ jobs:
   sqlx:
     uses: ./.github/workflows/sqlx.yml
 
+  build-pyauditor-source:
+    uses: ./.github/workflows/build_pyauditor_source.yml
+
   build-python-rpms:
     needs: prepare-input-parameters
     uses: ./.github/workflows/build_python_rpms.yml
     with:
       python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}
-
-  build-pyauditor-source:
-    uses: ./.github/workflows/build_pyauditor_source.yml
 
   test-pyauditor-source:
     needs: [build-pyauditor-source, prepare-input-parameters]
