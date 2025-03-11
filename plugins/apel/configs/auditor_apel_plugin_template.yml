@@ -6,6 +6,7 @@
 # !Config
 # plugin:
 #   log_level: INFO
+#   log_file: /var/log/auditor_apel_plugin.log
 #   time_json_path: /etc/auditor_apel_plugin/time.json
 #   report_interval: 86400
 #   message_type: summaries
