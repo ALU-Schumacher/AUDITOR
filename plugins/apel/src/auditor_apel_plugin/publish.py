@@ -7,6 +7,7 @@ import argparse
 import logging
 from datetime import datetime, timedelta, timezone
 from logging import Logger
+from logging.handlers import RotatingFileHandler
 from time import sleep
 
 import yaml
@@ -155,20 +156,31 @@ def main():
         config: Config = yaml.load(f, Loader=get_loaders())
 
     log_level = config.plugin.log_level
+    log_file = config.plugin.log_file
     log_format = (
         "[%(asctime)s] %(levelname)-8s %(message)s (%(pathname)s at line %(lineno)d)"
     )
+    date_format = "%Y-%m-%d %H:%M:%S"
 
     logging.addLevelName(TRACE, "TRACE")
     logging.basicConfig(
         level=log_level,
         format=log_format,
-        datefmt="%Y-%m-%d %H:%M:%S",
+        datefmt=date_format,
     )
     logging.getLogger("aiosqlite").setLevel("WARNING")
     logging.getLogger("urllib3").setLevel("WARNING")
 
     logger = logging.getLogger("apel_plugin")
+
+    if log_file is not None:
+        handler = RotatingFileHandler(
+            log_file,
+            maxBytes=10 * 1024 * 1024,
+            backupCount=5,
+        )
+        handler.setFormatter(logging.Formatter(log_format, date_format))
+        logger.addHandler(handler)
 
     auditor_ip = config.auditor.ip
     auditor_port = config.auditor.port

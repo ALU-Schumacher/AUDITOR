@@ -893,6 +893,7 @@ Example config:
 !Config
 plugin:
   log_level: INFO
+  log_file: /var/log/auditor_apel_plugin.log
   time_json_path: /etc/auditor_apel_plugin/time.json
   report_interval: 86400
   message_type: summaries
@@ -1006,6 +1007,7 @@ The individual parameters in the config file are:
 | Section     | Parameter          | Description                                                                                                                                                                                                                                         |
 |-------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `plugin`    | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
+| `plugin`    | `log_file`         | Path of the log file. This parameter is optional, the default value is `None`.                                                                                                                                                                      |
 | `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
 | `plugin`    | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
