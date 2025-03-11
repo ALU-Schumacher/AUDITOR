@@ -26,11 +26,15 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install uv rpmvenv
-
+          
       - name: Build RPM
         run: |
+          ABSOLUTE_PATH=$(realpath ../../pyauditor)
+          ESCAPED_PATH=$(echo "$ABSOLUTE_PATH" | sed 's/[\/&]/\\&/g')
           uv pip compile pyproject.toml -o requirements.txt
+          sed -i "s/.*python-auditor.*/$ESCAPED_PATH/" requirements.txt
           echo "." >> requirements.txt
+          cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
       - name: Upload RPM
@@ -60,8 +64,12 @@ jobs:
 
       - name: Build RPM
         run: |
+          ABSOLUTE_PATH=$(realpath ../../pyauditor)
+          ESCAPED_PATH=$(echo "$ABSOLUTE_PATH" | sed 's/[\/&]/\\&/g')
           uv pip compile pyproject.toml -o requirements.txt
+          sed -i "s/.*python-auditor.*/$ESCAPED_PATH/" requirements.txt
           echo "." >> requirements.txt
+          cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
       - name: Upload RPM
