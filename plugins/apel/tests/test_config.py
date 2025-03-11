@@ -30,19 +30,25 @@ class TestConfig:
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
+        log_file = config.plugin.log_file
+        assert log_file is None
+
         log_level = "DEBUG"
+        log_file = "/var/log/test.log"
         time_json_path = "time.json"
         report_interval = 10
         message_type = "summaries"
 
         plugin = PluginConfig(
             log_level=log_level,
+            log_file=log_file,
             time_json_path=time_json_path,
             report_interval=report_interval,
             message_type=message_type,
         )
 
         assert plugin.log_level == "DEBUG"
+        assert plugin.log_file == "/var/log/test.log"
         assert plugin.time_json_path == "time.json"
         assert plugin.report_interval == 10
         assert plugin.message_type is MessageType("summaries")

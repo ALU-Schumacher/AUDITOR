@@ -40,6 +40,7 @@ class Function(Configurable):
 
 class PluginConfig(Configurable):
     log_level: str
+    log_file: Optional[str] = None
     time_json_path: str
     report_interval: int
     message_type: MessageType
