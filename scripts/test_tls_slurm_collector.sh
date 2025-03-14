@@ -149,7 +149,7 @@ function test_collector() {
 	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" sh -c "sbatch --job-name=test_part1 --partition=part1 --comment=\"$COMMENT\" /batch.sh" 
 	sleep 20
 
-	TEST1=$(curl -X GET https://localhost:8443/records --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem --cacert scripts/certs/rootCA.pem | jq)
+	TEST1=$(curl -X GET https://localhost:8443/records --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem --cacert scripts/certs/rootCA.pem | jq -s)
 
 	if [ "$(echo $TEST1 | jq '. | length')" != 1 ]
 	then
@@ -199,7 +199,7 @@ function test_collector() {
 	docker exec "${COMPOSE_PROJECT_NAME}-slurm-1" sh -c "sbatch --job-name=test_part2 --partition=part2 /batch.sh"
 	sleep 20
 
-	TEST2=$(curl -X GET https://localhost:8443/records --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem --cacert scripts/certs/rootCA.pem | jq)
+	TEST2=$(curl -X GET https://localhost:8443/records --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem --cacert scripts/certs/rootCA.pem | jq -s)
 
 	if [ "$(echo $TEST2 | jq '. | length')" != 2 ]
 	then

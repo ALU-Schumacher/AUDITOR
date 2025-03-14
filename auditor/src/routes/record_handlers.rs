@@ -23,22 +23,21 @@ pub async fn query_records(
 
     if query_string.is_empty() {
         // This case explicitly checks if the query is empty. Then it returns all records.
-        let records = advanced_record_filtering(filters, &pool)
-            .await
-            .map_err(|err| GetFilterError::UnexpectedError(err.to_string()))?;
 
-        return Ok(HttpResponse::Ok().json(records));
+        let stream = advanced_record_filtering(filters, pool.as_ref().clone()).await;
+        return Ok(HttpResponse::Ok()
+            .content_type("application/json")
+            .streaming(stream));
     }
 
     if filters.is_all_none() {
         return Err(GetFilterError::InvalidQuery);
     }
 
-    let records = advanced_record_filtering(filters, &pool)
-        .await
-        .map_err(|err| GetFilterError::UnexpectedError(err.to_string()))?;
-
-    Ok(HttpResponse::Ok().json(records))
+    let stream = advanced_record_filtering(filters, pool.as_ref().clone()).await;
+    Ok(HttpResponse::Ok()
+        .content_type("application/json")
+        .streaming(stream))
 }
 
 #[tracing::instrument(name = "Getting one record", skip(record_query, pool))]

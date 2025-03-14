@@ -34,12 +34,9 @@ async fn get_advanced_queries_returns_a_200_and_list_of_records() {
         let encoded_datetime = encode(&datetime_str);
         let query = format!("start_time[gte]={}", encoded_datetime);
 
-        let response = app.advanced_queries(query).await;
-        println!("{:?}", response);
+        let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
@@ -90,11 +87,9 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
         let encoded_datetime = encode(&datetime_str);
         let query = format!("start_time[gte]={}", encoded_datetime);
 
-        let response = app.advanced_queries(query).await;
+        let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases
@@ -130,11 +125,9 @@ async fn get_started_since_returns_a_200_and_no_records() {
     let encoded_datetime = encode(&datetime_str);
     let query = format!("start_time[gte]={}", encoded_datetime);
 
-    let response = app.advanced_queries(query).await;
+    let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     assert!(received_records.is_empty());
 }
@@ -168,11 +161,9 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         let encoded_datetime = encode(&datetime_str);
         let query = format!("stop_time[gte]={}", encoded_datetime);
 
-        let response = app.advanced_queries(query).await;
+        let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
@@ -225,11 +216,9 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
         let encoded_datetime = encode(&datetime_str);
         let query = format!("stop_time[gte]={}", encoded_datetime);
 
-        let response = app.advanced_queries(query).await;
+        let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases
@@ -265,11 +254,9 @@ async fn get_stopped_since_returns_a_200_and_no_records() {
     let encoded_datetime = encode(&datetime_str);
     let query = format!("start_time[gte]={}", encoded_datetime);
 
-    let response = app.advanced_queries(query).await;
+    let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     assert!(received_records.is_empty());
 }
@@ -310,12 +297,9 @@ async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
             encoded_datetime
         );
 
-        let response = app.advanced_queries(query).await;
-        println!("{:?}", response);
+        let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
@@ -366,12 +350,9 @@ async fn get_component_query_returns_a_200_and_list_of_records() {
     for i in 1..10 {
         let query = "component[cpu][equals]=4".to_string();
 
-        let response = app.advanced_queries(query).await;
-        println!("{:?}", response);
+        let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
@@ -416,12 +397,9 @@ async fn sort_by_returns_a_200_and_list_of_records() {
     for i in 1..10 {
         let query = "sort_by[desc]=start_time".to_string();
 
-        let response = app.advanced_queries(query).await;
-        println!("{:?}", response);
+        let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         for (j, (record, received)) in test_cases
             .iter()
@@ -468,12 +446,9 @@ async fn limit_query_records_returns_a_200_and_list_of_records() {
     for i in 1..10 {
         let query = "sort_by[desc]=start_time&limit=4".to_string();
 
-        let response = app.advanced_queries(query).await;
-        println!("{:?}", response);
+        let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         assert_eq!(received_records.len(), 4);
 

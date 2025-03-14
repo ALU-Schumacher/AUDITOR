@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Record, RecordTest};
+use auditor::domain::RecordTest;
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -16,11 +16,9 @@ async fn get_returns_a_200_and_list_of_records() {
         assert_eq!(200, response.status().as_u16());
     }
 
-    let response = app.get_records().await;
+    let (mut received_records, status) = app.get_records().await.unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     // make sure they are both sorted
     test_cases.sort_by(|a, b| {
@@ -57,11 +55,9 @@ async fn get_returns_a_list_of_sorted_records() {
         assert_eq!(200, response.status().as_u16());
     }
 
-    let response = app.get_records().await;
+    let (received_records, status) = app.get_records().await.unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     // make sure the test records are sorted
     test_cases.sort_by(|a, b| {
@@ -87,11 +83,9 @@ async fn get_returns_a_list_of_sorted_records() {
 async fn get_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
-    let response = app.get_records().await;
+    let (received_records, status) = app.get_records().await.unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     assert!(received_records.is_empty());
 }

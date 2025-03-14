@@ -31,12 +31,15 @@ auditor.workspace = true
 bincode.workspace = true
 chrono.workspace = true
 config.workspace = true
+futures.workspace = true
 reqwest.workspace = true
+reqwest-streams.workspace = true
 serde.workspace = true
 rand.workspace = true
 rand_distr.workspace = true
 rustls.workspace = true
 serde-aux.workspace = true
+serde_json.workspace = true
 serde_qs.workspace = true
 sqlx = { workspace = true, features = ["sqlite"] }
 thiserror.workspace = true

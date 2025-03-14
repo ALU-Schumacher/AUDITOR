@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use auditor::domain::{Record, RecordTest};
+use auditor::domain::RecordTest;
 use fake::{Fake, Faker};
 
 #[tokio::test]
@@ -26,14 +26,12 @@ async fn get_started_since_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
+        let (mut received_records, status) = app
             .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+            .await
+            .unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
-
+        assert_eq!(200, status);
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
 
@@ -78,13 +76,12 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
+        let (received_records, status) = app
             .get_started_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
+            .await
+            .unwrap();
 
-        assert_eq!(200, response.status().as_u16());
-
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
@@ -112,13 +109,12 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 async fn get_started_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
-    let response = app
+    let (received_records, status) = app
         .get_started_since_records("2022-03-01T13:00:00-00:00")
-        .await;
+        .await
+        .unwrap();
 
-    assert_eq!(200, response.status().as_u16());
-
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     assert!(received_records.is_empty());
 }
@@ -147,12 +143,12 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
+        let (mut received_records, status) = app
             .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
-        assert_eq!(200, response.status().as_u16());
+            .await
+            .unwrap();
 
-        let mut received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure they are both sorted
         received_records.sort_by(|a, b| a.record_id.cmp(&b.record_id));
@@ -200,12 +196,12 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 
     // Try different start dates and receive records
     for i in 1..10 {
-        let response = app
+        let (received_records, status) = app
             .get_stopped_since_records(format!("2022-03-0{i}T00:00:00-00:00"))
-            .await;
-        assert_eq!(200, response.status().as_u16());
+            .await
+            .unwrap();
 
-        let received_records = response.json::<Vec<Record>>().await.unwrap();
+        assert_eq!(200, status);
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
@@ -233,12 +229,12 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 async fn get_stopped_since_returns_a_200_and_no_records() {
     let app = spawn_app().await;
 
-    let response = app
+    let (received_records, status) = app
         .get_stopped_since_records("2022-03-01T13:00:00-00:00")
-        .await;
-    assert_eq!(200, response.status().as_u16());
+        .await
+        .unwrap();
 
-    let received_records = response.json::<Vec<Record>>().await.unwrap();
+    assert_eq!(200, status);
 
     assert!(received_records.is_empty());
 }
