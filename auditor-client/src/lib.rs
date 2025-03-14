@@ -563,6 +563,11 @@ use database::Database;
 use reqwest::{Certificate, Identity};
 use std::fs;
 
+use futures::TryStreamExt;
+use reqwest_streams::*;
+use serde_json::Deserializer;
+use std::io::BufReader;
+
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
 #[derive(Debug, thiserror::Error)]
@@ -1437,14 +1442,18 @@ impl AuditorClient {
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
-        Ok(self
+        let response = self
             .client
             .get(format!("{}/records", &self.address))
             .send()
             .await?
             .error_for_status()?
-            .json()
-            .await?)
+            .json_array_stream::<Record>(10000);
+        let records: Vec<Record> = response
+            .try_collect()
+            .await
+            .expect("Unexpected error while processing the stream");
+        Ok(records)
     }
 
     /// Get all records in the database with a started timestamp after ``since``.
@@ -1465,7 +1474,7 @@ impl AuditorClient {
         dbg!(since.to_rfc3339());
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
-        Ok(self
+        let response = self
             .client
             .get(format!(
                 "{}/records?start_time[gte]={}",
@@ -1474,8 +1483,12 @@ impl AuditorClient {
             .send()
             .await?
             .error_for_status()?
-            .json()
-            .await?)
+            .json_array_stream::<Record>(10000);
+        let records: Vec<Record> = response
+            .try_collect()
+            .await
+            .expect("Unexpected error while processing the stream");
+        Ok(records)
     }
 
     /// Get all records in the database with a stopped timestamp after ``since``.
@@ -1495,7 +1508,7 @@ impl AuditorClient {
     ) -> Result<Vec<Record>, ClientError> {
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
-        Ok(self
+        let response = self
             .client
             .get(format!(
                 "{}/records?stop_time[gte]={}",
@@ -1504,8 +1517,12 @@ impl AuditorClient {
             .send()
             .await?
             .error_for_status()?
-            .json()
-            .await?)
+            .json_array_stream::<Record>(10000);
+        let records: Vec<Record> = response
+            .try_collect()
+            .await
+            .expect("Unexpected error while processing the stream");
+        Ok(records)
     }
 
     /// Get records from AUDITOR server using custom query.
@@ -1518,14 +1535,18 @@ impl AuditorClient {
         skip(self)
     )]
     pub async fn advanced_query(&self, query_string: String) -> Result<Vec<Record>, ClientError> {
-        Ok(self
+        let response = self
             .client
             .get(format!("{}/records?{}", &self.address, query_string))
             .send()
             .await?
             .error_for_status()?
-            .json()
-            .await?)
+            .json_array_stream::<Record>(10000);
+        let records: Vec<Record> = response
+            .try_collect()
+            .await
+            .expect("Unexpected error while processing the stream");
+        Ok(records)
     }
 
     /// Get single record from AUDITOR server using record_id.
@@ -1874,12 +1895,15 @@ impl AuditorClientBlocking {
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
-        Ok(self
-            .client
+        let response = reqwest::blocking::Client::new()
             .get(format!("{}/records", &self.address))
             .send()?
-            .error_for_status()?
-            .json()?)
+            .error_for_status()?;
+        let reader = BufReader::new(response);
+        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
+        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+
+        Ok(records)
     }
 
     /// Get all records in the database with a started timestamp after ``since``.
@@ -1897,15 +1921,20 @@ impl AuditorClientBlocking {
         dbg!(since.to_rfc3339());
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
-        Ok(self
-            .client
+
+        let response = reqwest::blocking::Client::new()
             .get(format!(
                 "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()?
-            .error_for_status()?
-            .json()?)
+            .error_for_status()?;
+
+        let reader = BufReader::new(response);
+        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
+        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+
+        Ok(records)
     }
 
     /// Get all records in the database with a stopped timestamp after ``since``.
@@ -1922,15 +1951,20 @@ impl AuditorClientBlocking {
     pub fn get_stopped_since(&self, since: &DateTime<Utc>) -> Result<Vec<Record>, ClientError> {
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
-        Ok(self
-            .client
+
+        let response = reqwest::blocking::Client::new()
             .get(format!(
                 "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()?
-            .error_for_status()?
-            .json()?)
+            .error_for_status()?;
+
+        let reader = BufReader::new(response);
+        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
+        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+
+        Ok(records)
     }
 
     /// Get records from AUDITOR server using custom filters.
@@ -1939,12 +1973,15 @@ impl AuditorClientBlocking {
     ///
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     pub fn advanced_query(&self, query_params: String) -> Result<Vec<Record>, ClientError> {
-        Ok(self
-            .client
+        let response = reqwest::blocking::Client::new()
             .get(format!("{}/records?{}", &self.address, query_params))
             .send()?
-            .error_for_status()?
-            .json()?)
+            .error_for_status()?;
+        let reader = BufReader::new(response);
+        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
+        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+
+        Ok(records)
     }
 
     /// Get single record from AUDITOR server using record_id.

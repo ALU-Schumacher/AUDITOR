@@ -62,7 +62,7 @@ function fill_auditor_db_group2() {
 }
 
 function test_collector() {
-	TEST=$(curl -X GET http://localhost:8000/records | jq)
+	TEST=$(curl -X GET http://localhost:8000/records | jq -s)
 
 	if [ "$(echo $TEST | jq '. | length')" != 4 ]
 	then
