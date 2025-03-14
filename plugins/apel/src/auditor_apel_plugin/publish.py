@@ -33,12 +33,16 @@ from auditor_apel_plugin.core import (
 TRACE = logging.DEBUG - 5
 
 
-def run(logger: Logger, config: Config, client):
+def run(logger: Logger, config: Config, client, args):
     report_interval = config.plugin.report_interval
     sites_to_report = config.site.sites_to_report
     message_type = config.plugin.message_type
     field_dict = config.get_all_fields()
     optional_fields = config.get_optional_fields()
+    dry_run = args.dry_run
+
+    if dry_run:
+        logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
     while True:
         time_dict = get_time_json(config)
@@ -46,12 +50,13 @@ def run(logger: Logger, config: Config, client):
         current_time = datetime.now()
         time_since_report = (current_time - last_report_time).total_seconds()
 
-        if time_since_report < report_interval:
-            logger.info("Not enough time since last report")
-            sleep(report_interval - time_since_report)
-            continue
-        else:
-            logger.info("Enough time since last report, create new report")
+        if not dry_run:
+            if time_since_report < report_interval:
+                logger.info("Not enough time since last report")
+                sleep(report_interval - time_since_report)
+                continue
+            else:
+                logger.info("Enough time since last report, create new report")
 
         if current_time.day < last_report_time.day:
             begin_month = get_begin_previous_month(current_time)
@@ -79,8 +84,9 @@ def run(logger: Logger, config: Config, client):
             logger.debug(signed_sync)
             payload_sync = build_payload(signed_sync)
             logger.debug(payload_sync)
-            post_sync = send_payload(config, payload_sync)
-            logger.debug(post_sync)
+            if not dry_run:
+                post_sync = send_payload(config, payload_sync)
+                logger.debug(post_sync)
 
             if message_type == MessageType.individual_jobs:
                 start_time = get_start_time(config, time_dict, site)
@@ -104,13 +110,18 @@ def run(logger: Logger, config: Config, client):
             logger.log(TRACE, signed_message)
             payload_message = build_payload(signed_message)
             logger.log(TRACE, payload_message)
-            post_message = send_payload(config, payload_message)
-            logger.debug(post_message)
+            if not dry_run:
+                post_message = send_payload(config, payload_message)
+                logger.debug(post_message)
 
-            latest_report_time = datetime.now()
-            update_time_json(
-                config, time_dict, site, latest_stop_time, latest_report_time
-            )
+                latest_report_time = datetime.now()
+                update_time_json(
+                    config, time_dict, site, latest_stop_time, latest_report_time
+                )
+
+        if dry_run:
+            logger.info("One-shot dry-run finished!")
+            quit()
 
         logger.info(
             "Next report scheduled for "
@@ -122,6 +133,11 @@ def run(logger: Logger, config: Config, client):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", required=True, help="Path to the config file")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="One-shot dry-run, nothing will be sent to the APEL server",
+    )
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
@@ -162,7 +178,7 @@ def main():
     client = builder.build_blocking()
 
     try:
-        run(logger, config, client)
+        run(logger, config, client, args)
     except KeyboardInterrupt:
         logger.critical("User abort")
     finally:

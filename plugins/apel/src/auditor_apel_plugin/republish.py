@@ -29,6 +29,7 @@ TRACE = logging.DEBUG - 5
 
 def run(logger: Logger, config, client, args):
     site = args.site
+    dry_run = args.dry_run
 
     message_type = config.plugin.message_type
     field_dict = config.get_all_fields()
@@ -36,6 +37,9 @@ def run(logger: Logger, config, client, args):
 
     begin_date = datetime.fromisoformat(args.begin_date)
     end_date = datetime.fromisoformat(args.end_date)
+
+    if dry_run:
+        logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
     records = get_records(config, client, begin_date, 30, site, end_date)
 
@@ -52,8 +56,9 @@ def run(logger: Logger, config, client, args):
     logger.log(TRACE, signed_message)
     payload_message = build_payload(signed_message)
     logger.log(TRACE, payload_message)
-    post_message = send_payload(config, payload_message)
-    logger.debug(post_message)
+    if not dry_run:
+        post_message = send_payload(config, payload_message)
+        logger.debug(post_message)
 
 
 def main():
@@ -76,6 +81,11 @@ def main():
         "-s", "--site", required=True, help="Site (GOCDB): UNI-FREIBURG, ..."
     )
     parser.add_argument("-c", "--config", required=True, help="Path to the config file")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="One-shot dry-run, nothing will be sent to the APEL server",
+    )
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
@@ -120,7 +130,10 @@ def main():
     except KeyboardInterrupt:
         logger.critical("User abort")
     finally:
-        logger.info("Republishing finished")
+        if args.dry_run:
+            logger.info("One-shot dry-run finished!")
+        else:
+            logger.info("Republishing finished")
 
 
 if __name__ == "__main__":

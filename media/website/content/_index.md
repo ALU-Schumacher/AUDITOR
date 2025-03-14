@@ -832,27 +832,27 @@ Two CLI commands are available: `auditor-apel-publish` and `auditor-apel-republi
 `auditor-apel-publish` runs periodically at a given report interval.
 
 ```bash
-usage: auditor-apel-publish [-h] -c CONFIG
+usage: auditor-apel-publish [-h] -c CONFIG [--dry-run]
 
 options:
-  -h, --help            show this help message and exit
-  -c CONFIG, --config CONFIG
-                        Path to the config file
+  -h, --help           show this help message and exit
+  -c, --config CONFIG  Path to the config file
+  --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 ```
 
 `auditor-apel-republish` runs once and submits a report of jobs between two dates for a given site.
 
 ```bash
-usage: auditor-apel-republish [-h] --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG
+usage: auditor-apel-republish [-h] --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG [--dry-run]
 
 options:
   -h, --help            show this help message and exit
   --begin-date BEGIN_DATE
                         Begin of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
   --end-date END_DATE   End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
-  -s SITE, --site SITE  Site (GOCDB): UNI-FREIBURG, ...
-  -c CONFIG, --config CONFIG
-                        Path to the config file
+  -s, --site SITE       Site (GOCDB): UNI-FREIBURG, ...
+  -c, --config CONFIG   Path to the config file
+  --dry-run             One-shot dry-run, nothing will be sent to the APEL server
 ```
 
 ### pip
@@ -877,7 +877,7 @@ client_key: hostkey.pem
 
 ### rpm
 
-The rpm will install a virtual environment including all dependencies in `/opt/auditor_apel_plugin`. After installation, a unit file is available at `/etc/systemd/system/auditor_apel_plugin.service`. This service runs the command `auditor-apel-publish` and expects a config file at `/opt/auditor_apel_plugin/auditor_apel_plugin.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at `/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish`.
+The rpm will install a virtual environment including all dependencies in `/opt/auditor_apel_plugin`. After installation, a unit file is available at `/etc/systemd/system/auditor_apel_plugin.service`. This service runs the command `/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish` and expects a config file at `/opt/auditor_apel_plugin/auditor_apel_plugin.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at `/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish`.
 
 ### Config
 
@@ -1009,7 +1009,7 @@ The individual parameters in the config file are:
 | `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
 | `plugin`    | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
-| `site`      | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no `time.json` is present yet.                                                                                     |
+| `site`      | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when `individual_jobs` is used and no `time.json` is present yet.                                                       |
 | `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                                                                       |
 | `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                                                                                    |
 | `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                                                                               |
