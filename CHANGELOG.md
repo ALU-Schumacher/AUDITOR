@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Apel plugin: Option to use log file ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
