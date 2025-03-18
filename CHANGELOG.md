@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Apel plugin: Add --dry-run option to publish- and republish commands ([@dirksammel](https://github.com/dirksammel))
+- Auditor: Add option to set the amount of workers to use for the web server ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))

@@ -14,6 +14,7 @@ use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: AuditorSettings,
@@ -27,6 +28,7 @@ pub struct Settings {
 
 // Set the default values for TLSConfig options
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct TLSConfig {
     pub use_tls: bool,
     pub https_addr: Option<Vec<String>>,
@@ -72,18 +74,32 @@ fn default_log_level() -> LevelFilter {
 }
 
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct AuditorSettings {
     #[serde(default = "default_addr")]
     pub addr: Vec<String>,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
+    #[serde(default = "default_workers")]
+    pub web_workers: usize,
 }
 
 fn default_addr() -> Vec<String> {
     vec!["127.0.0.1".to_string()]
 }
 
+fn default_workers() -> usize {
+    // Emulate default behaviour of actix-web
+    if let Ok(num) = std::thread::available_parallelism() {
+        num.get()
+    } else {
+        tracing::warn!("Cannot determine how many workers to use. Fall back to 2.");
+        2
+    }
+}
+
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: Secret<String>,
@@ -95,12 +111,14 @@ pub struct DatabaseSettings {
 }
 
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct MetricsSettings {
     pub database: DatabaseMetricsSettings,
 }
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct DatabaseMetricsSettings {
     #[serde(default = "default_db_metrics_frequency")]
     #[serde_as(as = "serde_with::DurationSeconds<i64>")]

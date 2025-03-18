@@ -19,6 +19,7 @@ use tracing_actix_web::TracingLogger;
 pub fn run(
     addrs: Vec<String>,
     port: u16,
+    web_workers: usize,
     db_pool: PgPool,
     db_watcher: DatabaseMetricsWatcher,
     tls_params: Option<TLSParams>,
@@ -58,7 +59,8 @@ pub fn run(
             .app_data(db_pool.clone())
     };
 
-    let mut server = HttpServer::new(app_config);
+    let mut server = HttpServer::new(app_config)
+        .workers(web_workers);
 
     for addr in &addrs {
         let address = format!("{}:{}", addr, port);
