@@ -59,8 +59,7 @@ pub fn run(
             .app_data(db_pool.clone())
     };
 
-    let mut server = HttpServer::new(app_config)
-        .workers(web_workers);
+    let mut server = HttpServer::new(app_config).workers(web_workers);
 
     for addr in &addrs {
         let address = format!("{}:{}", addr, port);
