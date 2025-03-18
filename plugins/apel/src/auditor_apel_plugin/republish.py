@@ -49,16 +49,18 @@ def run(logger: Logger, config, client, args):
 
     db = create_db(field_dict, message_type)
     filled_db = fill_db(config, db, message_type, field_dict, site, records)
+    del records
     grouped_db = group_db(filled_db, message_type, optional_fields)
+    filled_db.close()
     message = create_message(message_type, grouped_db)
-    logger.log(TRACE, message)
+    logger.log(TRACE, f"Message:\n{message}")
     signed_message = sign_msg(config, message)
-    logger.log(TRACE, signed_message)
+    logger.log(TRACE, f"Signed message:\n{signed_message}")
     payload_message = build_payload(signed_message)
-    logger.log(TRACE, payload_message)
+    logger.log(TRACE, f"Payload message:\n{payload_message}")
     if not dry_run:
         post_message = send_payload(config, payload_message)
-        logger.debug(post_message)
+        logger.info(f"Message sent to server, response:\n{post_message}")
 
 
 def main():
