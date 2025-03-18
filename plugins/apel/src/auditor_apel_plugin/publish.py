@@ -24,6 +24,7 @@ from auditor_apel_plugin.core import (
     get_report_time,
     get_start_time,
     get_time_json,
+    get_total_numbers,
     group_db,
     send_payload,
     sign_msg,
@@ -53,6 +54,7 @@ def run(logger: Logger, config: Config, client, args):
         if not dry_run:
             if time_since_report < report_interval:
                 logger.info("Not enough time since last report")
+                logger.info(f"Next report scheduled for {next_report_time}")
                 sleep(report_interval - time_since_report)
                 continue
             else:
@@ -78,15 +80,17 @@ def run(logger: Logger, config: Config, client, args):
                 config, sync_db, MessageType.sync, {}, site, records
             )
             grouped_sync_db = group_db(filled_sync_db, MessageType.sync, {})
+            filled_sync_db.close()
             sync_message = create_message(MessageType.sync, grouped_sync_db)
-            logger.debug(sync_message)
+            logger.debug(f"Sync message:\n{sync_message}")
             signed_sync = sign_msg(config, sync_message)
-            logger.debug(signed_sync)
+            logger.debug(f"Signed sync message:\n{signed_sync}")
             payload_sync = build_payload(signed_sync)
-            logger.debug(payload_sync)
+
+            logger.debug(f"Payload sync message:\n{payload_sync}")
             if not dry_run:
                 post_sync = send_payload(config, payload_sync)
-                logger.debug(post_sync)
+                logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
             if message_type == MessageType.individual_jobs:
                 start_time = get_start_time(config, time_dict, site)
@@ -103,30 +107,37 @@ def run(logger: Logger, config: Config, client, args):
 
             db = create_db(field_dict, message_type)
             filled_db = fill_db(config, db, message_type, field_dict, site, records)
+            del records
             grouped_db = group_db(filled_db, message_type, optional_fields)
             message = create_message(message_type, grouped_db)
-            logger.log(TRACE, message)
+            logger.log(TRACE, f"Message:\n{message}")
             signed_message = sign_msg(config, message)
-            logger.log(TRACE, signed_message)
+            logger.log(TRACE, f"Signed message:\n{signed_message}")
             payload_message = build_payload(signed_message)
-            logger.log(TRACE, payload_message)
+
+            logger.log(TRACE, f"Payload message:\n{payload_message}")
             if not dry_run:
                 post_message = send_payload(config, payload_message)
-                logger.debug(post_message)
+                logger.info(f"Message sent to server, response:\n{post_message}")
 
-                latest_report_time = datetime.now()
+                latest_report_time: datetime = datetime.now()
                 update_time_json(
                     config, time_dict, site, latest_stop_time, latest_report_time
                 )
+
+            total_numbers = get_total_numbers(filled_db)
+            filled_db.close()
+            logger.info(f"Total numbers reported by the plugin:\n{total_numbers}")
 
         if dry_run:
             logger.info("One-shot dry-run finished!")
             quit()
 
-        logger.info(
-            "Next report scheduled for "
-            f"{datetime.now() + timedelta(seconds=report_interval)}"
+        next_report_time: datetime = latest_report_time + timedelta(
+            seconds=report_interval
         )
+        logger.info(f"Next report scheduled for {next_report_time}")
+
         sleep(report_interval)
 
 
