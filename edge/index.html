@@ -860,24 +860,24 @@ See below for all currently available collectors.</p>
 <p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a>, as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>, or as a rpm from the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>.</p>
 <p>Two CLI commands are available: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
 <p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG </span><span style="color:#ff5600;">[</span><span>-</span><span style="color:#ff5600;">-</span><span>dry</span><span style="color:#ff5600;">-</span><span>run</span><span style="color:#ff5600;">]
 </span><span>
 </span><span>options:
-</span><span>  -h, --help            show this help message and exit
-</span><span>  -c CONFIG, --config CONFIG
-</span><span>                        Path to the config file
+</span><span>  -h, --help           show this help message and exit
+</span><span>  -c, --config CONFIG  Path to the config file
+</span><span>  --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 </span></code></pre>
 <p><code>auditor-apel-republish</code> runs once and submits a report of jobs between two dates for a given site.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG </span><span style="color:#ff5600;">[</span><span>-</span><span style="color:#ff5600;">-</span><span>dry</span><span style="color:#ff5600;">-</span><span>run</span><span style="color:#ff5600;">]
 </span><span>
 </span><span>options:
 </span><span>  -h, --help            show this help message and exit
 </span><span>  --begin-date BEGIN_DATE
 </span><span>                        Begin of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
 </span><span>  --end-date END_DATE   End of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
-</span><span>  -s SITE, --site SITE  Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
-</span><span>  -c CONFIG, --config CONFIG
-</span><span>                        Path to the config file
+</span><span>  -s, --site SITE       Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
+</span><span>  -c, --config CONFIG   Path to the config file
+</span><span>  --dry-run             One-shot dry-run, nothing will be sent to the APEL server
 </span></code></pre>
 <h3 id="pip">pip</h3>
 <p>The plugin can be installed with <code>pip install auditor-apel-plugin</code>. The commands <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code> are directly available after installation.</p>
@@ -891,7 +891,7 @@ See below for all currently available collectors.</p>
 </span><span>client_key: hostkey.pem
 </span></code></pre>
 <h3 id="rpm-1">rpm</h3>
-<p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>auditor-apel-publish</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
+<p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
 <h3 id="config">Config</h3>
 <p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
 <p>Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.</p>
@@ -1013,7 +1013,7 @@ See below for all currently available collectors.</p>
 <tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of message to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
-<tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when no <code>time.json</code> is present yet.</td></tr>
+<tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when <code>individual_jobs</code> is used and no <code>time.json</code> is present yet.</td></tr>
 <tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
 <tr><td><code>messaging</code></td><td><code>host</code></td><td>Host address of the AMS service.</td></tr>
 <tr><td><code>messaging</code></td><td><code>port</code></td><td>Port of the AMS host.</td></tr>
