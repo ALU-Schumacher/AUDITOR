@@ -208,6 +208,7 @@ application:
   addr: 
     - 0.0.0.0
   port: 8000
+  web_workers: 4    # Number of workers to use for the web server. Optional
 database:
   host: "localhost"
   port: 5432
