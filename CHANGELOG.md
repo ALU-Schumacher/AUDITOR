@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add --dry-run option to publish- and republish commands ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Implement streaming of records for advanced queries ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Add strict deserialization to make the query fail if the query string contains unknown fields ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Improve error messages for invalid query parameters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
