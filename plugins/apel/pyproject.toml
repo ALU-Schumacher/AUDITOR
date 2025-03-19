@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==76.0.0"]
+requires = ["setuptools==77.0.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,7 +29,7 @@ tests = [
 ]
 build = [
       "build==1.2.2.post1",
-      "setuptools==76.0.0",
+      "setuptools==77.0.1",
 ]
 
 [project.scripts]
