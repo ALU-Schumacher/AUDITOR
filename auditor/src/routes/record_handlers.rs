@@ -18,7 +18,7 @@ pub async fn query_records(
 
     let filters: Filters = match serde_qs::from_str(query_string) {
         Ok(filters) => filters,
-        Err(_) => return Err(GetFilterError::InvalidQuery),
+        Err(err) => return Err(GetFilterError::InvalidQuery(err.to_string())),
     };
 
     if query_string.is_empty() {
@@ -31,7 +31,9 @@ pub async fn query_records(
     }
 
     if filters.is_all_none() {
-        return Err(GetFilterError::InvalidQuery);
+        return Err(GetFilterError::InvalidQuery(
+            "At least one filter parameter must be provided.".to_string(),
+        ));
     }
 
     let stream = advanced_record_filtering(filters, pool.as_ref().clone()).await;
@@ -54,7 +56,7 @@ pub async fn query_one_record(
 #[derive(Debug, Error)]
 pub enum GetFilterError {
     #[error("Invalid query parameters")]
-    InvalidQuery,
+    InvalidQuery(String),
 
     #[error("Unexpected error: {0}")]
     UnexpectedError(String),
@@ -63,8 +65,8 @@ pub enum GetFilterError {
 impl ResponseError for GetFilterError {
     fn error_response(&self) -> HttpResponse {
         match self {
-            GetFilterError::InvalidQuery => {
-                HttpResponse::BadRequest().json(json!({ "error": "Invalid query parameters" }))
+            GetFilterError::InvalidQuery(msg) => {
+                HttpResponse::BadRequest().json(json!({ "error": msg }))
             }
             GetFilterError::UnexpectedError(err) => {
                 HttpResponse::InternalServerError().json(json!({ "error": err }))
