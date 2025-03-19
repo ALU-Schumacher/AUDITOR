@@ -9,7 +9,7 @@ use crate::configuration::TLSParams;
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
 use actix_web::dev::Server;
-use actix_web::{App, HttpServer, web};
+use actix_web::{App, HttpResponse, HttpServer, web};
 use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
 use opentelemetry::global;
 use sqlx::PgPool;
@@ -56,6 +56,9 @@ pub fn run(
                     .route(web::get().to(query_records)),
             )
             .app_data(db_pool.clone())
+            .default_service(web::route().to(|| async {
+                HttpResponse::NotFound().body("The requested resource was not found. 404 Not Found")
+            }))
     };
 
     let mut server = HttpServer::new(app_config);
