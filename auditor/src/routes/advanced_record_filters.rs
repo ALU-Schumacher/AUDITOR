@@ -18,6 +18,7 @@ use futures::Stream;
 use futures_util::TryStreamExt;
 
 #[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Filters {
     pub record_id: Option<ValidName>,
     pub start_time: Option<Operator<DateTime<Utc>>>,
@@ -43,6 +44,7 @@ impl Filters {
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Operator<T> {
     pub gt: Option<T>,
     pub lt: Option<T>,
