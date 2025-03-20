@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Apel plugin: Delete `records` when no longer needed ([@dirksammel](https://github.com/dirksammel))
 - CI: improve workflow of RPM creation for Apel plugin and HTCondor collector ([@dirksammel](https://github.com/dirksammel))
+- Docs: correct AUDITOR docker image name in the docs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.1 to 44.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.4 to 8.3.5 ([@dirksammel](https://github.com/dirksammel))
