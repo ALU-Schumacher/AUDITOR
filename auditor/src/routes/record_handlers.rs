@@ -30,12 +30,6 @@ pub async fn query_records(
             .streaming(stream));
     }
 
-    if filters.is_all_none() {
-        return Err(GetFilterError::InvalidQuery(
-            "At least one filter parameter must be provided.".to_string(),
-        ));
-    }
-
     let stream = advanced_record_filtering(filters, pool.as_ref().clone()).await;
     Ok(HttpResponse::Ok()
         .content_type("application/json")
