@@ -180,6 +180,7 @@ pub async fn spawn_app() -> TestApp {
     let server = auditor::startup::run(
         vec!["127.0.0.1".to_string()],
         port,
+        4,
         connection_pool.clone(),
         db_watcher,
         None,

@@ -101,6 +101,7 @@ async fn main() -> Result<(), anyhow::Error> {
             run(
                 configuration.application.addr,
                 configuration.application.port,
+                configuration.application.web_workers,
                 connection_pool,
                 db_metrics_watcher,
                 Some(tls_params),
@@ -111,6 +112,7 @@ async fn main() -> Result<(), anyhow::Error> {
             run(
                 configuration.application.addr,
                 configuration.application.port,
+                configuration.application.web_workers,
                 connection_pool,
                 db_metrics_watcher,
                 None,
@@ -122,6 +124,7 @@ async fn main() -> Result<(), anyhow::Error> {
         run(
             configuration.application.addr,
             configuration.application.port,
+            configuration.application.web_workers,
             connection_pool,
             db_metrics_watcher,
             None,
