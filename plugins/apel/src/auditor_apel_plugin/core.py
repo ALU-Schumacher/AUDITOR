@@ -21,6 +21,7 @@ from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, V
 from auditor_apel_plugin.config import Config, Field, MessageType
 from auditor_apel_plugin.message import (
     Message,
+    PluginMessage,
     SingleJobMessage,
     SummaryMessage,
     SyncMessage,
@@ -347,9 +348,45 @@ def group_db(
     cur = conn.execute(group_str)
     grouped_sql = cur.fetchall()
     cur.close()
-    conn.close()
 
     return grouped_sql
+
+
+def get_total_numbers(conn: sqlite3.Connection) -> str:
+    message = PluginMessage()
+
+    group_by_list = message.group_by
+
+    sql_group_by = ",".join(group_by_list)
+    sql_store_as = ",".join(message.store_as)
+
+    group_str = "".join(
+        [
+            "SELECT ",
+            sql_group_by,
+            ",",
+            sql_store_as,
+            " FROM records GROUP BY ",
+            sql_group_by,
+        ]
+    )
+
+    conn.row_factory = sqlite3.Row
+    cur = conn.execute(group_str)
+    grouped_sql = cur.fetchall()
+    cur.close()
+
+    total_numbers = []
+
+    for entry in grouped_sql:
+        for key in entry.keys():
+            total_numbers.append(f"{key}: {entry[key]}\n")
+
+        total_numbers.append("\n")
+
+    total_numbers_message = "".join(total_numbers)
+
+    return total_numbers_message
 
 
 def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) -> str:

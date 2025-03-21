@@ -13,12 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Apel plugin: Add --dry-run option to publish- and republish commands ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Add information about total reported numbers of run to log ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Implement streaming of records for advanced queries ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Add strict deserialization to make the query fail if the query string contains unknown fields ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Improve error messages for invalid query parameters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Handle 404 errors for unspecified routes ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
+- Apel plugin: Delete `records` when no longer needed ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.1 to 44.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.4 to 8.3.5 ([@dirksammel](https://github.com/dirksammel))
