@@ -126,3 +126,15 @@ class SyncMessage(Message):
     store_as: List[str] = ["COUNT(RecordID) as NumberOfJobs"]
 
     message_fields: List[str] = ["Site", "SubmitHost", "NumberOfJobs", "Month", "Year"]
+
+
+class PluginMessage(Message):
+    group_by: List[str] = ["Site", "Month", "Year"]
+
+    store_as: List[str] = [
+        "COUNT(RecordID) as NumberOfJobs",
+        "SUM(WallDuration) as WallDuration",
+        "SUM(NormalisedWallDuration) as NormalisedWallDuration",
+        "SUM(CpuDuration) as CpuDuration",
+        "SUM(NormalisedCpuDuration) as NormalisedCpuDuration",
+    ]
