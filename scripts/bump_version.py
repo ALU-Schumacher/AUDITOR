@@ -124,7 +124,7 @@ def nested_set(dic: dict, path: list, value: str):
         for i, elem in enumerate(ref):
             m = re.fullmatch(key, elem)
             if m:
-                ref[i] = elem[: m.start(1)] + value
+                ref[i] = elem[: m.start(1)] + value + elem[m.end(1) :]
                 return
         raise KeyError(f"Pattern {key} did not match")
     else:
