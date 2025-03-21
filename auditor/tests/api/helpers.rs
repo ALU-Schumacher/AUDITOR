@@ -1,12 +1,18 @@
 use auditor::configuration::{DatabaseSettings, get_configuration};
 use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::telemetry::{get_subscriber, init_subscriber};
+use futures::TryStreamExt;
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use tracing_subscriber::filter::LevelFilter;
 use urlencoding::encode;
 use uuid::Uuid;
+
+use auditor::domain::Record;
+use reqwest_streams::*;
+
+const MAX: usize = 60 * 1024;
 
 static TRACING: Lazy<()> = Lazy::new(|| {
     let default_filter_level = LevelFilter::INFO;
@@ -54,55 +60,97 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_records(&self) -> reqwest::Response {
-        reqwest::Client::new()
+    pub async fn get_records(&self) -> Result<(Vec<Record>, u16), anyhow::Error> {
+        let response = reqwest::Client::new()
             .get(format!("{}/records", &self.address))
             .send()
-            .await
-            .expect("Failed to execute request.")
+            .await?;
+
+        let status = response.status().as_u16();
+
+        response.error_for_status_ref()?;
+
+        let stream = response.json_array_stream::<Record>(MAX);
+
+        let items1: Vec<Record> = stream.try_collect().await.unwrap();
+
+        Ok((items1, status))
     }
 
     pub async fn get_started_since_records<T: AsRef<str>>(
         &self,
         timestamp: T,
-    ) -> reqwest::Response {
+    ) -> Result<(Vec<Record>, u16), anyhow::Error> {
         let timestamp_str = timestamp.as_ref();
         let encoded_since = encode(timestamp_str);
-        reqwest::Client::new()
+
+        let response = reqwest::Client::new()
             .get(format!(
                 "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
-            .await
-            .expect("Failed to execute request.")
+            .await?;
+
+        let status = response.status().as_u16();
+
+        response.error_for_status_ref()?;
+
+        let stream = response.json_array_stream::<Record>(MAX);
+
+        let items1: Vec<Record> = stream.try_collect().await.unwrap();
+
+        Ok((items1, status))
     }
 
     pub async fn get_stopped_since_records<T: AsRef<str>>(
         &self,
         timestamp: T,
-    ) -> reqwest::Response {
+    ) -> Result<(Vec<Record>, u16), anyhow::Error> {
         let timestamp_str = timestamp.as_ref();
         let encoded_since = encode(timestamp_str);
-        reqwest::Client::new()
+
+        let response = reqwest::Client::new()
             .get(format!(
                 "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
             ))
             .send()
-            .await
-            .expect("Failed to execute request.")
+            .await?;
+
+        let status = response.status().as_u16();
+        println!("{status}");
+
+        response.error_for_status_ref()?;
+
+        let stream = response.json_array_stream::<Record>(MAX);
+
+        let items1: Vec<Record> = stream.try_collect().await.unwrap();
+
+        Ok((items1, status))
     }
 
     pub async fn advanced_queries<T: AsRef<str> + std::fmt::Display>(
         &self,
         query_string: T,
-    ) -> reqwest::Response {
-        reqwest::Client::new()
+    ) -> Result<(Vec<Record>, u16), anyhow::Error> {
+        let response = reqwest::Client::new()
             .get(format!("{}/records?{}", &self.address, query_string))
             .send()
-            .await
-            .expect("Failed to execute queries.")
+            .await?;
+
+        let status = response.status().as_u16();
+        println!("{status}");
+
+        response.error_for_status_ref()?;
+
+        const MAX: usize = 60 * 1024;
+
+        let stream = response.json_array_stream::<Record>(MAX);
+
+        let items1: Vec<Record> = stream.try_collect().await.unwrap();
+
+        Ok((items1, status))
     }
 
     pub async fn get_single_record<T: AsRef<str> + std::fmt::Display>(

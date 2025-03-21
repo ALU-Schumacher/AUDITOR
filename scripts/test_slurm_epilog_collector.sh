@@ -135,7 +135,7 @@ function test_epilog_collector() {
 
 	docker exec auditor-slurm-1 cat /epilog_logs/epilog.log
 
-	TEST1=$(curl -X GET http://localhost:8000/records | jq)
+	TEST1=$(curl -X GET http://localhost:8000/records | jq -s)
 
 	if [ "$(echo $TEST1 | jq '. | length')" != 1 ]
 	then
@@ -158,7 +158,7 @@ function test_epilog_collector() {
 	docker exec auditor-slurm-1 sbatch --job-name="test_part2" --partition=part2 /batch.sh 
 	sleep 5
 
-	TEST2=$(curl -X GET http://localhost:8000/records | jq)
+	TEST2=$(curl -X GET http://localhost:8000/records | jq -s)
 
 	if [ "$(echo $TEST2 | jq '. | length')" != 2 ]
 	then

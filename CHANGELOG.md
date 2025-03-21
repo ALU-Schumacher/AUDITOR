@@ -13,7 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Apel plugin: Add --dry-run option to publish- and republish commands ([@dirksammel](https://github.com/dirksammel))
-- Auditor: Add option to set the amount of workers to use for the web server ([@rkleinem](https://github.com/rkleinem))
+- AUDITOR: Add option to set the amount of workers to use for the web server ([@rkleinem](https://github.com/rkleinem))
+- AUDITOR: Deny unknown fields in the configuration to prevent typos ([@rkleinem](https://github.com/rkleinem))
+- AUDITOR: Implement streaming of records for advanced queries ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add strict deserialization to make the query fail if the query string contains unknown fields ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Improve error messages for invalid query parameters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Handle 404 errors for unspecified routes ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))

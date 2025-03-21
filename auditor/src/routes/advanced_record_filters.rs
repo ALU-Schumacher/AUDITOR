@@ -12,7 +12,13 @@ use sqlx::{PgPool, QueryBuilder, Row};
 use std::collections::HashMap;
 use std::fmt::Display;
 
+use actix_web::web::Bytes;
+use async_stream::stream;
+use futures::Stream;
+use futures_util::TryStreamExt;
+
 #[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Filters {
     pub record_id: Option<ValidName>,
     pub start_time: Option<Operator<DateTime<Utc>>>,
@@ -38,6 +44,7 @@ impl Filters {
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Operator<T> {
     pub gt: Option<T>,
     pub lt: Option<T>,
@@ -86,8 +93,8 @@ impl Display for SortField {
 #[tracing::instrument(name = "Getting records using custom query", skip(filters, pool))]
 pub async fn advanced_record_filtering(
     filters: Filters,
-    pool: &PgPool,
-) -> Result<Vec<Record>, anyhow::Error> {
+    pool: PgPool,
+) -> impl Stream<Item = Result<Bytes, anyhow::Error>> {
     let mut query = QueryBuilder::new(
         "SELECT record_id,
                   meta,
@@ -110,7 +117,7 @@ pub async fn advanced_record_filtering(
         if let Some(record_id) = &filters.record_id {
             // query string -> a.record_id = '{}' and
             query.push(" record_id = ".to_string());
-            query.push_bind(record_id);
+            query.push_bind(record_id.clone());
             query.push(" and ".to_string());
         }
 
@@ -119,7 +126,7 @@ pub async fn advanced_record_filtering(
                 for operator in operators {
                     // query string -> a.start_time {} '{}' and
                     query.push(format!(" start_time {} ", operator.0));
-                    query.push_bind(operator.1);
+                    query.push_bind(*operator.1);
                     query.push(" and ".to_string());
                 }
             }
@@ -130,7 +137,7 @@ pub async fn advanced_record_filtering(
                 for operator in operators {
                     // query string -> a.stop_time {} '{}' and
                     query.push(format!(" stop_time {} ", operator.0));
-                    query.push_bind(operator.1);
+                    query.push_bind(*operator.1);
                     query.push(" and ".to_string());
                 }
             }
@@ -142,9 +149,9 @@ pub async fn advanced_record_filtering(
                     // query string -> meta -> "site_id" @> jsonb_build_array("site1") and
 
                     query.push(" meta ->  ".to_string());
-                    query.push_bind(key);
+                    query.push_bind(key.clone());
                     query.push(" @> jsonb_build_array(".to_string());
-                    query.push_bind(c);
+                    query.push_bind(c.clone());
                     query.push(") ");
                     query.push(" and ");
                 }
@@ -152,9 +159,9 @@ pub async fn advanced_record_filtering(
                     // query string -> NOT (meta -> "site_id" @> jsonb_build_array("site_1")) and
 
                     query.push(" NOT (meta ->  ".to_string());
-                    query.push_bind(key);
+                    query.push_bind(key.clone());
                     query.push(" @> jsonb_build_array(".to_string());
-                    query.push_bind(dnc);
+                    query.push_bind(dnc.clone());
                     query.push(") ) ");
                     query.push(" and ");
                 }
@@ -169,12 +176,12 @@ pub async fn advanced_record_filtering(
                         // (components->0->>'amount')::int >10  and
 
                         query.push("components->0->>'name' = ");
-                        query.push_bind(key);
+                        query.push_bind(key.clone());
                         query.push(format!(
                             " AND (components->0->>'amount')::int {} ",
                             &operator.0
                         ));
-                        query.push_bind(operator.1);
+                        query.push_bind(*operator.1);
 
                         query.push(" and ".to_string());
                     }
@@ -191,7 +198,7 @@ pub async fn advanced_record_filtering(
                 for operator in operators {
                     // query string ->  a.runtime {} {} and
                     query.push(format!(" runtime {} ", operator.0));
-                    query.push_bind(operator.1);
+                    query.push_bind(*operator.1);
                     query.push(" and ".to_string());
                 }
             }
@@ -213,7 +220,7 @@ pub async fn advanced_record_filtering(
 
     if let Some(limit) = &filters.limit {
         query.push(" LIMIT ".to_string());
-        query.push_bind(limit);
+        query.push_bind(*limit);
     }
 
     fn get_operator<T>(operator: &Operator<T>) -> Option<Vec<(&str, &T)>>
@@ -257,31 +264,26 @@ pub async fn advanced_record_filtering(
         std::any::TypeId::of::<T>() == std::any::TypeId::of::<DateTime<Utc>>()
     }
 
-    let rows = query
-        .build()
-        .fetch_all(pool)
-        .await
-        .map_err(GetRecordError)?;
+    stream! {
 
-    let result: Vec<Record> = rows
-        .iter()
-        .map(|row| Record {
-            record_id: row.try_get("record_id").unwrap(),
-            meta: row
-                .try_get("meta")
-                .ok()
-                .and_then(|value| serde_json::from_value(value).ok()),
-            components: row
-                .try_get("components")
-                .ok()
-                .and_then(|value| serde_json::from_value(value).ok()),
-            start_time: row.try_get("start_time").ok().unwrap_or(None),
-            stop_time: row.try_get("stop_time").ok().unwrap_or(None),
-            runtime: row.try_get("runtime").ok().unwrap_or(None),
-        })
-        .collect();
+    let mut rows = query.build().persistent(false).fetch(&pool);
 
-    Ok(result)
+    while let Some(row) = rows.try_next().await.unwrap_or(None)
+
+        {
+            let beam_object = Record {
+                record_id: row.try_get("record_id").unwrap(),
+                meta: row.try_get("meta").ok().and_then(|value| serde_json::from_value(value).ok()),
+                components: row.try_get("components").ok().and_then(|value| serde_json::from_value(value).ok()),
+                start_time: row.try_get("start_time").ok(),
+                stop_time: row.try_get("stop_time").ok(),
+                runtime: row.try_get("runtime").ok(),
+            };
+
+            let json_bytes = serde_json::to_vec(&beam_object).unwrap().into();
+            yield Ok(json_bytes);
+        }
+    }
 }
 
 #[tracing::instrument(name = "Getting one record using record_id", skip(record_id, pool))]
