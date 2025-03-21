@@ -67,7 +67,7 @@ docker run \
   -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
   -e "AUDITOR_DATABASE__HOST=host.docker.internal" \
   --add-host=host.docker.internal:host-gateway \
-  auditor:<version> migrate
+  aluschumacher/auditor:<version> migrate
 ```
 
 If the PostgreSQL database is not running in a Docker container, run
@@ -79,7 +79,7 @@ docker run \
   -e "AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}" \
   -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
   -e "AUDITOR_DATABASE__HOST=${DB_HOST}" \
-  auditor:<version> migrate
+  aluschumacher/auditor:<version> migrate
 ```
 
 Replace the `DB_*` variables with your corresponding values.
@@ -111,12 +111,12 @@ psql -h localhost -U postgres -d auditor -f migrations/20240503141800_convert_me
 If your database is inside a Docker container:
 
 ```bash
-`docker exec -i auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20220322080444_create_accounting_table.sql`
+`docker exec -i aluschumacher/auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20220322080444_create_accounting_table.sql`
 ```
 
 
 ```bash
-docker exec -i auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20240503141800_convert_meta_component_to_jsonb.sql
+docker exec -i aluschumacher/auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20240503141800_convert_meta_component_to_jsonb.sql
 ```
 
 #### Using Rust (sqlx) for Database Migration 
