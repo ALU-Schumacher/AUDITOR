@@ -89,11 +89,10 @@ fn default_addr() -> Vec<String> {
 }
 
 fn default_workers() -> usize {
-    // Emulate default behaviour of actix-web
     if let Ok(num) = std::thread::available_parallelism() {
-        num.get()
+        std::cmp::min(num.get(), 4)
     } else {
-        tracing::warn!("Cannot determine how many workers to use. Fall back to 2.");
+        tracing::warn!("Cannot determine how many web workers to use. Fall back to 2.");
         2
     }
 }
