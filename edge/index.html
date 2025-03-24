@@ -900,6 +900,7 @@ See below for all currently available collectors.</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#ff5600;">!Config
 </span><span style="color:#00a33f;">plugin</span><span>:
 </span><span>  </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
+</span><span>  </span><span style="color:#00a33f;">log_file</span><span>: </span><span style="color:#00a33f;">/var/log/auditor_apel_plugin.log
 </span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
 </span><span>  </span><span style="color:#00a33f;">report_interval</span><span>: 86400
 </span><span>  </span><span style="color:#00a33f;">message_type</span><span>: </span><span style="color:#00a33f;">summaries
@@ -1010,6 +1011,7 @@ See below for all currently available collectors.</p>
 <p>The individual parameters in the config file are:</p>
 <table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity). <code>TRACE</code> might produce a lot of output if <code>message_type</code> is set to <code>individual_jobs</code>, since the message that will be sent to APEL is printed.</td></tr>
+<tr><td><code>plugin</code></td><td><code>log_file</code></td><td>Path of the log file. This parameter is optional, the default value is <code>None</code>.</td></tr>
 <tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of message to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
