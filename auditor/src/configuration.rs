@@ -16,6 +16,8 @@ use tracing_subscriber::filter::LevelFilter;
 #[derive(serde::Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Settings {
+    #[serde(default)]
+    pub environment: Environment,
     pub database: DatabaseSettings,
     pub application: AuditorSettings,
     #[serde(default = "default_metrics")]
@@ -176,9 +178,11 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     };
 
     let environment: Environment = std::env::var("AUDITOR_ENVIRONMENT")
-        .unwrap_or_else(|_| "local".into())
-        .try_into()
-        .expect("Failed to parse AUDITOR_ENVIRONMENT.");
+        .ok()
+        .map(Environment::try_from)
+        .transpose()
+        .map_err(config::ConfigError::Message)?
+        .unwrap_or_default();
 
     let settings = config::Config::builder()
         .add_source(config::File::from(configuration_directory.join("base")).required(false))
@@ -208,7 +212,10 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 }
 
 // The possible runtime environment for AUDITOR.
+#[derive(serde::Deserialize, Debug, Default)]
+#[serde(try_from = "String")]
 pub enum Environment {
+    #[default]
     Local,
     Production,
 }
