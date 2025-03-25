@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pytest from 8.3.4 to 8.3.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ring from 0.7.11 to 0.7.13 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.9.9 to 0.11.2 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 75.8.2 to 78.0.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 75.8.2 to 78.1.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
