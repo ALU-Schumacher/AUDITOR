@@ -281,7 +281,7 @@ The connection details for the database can be set using the <code>AUDITOR_DATAB
 </span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
 </span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=host.docker.internal&quot; </span><span>\
 </span><span>  --add-host</span><span style="color:#ff5600;">=</span><span>host.docker.internal:host-gateway \
-</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span><span>  aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
 </span></code></pre>
 <p>If the PostgreSQL database is not running in a Docker container, run</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run \
@@ -290,7 +290,7 @@ The connection details for the database can be set using the <code>AUDITOR_DATAB
 </span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}&quot; </span><span>\
 </span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__PORT=${DB_PORT}&quot; </span><span>\
 </span><span>  -e </span><span style="color:#00a33f;">&quot;AUDITOR_DATABASE__HOST=${DB_HOST}&quot; </span><span>\
-</span><span>  auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
+</span><span>  aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> migrate
 </span></code></pre>
 <p>Replace the <code>DB_*</code> variables with your corresponding values.</p>
 <h3 id="manual-1">Manual</h3>
@@ -307,9 +307,9 @@ The connection details for the database can be set using the <code>AUDITOR_DATAB
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>psql -h localhost -U postgres -d auditor -f migrations/20240503141800_convert_meta_component_to_jsonb.sql`
 </span></code></pre>
 <p>If your database is inside a Docker container:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>`docker exec -i auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20220322080444_create_accounting_table.sql`
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>`docker exec -i aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20220322080444_create_accounting_table.sql`
 </span></code></pre>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker exec -i auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20240503141800_convert_meta_component_to_jsonb.sql
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker exec -i aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> psql -h localhost -U postgres -d auditor </span><span style="color:#ff5600;">&lt;</span><span> migrations/20240503141800_convert_meta_component_to_jsonb.sql
 </span></code></pre>
 <h4 id="using-rust-sqlx-for-database-migration">Using Rust (sqlx) for Database Migration</h4>
 <p>Migrating the database manually requires cloning the Auditor repository and installing <code>cargo</code> and <code>sqlx</code>.
