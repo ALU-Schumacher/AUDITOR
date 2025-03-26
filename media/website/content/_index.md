@@ -67,7 +67,7 @@ docker run \
   -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
   -e "AUDITOR_DATABASE__HOST=host.docker.internal" \
   --add-host=host.docker.internal:host-gateway \
-  auditor:<version> migrate
+  aluschumacher/auditor:<version> migrate
 ```
 
 If the PostgreSQL database is not running in a Docker container, run
@@ -79,7 +79,7 @@ docker run \
   -e "AUDITOR_DATABASE__PASSWORD=${DB_PASSWORD}" \
   -e "AUDITOR_DATABASE__PORT=${DB_PORT}" \
   -e "AUDITOR_DATABASE__HOST=${DB_HOST}" \
-  auditor:<version> migrate
+  aluschumacher/auditor:<version> migrate
 ```
 
 Replace the `DB_*` variables with your corresponding values.
@@ -111,12 +111,12 @@ psql -h localhost -U postgres -d auditor -f migrations/20240503141800_convert_me
 If your database is inside a Docker container:
 
 ```bash
-`docker exec -i auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20220322080444_create_accounting_table.sql`
+`docker exec -i aluschumacher/auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20220322080444_create_accounting_table.sql`
 ```
 
 
 ```bash
-docker exec -i auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20240503141800_convert_meta_component_to_jsonb.sql
+docker exec -i aluschumacher/auditor:<version> psql -h localhost -U postgres -d auditor < migrations/20240503141800_convert_meta_component_to_jsonb.sql
 ```
 
 #### Using Rust (sqlx) for Database Migration 
@@ -894,6 +894,7 @@ Example config:
 !Config
 plugin:
   log_level: INFO
+  log_file: /var/log/auditor_apel_plugin.log
   time_json_path: /etc/auditor_apel_plugin/time.json
   report_interval: 86400
   message_type: summaries
@@ -1007,6 +1008,7 @@ The individual parameters in the config file are:
 | Section     | Parameter          | Description                                                                                                                                                                                                                                         |
 |-------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `plugin`    | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
+| `plugin`    | `log_file`         | Path of the log file. This parameter is optional, the default value is `None`.                                                                                                                                                                      |
 | `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
 | `plugin`    | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |

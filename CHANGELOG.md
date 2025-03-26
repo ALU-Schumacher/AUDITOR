@@ -14,21 +14,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Apel plugin: Add --dry-run option to publish- and republish commands ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Add information about total reported numbers of run to log ([@dirksammel](https://github.com/dirksammel))
-- AUDITOR: Add option to set the amount of workers to use for the web server ([@rkleinem](https://github.com/rkleinem))
-- AUDITOR: Deny unknown fields in the configuration to prevent typos ([@rkleinem](https://github.com/rkleinem))
+- Apel plugin: Add option to use log file ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Implement streaming of records for advanced queries ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Add strict deserialization to make the query fail if the query string contains unknown fields ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Improve error messages for invalid query parameters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Handle 404 errors for unspecified routes ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add option to set the amount of workers to use for the web server ([@rkleinem](https://github.com/rkleinem))
+- AUDITOR: Deny unknown fields in the configuration to prevent typos ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Apel plugin: Delete `records` when no longer needed ([@dirksammel](https://github.com/dirksammel))
+- CI: improve workflow of RPM creation for Apel plugin and HTCondor collector ([@dirksammel](https://github.com/dirksammel))
+- Docs: correct AUDITOR docker image name in the docs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update config from 0.13.4 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.1 to 44.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.4 to 8.3.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ring from 0.7.11 to 0.7.13 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.9.9 to 0.10.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update setuptools from 75.8.2 to 76.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.9.9 to 0.11.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 75.8.2 to 78.1.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 

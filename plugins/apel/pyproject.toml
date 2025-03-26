@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==76.0.0"]
+requires = ["setuptools==78.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -19,7 +19,7 @@ readme = "README.md"
 [project.optional-dependencies]
 style = [
       "black==25.1.0",
-      "ruff==0.10.0",
+      "ruff==0.11.2",
 ]
 tests = [
       "pytest==8.3.5",
@@ -29,7 +29,7 @@ tests = [
 ]
 build = [
       "build==1.2.2.post1",
-      "setuptools==76.0.0",
+      "setuptools==78.1.0",
 ]
 
 [project.scripts]
