@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Add strict deserialization to make the query fail if the query string contains unknown fields ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Improve error messages for invalid query parameters ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Handle 404 errors for unspecified routes ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add unit file and sql migration files to RPM ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Apel plugin: Delete `records` when no longer needed ([@dirksammel](https://github.com/dirksammel))

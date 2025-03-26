@@ -7,6 +7,9 @@ BuildArch:      x86_64
 License:        MIT or Apache-2.0
 Source0:        %{name}-%{version}.tar.gz
 
+%define file_permissions_user root
+%define file_permissions_group root
+
 #Requires:       bash
 
 %description
@@ -21,12 +24,19 @@ mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 pwd
 ls
 cp %{name} $RPM_BUILD_ROOT/%{_bindir}
+mkdir -p $RPM_BUILD_ROOT//etc/systemd/system/
+cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor.service $RPM_BUILD_ROOT//etc/systemd/system/auditor.service
+mkdir -p $RPM_BUILD_ROOT//opt/auditor/
+cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor_template.yml $RPM_BUILD_ROOT//opt/auditor/auditor.yml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-,%{file_permissions_user},%{file_permissions_group},-)
 %{_bindir}/%{name}
+//etc/systemd/system/auditor.service
+%config(noreplace) //opt/auditor/auditor.yml
 
 %changelog
 * Mon Mar 03 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.8.0
