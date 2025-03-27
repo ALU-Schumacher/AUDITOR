@@ -26,12 +26,12 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*
+      # - name: Publish to GitHub
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     files: dist/*
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          attestations: false
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     attestations: false
