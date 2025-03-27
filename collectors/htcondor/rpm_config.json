@@ -11,7 +11,7 @@
 	"license": "BSD-2-Clause-Patent",
 	"name": "auditor_htcondor_collector",
 	"summary": "AUDITOR collector for aggregating data from the HTCondor batch system",
-	"version": "0.8.0"
+	"version": "0.9.0"
     },
     "python_venv": {
         "name": "venv",
