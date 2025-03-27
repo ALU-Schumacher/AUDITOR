@@ -25,15 +25,15 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install uv rpmvenv
+          pip install toml-to-requirements rpmvenv
           
       - name: Build RPM
         run: |
           ABSOLUTE_PATH=$(realpath ../../pyauditor)
           ESCAPED_PATH=$(echo "$ABSOLUTE_PATH" | sed 's/[\/&]/\\&/g')
-          uv pip compile pyproject.toml -o requirements.txt
+          toml-to-req --toml-file pyproject.toml
           sed -i "s/.*python-auditor.*/$ESCAPED_PATH/" requirements.txt
-          echo "." >> requirements.txt
+          echo -e "\n." >> requirements.txt
           cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
@@ -60,15 +60,15 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install uv rpmvenv
+          pip install toml-to-requirements rpmvenv
 
       - name: Build RPM
         run: |
           ABSOLUTE_PATH=$(realpath ../../pyauditor)
           ESCAPED_PATH=$(echo "$ABSOLUTE_PATH" | sed 's/[\/&]/\\&/g')
-          uv pip compile pyproject.toml -o requirements.txt
+          toml-to-req --toml-file pyproject.toml
           sed -i "s/.*python-auditor.*/$ESCAPED_PATH/" requirements.txt
-          echo "." >> requirements.txt
+          echo -e "\n." >> requirements.txt
           cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
