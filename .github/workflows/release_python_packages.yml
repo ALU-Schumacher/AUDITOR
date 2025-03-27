@@ -29,15 +29,16 @@ jobs:
           pip install .[build] uv rpmvenv
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: plugins/apel/dist/
-          attestations: false
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: plugins/apel/dist/
+      #     attestations: false
       - name: Build RPM
         uses: nick-fields/retry@v3
         with:
           max_attempts: 100
+          timeout_seconds: 20
           command: |
             uv pip compile pyproject.toml -o requirements.txt
             echo "." >> requirements.txt
@@ -71,15 +72,16 @@ jobs:
           pip install .[build] uv rpmvenv
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: collectors/htcondor/dist/
-          attestations: false
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: collectors/htcondor/dist/
+      #     attestations: false
       - name: Build RPM
         uses: nick-fields/retry@v3
         with:
           max_attempts: 100
+          timeout_seconds: 20
           command: |
             uv pip compile pyproject.toml -o requirements.txt
             echo "." >> requirements.txt
