@@ -4,7 +4,9 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.8.0 to unreleased
+# From 0.9.0 to unreleased
+
+# From 0.8.0 to 0.9.0
 
 ## Auditor
 
