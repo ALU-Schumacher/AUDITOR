@@ -18,4 +18,4 @@ jobs:
           # The 'rsa' crate is pulled in by the 'sqlx-mysql' crate. The 'sqlx-mysql' crate
           # is only pulled in because we use the `migrate` feature of `sqlx`. However, we
           # only use the postgres and sqlite DB drivers.
-          ignore: RUSTSEC-2023-0071
+          ignore: RUSTSEC-2023-0071, RUSTSEC-2024-0437
