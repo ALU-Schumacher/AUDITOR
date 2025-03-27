@@ -11,7 +11,7 @@
 	"license": "BSD-2-Clause-Patent",
 	"name": "auditor_apel_plugin",
 	"summary": "AUDITOR plugin for sending accounting data to APEL",
-	"version": "0.8.0"
+	"version": "0.9.0"
     },
     "python_venv": {
         "name": "venv",
