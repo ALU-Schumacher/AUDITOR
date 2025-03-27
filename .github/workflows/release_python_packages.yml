@@ -40,10 +40,14 @@ jobs:
           max_attempts: 100
           timeout_seconds: 20
           command: |
+            cd /home/runner/work/AUDITOR/AUDITOR/plugins/apel
             uv pip compile pyproject.toml -o requirements.txt
             echo "." >> requirements.txt
+            cat requirements.txt
             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
-          new_command_on_retry: QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+          new_command_on_retry: |
+            cd /home/runner/work/AUDITOR/AUDITOR/plugins/apel
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
@@ -83,10 +87,14 @@ jobs:
           max_attempts: 100
           timeout_seconds: 20
           command: |
+            cd /home/runner/work/AUDITOR/AUDITOR/collectors/htcondor
             uv pip compile pyproject.toml -o requirements.txt
             echo "." >> requirements.txt
+            cat requirements.txt
             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
-          new_command_on_retry: QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+          new_command_on_retry: |
+            cd /home/runner/work/AUDITOR/AUDITOR/collectors/htcondor
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
