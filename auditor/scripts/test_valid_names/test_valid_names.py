@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import json
 import unittest
-from datetime import datetime
 
 import requests
 
@@ -54,7 +52,6 @@ class TestHTCondorEncodingReversal(unittest.TestCase):
         else:
             print("Successfully retrieved records ", len(response.json()))
 
-        records_json = response.json()
         records = sorted(response.json(), key=lambda x: x.get("record_id"))
 
         self.assertEqual(records[0].get("record_id"), record_1.get("record_id"))
