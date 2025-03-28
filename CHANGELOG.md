@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Apel plugin: Fix issue with `next_report_time` ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update once_cell from 1.21.1 to 1.21.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
