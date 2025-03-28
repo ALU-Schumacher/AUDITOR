@@ -50,11 +50,14 @@ def run(logger: Logger, config: Config, client, args):
         time_dict = get_time_json(config)
         last_report_time = get_report_time(time_dict)
         current_time = datetime.now()
+        next_report_time = datetime.now()
+        latest_report_time = datetime.now()
         time_since_report = (current_time - last_report_time).total_seconds()
 
         if not dry_run:
             if time_since_report < report_interval:
                 logger.info("Not enough time since last report")
+                next_report_time = last_report_time + timedelta(seconds=report_interval)
                 logger.info(f"Next report scheduled for {next_report_time}")
                 sleep(report_interval - time_since_report)
                 continue
@@ -121,7 +124,7 @@ def run(logger: Logger, config: Config, client, args):
                 post_message = send_payload(config, payload_message)
                 logger.info(f"Message sent to server, response:\n{post_message}")
 
-                latest_report_time: datetime = datetime.now()
+                latest_report_time = datetime.now()
                 update_time_json(
                     config, time_dict, site, latest_stop_time, latest_report_time
                 )
@@ -134,9 +137,7 @@ def run(logger: Logger, config: Config, client, args):
             logger.info("One-shot dry-run finished!")
             quit()
 
-        next_report_time: datetime = latest_report_time + timedelta(
-            seconds=report_interval
-        )
+        next_report_time = latest_report_time + timedelta(seconds=report_interval)
         logger.info(f"Next report scheduled for {next_report_time}")
 
         sleep(report_interval)

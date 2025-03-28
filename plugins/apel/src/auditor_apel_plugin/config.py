@@ -71,7 +71,7 @@ class AuditorConfig(Configurable):
                     "client_cert_path": self.client_cert_path,
                     "client_key_path": self.client_key_path,
                 }.items()
-                if value == None
+                if value is None
             ]
             if missing_parameters:
                 missing_parameters_str = ", ".join(missing_parameters)
