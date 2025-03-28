@@ -14,7 +14,7 @@ jobs:
       - name: Run ruff lint check
         uses: chartboost/ruff-action@v1
         with:
-          args: 'check --select I'
+          args: 'check --extend-select I'
       - name: Run ruff format check
         uses: chartboost/ruff-action@v1
         with:
