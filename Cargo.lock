@@ -385,7 +385,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "auditor"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "actix-tls",
  "actix-web",
@@ -435,7 +435,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-client"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -470,7 +470,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-kubernetes-collector"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -494,7 +494,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-priority-plugin"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "actix-web",
  "actix-web-opentelemetry",
@@ -521,7 +521,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-collector"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "auditor-slurm-epilog-collector"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -1112,9 +1112,9 @@ dependencies = [
 
 [[package]]
 name = "darling"
-version = "0.20.10"
+version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f63b86c8a8826a49b8c21f08a2d07338eec8d900540f8630dc76284be802989"
+checksum = "fc7f46116c46ff9ab3eb1597a45688b6715c6e628b5c133e288e709a29bcb4ee"
 dependencies = [
  "darling_core",
  "darling_macro",
@@ -1122,9 +1122,9 @@ dependencies = [
 
 [[package]]
 name = "darling_core"
-version = "0.20.10"
+version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95133861a8032aaea082871032f5815eb9e98cef03fa916ab4500513994df9e5"
+checksum = "0d00b9596d185e565c2207a0b01f8bd1a135483d02d9b7b0a54b11da8d53412e"
 dependencies = [
  "fnv",
  "ident_case",
@@ -1136,9 +1136,9 @@ dependencies = [
 
 [[package]]
 name = "darling_macro"
-version = "0.20.10"
+version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d336a2a514f6ccccaa3e09b02d41d35330c07ddf03a62165fcec10bb561c7806"
+checksum = "fc34b93ccb385b40dc71c6fceac4b2ad23662c7eeb248cf10d529b7e055b6ead"
 dependencies = [
  "darling_core",
  "quote",
@@ -3066,7 +3066,7 @@ dependencies = [
 
 [[package]]
 name = "python-auditor"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "auditor",
@@ -3864,9 +3864,9 @@ dependencies = [
 
 [[package]]
 name = "socket2"
-version = "0.5.8"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c970269d99b64e60ec3bd6ad27270092a5394c4e309314b18ae3fe575695fbe8"
+checksum = "4f5fd57c80058a56cf5c777ab8a126398ece8e442983605d280a44ce79d0edef"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
