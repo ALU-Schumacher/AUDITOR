@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Fix timeout issue ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pydantic from 2.10.6 to 2.11.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.2 to 0.11.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-pyyaml from 6.0.12.20250326 to 6.0.12.20250402 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
