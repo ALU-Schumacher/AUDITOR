@@ -22,6 +22,12 @@ CLI.add_argument(
     action="append",
 )
 CLI.add_argument(
+    "-k",
+    "--history-file",
+    metavar="HISTORY_FILE",
+    help="Path to history file, to read condor_history from.",
+)
+CLI.add_argument(
     "-l",
     "--log-level",
     help="Log level. Defaults to INFO.",
