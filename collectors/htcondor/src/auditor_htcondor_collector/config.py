@@ -3,6 +3,7 @@ from argparse import Namespace
 from datetime import date
 from datetime import datetime as dt
 from functools import reduce
+from os.path import isfile
 from typing import Iterator, List, Tuple, Union
 
 import yaml
@@ -22,6 +23,7 @@ class Config(object):
         "interval": 900,
         "log_level": "INFO",
         "log_file": None,
+        "history_file": None,
         "earliest_datetime": date.today().isoformat(),
         "class_ads": [
             "GlobalJobId",
@@ -177,6 +179,11 @@ class Config(object):
                 raise MalformedConfigEntryError(
                     ["timeout"], "Must be a positive integer"
                 )
+        if self._config["history_file"] is not None:
+            if not isinstance(self._config["history_file"], str):
+                raise MalformedConfigEntryError(["history_file"], "Must be a string")
+            if not isfile(self._config["history_file"]):
+                raise MalformedConfigEntryError(["history_file"], "Is not a file")
 
         def _iter_config(
             keys: Keys = [], config: T_Config = self._config
