@@ -50,7 +50,7 @@ impl Component {
     /// # Errors
     ///
     /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `name`
-    ///     or if a negative `amount` was given.
+    ///   or if a negative `amount` was given.
     pub fn new<T: AsRef<str>>(name: T, amount: i64) -> Result<Self, Error> {
         Ok(Component {
             name: ValidName::parse(name.as_ref().to_string())

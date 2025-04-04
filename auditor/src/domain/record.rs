@@ -213,7 +213,7 @@ impl RecordAdd {
     /// # Errors
     ///
     /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `record_id` or the
-    ///     `meta` information.
+    ///   `meta` information.
     pub fn new<T: AsRef<str>>(
         record_id: T,
         meta: HashMap<T, Vec<T>>,
@@ -250,7 +250,7 @@ impl RecordUpdate {
     /// # Errors
     ///
     /// * [`anyhow::Error`] - If there was an invalid character (`/()"<>\{}`) in the `record_id` or the
-    ///     `meta` information.
+    ///   `meta` information.
     pub fn new<T: AsRef<str>>(
         record_id: T,
         meta: HashMap<T, Vec<T>>,
