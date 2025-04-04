@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
+- HTCondor collector: Allow for reading history from file ([@rfvc](https://github.com/rfvc))
 
 ### Removed
 
