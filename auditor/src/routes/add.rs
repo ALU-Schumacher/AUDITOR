@@ -155,7 +155,7 @@ pub async fn bulk_insert(records: &[RecordAdd], pool: &PgPool) -> Result<(), Add
         .iter()
         .map(|r| r.stop_time.map(|stop| (stop - r.start_time).num_seconds()))
         .collect();
-    let updated_at_vec: Vec<_> = std::iter::repeat(Utc::now()).take(records.len()).collect();
+    let updated_at_vec: Vec<_> = std::iter::repeat_n(Utc::now(), records.len()).collect();
 
     let meta_values: Vec<Value> = records
         .iter()

@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [RUSTSEC-2025-0020]: Update pyo3 from 0.23.5 to 0.24.1 and pyo3-async-runtimes from 0.23.0 to 0.24.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
 
 ### Changed
+- AUDITOR: Fix timeout issue ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
