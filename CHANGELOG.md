@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- AUDITOR: Fix timeout issue ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 

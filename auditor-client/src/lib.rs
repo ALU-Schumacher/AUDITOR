@@ -1895,7 +1895,8 @@ impl AuditorClientBlocking {
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     #[tracing::instrument(name = "Getting all records from AUDITOR server.", skip(self))]
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
-        let response = reqwest::blocking::Client::new()
+        let response = self
+            .client
             .get(format!("{}/records", &self.address))
             .send()?
             .error_for_status()?;
@@ -1922,7 +1923,8 @@ impl AuditorClientBlocking {
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
 
-        let response = reqwest::blocking::Client::new()
+        let response = self
+            .client
             .get(format!(
                 "{}/records?start_time[gte]={}",
                 &self.address, encoded_since
@@ -1952,7 +1954,8 @@ impl AuditorClientBlocking {
         let since_str = since.to_rfc3339();
         let encoded_since = encode(&since_str);
 
-        let response = reqwest::blocking::Client::new()
+        let response = self
+            .client
             .get(format!(
                 "{}/records?stop_time[gte]={}",
                 &self.address, encoded_since
@@ -1973,10 +1976,12 @@ impl AuditorClientBlocking {
     ///
     /// * [`ClientError::ReqwestError`] - If there was an error sending the HTTP request.
     pub fn advanced_query(&self, query_params: String) -> Result<Vec<Record>, ClientError> {
-        let response = reqwest::blocking::Client::new()
+        let response = self
+            .client
             .get(format!("{}/records?{}", &self.address, query_params))
             .send()?
             .error_for_status()?;
+
         let reader = BufReader::new(response);
         let stream = Deserializer::from_reader(reader).into_iter::<Record>();
         let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
