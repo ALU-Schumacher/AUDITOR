@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - AUDITOR: Fix timeout issue ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update rand from 0.8.5 to 0.9.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
