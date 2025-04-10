@@ -1,6 +1,6 @@
 [package]
 name = "auditor-kubernetes-collector"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Raphael Kleinemühl <kleinemuehl@uni-wuppertal.de>"]
 edition = "2024"
 license = "MIT OR Apache-2.0"

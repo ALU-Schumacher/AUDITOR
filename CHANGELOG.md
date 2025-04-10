@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.9.2] 2025-04-10
+
+### Breaking changes
+
+### Security
 - [RUSTSEC-2025-0020]: Update pyo3 from 0.23.5 to 0.24.1 and pyo3-async-runtimes from 0.23.0 to 0.24.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
@@ -748,7 +760,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.9.2...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -769,3 +781,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.8.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.8.0
 [0.9.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.0
 [0.9.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.1
+[0.9.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.2
