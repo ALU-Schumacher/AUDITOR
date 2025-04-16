@@ -7,6 +7,9 @@ BuildArch:      x86_64
 License:        MIT or Apache-2.0
 Source0:        %{name}-%{version}.tar.gz
 
+%define file_permissions_user root
+%define file_permissions_group root
+
 #Requires:       bash
 
 %description
@@ -21,12 +24,23 @@ mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 pwd
 ls
 cp %{name} $RPM_BUILD_ROOT/%{_bindir}
+mkdir -p $RPM_BUILD_ROOT//etc/systemd/system/
+cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor.service $RPM_BUILD_ROOT//etc/systemd/system/auditor.service
+mkdir -p $RPM_BUILD_ROOT//opt/auditor/
+cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor_template.yml $RPM_BUILD_ROOT//opt/auditor/auditor.yml
+cp -R /home/runner/work/AUDITOR/AUDITOR/migrations/20220322080444_create_accounting_table.sql $RPM_BUILD_ROOT//opt/auditor/20220322080444_create_accounting_table.sql
+cp -R /home/runner/work/AUDITOR/AUDITOR/migrations/20240503141800_convert_meta_component_to_jsonb.sql $RPM_BUILD_ROOT//opt/auditor/20240503141800_convert_meta_component_to_jsonb.sql
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-,%{file_permissions_user},%{file_permissions_group},-)
 %{_bindir}/%{name}
+//etc/systemd/system/auditor.service
+%config(noreplace) //opt/auditor/auditor.yml
+//opt/auditor/20220322080444_create_accounting_table.sql
+//opt/auditor/20240503141800_convert_meta_component_to_jsonb.sql
 
 %changelog
 * Thu Apr 10 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.9.2

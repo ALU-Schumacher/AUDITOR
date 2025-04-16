@@ -1,0 +1,27 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files
+# Please make sure that all values correspond to your setup.
+
+# application:
+#   addr:
+#     - 0.0.0.0
+#   port: 8000
+#   web_workers: 4 # Number of workers to use for the web server. Optional
+# database:
+#   host: "localhost"
+#   port: 5432
+#   username: "postgres"
+#   password: "password"
+#   database_name: "auditor"
+#   require_ssl: false
+# metrics:
+#   database:
+#     frequency: 30
+#     metrics:
+#       - RecordCount
+#       - RecordCountPerSite
+#       - RecordCountPerGroup
+#       - RecordCountPerUser
+# log_level: info
+# tls_config:
+#   use_tls: false
