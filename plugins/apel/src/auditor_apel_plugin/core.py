@@ -411,7 +411,7 @@ def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) ->
             if field in keys:
                 field_list.append(f"{field}: {entry[field]}\n")
             else:
-                field_list.append(f"{field}: None\n")
+                logger.debug(f"Field {field} not defined in config, skipping")
 
         field_list.append("%%\n")
 
