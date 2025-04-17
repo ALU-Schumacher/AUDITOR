@@ -5,7 +5,6 @@
 
 import logging
 import re
-from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -20,8 +19,11 @@ logger = logging.getLogger("apel_plugin")
 
 class MessageType(Enum):
     summaries = "summaries"
-    individual_jobs = "individual_jobs"
     sync = "sync"
+
+    @classmethod
+    def _missing_(cls, value):
+        return cls.summaries
 
 
 class Configurable(BaseModel):
@@ -43,11 +45,9 @@ class PluginConfig(Configurable):
     log_file: Optional[str] = None
     time_json_path: str
     report_interval: int
-    message_type: MessageType
 
 
 class SiteConfig(Configurable):
-    publish_since: datetime
     sites_to_report: Dict[str, List[str]]
 
 
@@ -259,22 +259,14 @@ class Config(Configurable):
     site: SiteConfig
     auditor: AuditorConfig
     messaging: MessageConfig
-    summary_fields: Optional[FieldConfig] = None
-    individual_job_fields: Optional[FieldConfig] = None
+    summary_fields: FieldConfig
 
     def get_field_config(self) -> FieldConfig:
-        if self.plugin.message_type == MessageType.summaries:
-            if self.summary_fields is not None:
-                field_config = self.summary_fields
-            else:
-                logger.critical("summary_fields missing in config!")
-                raise ValueError
-        elif self.plugin.message_type == MessageType.individual_jobs:
-            if self.individual_job_fields is not None:
-                field_config = self.individual_job_fields
-            else:
-                logger.critical("individual_job_fields missing in config!")
-                raise ValueError
+        if self.summary_fields is not None:
+            field_config = self.summary_fields
+        else:
+            logger.critical("summary_fields missing in config!")
+            raise ValueError
 
         return field_config
 

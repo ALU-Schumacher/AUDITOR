@@ -19,7 +19,6 @@ from auditor_apel_plugin.core import (
     get_records,
     get_report_time,
     get_site_id,
-    get_start_time,
     get_time_json,
     sign_msg,
     update_time_json,
@@ -35,10 +34,8 @@ class FakeAuditorClient:
     def advanced_query(self, start_time):
         if self.test_case == "pass":
             return "good"
-        if self.test_case == "fail_timeout":
-            raise RuntimeError("Request timed out")
-        if self.test_case == "fail_else":
-            raise RuntimeError("Other RuntimeError")
+        if self.test_case == "fail":
+            raise RuntimeError("RuntimeError")
 
 
 def create_rec_metaless(rec_values, conf):
@@ -197,54 +194,6 @@ class TestAuditorApelPlugin:
         process.communicate()
 
         assert process.returncode == 4
-
-    def test_get_start_time(self):
-        with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
-            config: Config = yaml.load(f, Loader=get_loaders())
-
-        path = "/tmp/test.json"
-
-        config.plugin.time_json_path = path
-
-        publish_since_list = [
-            "1970-01-01 00:00:00+00:00",
-            "2020-01-01 17:23:00+00:00",
-        ]
-
-        time_dict = create_time_json(path)
-
-        for publish_since in publish_since_list:
-            config.site.publish_since = datetime.fromisoformat(publish_since)
-            result = get_start_time(config, time_dict, "TEST")
-            time_dt = datetime.fromisoformat(publish_since)
-
-            assert result == time_dt
-
-        stop_time = datetime(1984, 3, 3, 0, 0, 0, tzinfo=timezone.utc)
-        update_time_json(
-            config,
-            time_dict,
-            "TEST",
-            stop_time,
-            datetime(1970, 1, 1, 0, 0, 0),
-        )
-        result = get_start_time(config, time_dict, "TEST")
-
-        assert result == stop_time
-
-        stop_time = datetime(2002, 12, 3, 0, 45, 0, tzinfo=timezone.utc)
-        update_time_json(
-            config,
-            time_dict,
-            "TEST-2",
-            stop_time,
-            datetime(1970, 1, 1, 0, 0, 0),
-        )
-        result = get_start_time(config, time_dict, "TEST-2")
-
-        os.remove(path)
-
-        assert result == stop_time
 
     def test_get_report_time(self):
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
@@ -601,7 +550,7 @@ class TestAuditorApelPlugin:
         start_time_str = "2022-12-17 20:20:20+01:00"
         start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
-        result = get_records(config, client, start_time, 1)
+        result = get_records(config, client, start_time)
         assert "".join(result) == "good"
 
     def test_get_records_fail(self):
@@ -617,16 +566,10 @@ class TestAuditorApelPlugin:
         start_time_str = "2022-12-17 20:20:20+01:00"
         start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
-        client = FakeAuditorClient("fail_timeout")
-
-        with pytest.raises(SystemExit) as pytest_error:
-            get_records(config, client, start_time, 1)
-        assert pytest_error.type is SystemExit
-
-        client = FakeAuditorClient("fail_else")
+        client = FakeAuditorClient("fail")
 
         with pytest.raises(Exception) as pytest_error:
-            get_records(config, client, start_time, 1)
+            get_records(config, client, start_time)
         assert pytest_error.type is RuntimeError
 
     def test_get_site_id(self):

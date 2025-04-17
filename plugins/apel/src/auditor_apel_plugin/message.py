@@ -14,6 +14,7 @@ class Message(BaseModel):
     group_by: List[str] = []
     store_as: List[str] = []
     message_fields: List[str] = []
+    aggr_fields: List[str] = []
 
 
 class SummaryMessage(Message):
@@ -61,52 +62,12 @@ class SummaryMessage(Message):
         "NumberOfJobs",
     ]
 
-
-class SingleJobMessage(Message):
-    message_header: str = "APEL-individual-job-message: v0.3\n"
-
-    create_sql: List[str] = [
-        "Site TEXT NOT NULL",
-        "LocalJobId TEXT UNIQUE NOT NULL",
-        "WallDuration INT NOT NULL",
-        "StartTime INT NOT NULL",
-        "EndTime INT NOT NULL",
-    ]
-
-    group_by: List[str] = [
-        "Site",
-        "LocalJobId",
+    aggr_fields: List[str] = [
         "WallDuration",
         "CpuDuration",
-        "StartTime",
-    ]
-
-    store_as: List[str] = ["EndTime as EndTime"]
-
-    message_fields: List[str] = [
-        "Site",
-        "SubmitHost",
-        "MachineName",
-        "Queue",
-        "LocalJobId",
-        "LocalUserId",
-        "GlobalUserName",
-        "FQAN",
-        "VO",
-        "VOGroup",
-        "VORole",
-        "WallDuration",
-        "CpuDuration",
-        "Processors",
-        "NodeCount",
-        "StartTime",
-        "EndTime",
-        "InfrastructureDescription",
-        "InfrastructureType",
-        "MemoryReal",
-        "MemoryVirtual",
-        "ServiceLevelType",
-        "ServiceLevel",
+        "NormalisedWallDuration",
+        "NormalisedCpuDuration",
+        "NumberOfJobs",
     ]
 
 
@@ -127,14 +88,16 @@ class SyncMessage(Message):
 
     message_fields: List[str] = ["Site", "SubmitHost", "NumberOfJobs", "Month", "Year"]
 
+    aggr_fields: List[str] = ["NumberOfJobs"]
+
 
 class PluginMessage(Message):
     group_by: List[str] = ["Site", "Month", "Year"]
 
-    store_as: List[str] = [
-        "COUNT(RecordID) as NumberOfJobs",
-        "SUM(WallDuration) as WallDuration",
-        "SUM(NormalisedWallDuration) as NormalisedWallDuration",
-        "SUM(CpuDuration) as CpuDuration",
-        "SUM(NormalisedCpuDuration) as NormalisedCpuDuration",
+    aggr_fields: List[str] = [
+        "NumberOfJobs",
+        "WallDuration",
+        "CpuDuration",
+        "NormalisedWallDuration",
+        "NormalisedCpuDuration",
     ]

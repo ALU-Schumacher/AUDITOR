@@ -13,12 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- APEL plugin: Reduce memory consumption ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.2 to 44.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.11.3 to 2.11.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.4 to 0.11.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 78.1.0 to 80.4.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
+- APEL plugin: Remove option to report individual jobs ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.9.2] 2025-04-10
 

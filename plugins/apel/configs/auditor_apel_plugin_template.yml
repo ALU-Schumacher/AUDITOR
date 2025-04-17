@@ -1,7 +1,6 @@
 # This is just an example config and not ready for usage!
 # You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin
 # Please make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.
-# You only need the summary_fields OR the individual_job_fields section, depending on the value for message_type in the plugin section.
 
 # !Config
 # plugin:
@@ -9,10 +8,8 @@
 #   log_file: /var/log/auditor_apel_plugin.log
 #   time_json_path: /etc/auditor_apel_plugin/time.json
 #   report_interval: 86400
-#   message_type: summaries
   
 # site:
-#   publish_since: 2025-01-01 00:00:00+00:00
 #   sites_to_report:
 #     SITE_A: ["site_id_1", "site_id_2"]
 #     SITE_B: ["site_id_3"]
@@ -37,7 +34,6 @@
 #   client_cert_path: /path/client-cert.pem
 #   client_key_path: /path/client-key.pem
 
-# Use this section if message_type: summaries
 # summary_fields:
 #   mandatory:
 #     NormalisedWallDuration: !NormalisedWallDurationField
@@ -75,42 +71,3 @@
 #       name: NNodes
 #     Processors: !ComponentField
 #       name: Cores
-
-# Use this section if message_type: individual_jobs
-# individual_job_fields:
-#   mandatory:
-#     CpuDuration: !ComponentField
-#       name: TotalCPU
-#       divide_by: 1000
-
-#   optional:
-#     GlobalUserName: !MetaField
-#       name: subject
-#     VO: !MetaField
-#       name: voms
-#       regex: (?<=/).*?(?=/|$)
-#     VOGroup: !MetaField
-#       name: voms
-#       regex: (?<=/).*?(?=/Role|$)
-#     VORole: !MetaField
-#       name: voms
-#       regex: '(?=Role).*?(?=/|$)'
-#     SubmitHost: !MetaField
-#       name: headnode
-#     InfrastructureType: !ConstantField
-#       value: grid
-#     NodeCount: !ComponentField
-#       name: NNodes
-#     Processors: !ComponentField
-#       name: Cores
-#     LocalUserId: !MetaField
-#       name: user_id
-#     FQAN: !MetaField
-#       name: voms
-#     InfrastructureDescription: !ConstantField
-#       value: AUDITOR-ARC-SLURM
-#     ServiceLevel: !ScoreField
-#       name: hepscore23
-#       component_name: Cores
-#     ServiceLevelType: !ConstantField
-#       value: hepscore23
