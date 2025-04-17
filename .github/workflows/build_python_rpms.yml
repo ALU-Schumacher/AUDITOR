@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-apel-plugin-rpm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -44,7 +44,7 @@ jobs:
           name: apel-plugin-rpm
 
   build-htcondor-collector-rpm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./collectors/htcondor

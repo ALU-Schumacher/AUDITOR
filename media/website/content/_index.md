@@ -824,9 +824,9 @@ See below for all currently available collectors.
 
 ## APEL Plugin
 
-The APEL plugin creates messages and sends them to the APEL server. The plugin can either create `summary messages` for the current month, or `individual job messages`. `Sync messages` for the current month are created in both cases.
+The APEL plugin creates `summary messages` and `sync messages` for the current month, and sends them to the APEL server.
 
-The plugin is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/), as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin), or as a rpm from the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
+The plugin is provided as a [pip package](https://pypi.org/project/auditor-apel-plugin/), as a Docker container from [Docker Hub](https://hub.docker.com/r/aluschumacher/auditor-apel-plugin) or from the [GitHub Container Registry](https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin), or as a rpm from the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases) or from the [WLCG repository](https://linuxsoft.cern.ch/wlcg/el9/x86_64/).
 
 Two CLI commands are available: `auditor-apel-publish` and `auditor-apel-republish`.
 
@@ -882,11 +882,9 @@ The rpm will install a virtual environment including all dependencies in `/opt/a
 
 ### Config
 
-The config file is written in YAML format and has the main sections `plugin`, `site`, `messaging`, `auditor`, and one of `summary_fields` or `individual_job_fields`.
+The config file is written in YAML format and has the main sections `plugin`, `site`, `messaging`, `auditor`, and `summary_fields`.
 
 Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access. 
-
-You only need the `summary_fields` OR the `individual_job_fields` section, depending on the value for `message_type` in the `plugin` section.
 
 Example config:
 
@@ -897,10 +895,8 @@ plugin:
   log_file: /var/log/auditor_apel_plugin.log
   time_json_path: /etc/auditor_apel_plugin/time.json
   report_interval: 86400
-  message_type: summaries
   
 site:
-  publish_since: 2024-01-01 06:00:00+00:00
   sites_to_report:
     SITE_A: ["site_id_1", "site_id_2"]
     SITE_B: ["site_id_3"]
@@ -962,103 +958,56 @@ summary_fields:
       name: NNodes
     Processors: !ComponentField
       name: Cores
-
-
-individual_job_fields:
-  mandatory:
-    CpuDuration: !ComponentField
-      name: TotalCPU
-      divide_by: 1000
-
-  optional:
-    GlobalUserName: !MetaField
-      name: subject
-    VO: !MetaField
-      name: voms
-      regex: (?<=/).*?(?=/|$)
-    VOGroup: !MetaField
-      name: voms
-      regex: (?<=/).*?(?=/Role|$)
-    VORole: !MetaField
-      name: voms
-      regex: '(?=Role).*?(?=/|$)'
-    SubmitHost: !MetaField
-      name: headnode
-    InfrastructureType: !ConstantField
-      value: grid
-    NodeCount: !ComponentField
-      name: NNodes
-    Processors: !ComponentField
-      name: Cores
-    LocalUserId: !MetaField
-      name: user_id
-    FQAN: !MetaField
-      name: voms
-    InfrastructureDescription: !ConstantField
-      value: AUDITOR-ARC-SLURM
-    ServiceLevel: !ScoreField
-      name: hepscore23
-      component_name: Cores
-    ServiceLevelType: !ConstantField
-      value: hepscore23
 ```
 
 The individual parameters in the config file are:
 
-| Section     | Parameter          | Description                                                                                                                                                                                                                                         |
-|-------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `plugin`    | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity). `TRACE` might produce a lot of output if `message_type` is set to `individual_jobs`, since the message that will be sent to APEL is printed. |
-| `plugin`    | `log_file`         | Path of the log file. This parameter is optional, the default value is `None`.                                                                                                                                                                      |
-| `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.                                                        |
-| `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                                                                            |
-| `plugin`    | `message_type`     | Type of message to create. Can be set to `summaries` or `individual_jobs`.                                                                                                                                                                          |
-| `site`      | `publish_since`    | Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when `individual_jobs` is used and no `time.json` is present yet.                                                       |
-| `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                                                                       |
-| `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                                                                                    |
-| `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                                                                               |
-| `messaging` | `client_cert`      | Path of the host certificate.                                                                                                                                                                                                                       |
-| `messaging` | `client_key`       | Path of the host key.                                                                                                                                                                                                                               |
-| `messaging` | `project`          | Name of the project registered in the AMS service.                                                                                                                                                                                                  |
-| `messaging` | `topic`            | Name of the topic to publish the message.                                                                                                                                                                                                           |
-| `messaging` | `timeout`          | Timeout in seconds for sending the message to APEL.                                                                                                                                                                                                 |
-| `messaging` | `retry`            | Number of retries for sending the message to APEL.                                                                                                                                                                                                  |
-| `auditor`   | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                                                                         |
-| `auditor`   | `port`             | Port of the AUDITOR instance.                                                                                                                                                                                                                       |
-| `auditor`   | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                                                                       |
-| `auditor`   | `site_meta_field`  | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                                                                          |
-| `auditor`   | `use_tls`          | Specifies whether TLS is enabled (`True`) or disabled (`False`).                                                                                                                                                                                    |
-| `auditor`   | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if `use_tls` is True.                                                                                                                              |
-| `auditor`   | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if `use_tls` is True.                                                                                                                                  |
-| `auditor`   | `client_key_path`  | Path to the client's private key used for TLS. Only needed if `use_tls` is True.                                                                                                                                                                    |
+| Section     | Parameter          | Description                                                                                                                                                                                  |
+|-------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `plugin`    | `log_level`        | Can be set to `TRACE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` (with decreasing verbosity).                                                                                       |
+| `plugin`    | `log_file`         | Path of the log file. This parameter is optional, the default value is `None`.                                                                                                               |
+| `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
+| `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
+| `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
+| `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                             |
+| `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                        |
+| `messaging` | `client_cert`      | Path of the host certificate.                                                                                                                                                                |
+| `messaging` | `client_key`       | Path of the host key.                                                                                                                                                                        |
+| `messaging` | `project`          | Name of the project registered in the AMS service.                                                                                                                                           |
+| `messaging` | `topic`            | Name of the topic to publish the message.                                                                                                                                                    |
+| `messaging` | `timeout`          | Timeout in seconds for sending the message to APEL.                                                                                                                                          |
+| `messaging` | `retry`            | Number of retries for sending the message to APEL.                                                                                                                                           |
+| `auditor`   | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                  |
+| `auditor`   | `port`             | Port of the AUDITOR instance.                                                                                                                                                                |
+| `auditor`   | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
+| `auditor`   | `site_meta_field`  | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
+| `auditor`   | `use_tls`          | Specifies whether TLS is enabled (`True`) or disabled (`False`).                                                                                                                             |
+| `auditor`   | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if `use_tls` is True.                                                                       |
+| `auditor`   | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if `use_tls` is True.                                                                           |
+| `auditor`   | `client_key_path`  | Path to the client's private key used for TLS. Only needed if `use_tls` is True.                                                                                                             |
 
-The main sections `summary_fields` and `individual_job_fields` have the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
+The section `summary_fields` has the subsections `mandatory` and `optional`. `mandatory` contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:
 
-| Name                                                | Data type |
-|:----------------------------------------------------|:---------:|
-| `CpuDuration`                                       | `int`     |
-| `NormalisedCpuDuration` (only for summary\_fields)  | `int`     |
-| `NormalisedWallDuration` (only for summary\_fields) | `int`     |
+| Name                     | Data type |
+|:-------------------------|:---------:|
+| `CpuDuration`            | `int`     |
+| `NormalisedCpuDuration`  | `int`     |
+| `NormalisedWallDuration` | `int`     |
 
 There are actually more mandatory fields, but they are handled internally and don't need any input from the user.
 
 `optional` fields can be used to provide additional information to APEL:
 
-| Name                                                           | Data type |
-|:---------------------------------------------------------------|:---------:|
-| `GlobalUserName`                                               | `str`     |
-| `VO`                                                           | `str`     |
-| `VOGroup`                                                      | `str`     |
-| `VORole`                                                       | `str`     |
-| `SubmitHost`                                                   | `str`     |
-| `Infrastructure` (only for summary\_fields)                    | `str`     |
-| `InfrastructureType` (only for individual\_job\_fields)        | `str`     |
-| `InfrastructureDescription` (only for individual\_job\_fields) | `str`     |
-| `NodeCount`                                                    | `int`     |
-| `Processors`                                                   | `int`     |
-| `LocalUserId` (only for individual\_job\_fields)               | `str`     |
-| `FQAN` (only for individual\_job\_fields)                      | `str`     |
-| `ServiceLevel` (only for individual\_job\_fields)              | `float`   |
-| `ServiceLevelType` (only for individual\_job\_fields)          | `str`     |
+| Name             | Data type |
+|:-----------------|:---------:|
+| `GlobalUserName` | `str`     |
+| `VO`             | `str`     |
+| `VOGroup`        | `str`     |
+| `VORole`         | `str`     |
+| `SubmitHost`     | `str`     |
+| `Infrastructure` | `str`     |
+| `NodeCount`      | `int`     |
+| `Processors`     | `int`     |
 
 The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records).
 

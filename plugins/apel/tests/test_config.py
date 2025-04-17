@@ -13,7 +13,6 @@ from auditor_apel_plugin.config import (
     ConstantField,
     Field,
     Function,
-    MessageType,
     MetaField,
     NormalisedField,
     PluginConfig,
@@ -37,21 +36,18 @@ class TestConfig:
         log_file = "/var/log/test.log"
         time_json_path = "time.json"
         report_interval = 10
-        message_type = "summaries"
 
         plugin = PluginConfig(
             log_level=log_level,
             log_file=log_file,
             time_json_path=time_json_path,
             report_interval=report_interval,
-            message_type=message_type,
         )
 
         assert plugin.log_level == "DEBUG"
         assert plugin.log_file == "/var/log/test.log"
         assert plugin.time_json_path == "time.json"
         assert plugin.report_interval == 10
-        assert plugin.message_type is MessageType("summaries")
 
         field_config = config.get_field_config()
 
@@ -80,18 +76,6 @@ class TestConfig:
         value = all_fields["CpuDuration"].name
 
         assert value == "TotalCPU"
-
-        message_type = "something_else"
-
-        with pytest.raises(Exception) as pytest_error:
-            plugin = PluginConfig(
-                log_level=log_level,
-                time_json_path=time_json_path,
-                report_interval=report_interval,
-                message_type=message_type,
-            )
-
-        assert pytest_error.type is ValidationError
 
         ip = "127.0.0.1"
         port = 8000
