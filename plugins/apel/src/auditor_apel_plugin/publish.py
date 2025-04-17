@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 from logging import Logger
 from logging.handlers import RotatingFileHandler
 from time import sleep
+from typing import Dict, Union
 
 import yaml
 from pyauditor import AuditorClientBuilder
@@ -17,13 +18,13 @@ from auditor_apel_plugin.config import Config, MessageType, get_loaders
 from auditor_apel_plugin.core import (
     build_payload,
     create_db,
+    create_dict,
     create_message,
     fill_db,
     get_begin_current_month,
     get_begin_previous_month,
     get_records,
     get_report_time,
-    get_start_time,
     get_time_json,
     get_total_numbers,
     group_db,
@@ -38,7 +39,6 @@ TRACE = logging.DEBUG - 5
 def run(logger: Logger, config: Config, client, args):
     report_interval = config.plugin.report_interval
     sites_to_report = config.site.sites_to_report
-    message_type = config.plugin.message_type
     field_dict = config.get_all_fields()
     optional_fields = config.get_optional_fields()
     dry_run = args.dry_run
@@ -70,56 +70,71 @@ def run(logger: Logger, config: Config, client, args):
             begin_month = get_begin_current_month(current_time)
 
         for site in sites_to_report.keys():
-            records = get_records(config, client, begin_month, 30, site=site)
+            aggr_sync_dict: Dict[str, Dict[str, Union[str, int]]] = {}
+            aggr_summary_dict: Dict[str, Dict[str, Union[str, int]]] = {}
+            loop_day = begin_month
 
-            if len(records) == 0:
-                logger.info(f"No new records for {site}")
-                continue
+            while current_time.replace(tzinfo=timezone.utc) > loop_day:
+                next_day = loop_day + timedelta(days=1)
 
-            latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
-            logger.debug(f"Latest stop time is {latest_stop_time}")
+                logger.info(
+                    f"Getting records for {loop_day.date()} for site {site} "
+                    f"with site_ids: {sites_to_report[site]}"
+                )
 
-            sync_db = create_db({}, MessageType.sync)
-            filled_sync_db = fill_db(
-                config, sync_db, MessageType.sync, {}, site, records
-            )
-            grouped_sync_db = group_db(filled_sync_db, MessageType.sync, {})
-            filled_sync_db.close()
-            sync_message = create_message(MessageType.sync, grouped_sync_db)
+                records = get_records(config, client, loop_day, site, next_day)
+
+                if len(records) == 0:
+                    logger.info(f"No new records for {site}")
+                    break
+
+                latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
+                logger.debug(f"Latest stop time is {latest_stop_time}")
+
+                sync_db = create_db({}, MessageType.sync)
+                filled_sync_db = fill_db(
+                    config, sync_db, MessageType.sync, {}, site, records
+                )
+                grouped_sync_db = group_db(filled_sync_db, MessageType.sync, {})
+                filled_sync_db.close()
+                sync_dict = create_dict(
+                    MessageType.sync, grouped_sync_db, {}, aggr_sync_dict
+                )
+
+                db = create_db(field_dict, MessageType.summaries)
+                filled_db = fill_db(
+                    config, db, MessageType.summaries, field_dict, site, records
+                )
+                del records
+                grouped_db = group_db(filled_db, MessageType.summaries, optional_fields)
+                filled_db.close()
+                message_dict = create_dict(
+                    MessageType.summaries,
+                    grouped_db,
+                    optional_fields,
+                    aggr_summary_dict,
+                )
+
+                loop_day = next_day
+
+            sync_message = create_message(MessageType.sync, sync_dict)
             logger.debug(f"Sync message:\n{sync_message}")
             signed_sync = sign_msg(config, sync_message)
             logger.debug(f"Signed sync message:\n{signed_sync}")
             payload_sync = build_payload(signed_sync)
-
             logger.debug(f"Payload sync message:\n{payload_sync}")
+
             if not dry_run:
                 post_sync = send_payload(config, payload_sync)
                 logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
-            if message_type == MessageType.individual_jobs:
-                start_time = get_start_time(config, time_dict, site)
-                logger.info(f"Getting records since {start_time}")
-                records = [
-                    r
-                    for r in records
-                    if r.stop_time.replace(tzinfo=timezone.utc) > start_time
-                ]
-
-                if len(records) == 0:
-                    logger.info(f"No new records for {site}")
-                    continue
-
-            db = create_db(field_dict, message_type)
-            filled_db = fill_db(config, db, message_type, field_dict, site, records)
-            del records
-            grouped_db = group_db(filled_db, message_type, optional_fields)
-            message = create_message(message_type, grouped_db)
+            message = create_message(MessageType.summaries, message_dict)
             logger.log(TRACE, f"Message:\n{message}")
             signed_message = sign_msg(config, message)
             logger.log(TRACE, f"Signed message:\n{signed_message}")
             payload_message = build_payload(signed_message)
-
             logger.log(TRACE, f"Payload message:\n{payload_message}")
+
             if not dry_run:
                 post_message = send_payload(config, payload_message)
                 logger.info(f"Message sent to server, response:\n{post_message}")
@@ -129,8 +144,7 @@ def run(logger: Logger, config: Config, client, args):
                     config, time_dict, site, latest_stop_time, latest_report_time
                 )
 
-            total_numbers = get_total_numbers(filled_db)
-            filled_db.close()
+            total_numbers = get_total_numbers(message_dict)
             logger.info(f"Total numbers reported by the plugin:\n{total_numbers}")
 
         if dry_run:

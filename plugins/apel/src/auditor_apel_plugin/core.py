@@ -3,14 +3,13 @@
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
+import hashlib
 import json
 import logging
 import sqlite3
-import sys
 from datetime import datetime, time, timedelta, timezone
 from sqlite3 import Error
-from time import sleep
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union, cast
 
 from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
 from cryptography import x509
@@ -22,7 +21,6 @@ from auditor_apel_plugin.config import Config, Field, MessageType
 from auditor_apel_plugin.message import (
     Message,
     PluginMessage,
-    SingleJobMessage,
     SummaryMessage,
     SyncMessage,
 )
@@ -32,9 +30,7 @@ from .utility import write_transaction
 logger = logging.getLogger("apel_plugin")
 
 
-def get_records(
-    config: Config, client, start_time, delay_time, site=None, end_time=None
-):
+def get_records(config: Config, client, start_time, site=None, end_time=None):
     sites_to_report = config.site.sites_to_report
     meta_key_site = config.auditor.site_meta_field
 
@@ -42,52 +38,29 @@ def get_records(
 
     if site is not None:
         site_ids = sites_to_report[site]
-        logger.info(f"Getting records for site {site} with site_ids: {site_ids}")
     else:
         for k, v in sites_to_report.items():
             site_ids.extend(v)
 
-        logger.info(
-            f"Getting records for sites {list(sites_to_report.keys())} "
-            f"with site_ids: {list(sites_to_report.values())}"
-        )
-
-    timeout_counter = 0
     records = []
 
-    while timeout_counter < 2:
-        try:
-            start_time_value = Value.set_datetime(start_time)
-            get_since_operator = Operator().gt(start_time_value)
-            stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
-            if end_time is not None:
-                end_time_value = Value.set_datetime(end_time)
-                get_range_operator = get_since_operator.lt(end_time_value)
-                stop_time_query = stop_time_query.with_stop_time(get_range_operator)
-            for site in site_ids:
-                site_operator = MetaOperator().contains(site)
-                site_query = MetaQuery().meta_operator(meta_key_site, site_operator)
-                query_string = stop_time_query.with_meta_query(site_query).build()
-                records.extend(client.advanced_query(query_string))
-            return records
-        except Exception as e:
-            if "timed" in str(e):
-                timeout_counter += 1
-                logger.warning(
-                    f"Call to AUDITOR timed out {timeout_counter}/3! "
-                    f"Trying again in {timeout_counter * delay_time}s"
-                )
-                sleep(timeout_counter * delay_time)
-            else:
-                logger.critical(e)
-                raise
-
-    logger.critical(
-        "Call to AUDITOR timed out 3/3, quitting! "
-        "Maybe increase auditor_timeout in the config"
-    )
-
-    sys.exit(1)
+    try:
+        start_time_value = Value.set_datetime(start_time)
+        get_since_operator = Operator().gt(start_time_value)
+        stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
+        if end_time is not None:
+            end_time_value = Value.set_datetime(end_time)
+            get_range_operator = get_since_operator.lt(end_time_value)
+            stop_time_query = stop_time_query.with_stop_time(get_range_operator)
+        for site in site_ids:
+            site_operator = MetaOperator().contains(site)
+            site_query = MetaQuery().meta_operator(meta_key_site, site_operator)
+            query_string = stop_time_query.with_meta_query(site_query).build()
+            records.extend(client.advanced_query(query_string))
+        return records
+    except Exception as e:
+        logger.critical(e)
+        raise
 
 
 def get_begin_previous_month(current_time):
@@ -138,15 +111,6 @@ def create_time_json(time_json_path):
     return time_dict
 
 
-def get_start_time(config, time_dict, site):
-    try:
-        start_time = datetime.fromisoformat(time_dict["site_end_times"][site])
-    except KeyError:
-        start_time = config.site.publish_since
-
-    return start_time
-
-
 def get_report_time(time_dict):
     report_time = datetime.fromisoformat(time_dict["last_report_time"])
 
@@ -188,8 +152,6 @@ def create_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.individual_jobs:
-        message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
 
@@ -234,8 +196,6 @@ def fill_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.individual_jobs:
-        message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
 
@@ -283,14 +243,6 @@ def get_data_tuple(
 
         value_list = [site, month, year, stop_time, runtime, record_id]
 
-    elif message_type == MessageType.individual_jobs:
-        record_id = record.record_id
-        runtime = record.runtime
-        start_time = record.start_time.replace(tzinfo=timezone.utc).timestamp()
-        stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
-
-        value_list = [site, record_id, runtime, start_time, stop_time]
-
     elif message_type == MessageType.sync:
         month = record.stop_time.replace(tzinfo=timezone.utc).month
         year = record.stop_time.replace(tzinfo=timezone.utc).year
@@ -320,8 +272,6 @@ def group_db(
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.individual_jobs:
-        message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
 
@@ -352,72 +302,127 @@ def group_db(
     return grouped_sql
 
 
-def get_total_numbers(conn: sqlite3.Connection) -> str:
+def get_total_numbers(summary_dict: Dict[str, Dict[str, Union[str, int]]]) -> str:
     message = PluginMessage()
-
+    aggr_fields = message.aggr_fields
     group_by_list = message.group_by
 
-    sql_group_by = ",".join(group_by_list)
-    sql_store_as = ",".join(message.store_as)
+    hash_dict: Dict[str, Dict[str, Union[str, int]]] = {}
 
-    group_str = "".join(
-        [
-            "SELECT ",
-            sql_group_by,
-            ",",
-            sql_store_as,
-            " FROM records GROUP BY ",
-            sql_group_by,
-        ]
-    )
+    for group in summary_dict.values():
+        hashstr = ""
+        message_dict = {}
 
-    conn.row_factory = sqlite3.Row
-    cur = conn.execute(group_str)
-    grouped_sql = cur.fetchall()
-    cur.close()
+        for k, v in group.items():
+            if k in group_by_list:
+                hashstr += str(v)
+                message_dict[k] = v
+            if k in aggr_fields:
+                message_dict[k] = v
+
+        hash_value = hashlib.md5(hashstr.encode()).hexdigest()
+
+        if hash_value in hash_dict:
+            aggr_numbers = aggregate_messages(
+                message_dict, hash_dict[hash_value], aggr_fields
+            )
+            hash_dict[hash_value] = aggr_numbers
+        else:
+            hash_dict[hash_value] = message_dict
 
     total_numbers = []
 
-    for entry in grouped_sql:
-        for key in entry.keys():
-            total_numbers.append(f"{key}: {entry[key]}\n")
-
-        total_numbers.append("\n")
+    for group in hash_dict.values():
+        for k, v in group.items():
+            total_numbers.append(f"{k}: {v}\n")
 
     total_numbers_message = "".join(total_numbers)
 
     return total_numbers_message
 
 
-def create_message(message_type: MessageType, grouped_sql: List[sqlite3.Row]) -> str:
+def create_dict(
+    message_type: MessageType,
+    grouped_sql: List[sqlite3.Row],
+    fields_dict: Dict[str, Field],
+    hash_dict: Dict[str, Dict[str, Union[str, int]]],
+) -> Dict[str, Dict[str, Union[str, int]]]:
     message = Message()
 
     if message_type == MessageType.summaries:
         message = SummaryMessage()
-    elif message_type == MessageType.individual_jobs:
-        message = SingleJobMessage()
     elif message_type == MessageType.sync:
         message = SyncMessage()
 
-    header = message.message_header
-    message_fields = message.message_fields
+    group_by_list = message.group_by
+    for k in fields_dict.keys():
+        group_by_list.append(k)
 
-    field_list = [header]
+    message_fields = message.message_fields
+    aggr_fields = message.aggr_fields
 
     for entry in grouped_sql:
+        message_dict = {}
+        hashstr = ""
         keys = entry.keys()
 
         for field in message_fields:
             if field in keys:
-                field_list.append(f"{field}: {entry[field]}\n")
+                message_dict[field] = entry[field]
             else:
-                field_list.append(f"{field}: None\n")
+                logger.debug(f"Field {field} not defined in config, skipping")
+            if field in group_by_list:
+                hashstr += str(entry[field])
 
-        field_list.append("%%\n")
+        hash_value = hashlib.md5(hashstr.encode()).hexdigest()
 
-    apel_message = "".join(field_list)
+        if hash_value in hash_dict:
+            aggr_message = aggregate_messages(
+                message_dict, hash_dict[hash_value], aggr_fields
+            )
+            hash_dict[hash_value] = aggr_message
+        else:
+            hash_dict[hash_value] = message_dict
+
+    return hash_dict
+
+
+def create_message(
+    message_type: MessageType, aggr_dict: Dict[str, Dict[str, Union[str, int]]]
+) -> str:
+    message = Message()
+
+    if message_type == MessageType.summaries:
+        message = SummaryMessage()
+    elif message_type == MessageType.sync:
+        message = SyncMessage()
+
+    header = message.message_header
+    message_list = [header]
+
+    for group in aggr_dict.values():
+        for k, v in group.items():
+            message_list.append(f"{k}: {v}\n")
+
+        message_list.append("%%\n")
+
+    apel_message = "".join(message_list)
 
     return apel_message
+
+
+def aggregate_messages(
+    new_dict: Dict[str, Union[str, int]],
+    aggr_dict: Dict[str, Union[str, int]],
+    aggr_fields: List[str],
+) -> Dict[str, Union[str, int]]:
+    for field in aggr_fields:
+        aggr_dict[field] = cast(int, aggr_dict[field]) + cast(int, new_dict[field])
+
+    if "LatestEndTime" in aggr_dict:
+        aggr_dict["LatestEndTime"] = new_dict["LatestEndTime"]
+
+    return aggr_dict
 
 
 def sign_msg(config, msg):
