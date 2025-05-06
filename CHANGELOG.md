@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update ruff from 0.11.4 to 0.11.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 78.1.0 to 80.3.1 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
