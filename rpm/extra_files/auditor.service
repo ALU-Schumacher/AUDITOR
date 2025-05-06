@@ -1,0 +1,15 @@
+[Unit]
+Description=AUDITOR accounting tool
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/auditor
+ExecStart=/usr/bin/auditor /opt/auditor/auditor.yml
+Restart=on-failure
+RestartSec=60

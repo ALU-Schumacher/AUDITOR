@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- AUDITOR: Add unit file and sql migration files to RPM ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update cryptography from 44.0.2 to 44.0.3 ([@dirksammel](https://github.com/dirksammel))
