@@ -11,6 +11,7 @@ use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::ConnectOptions;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
+use std::collections::HashMap;
 use tracing_subscriber::filter::LevelFilter;
 
 #[derive(serde::Deserialize, Debug)]
@@ -26,9 +27,63 @@ pub struct Settings {
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
     pub tls_config: Option<TLSConfig>,
+    pub rbac_config: Option<RbacConfig>,
 }
 
-// Set the default values for TLSConfig options
+#[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
+pub struct RbacConfig {
+    pub enforce_rbac: bool,
+    #[serde(default = "default_base_policies")]
+    pub base_policies: Vec<Vec<String>>,
+    pub collector_cn: Option<Vec<String>>,
+    pub plugin_cn: Option<Vec<String>>,
+    pub plugin_data_access: Option<Vec<Cn>>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
+pub struct Cn {
+    pub plugin_cn: String,
+    pub meta_info: HashMap<String, Vec<String>>,
+}
+
+fn default_base_policies() -> Vec<Vec<String>> {
+    vec![
+        vec![
+            "collector_base".to_string(),
+            "/record".to_string(),
+            "POST".to_string(),
+        ],
+        vec![
+            "collector_base".to_string(),
+            "/record".to_string(),
+            "UPDATE".to_string(),
+        ],
+        vec![
+            "collector_base".to_string(),
+            "/healthcheck".to_string(),
+            "GET".to_string(),
+        ],
+        vec![
+            "plugin_base".to_string(),
+            "/records".to_string(),
+            "GET".to_string(),
+        ],
+        vec![
+            "plugin_base".to_string(),
+            "/record/*".to_string(),
+            "GET".to_string(),
+        ],
+        vec![
+            "plugin_base".to_string(),
+            "/healthcheck".to_string(),
+            "GET".to_string(),
+        ],
+    ]
+}
+
+//Set the default values for TLSConfig options
 #[derive(serde::Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TLSConfig {
@@ -205,6 +260,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
             .prefix_separator("_")
             .list_separator(",")
             .with_list_parse_key("application.addr")
+            .with_list_parse_key("rbac_config.collector_cn")
+            .with_list_parse_key("rbac_config.plugin_cn")
             .try_parsing(true),
     );
 

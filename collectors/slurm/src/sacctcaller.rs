@@ -144,7 +144,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         args.push(CONFIG.job_filter.account.join(","));
     }
 
-    let cmd = binary.to_owned() + " " + &args.join(" ");
+    let cmd = binary.to_owned() + " " + &args.join(" ")[..];
     tracing::debug!("Executing the following command: {}", cmd);
 
     let cmd_out = Command::new(binary).args(&args).output().await?;
