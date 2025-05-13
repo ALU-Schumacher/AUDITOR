@@ -18,6 +18,8 @@ use std::{fs::File, io::BufReader, sync::Arc};
 
 use std::env;
 
+use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, MgmtApi, RbacApi};
+
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
     // Read in configuration
@@ -98,6 +100,77 @@ async fn main() -> Result<(), anyhow::Error> {
                 use_tls: tls.use_tls,
             };
 
+            let enforce_rbac: bool = configuration.rbac_config.clone().unwrap().enforce_rbac;
+
+            if let Some(rbac_config) = &configuration.rbac_config {
+                if rbac_config.enforce_rbac {
+                    let m = DefaultModel::from_file("model.conf").await.unwrap();
+
+                    // Write or create
+                    let _writer_file = File::create("policy.csv")?;
+
+                    let adapter = FileAdapter::new("policy.csv");
+                    //let enforcer = Arc::new(RwLock::new(Enforcer::new(m, adapter).await.unwrap()));
+
+                    let mut ee = Enforcer::new(m, adapter).await.unwrap();
+                    //let ee = enforcer.clone();
+
+                    ee.add_policies(rbac_config.base_policies.clone())
+                        .await
+                        .unwrap();
+
+                    ee.save_policy().await.unwrap();
+
+                    if let Some(collector_cn) = &rbac_config.collector_cn {
+                        for collector in collector_cn.iter() {
+                            ee.add_role_for_user(collector, "collector_base", None)
+                                .await
+                                .unwrap();
+
+                            ee.save_policy().await.unwrap();
+                        }
+                    }
+
+                    if let Some(plugin_cn) = &rbac_config.plugin_cn {
+                        for plugin in plugin_cn.iter() {
+                            ee.add_role_for_user(plugin, "plugin_base", None)
+                                .await
+                                .unwrap();
+
+                            ee.save_policy().await.unwrap();
+                        }
+                    }
+
+                    if let Some(plugin_data_access) = &rbac_config.plugin_data_access {
+                        for data in plugin_data_access {
+                            for (meta_id, meta_values) in data.meta_info.iter() {
+                                for meta_value in meta_values {
+                                    ee.add_policy(vec![
+                                        "meta".to_string(),
+                                        meta_id.to_string(),
+                                        meta_value.to_string(),
+                                    ])
+                                    .await
+                                    .unwrap();
+
+                                    ee.save_policy().await.unwrap();
+
+                                    ee.add_role_for_user(
+                                        &data.plugin_cn.clone(),
+                                        "collector_base",
+                                        None,
+                                    )
+                                    .await
+                                    .unwrap();
+
+                                    ee.save_policy().await.unwrap();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             run(
                 configuration.application.addr,
                 configuration.application.port,
@@ -105,7 +178,9 @@ async fn main() -> Result<(), anyhow::Error> {
                 connection_pool,
                 db_metrics_watcher,
                 Some(tls_params),
-            )?
+                enforce_rbac,
+            )
+            .await?
             .await?;
         } else {
             // Start server
@@ -116,7 +191,9 @@ async fn main() -> Result<(), anyhow::Error> {
                 connection_pool,
                 db_metrics_watcher,
                 None,
-            )?
+                false,
+            )
+            .await?
             .await?;
         }
     } else {
@@ -128,7 +205,9 @@ async fn main() -> Result<(), anyhow::Error> {
             connection_pool,
             db_metrics_watcher,
             None,
-        )?
+            false,
+        )
+        .await?
         .await?;
     }
 

@@ -1,0 +1,33 @@
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: true
+  ca_cert_path: "./scripts/openssl/new_cert/rootCA.pem"
+  server_cert_path: "./scripts/openssl/new_cert/server-cert.pem"
+  server_key_path: "./scripts/openssl/new_cert/server-key.pem"
+rbac_config:
+  enforce_rbac: true
+  collector_cn:
+    - condor
+  plugin_cn:
+    - client.plugin
+  plugin_data_access:
+    - plugin_cn: client.plugin
+      meta_info:
+        site_id: 
+          - site_id_1
+          - site_id_2
