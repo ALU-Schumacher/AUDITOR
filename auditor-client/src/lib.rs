@@ -408,7 +408,7 @@
 //!     .with_meta_query(
 //!         MetaQuery::new().meta_operator(
 //!             "site_id".to_string(),
-//!             MetaOperator::default().contains("site1".to_string()),
+//!             MetaOperator::default().contains(vec!["site1".to_string()]),
 //!         )
 //!     )
 //!     .with_start_time(
@@ -1209,9 +1209,9 @@ impl Serialize for MetaQuery {
 #[derive(serde::Deserialize, serde::Serialize, Debug, Default, Clone)]
 pub struct MetaOperator {
     /// `contains` - Specifies if the meta key contains the value.
-    pub c: Option<String>,
+    pub c: Option<Vec<String>>,
     /// `does not contain` - Specifies if the meta key does not contain the value.
-    pub dnc: Option<String>,
+    pub dnc: Option<Vec<String>>,
 }
 
 impl MetaOperator {
@@ -1224,7 +1224,7 @@ impl MetaOperator {
     /// # Returns
     ///
     /// A new `MetaOperator` instance with the specified condition.
-    pub fn contains(mut self, c: String) -> Self {
+    pub fn contains(mut self, c: Vec<String>) -> Self {
         self.c = Some(c);
         self
     }
@@ -1238,7 +1238,7 @@ impl MetaOperator {
     /// # Returns
     ///
     /// A new `MetaOperator` instance with the specified condition.
-    pub fn does_not_contain(mut self, dnc: String) -> Self {
+    pub fn does_not_contain(mut self, dnc: Vec<String>) -> Self {
         self.dnc = Some(dnc);
         self
     }
@@ -2716,7 +2716,7 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/records"))
-            .and(query_param("meta[site_id][c]", "group_1"))
+            .and(query_param("meta[site_id][c][0]", "group_1"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
             .mount(&mock_server)
@@ -2725,7 +2725,7 @@ mod tests {
         let response = QueryBuilder::new()
             .with_meta_query(MetaQuery::new().meta_operator(
                 "site_id".to_string(),
-                MetaOperator::default().contains("group_1".to_string()),
+                MetaOperator::default().contains(vec!["group_1".to_string()]),
             ))
             .get(client)
             .await
@@ -2750,7 +2750,7 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/records"))
-            .and(query_param("meta[site_id][c]", "group_1"))
+            .and(query_param("meta[site_id][c][0]", "group_1"))
             .and(query_param("start_time[lte]", "2022-08-04T09:47:00+00:00"))
             .respond_with(ResponseTemplate::new(200).set_body_json(&body))
             .expect(1)
@@ -2761,7 +2761,7 @@ mod tests {
         let response = QueryBuilder::new()
             .with_meta_query(MetaQuery::new().meta_operator(
                 "site_id".to_string(),
-                MetaOperator::default().contains("group_1".to_string()),
+                MetaOperator::default().contains(vec!["group_1".to_string()]),
             ))
             .with_start_time(Operator::default().lte(datetime_utc_lte.into()))
             .get(client)

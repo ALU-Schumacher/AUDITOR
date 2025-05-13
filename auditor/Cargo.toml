@@ -74,6 +74,10 @@ urlencoding.workspace = true
 uuid.workspace = true
 rustls.workspace = true
 rustls-pemfile.workspace = true
+x509-parser = "0.15"
+casbin = "2.10.1"
+serde_urlencoded = "0.7.1"
+csv = "1.1"
 
 [dev-dependencies]
 claim.workspace = true
