@@ -5,7 +5,6 @@
 
 import argparse
 import logging
-import sys
 from datetime import datetime, timedelta, timezone
 from logging import Logger
 from typing import Dict, Union
@@ -37,20 +36,22 @@ def run(logger: Logger, config: Config, client, args):
     field_dict = config.get_all_fields()
     optional_fields = config.get_optional_fields()
 
-    begin_date = datetime.fromisoformat(args.begin_date)
-    end_date = datetime.fromisoformat(args.end_date)
+    month = args.month
+    year = args.year
 
-    if end_date < begin_date:
-        logger.critical("end_date has to be later than begin_date!")
-        sys.exit(1)
+    begin_month = datetime(year, month, 1, tzinfo=timezone.utc)
+    if month == 12:
+        end_month = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end_month = datetime(year, month + 1, 1, tzinfo=timezone.utc)
 
     if dry_run:
         logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
     aggr_summary_dict: Dict[str, Dict[str, Union[str, int]]] = {}
-    loop_day = begin_date
+    loop_day = begin_month
 
-    while end_date.replace(tzinfo=timezone.utc) > loop_day.replace(tzinfo=timezone.utc):
+    while end_month > loop_day:
         next_day = loop_day + timedelta(days=1)
 
         logger.info(
@@ -58,8 +59,8 @@ def run(logger: Logger, config: Config, client, args):
             f"with site_ids: {sites_to_report[site]}"
         )
 
-        if next_day > end_date:
-            next_day = end_date
+        if next_day > end_month:
+            next_day = end_month
 
         records = get_records(config, client, loop_day, site, next_day)
 
@@ -103,18 +104,10 @@ def run(logger: Logger, config: Config, client, args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--begin-date",
-        type=str,
-        required=True,
-        help="Begin of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, "
-        "e.g. 2023-11-27 13:31:10+00:00",
+        "-y", "--year", type=int, required=True, help="Year: 2020, 2021, ..."
     )
     parser.add_argument(
-        "--end-date",
-        type=str,
-        required=True,
-        help="End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, "
-        "e.g. 2023-11-29 21:10:54+00:00",
+        "-m", "--month", type=int, required=True, help="Month: 4, 8, 12, ..."
     )
     parser.add_argument(
         "-s", "--site", required=True, help="Site (GOCDB): UNI-FREIBURG, ..."

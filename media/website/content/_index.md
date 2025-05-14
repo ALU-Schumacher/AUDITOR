@@ -841,19 +841,18 @@ options:
   --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 ```
 
-`auditor-apel-republish` runs once and submits a report of jobs between two dates for a given site.
+`auditor-apel-republish` runs once and submits a summary report for a given month, year, and site.
 
 ```bash
-usage: auditor-apel-republish [-h] --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG [--dry-run]
+usage: auditor-apel-republish [-h] -y YEAR -m MONTH -s SITE -c CONFIG [--dry-run]
 
 options:
-  -h, --help            show this help message and exit
-  --begin-date BEGIN_DATE
-                        Begin of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
-  --end-date END_DATE   End of republishing (UTC): yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
-  -s, --site SITE       Site (GOCDB): UNI-FREIBURG, ...
-  -c, --config CONFIG   Path to the config file
-  --dry-run             One-shot dry-run, nothing will be sent to the APEL server
+  -h, --help           show this help message and exit
+  -y, --year YEAR      Year: 2020, 2021, ...
+  -m, --month MONTH    Month: 4, 8, 12, ...
+  -s, --site SITE      Site (GOCDB): UNI-FREIBURG, ...
+  -c, --config CONFIG  Path to the config file
+  --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 ```
 
 ### pip
