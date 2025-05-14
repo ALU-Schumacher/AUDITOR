@@ -244,7 +244,7 @@ For dualstack operation, you can set the IPv4 and IPv6 addresses as a list in th
 
 ```yaml
 application:
-  addr: 
+  addr:
     - 0.0.0.0
     - ::1
 ```
@@ -254,6 +254,83 @@ IPv4 and IPv6 addresses can also be specified as an ENV variable
 ```bash
 AUDITOR_APPLICATION__ADDR=127.0.0.1,::1
 ```
+
+With rbac (role based access control)
+
+
+```yaml
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: true
+  ca_cert_path: "./auditor/certs/rootCA.pem"
+  server_cert_path: "./auditor/certs/server-cert.pem"
+  server_key_path: "./auditor/certs/server-key.pem"
+rbac_config:
+  enforce_rbac: true
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+  data_access_rules:
+    - reader_cn: apel.plugin
+      meta_info:
+        site_id:
+          - site_id_1
+          - site_id_2
+```
+
+write_access_cn and read_access_cn takes in the common name from certs for your collectors and plugins.
+
+### write_access_cn (list of strings):
+Specifies which clients (identified by their TLS certificate Common Name) are allowed to perform write operations.
+
+```yaml
+write_access_cn:
+  - htcondor.collector
+```
+
+### read_access_cn (list of strings):
+Lists clients allowed to perform general read operations.
+```yaml
+read_access_cn:
+  - apel.plugin
+```
+
+### data_access_rules (list of objects):
+Defines fine-grained read permissions for specific metadata values (e.g., site-specific data).
+Each rule consists of:
+
+reader_cn: The client CN permitted to read restricted data.
+
+meta_info: A mapping of metadata keys (e.g., site_id) to allowed values.
+
+```yaml
+data_access_rules:
+  - reader_cn: apel.plugin
+    meta_info:
+      site_id: 
+        - site_id_1
+        - site_id_2
+```
+
+This means:
+
+The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.
 
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
@@ -1281,6 +1358,117 @@ Then, on the nodes in question the directory `/srv/auditor/{apel,collector,prome
 
 If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files `ca.pem`, `client.pem` and `client.key` in the `files` directory of its chart.
 
+
+# TLS Certificate Generation Guide
+
+## 1. Create `rootCA` (if not present)
+
+```bash
+openssl genrsa -out rootCA.key 4096
+```
+
+## 2. Create rootCA
+```bash
+openssl req -x509 -new -key rootCA.key -sha256 -days 3650 -out rootCA.crt
+cat rootCA.crt > rootCA.pem
+```
+
+## 3. Create the OpenSSL Configuration File (openssl.cnf)
+Create a file called `openssl.cnf` and add the config as shown below:
+
+```
+[ req ]
+default_bits       = 2048
+prompt             = no
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = v3_req
+
+[ dn ]
+CN = server.auditor
+
+[ v3_req ]
+basicConstraints     = CA:FALSE
+keyUsage             = digitalSignature, keyEncipherment
+extendedKeyUsage     = clientAuth, serverAuth
+subjectAltName       = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+IP.1 = 127.0.0.1
+```
+
+If you plan to run the auditor inside Docker, consider adding the following entry to the [ alt_names ] section:
+
+```ini
+DNS.2 = host.docker.internal
+```
+
+
+## 4. Creating server/client certificates
+```bash
+openssl req -new -nodes -newkey rsa:2048 \
+  -keyout server-key.pem \
+  -out server-req.pem \
+  -config openssl.cnf
+```
+
+```bash
+openssl x509 -req -in server-req.pem \
+  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+  -out server-cert.pem -days 365 \
+  -extensions v3_req -extfile openssl.cnf
+```
+
+Your final file structure would look something like this:
+```bash
+certs/
+├── rootCA.crt
+├── rootCA.key
+├── rootCA.pem
+├── server-cert.pem
+├── server-key.pem
+├── server-req.pem
+├── openssl.cnf
+```
+
+## 5. Configure Auditor with RBAC Settings
+
+When setting up Auditor, you must assign role-based access control (RBAC) using certificate Common Names (CNs).
+
+### Generating Certificates for Plugins and collectors
+You can skip this step if you've already created the certificates. Otherwise:
+
+
+1. Modify the CN in openssl.cnf before generating certificates for each component.
+
+Example for APEL Plugin:
+
+```ini
+[ dn ]
+CN = apel.plugin
+```
+
+Example for HTCondor Collector:
+
+```ini
+[ dn ]
+CN = htcondor.collector
+```
+
+2. Then generate the certificates using Step 4 in this guide.
+
+### Updating the Auditor RBAC Config
+The APEL Plugin should have read access, and the HTCondor Collector should have write access. Update the rbac_config section of the AUDITOR config file as follows:
+
+```yaml
+rbac_config:
+  enforce_rbac: true
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+```
 
 # License
 
