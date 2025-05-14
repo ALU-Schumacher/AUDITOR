@@ -33,12 +33,17 @@ pub struct Settings {
 #[derive(serde::Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RbacConfig {
+    #[serde(default = "default_enforce_rbac")]
     pub enforce_rbac: bool,
     #[serde(default = "default_base_policies")]
     pub base_policies: Vec<Vec<String>>,
     pub collector_cn: Option<Vec<String>>,
     pub plugin_cn: Option<Vec<String>>,
     pub plugin_data_access: Option<Vec<Cn>>,
+}
+
+fn default_enforce_rbac() -> bool {
+    false
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
