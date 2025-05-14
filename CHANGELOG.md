@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
@@ -26,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Add unit file and sql migration files to RPM ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
-- APEL plugin: Reduce memory consumption ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Reduce memory consumption ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.2 to 44.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.11.3 to 2.11.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.4 to 0.11.9 ([@dirksammel](https://github.com/dirksammel))
@@ -34,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update sqlx from 0.8.3 to 0.8.5 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
-- APEL plugin: Remove option to report individual jobs ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Remove option to report individual jobs ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.9.2] 2025-04-10
 
