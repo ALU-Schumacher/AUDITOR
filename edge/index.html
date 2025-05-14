@@ -857,8 +857,8 @@ The following section explains the configuration of the collector.</p>
 <p>Plugins are used to retrieve data from Auditor for further processing.
 See below for all currently available collectors.</p>
 <h2 id="apel-plugin">APEL Plugin</h2>
-<p>The APEL plugin creates messages and sends them to the APEL server. The plugin can either create <code>summary messages</code> for the current month, or <code>individual job messages</code>. <code>Sync messages</code> for the current month are created in both cases.</p>
-<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a>, as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>, or as a rpm from the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>.</p>
+<p>The APEL plugin creates <code>summary messages</code> and <code>sync messages</code> for the current month, and sends them to the APEL server.</p>
+<p>The plugin is provided as a <a href="https://pypi.org/project/auditor-apel-plugin/">pip package</a>, as a Docker container from <a href="https://hub.docker.com/r/aluschumacher/auditor-apel-plugin">Docker Hub</a> or from the <a href="https://github.com/ALU-Schumacher/AUDITOR/pkgs/container/auditor-apel-plugin">GitHub Container Registry</a>, or as a rpm from the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a> or from the <a href="https://linuxsoft.cern.ch/wlcg/el9/x86_64/">WLCG repository</a>.</p>
 <p>Two CLI commands are available: <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code>.</p>
 <p><code>auditor-apel-publish</code> runs periodically at a given report interval.</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-publish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG </span><span style="color:#ff5600;">[</span><span>-</span><span style="color:#ff5600;">-</span><span>dry</span><span style="color:#ff5600;">-</span><span>run</span><span style="color:#ff5600;">]
@@ -894,9 +894,8 @@ See below for all currently available collectors.</p>
 <h3 id="rpm-1">rpm</h3>
 <p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
 <h3 id="config">Config</h3>
-<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and one of <code>summary_fields</code> or <code>individual_job_fields</code>.</p>
+<p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and <code>summary_fields</code>.</p>
 <p>Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.</p>
-<p>You only need the <code>summary_fields</code> OR the <code>individual_job_fields</code> section, depending on the value for <code>message_type</code> in the <code>plugin</code> section.</p>
 <p>Example config:</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#ff5600;">!Config
 </span><span style="color:#00a33f;">plugin</span><span>:
@@ -904,10 +903,8 @@ See below for all currently available collectors.</p>
 </span><span>  </span><span style="color:#00a33f;">log_file</span><span>: </span><span style="color:#00a33f;">/var/log/auditor_apel_plugin.log
 </span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
 </span><span>  </span><span style="color:#00a33f;">report_interval</span><span>: 86400
-</span><span>  </span><span style="color:#00a33f;">message_type</span><span>: </span><span style="color:#00a33f;">summaries
 </span><span>  
 </span><span style="color:#00a33f;">site</span><span>:
-</span><span>  </span><span style="color:#00a33f;">publish_since</span><span>: 2024-01-01 06:00:00+00:00
 </span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>:
 </span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
 </span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
@@ -969,54 +966,13 @@ See below for all currently available collectors.</p>
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
 </span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>
-</span><span>
-</span><span style="color:#00a33f;">individual_job_fields</span><span>:
-</span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
-</span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
-</span><span>
-</span><span>  </span><span style="color:#00a33f;">optional</span><span>:
-</span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
-</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/|$)
-</span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/Role|$)
-</span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">&#39;(?=Role).*?(?=/|$)&#39;
-</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
-</span><span>    </span><span style="color:#00a33f;">InfrastructureType</span><span>: </span><span style="color:#ff5600;">!ConstantField
-</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
-</span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
-</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>    </span><span style="color:#00a33f;">LocalUserId</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">user_id
-</span><span>    </span><span style="color:#00a33f;">FQAN</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>    </span><span style="color:#00a33f;">InfrastructureDescription</span><span>: </span><span style="color:#ff5600;">!ConstantField
-</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">AUDITOR-ARC-SLURM
-</span><span>    </span><span style="color:#00a33f;">ServiceLevel</span><span>: </span><span style="color:#ff5600;">!ScoreField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
-</span><span>      </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
-</span><span>    </span><span style="color:#00a33f;">ServiceLevelType</span><span>: </span><span style="color:#ff5600;">!ConstantField
-</span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">hepscore23
 </span></code></pre>
 <p>The individual parameters in the config file are:</p>
 <table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity). <code>TRACE</code> might produce a lot of output if <code>message_type</code> is set to <code>individual_jobs</code>, since the message that will be sent to APEL is printed.</td></tr>
+<tr><td><code>plugin</code></td><td><code>log_level</code></td><td>Can be set to <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code> (with decreasing verbosity).</td></tr>
 <tr><td><code>plugin</code></td><td><code>log_file</code></td><td>Path of the log file. This parameter is optional, the default value is <code>None</code>.</td></tr>
 <tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
-<tr><td><code>plugin</code></td><td><code>message_type</code></td><td>Type of message to create. Can be set to <code>summaries</code> or <code>individual_jobs</code>.</td></tr>
-<tr><td><code>site</code></td><td><code>publish_since</code></td><td>Date and time in ISO 8601 format (in UTC, hence add +00:00) after which jobs will be published. Only relevant for first run when <code>individual_jobs</code> is used and no <code>time.json</code> is present yet.</td></tr>
 <tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
 <tr><td><code>messaging</code></td><td><code>host</code></td><td>Host address of the AMS service.</td></tr>
 <tr><td><code>messaging</code></td><td><code>port</code></td><td>Port of the AMS host.</td></tr>
@@ -1035,11 +991,11 @@ See below for all currently available collectors.</p>
 <tr><td><code>auditor</code></td><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if <code>use_tls</code> is True.</td></tr>
 <tr><td><code>auditor</code></td><td><code>client_key_path</code></td><td>Path to the client's private key used for TLS. Only needed if <code>use_tls</code> is True.</td></tr>
 </tbody></table>
-<p>The main sections <code>summary_fields</code> and <code>individual_job_fields</code> have the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
+<p>The section <code>summary_fields</code> has the subsections <code>mandatory</code> and <code>optional</code>. <code>mandatory</code> contains the fields that have to be present in the APEL message, therefore the plugin needs to know how to get the information from the AUDITOR records. The mandatory fields are:</p>
 <table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
 <tr><td style="text-align: left"><code>CpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
-<tr><td style="text-align: left"><code>NormalisedCpuDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
-<tr><td style="text-align: left"><code>NormalisedWallDuration</code> (only for summary_fields)</td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedCpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>NormalisedWallDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
 </tbody></table>
 <p>There are actually more mandatory fields, but they are handled internally and don't need any input from the user.</p>
 <p><code>optional</code> fields can be used to provide additional information to APEL:</p>
@@ -1049,15 +1005,9 @@ See below for all currently available collectors.</p>
 <tr><td style="text-align: left"><code>VOGroup</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>VORole</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>SubmitHost</code></td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>Infrastructure</code> (only for summary_fields)</td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>InfrastructureType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>InfrastructureDescription</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>Infrastructure</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>NodeCount</code></td><td style="text-align: center"><code>int</code></td></tr>
 <tr><td style="text-align: left"><code>Processors</code></td><td style="text-align: center"><code>int</code></td></tr>
-<tr><td style="text-align: left"><code>LocalUserId</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>FQAN</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>ServiceLevel</code> (only for individual_job_fields)</td><td style="text-align: center"><code>float</code></td></tr>
-<tr><td style="text-align: left"><code>ServiceLevelType</code> (only for individual_job_fields)</td><td style="text-align: center"><code>str</code></td></tr>
 </tbody></table>
 <p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>.</p>
 <p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: <a href="https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/">https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/</a>.</p>
