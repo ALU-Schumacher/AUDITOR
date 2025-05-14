@@ -100,70 +100,76 @@ async fn main() -> Result<(), anyhow::Error> {
                 use_tls: tls.use_tls,
             };
 
-            let enforce_rbac: bool = configuration.rbac_config.clone().unwrap().enforce_rbac;
+            let enforce_rbac: bool = configuration
+                .rbac_config
+                .as_ref()
+                .map(|r| r.enforce_rbac)
+                .unwrap_or(false);
 
             if let Some(rbac_config) = &configuration.rbac_config {
                 if rbac_config.enforce_rbac {
                     let m = DefaultModel::from_file("model.conf").await.unwrap();
 
-                    // Write or create
                     let _writer_file = File::create("policy.csv")?;
 
                     let adapter = FileAdapter::new("policy.csv");
-                    //let enforcer = Arc::new(RwLock::new(Enforcer::new(m, adapter).await.unwrap()));
 
-                    let mut ee = Enforcer::new(m, adapter).await.unwrap();
-                    //let ee = enforcer.clone();
+                    let mut enforcer = Enforcer::new(m, adapter).await.unwrap();
 
-                    ee.add_policies(rbac_config.base_policies.clone())
+                    enforcer
+                        .add_policies(rbac_config.base_policies.clone())
                         .await
                         .unwrap();
 
-                    ee.save_policy().await.unwrap();
+                    enforcer.save_policy().await.unwrap();
 
-                    if let Some(collector_cn) = &rbac_config.collector_cn {
-                        for collector in collector_cn.iter() {
-                            ee.add_role_for_user(collector, "collector_base", None)
+                    if let Some(write_access_cn) = &rbac_config.write_access_cn {
+                        for item in write_access_cn.iter() {
+                            enforcer
+                                .add_role_for_user(item, "write_access_base", None)
                                 .await
                                 .unwrap();
 
-                            ee.save_policy().await.unwrap();
+                            enforcer.save_policy().await.unwrap();
                         }
                     }
 
-                    if let Some(plugin_cn) = &rbac_config.plugin_cn {
-                        for plugin in plugin_cn.iter() {
-                            ee.add_role_for_user(plugin, "plugin_base", None)
+                    if let Some(read_access_cn) = &rbac_config.read_access_cn {
+                        for item in read_access_cn.iter() {
+                            enforcer
+                                .add_role_for_user(item, "read_access_base", None)
                                 .await
                                 .unwrap();
 
-                            ee.save_policy().await.unwrap();
+                            enforcer.save_policy().await.unwrap();
                         }
                     }
 
-                    if let Some(plugin_data_access) = &rbac_config.plugin_data_access {
-                        for data in plugin_data_access {
-                            for (meta_id, meta_values) in data.meta_info.iter() {
+                    if let Some(data_access_rules) = &rbac_config.data_access_rules {
+                        for item in data_access_rules {
+                            for (meta_id, meta_values) in item.meta_info.iter() {
                                 for meta_value in meta_values {
-                                    ee.add_policy(vec![
-                                        "meta".to_string(),
-                                        meta_id.to_string(),
-                                        meta_value.to_string(),
-                                    ])
-                                    .await
-                                    .unwrap();
+                                    enforcer
+                                        .add_policy(vec![
+                                            "meta".to_string(),
+                                            meta_id.to_string(),
+                                            meta_value.to_string(),
+                                        ])
+                                        .await
+                                        .unwrap();
 
-                                    ee.save_policy().await.unwrap();
+                                    enforcer.save_policy().await.unwrap();
 
-                                    ee.add_role_for_user(
-                                        &data.plugin_cn.clone(),
-                                        "collector_base",
-                                        None,
-                                    )
-                                    .await
-                                    .unwrap();
+                                    enforcer
+                                        .add_role_for_user(
+                                            &item.reader_cn.clone(),
+                                            "read_access_base",
+                                            None,
+                                        )
+                                        .await
+                                        .unwrap();
 
-                                    ee.save_policy().await.unwrap();
+                                    enforcer.save_policy().await.unwrap();
                                 }
                             }
                         }
