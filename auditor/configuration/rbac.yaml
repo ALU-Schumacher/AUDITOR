@@ -16,17 +16,17 @@ metrics:
       - RecordCountPerUser
 tls_config:
   use_tls: true
-  ca_cert_path: "./scripts/openssl/new_cert/rootCA.pem"
-  server_cert_path: "./scripts/openssl/new_cert/server-cert.pem"
-  server_key_path: "./scripts/openssl/new_cert/server-key.pem"
+  ca_cert_path: "./auditor/certs/rootCA.pem"
+  server_cert_path: "./auditor/certs/server-cert.pem"
+  server_key_path: "./auditor/certs/server-key.pem"
 rbac_config:
   enforce_rbac: true
-  collector_cn:
-    - condor
-  plugin_cn:
-    - client.plugin
-  plugin_data_access:
-    - plugin_cn: client.plugin
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+  data_access_rules:
+    - reader_cn: apel.plugin
       meta_info:
         site_id: 
           - site_id_1

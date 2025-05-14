@@ -33,50 +33,55 @@ pub struct Settings {
 #[derive(serde::Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RbacConfig {
+    #[serde(default = "default_enforce_rbac")]
     pub enforce_rbac: bool,
     #[serde(default = "default_base_policies")]
     pub base_policies: Vec<Vec<String>>,
-    pub collector_cn: Option<Vec<String>>,
-    pub plugin_cn: Option<Vec<String>>,
-    pub plugin_data_access: Option<Vec<Cn>>,
+    pub write_access_cn: Option<Vec<String>>,
+    pub read_access_cn: Option<Vec<String>>,
+    pub data_access_rules: Option<Vec<Cn>>,
+}
+
+fn default_enforce_rbac() -> bool {
+    false
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Cn {
-    pub plugin_cn: String,
+    pub reader_cn: String,
     pub meta_info: HashMap<String, Vec<String>>,
 }
 
 fn default_base_policies() -> Vec<Vec<String>> {
     vec![
         vec![
-            "collector_base".to_string(),
+            "write_access_base".to_string(),
             "/record".to_string(),
             "POST".to_string(),
         ],
         vec![
-            "collector_base".to_string(),
+            "write_access_base".to_string(),
             "/record".to_string(),
             "UPDATE".to_string(),
         ],
         vec![
-            "collector_base".to_string(),
+            "write_access_base".to_string(),
             "/healthcheck".to_string(),
             "GET".to_string(),
         ],
         vec![
-            "plugin_base".to_string(),
+            "read_access_base".to_string(),
             "/records".to_string(),
             "GET".to_string(),
         ],
         vec![
-            "plugin_base".to_string(),
+            "read_access_base".to_string(),
             "/record/*".to_string(),
             "GET".to_string(),
         ],
         vec![
-            "plugin_base".to_string(),
+            "read_access_base".to_string(),
             "/healthcheck".to_string(),
             "GET".to_string(),
         ],
