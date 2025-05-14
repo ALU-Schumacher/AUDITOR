@@ -82,7 +82,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ### sqlx
 
 ```bash
-cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls
+cargo install --version=0.8.5 sqlx-cli --no-default-features --features postgres,rustls
 ```
 
 ### bunyan

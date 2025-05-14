@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [0.9.3] 2025-05-14
+
+### Breaking changes
+
+### Security
+
+### Added
 - AUDITOR: Add unit file and sql migration files to RPM ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
@@ -19,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.11.3 to 2.11.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.4 to 0.11.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 78.1.0 to 80.4.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update sqlx from 0.8.3 to 0.8.5 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 - APEL plugin: Remove option to report individual jobs ([@dirksammel](https://github.com/dirksammel))
@@ -767,7 +780,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.9.3...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -789,3 +802,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.9.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.0
 [0.9.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.1
 [0.9.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.2
+[0.9.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.3
