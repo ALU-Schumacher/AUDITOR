@@ -40,8 +40,10 @@ actix-web = { workspace = true, features = ["rustls-0_23"] }
 actix-tls = { workspace = true, features = ["rustls-0_23"] }
 anyhow.workspace = true
 async-stream.workspace = true
+casbin.workspace = true
 chrono.workspace = true
 config.workspace = true
+csv.workspace = true
 fake.workspace = true
 futures.workspace = true
 futures-util.workspace = true
@@ -74,10 +76,7 @@ urlencoding.workspace = true
 uuid.workspace = true
 rustls.workspace = true
 rustls-pemfile.workspace = true
-x509-parser = "0.15"
-casbin = "2.10.1"
-serde_urlencoded = "0.7.1"
-csv = "1.1"
+x509-parser.workspace = true
 
 [dev-dependencies]
 claim.workspace = true

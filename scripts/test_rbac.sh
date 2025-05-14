@@ -45,17 +45,17 @@ function stop_auditor() {
 function fill_auditor_with_tls_certs() {
   curl -X POST --header "Content-Type: application/json" \
     --data '{ "record_id": "1", "meta": {"site_id": ["site_id_1"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.2 }] }], "start_time": "2022-06-27T15:00:00Z", "stop_time": "2022-06-27T15:01:00Z" }' \
-    https://localhost:8443/record --cacert scripts/openssl/new_cert/rootCA.pem --cert scripts/openssl/new_cert/client-cert.pem --key scripts/openssl/new_cert/client-key.pem
+    https://localhost:8443/record --cacert scripts/certs/rootCA.pem --cert scripts/certs/condor-client-cert.pem --key scripts/certs/condor-client-key.pem
   curl -X POST --header "Content-Type: application/json" \
     --data '{ "record_id": "2", "meta": {"site_id": ["site_id_2"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.5 }] }], "start_time": "2022-06-27T16:00:00Z", "stop_time": "2022-06-27T16:04:00Z" }' \
-    https://localhost:8443/record --cacert scripts/openssl/new_cert/rootCA.pem --cert scripts/openssl/new_cert/client-cert.pem --key scripts/openssl/new_cert/client-key.pem
+    https://localhost:8443/record --cacert scripts/certs/rootCA.pem --cert scripts/certs/condor-client-cert.pem --key scripts/certs/condor-client-key.pem
 }
 
 function test_records() {
  expected_json_1='{ "record_id": "1", "meta": {"site_id": ["site_id_1"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.2 }] }], "start_time": "2022-06-27T15:00:00Z", "stop_time": "2022-06-27T15:01:00Z","runtime":60 }'
 
   # TEST1=$(curl -X GET http://localhost:8000/record/"1" | jq)
-  TEST1=$(curl -X GET https://localhost:8443/record/1 --cacert scripts/openssl/new_cert/rootCA.pem --cert scripts/openssl/new_cert/client-cert.pem --key scripts/openssl/new_cert/client-key.pem | jq)
+  TEST1=$(curl -X GET https://localhost:8443/record/1 --cacert scripts/certs/rootCA.pem --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem | jq)
 
 
   if [ "$(echo "$TEST1" | jq -c 'walk(if type == "object" then to_entries | sort_by(.key) | from_entries else . end)' | tr -d '[:space:]')" != "$(echo "$expected_json_1" | jq -c 'walk(if type == "object" then to_entries | sort_by(.key) | from_entries else . end)' | tr -d '[:space:]')" ]; then
@@ -67,7 +67,7 @@ function test_records() {
   expected_json_2='{ "record_id": "2", "meta": {"site_id": ["site_id_2"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.5 }] }], "start_time": "2022-06-27T16:00:00Z", "stop_time": "2022-06-27T16:04:00Z","runtime":240 }'
 
   #TEST2=$(curl -X GET http://localhost:8000/record/"2" | jq)
-  TEST2=$(curl -X GET https://localhost:8443/record/2 --cacert scripts/openssl/new_cert/rootCA.pem --cert scripts/openssl/new_cert/client-cert.pem --key scripts/openssl/new_cert/client-key.pem | jq)
+  TEST2=$(curl -X GET https://localhost:8443/record/2 --cacert scripts/certs/rootCA.pem --cert scripts/certs/client-cert.pem --key scripts/certs/client-key.pem | jq)
 
 
   if [ "$(echo "$TEST2" | jq -c 'walk(if type == "object" then to_entries | sort_by(.key) | from_entries else . end)' | tr -d '[:space:]')" != "$(echo "$expected_json_2" | jq -c 'walk(if type == "object" then to_entries | sort_by(.key) | from_entries else . end)' | tr -d '[:space:]')" ]; then

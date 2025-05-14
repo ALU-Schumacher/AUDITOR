@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- AUDITOR: Add role based access control service ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Docs: Add TLS certificate generation guide ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
+- AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 

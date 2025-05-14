@@ -5,7 +5,7 @@ database:
   port: 5432
   username: "postgres"
   password: "password"
-  database_name: "auditor1"
+  database_name: "auditor"
 metrics:
   database:
     frequency: 30
