@@ -4,7 +4,13 @@ description = "Migration Guide"
 weight = 3
 +++
 
-# From 0.9.2 to unreleased
+# From 0.9.3 to unreleased
+
+# From 0.9.2 to 0.9.3
+
+### Update to [sqlx 0.8.5](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
+Use this command to update the sqlx-cli to 0.8.5
+- `cargo install --version=0.8.5 sqlx-cli --no-default-features --features postgres,rustls,sqlite`
 
 # From 0.9.1 to 0.9.2
 
