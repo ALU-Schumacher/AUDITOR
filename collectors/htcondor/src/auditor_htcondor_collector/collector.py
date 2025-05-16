@@ -283,5 +283,5 @@ class CondorHistoryCollector(object):
             self.logger.error(f"Error generating record for job {job_id!r}:\n{e}")
             raise RecordGenerationException(job_id)
 
-        self.logger.debug(f"Generated record for job {job_id!r}.")
+        self.logger.debug(f"Generated record for job {job_id!r} under DB record key {record_id}.")
         return record
