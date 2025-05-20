@@ -123,6 +123,17 @@ async fn main() -> Result<(), anyhow::Error> {
 
                     enforcer.save_policy().await.unwrap();
 
+                    if let Some(monitoring_role_cn) = &rbac_config.monitoring_role_cn {
+                        for item in monitoring_role_cn.iter() {
+                            enforcer
+                                .add_role_for_user(item, "monitoring_role", None)
+                                .await
+                                .unwrap();
+
+                            enforcer.save_policy().await.unwrap();
+                        }
+                    }
+
                     if let Some(write_access_cn) = &rbac_config.write_access_cn {
                         for item in write_access_cn.iter() {
                             enforcer
