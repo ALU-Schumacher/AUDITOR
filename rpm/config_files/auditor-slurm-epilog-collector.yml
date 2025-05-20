@@ -1,0 +1,19 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#slurm-epilog-collector
+# Please make sure that all values correspond to your setup.
+
+# addr: "auditor_host_addr"
+# port: 8000
+# record_prefix: "slurm"
+# site_id: "site_name"
+# components:
+#   - name: "Cores"
+#     key: "NumCPUs"
+#     scores:
+#       - name: "HEPSPEC"
+#         value: 1.0
+#   - name: "Memory"
+#     key: "Mem"
+# log_level: info
+# tls_config:
+#   use_tls: false

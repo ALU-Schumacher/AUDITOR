@@ -1,0 +1,35 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#priority-plugin
+# Please make sure that all values correspond to your setup.
+
+# auditor:
+#   addr: "auditor_host_address"
+#   port: 8000
+# timeout: 30 # in seconds
+# duration: 1209600 # in seconds
+# frequency: 3600 # in seconds
+# components:
+#   NumCPUs: "HEPSPEC"
+# group_mapping:
+#   group1:
+#     - "part1"
+#   group2:
+#     - "part2"
+#   group3:
+#     - "part3"
+# commands:
+#   - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> /var/lib/auditor-priority-plugin/{group}.txt"'
+#   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+# min_priority: 1
+# max_priority: 65335
+# computation_mode: ScaledBySum
+# log_level: info
+# prometheus:
+#   enable: true
+#   addr: "0.0.0.0"
+#   port: 9000
+#   metrics:
+#     - ResourceUsage
+#     - Priority
+# tls_config:
+#   use_tls: false

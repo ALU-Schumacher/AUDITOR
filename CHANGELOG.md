@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 - Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Move `VO`, `Processors`, and `SubmitHost` to `mandatory` fields in the config ([@dirksammel](https://github.com/dirksammel))
+- RPMs: New location of config- and unit files ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 - [CVE-2025-50181], [CVE-2025-50182]: Update urllib3 from 2.3.0 to 2.5.0 ([@dirksammel](https://github.com/dirksammel))
@@ -21,14 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTCondor collector: Add record_id to debug output ([@thdesy](https://github.com/thdesy))
 - HTCondor collector: Support arbitrary HTCondor `constraint` expression to select jobs ([@maxfischer2781](https://github.com/maxfischer2781))
 - HTCondor collector: Support running queries via `exec` to avoid escapes for an intermediate shell ([@maxfischer2781](https://github.com/maxfischer2781))
+- RPMs: Add unit files and example config files ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - APEL plugin: Fix bug in republish script when list of records is empty ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add some details about required values for the APEL plugin, mention `bump_version` script ([@dirksammel](https://github.com/dirksammel))
-- Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 - HTCondor collector: Allow for reading history from file ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Fix bug that prevented reading old jobs on first collection ([@maxfischer2781](https://github.com/maxfischer2781))
+- RPMs: Change folder structure to follow conventions ([@dirksammel](https://github.com/dirksammel))
+- Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 - Kubernetes collector: remove helm charts ([@dirksammel](https://github.com/dirksammel))

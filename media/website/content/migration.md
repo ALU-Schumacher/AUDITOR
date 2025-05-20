@@ -11,6 +11,10 @@ weight = 3
 - `auditor-apel-republish` now has the parameters `month` and `year` instead of `begin_date` and `end_date`. See the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin) or `auditor-apel-republish -h` for usage information.
 - `VO`, `Processors`, and `SubmitHost` are now `mandatory` fields in the config, since this information is necessary for correct EGI accounting. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin).
 
+## RPMs
+
+- The default location of the unit- and config files has changed. Unit files can now be found in `/usr/lib/systemd/system/`, config files in `/etc/auditor/`. The SQL migrations files are placed in `/usr/share/auditor/migrations`. Duration installation, the group `auditor` is created and a respective user for the installed component, e.g. `auditor-slurm-collector` or `auditor-priority-plugin`. By default, the services are run as this user.
+
 # From 0.9.3 to 0.9.4
 
 ### Update to [sqlx 0.8.6](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
