@@ -37,6 +37,7 @@ pub struct RbacConfig {
     pub enforce_rbac: bool,
     #[serde(default = "default_base_policies")]
     pub base_policies: Vec<Vec<String>>,
+    pub monitoring_role_cn: Option<Vec<String>>,
     pub write_access_cn: Option<Vec<String>>,
     pub read_access_cn: Option<Vec<String>>,
     pub data_access_rules: Option<Vec<Cn>>,
@@ -55,6 +56,11 @@ pub struct Cn {
 
 fn default_base_policies() -> Vec<Vec<String>> {
     vec![
+        vec![
+            "monitoring_role".to_string(),
+            "/metrics".to_string(),
+            "GET".to_string(),
+        ],
         vec![
             "write_access_base".to_string(),
             "/record".to_string(),
