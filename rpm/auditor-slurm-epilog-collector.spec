@@ -5,28 +5,60 @@ Summary:        Slurm epilog collector for AUDITOR
 BuildArch:      x86_64
 
 License:        MIT or Apache-2.0
-Source0:        %{name}-%{version}.tar.gz
-
-#Requires:       bash
 
 %description
 Slurm epilog collector for Auditor
 
-%prep
-%setup -q
+%global unitdir /usr/lib/systemd/system
+%global confdir %{_sysconfdir}/auditor
+%global user %{name}
+
+%pre
+# On install
+if [ "$1" -eq 1 ]; then
+  getent group auditor || groupadd --system auditor
+  getent passwd %{user} || useradd --system --no-create-home --gid auditor --shell /sbin/nologin %{user}
+fi
+
+%post
+# On install
+if [ "$1" -eq 1 ]; then
+  systemctl --no-reload preset %{name}
+fi
+# On update
+if [ "$1" -eq 2 ]; then
+  systemctl set-property %{name} Markers=+needs-restart
+fi
+
+%preun
+# On uninstall
+if [ "$1" -eq 0 ]; then
+  systemctl --no-reload disable --now --no-warn %{name}
+fi
+
+%postun
+# On uninstall
+if [ "$1" -eq 0 ]; then
+  # Remove files and empty folders
+  rmdir %{confdir} || true
+  userdel %{user}
+  groupdel auditor || true
+fi
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_bindir}
+install -p -D -m 0755 -t $RPM_BUILD_ROOT/%{_bindir} %{name}
+install -p -D -m 0644 -t $RPM_BUILD_ROOT/%{unitdir} %{name}.service
+install -p -D -m 0644 -t $RPM_BUILD_ROOT/%{confdir} %{name}.yml
 pwd
 ls
-cp %{name} $RPM_BUILD_ROOT/%{_bindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %{_bindir}/%{name}
+%{unitdir}/%{name}.service
+%config(noreplace) %{confdir}/%{name}.yml
 
 %changelog
 * Fri May 23 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.4

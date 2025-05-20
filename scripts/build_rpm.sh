@@ -5,7 +5,6 @@ set -eo pipefail
 BINARY=${BINARY:="auditor-slurm-epilog-collector"}
 CRATE_VERSION=$(cargo get package.version --entry auditor)
 
-
 mkdir -p target/rpm/${BINARY}/rpmbuild
 mkdir -p target/rpm/${BINARY}/rpmbuild/BUILD
 mkdir -p target/rpm/${BINARY}/rpmbuild/RPMS
@@ -13,18 +12,27 @@ mkdir -p target/rpm/${BINARY}/rpmbuild/SOURCES
 mkdir -p target/rpm/${BINARY}/rpmbuild/SPECS
 mkdir -p target/rpm/${BINARY}/rpmbuild/SRPMS
 
-mkdir -p target/rpm/${BINARY}-$CRATE_VERSION
+# Copy binary
+cp target/x86_64-unknown-linux-musl/release/${BINARY} target/rpm/${BINARY}/rpmbuild/
 
-# cp target/x86_64-unknown-linux-musl/release/$BINARY target/rpm/$BINARY-$CRATE_VERSION/
-# tar --create --file target/rpm/${BINARY}/rpmbuild/SOURCES/$BINARY-$CRATE_VERSION.tar.gz target/rpm/$BINARY-$CRATE_VERSION
+# Copy unit file if it exists
+if [[ -f rpm/unit_files/${BINARY}.service ]]; then
+    cp rpm/unit_files/${BINARY}.service target/rpm/${BINARY}/rpmbuild/
+fi
 
-cp target/x86_64-unknown-linux-musl/release/$BINARY target/rpm/$BINARY/rpmbuild/
+# Copy config file if it exists
+if [[ -f rpm/config_files/${BINARY}.yml ]]; then
+    cp rpm/config_files/${BINARY}.yml target/rpm/${BINARY}/rpmbuild/
+fi
 
-cp rpm/$BINARY.spec target/rpm/$BINARY/rpmbuild/SPECS/
+# Copy migration sql files
+cp migrations/*.sql target/rpm/${BINARY}/rpmbuild/
 
-cd target/rpm/$BINARY/rpmbuild
+# Copy spec file
+cp rpm/${BINARY}.spec target/rpm/${BINARY}/rpmbuild/SPECS/
 
-# rpmbuild -ba --build-in-place --define "_topdir $(pwd)/rpm" helloworld.spec
-rpmbuild -bb ./SPECS/$BINARY.spec --build-in-place --define "_topdir $(pwd)" --define "version_ ${CRATE_VERSION}"
+cd target/rpm/${BINARY}/rpmbuild
+
+rpmbuild -bb ./SPECS/${BINARY}.spec --build-in-place --define "_topdir $(pwd)" --define "version_ ${CRATE_VERSION}"
 
 tree .
