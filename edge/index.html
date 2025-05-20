@@ -868,17 +868,16 @@ See below for all currently available collectors.</p>
 </span><span>  -c, --config CONFIG  Path to the config file
 </span><span>  --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 </span></code></pre>
-<p><code>auditor-apel-republish</code> runs once and submits a report of jobs between two dates for a given site.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> --begin-date BEGIN_DATE --end-date END_DATE -s SITE -c CONFIG </span><span style="color:#ff5600;">[</span><span>-</span><span style="color:#ff5600;">-</span><span>dry</span><span style="color:#ff5600;">-</span><span>run</span><span style="color:#ff5600;">]
+<p><code>auditor-apel-republish</code> runs once and submits a summary report for a given month, year, and site.</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: auditor-apel-republish </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -y YEAR -m MONTH -s SITE -c CONFIG </span><span style="color:#ff5600;">[</span><span>-</span><span style="color:#ff5600;">-</span><span>dry</span><span style="color:#ff5600;">-</span><span>run</span><span style="color:#ff5600;">]
 </span><span>
 </span><span>options:
-</span><span>  -h, --help            show this help message and exit
-</span><span>  --begin-date BEGIN_DATE
-</span><span>                        Begin of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-27 13:31:10+00:00
-</span><span>  --end-date END_DATE   End of republishing (UTC)</span><span style="color:#a535ae;">:</span><span> yyyy-mm-dd hh:mm:ss+00:00, e.g. 2023-11-29 21:10:54+00:00
-</span><span>  -s, --site SITE       Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
-</span><span>  -c, --config CONFIG   Path to the config file
-</span><span>  --dry-run             One-shot dry-run, nothing will be sent to the APEL server
+</span><span>  -h, --help           show this help message and exit
+</span><span>  -y, --year YEAR      Year: 2020, 2021, ...
+</span><span>  -m, --month MONTH    Month: 4, 8, 12, ...
+</span><span>  -s, --site SITE      Site (GOCDB)</span><span style="color:#a535ae;">:</span><span> UNI-FREIBURG, ...
+</span><span>  -c, --config CONFIG  Path to the config file
+</span><span>  --dry-run            One-shot dry-run, nothing will be sent to the APEL server
 </span></code></pre>
 <h3 id="pip">pip</h3>
 <p>The plugin can be installed with <code>pip install auditor-apel-plugin</code>. The commands <code>auditor-apel-publish</code> and <code>auditor-apel-republish</code> are directly available after installation.</p>
