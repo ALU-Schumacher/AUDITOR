@@ -282,6 +282,8 @@ tls_config:
   server_key_path: "./auditor/certs/server-key.pem"
 rbac_config:
   enforce_rbac: true
+  monitoring_role_cn:
+    - monitoring.role
   write_access_cn:
     - htcondor.collector
   read_access_cn:
@@ -295,6 +297,14 @@ rbac_config:
 ```
 
 write_access_cn and read_access_cn takes in the common name from certs for your collectors and plugins.
+
+### monitoring_role_cn (list of strings):
+Specifies which clients (identified by their TLS certificate Common Name) are allowed to read the metrics from AUDITOR database.
+
+```yaml
+monitoring_role_cn:
+  - monitoring.role
+```
 
 ### write_access_cn (list of strings):
 Specifies which clients (identified by their TLS certificate Common Name) are allowed to perform write operations.
