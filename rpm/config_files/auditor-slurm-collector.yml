@@ -1,0 +1,54 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#slurm-collector
+# Please make sure that all values correspond to your setup.
+
+# addr: "auditor_host_addr"
+# port: 8000
+# record_prefix: "slurm"
+# job_filter:
+#   status:
+#     - "completed"
+#     - "failed"
+# sacct_frequency: 300
+# sender_frequency: 60
+# earliest_datetime: "2023-09-15T12:00:00+00:00"
+# database_path: "/var/lib/auditor-slurm-collector/db.db"
+# sites:
+#   - name: "mysite1"
+#     only_if:
+#       key: "Partition"
+#       matches: "^mypartition$"
+#   - name: "mysite2"
+# meta:
+#   - name: Comment
+#     key: "Comment"
+#     key_type: Json
+#     key_allow_empty: true
+# components:
+#   - name: "Cores"
+#     key: "NCPUS"
+#     scores:
+#       - name: "HEPSPEC06"
+#         value: 10.0
+#       - name: "hepscore23"
+#         value: 10.0
+#   - name: "SystemCPU"
+#     key: "SystemCPU"
+#     key_type: Time
+#   - name: "UserCPU"
+#     key: "UserCPU"
+#     key_type: Time
+#   - name: "TotalCPU"
+#     key: "TotalCPU"
+#     key_type: Time
+#   - name: "Memory"
+#     key: "ReqMem"
+#     key_type: IntegerMega
+#   - name: "MaxRSS"
+#     key: "MaxRSS"
+#     default_value: 0
+#   - name: "NNodes"
+#     key: "NNodes"
+# log_level: info
+# tls_config:
+#   use_tls: false
