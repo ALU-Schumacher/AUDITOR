@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
+- RPMs: Change location of config- and unit files ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
 ### Added
-- Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Add option to use a list for `site_meta_field` in the config ([@dirksammel](https://github.com/dirksammel))
+- RPMs: Add unit files and example config files ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- RPMs: Changed folder structure to follow conventions ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed

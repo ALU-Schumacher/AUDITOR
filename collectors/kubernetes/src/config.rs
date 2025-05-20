@@ -79,7 +79,7 @@ pub struct Config {
     #[serde(default = "default_collect_interval")]
     #[serde(deserialize_with = "deserialize_timedelta")]
     pub collect_interval: TimeDelta,
-    #[serde(default = "default_send_interval")]
+    #[serde(default = "default_merge_interval")]
     #[serde(deserialize_with = "deserialize_timedelta")]
     pub merge_interval: TimeDelta,
     #[serde(default = "default_database_path")]
@@ -144,7 +144,7 @@ fn default_prometheus_timeout() -> TimeDelta {
 fn default_collect_interval() -> TimeDelta {
     TimeDelta::try_seconds(60).unwrap()
 }
-fn default_send_interval() -> TimeDelta {
+fn default_merge_interval() -> TimeDelta {
     TimeDelta::try_seconds(60).unwrap()
 }
 fn default_database_path() -> PathBuf {
