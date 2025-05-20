@@ -454,7 +454,6 @@ dependencies = [
  "serde-aux",
  "serde_json",
  "serde_qs",
- "serde_urlencoded",
  "serde_with",
  "sqlx",
  "thiserror 2.0.12",
