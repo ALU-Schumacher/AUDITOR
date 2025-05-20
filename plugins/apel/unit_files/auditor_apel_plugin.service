@@ -10,6 +10,6 @@ Type=simple
 User=root
 Group=root
 WorkingDirectory=/opt/auditor_apel_plugin
-ExecStart=/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish --config /opt/auditor_apel_plugin/auditor_apel_plugin.yml
+ExecStart=/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish --config /etc/auditor/auditor_apel_plugin.yml
 Restart=on-failure
 RestartSec=60

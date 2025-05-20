@@ -1,0 +1,15 @@
+[Unit]
+Description=Slurm collector for AUDITOR
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=auditor-slurm-collector
+Group=auditor
+WorkingDirectory=/etc/auditor
+ExecStart=/usr/bin/auditor-slurm-collector /etc/auditor/auditor-slurm-collector.yml
+Restart=on-failure
+RestartSec=60

@@ -5,42 +5,65 @@ Summary:        AUDITOR
 BuildArch:      x86_64
 
 License:        MIT or Apache-2.0
-Source0:        %{name}-%{version}.tar.gz
-
-%define file_permissions_user root
-%define file_permissions_group root
-
-#Requires:       bash
 
 %description
 Auditor: Accounting toolchain.
 
-%prep
-%setup -q
+%global unitdir /usr/lib/systemd/system
+%global confdir %{_sysconfdir}/auditor
+%global sharedir /usr/share/auditor
+%global user %{name}
+
+%pre
+# On install
+if [ "$1" -eq 1 ]; then
+  getent group %{user} || groupadd --system %{user}
+  getent passwd %{user} || useradd --system --no-create-home --gid %{user} --shell /sbin/nologin %{user}
+fi
+
+%post
+# On install
+if [ "$1" -eq 1 ]; then
+  systemctl --no-reload preset %{name}
+fi
+# On update
+if [ "$1" -eq 2 ]; then
+  systemctl set-property %{name} Markers=+needs-restart
+fi
+
+%preun
+# On uninstall
+if [ "$1" -eq 0 ]; then
+  systemctl --no-reload disable --now --no-warn %{name}
+fi
+
+%postun
+# On uninstall
+if [ "$1" -eq 0 ]; then
+  # Remove empty folders
+  rmdir %{sharedir}/migrations || true
+  rmdir %{sharedir} || true
+  rmdir %{confdir} || true
+  userdel %{user}
+  groupdel auditor || true
+fi
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_bindir}
+install -p -D -m 0755 -t $RPM_BUILD_ROOT/%{_bindir} %{name}
+install -p -D -m 0644 -t $RPM_BUILD_ROOT/%{unitdir} %{name}.service
+install -p -D -m 0644 -t $RPM_BUILD_ROOT/%{confdir} %{name}.yml
+install -p -D -m 0644 -t $RPM_BUILD_ROOT/%{sharedir}/migrations *.sql
 pwd
 ls
-cp %{name} $RPM_BUILD_ROOT/%{_bindir}
-mkdir -p $RPM_BUILD_ROOT//etc/systemd/system/
-cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor.service $RPM_BUILD_ROOT//etc/systemd/system/auditor.service
-mkdir -p $RPM_BUILD_ROOT//opt/auditor/
-cp -R /home/runner/work/AUDITOR/AUDITOR/rpm/extra_files/auditor_template.yml $RPM_BUILD_ROOT//opt/auditor/auditor.yml
-cp -R /home/runner/work/AUDITOR/AUDITOR/migrations/20220322080444_create_accounting_table.sql $RPM_BUILD_ROOT//opt/auditor/20220322080444_create_accounting_table.sql
-cp -R /home/runner/work/AUDITOR/AUDITOR/migrations/20240503141800_convert_meta_component_to_jsonb.sql $RPM_BUILD_ROOT//opt/auditor/20240503141800_convert_meta_component_to_jsonb.sql
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,%{file_permissions_user},%{file_permissions_group},-)
 %{_bindir}/%{name}
-//etc/systemd/system/auditor.service
-%config(noreplace) //opt/auditor/auditor.yml
-//opt/auditor/20220322080444_create_accounting_table.sql
-//opt/auditor/20240503141800_convert_meta_component_to_jsonb.sql
+%{unitdir}/%{name}.service
+%config(noreplace) %{confdir}/%{name}.yml
+%{sharedir}/migrations/*.sql
 
 %changelog
 * Fri May 23 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.4

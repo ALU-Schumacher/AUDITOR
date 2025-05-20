@@ -392,7 +392,7 @@ Instructions for compiling Auditor from source can be found in the [development]
 
 # Packages
 
-RPMs are provided for each release on the [Github release page](https://github.com/ALU-Schumacher/AUDITOR/releases).
+RPMs are provided for each release on the [Github release page](https://github.com/ALU-Schumacher/AUDITOR/releases). After installation, default unit- and config files can be found in `/usr/lib/systemd/system/` and `/etc/auditor/`, respectively.
 
 # Collectors
 
@@ -487,7 +487,7 @@ job_filter:
 sacct_frequency: 300
 sender_frequency: 60
 earliest_datetime: "2023-09-15T12:00:00+00:00"
-database_path: "/absolute/path/to/db.db"
+database_path: "/var/lib/auditor-slurm-collector/db.db"
 sites:
   - name: "mysite1"
     only_if:
@@ -700,7 +700,7 @@ Command line arguments override the values set in the config file.
 
 ### rpm
 
-The HTCondor collector is also available as rpm on the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases). The rpm will install a virtual environment including all dependencies in `/opt/auditor_htcondor_collector`. After installation, a unit file is available at `/etc/systemd/system/auditor_htcondor_collector.service`. This service runs the command `auditor-htcondor-collector` and expects a config file at `/opt/auditor_apel_plugin/auditor_htcondor_collector.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.
+The HTCondor collector is also available as rpm on the [GitHub Release page](https://github.com/ALU-Schumacher/AUDITOR/releases). The rpm will install a virtual environment including all dependencies in `/opt/auditor_htcondor_collector`. After installation, a unit file is available at `/usr/lib/systemd/system/auditor_htcondor_collector.service`. This service runs the command `auditor-htcondor-collector` and expects a config file at `/etc/auditor/auditor_htcondor_collector.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.
 
 ### Configuration
 
@@ -756,7 +756,7 @@ See below for an example config and the use of such `entry`s.
 addr: localhost
 port: 8000
 timeout: 10
-state_db: htcondor_history_state.db
+state_db: /var/lib/auditor_htcondor_collector/htcondor_history_state.db
 record_prefix: htcondor
 interval: 900 # 15 minutes
 pool: htcondor.example.com
@@ -873,6 +873,7 @@ prometheus_addr: localhost
 prometheus_port: 31000
 record_prefix: "KUBE"
 earliest_datetime: "2024-04-18T12:00:00Z"
+database_path: "/var/lib/auditor-kubernetes-collector/"
 job_filter:
   namespace:
     - "default"
@@ -881,7 +882,7 @@ job_filter:
 auditor_timeout: 10
 prometheus_timeout: 90
 collect_interval: 30
-send_interval: 60
+merge_interval: 60
 backlog_interval: 300
 backlog_maxretries: 2
 log_level: debug
@@ -960,7 +961,7 @@ client_key: hostkey.pem
 
 ### rpm
 
-The rpm will install a virtual environment including all dependencies in `/opt/auditor_apel_plugin`. After installation, a unit file is available at `/etc/systemd/system/auditor_apel_plugin.service`. This service runs the command `/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish` and expects a config file at `/opt/auditor_apel_plugin/auditor_apel_plugin.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at `/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish`.
+The rpm will install a virtual environment including all dependencies in `/opt/auditor_apel_plugin`. After installation, a unit file is available at `/usr/lib/systemd/system/auditor_apel_plugin.service`. This service runs the command `/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish` and expects a config file at `/etc/auditor/auditor_apel_plugin.yml`. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at `/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish`.
 
 ### Config
 
@@ -975,7 +976,7 @@ Example config:
 plugin:
   log_level: INFO
   log_file: /var/log/auditor_apel_plugin.log
-  time_json_path: /etc/auditor_apel_plugin/time.json
+  time_json_path: /var/lib/auditor_apel_plugin/time.json
   report_interval: 86400
   
 site:
@@ -1148,7 +1149,7 @@ group_mapping:
   group3:
     - "part3"
 commands:
-  - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> {group}.txt"'
+  - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> /var/lib/auditor-priority-plugin/{group}.txt"'
   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
 min_priority: 1
 max_priority: 65335

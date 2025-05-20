@@ -1,0 +1,15 @@
+[Unit]
+Description=Priority plugin for AUDITOR
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=auditor-priority-plugin
+Group=auditor
+WorkingDirectory=/etc/auditor
+ExecStart=/usr/bin/auditor-priority-plugin /etc/auditor/auditor-priority-plugin.yml
+Restart=on-failure
+RestartSec=60

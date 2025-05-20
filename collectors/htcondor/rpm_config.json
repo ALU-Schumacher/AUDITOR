@@ -19,10 +19,41 @@
         "require_setup_py": false
     },
     "blocks": {
-        "pre": "%define _build_id_links none",
+        "pre": [
+            "%define _build_id_links none",
+            "if [ \"$1\" -eq 1 ]; then",
+            "  getent group auditor || groupadd --system auditor",
+            "  getent passwd auditor-htcondor-collector || useradd --system --no-create-home --gid auditor --shell /sbin/nologin auditor-htcondor-collector",
+            "fi"
+        ],
+        "post": [
+            "if [ \"$1\" -eq 1 ]; then",
+            "  systemctl --no-reload preset auditor_htcondor_collector",
+            "fi",
+            "if [ \"$1\" -eq 2 ]; then",
+            "  systemctl set-property auditor_htcondor_collector Markers=+needs-restart",
+            "fi"
+        ],
+        "preun": [
+            "if [ \"$1\" -eq 0 ]; then",
+            "  systemctl --no-reload disable --now --no-warn auditor_htcondor_collector",
+            "fi"
+        ],
+        "postun": [
+            "if [ \"$1\" -eq 0 ]; then",
+            "  runuser -u auditor-htcondor-collector -- rm /var/lib/auditor_htcondor_collector/*",
+            "  rmdir /var/lib/auditor_htcondor_collector/ || true",
+            "  rmdir /etc/auditor/ || true",
+            "  rmdir /opt/auditor_htcondor_collector || true",
+            "  userdel auditor-htcondor-collector",
+            "  groupdel auditor || true",
+            "fi"
+        ],
+        "install": "install -d -D -m 0750 %{buildroot}/var/lib/auditor_htcondor_collector",
+        "files": "%dir %attr(0750 auditor-htcondor-collector auditor) /var/lib/auditor_htcondor_collector",
         "desc": "AUDITOR collector for aggregating data from the HTCondor batch system",
         "changelog": [
-	    "* Fri May 23 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.4\n- Release v0.9.4 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
+            "* Fri May 23 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.4\n- Release v0.9.4 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Wed May 14 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.3\n- Release v0.9.3 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Thu Apr 10 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.9.2\n- Release v0.9.2 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Mon Mar 31 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.9.1\n- Release v0.9.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
@@ -38,11 +69,11 @@
         "files": [
             {
                 "src": "unit_files/auditor_htcondor_collector.service",
-                "dest": "/etc/systemd/system/auditor_htcondor_collector.service"
+                "dest": "/usr/lib/systemd/system/auditor_htcondor_collector.service"
             },
             {
                 "src": "configs/auditor_htcondor_collector_template.yml",
-                "dest": "/opt/auditor_htcondor_collector/auditor_htcondor_collector.yml",
+                "dest": "/etc/auditor/auditor_htcondor_collector.yml",
                 "config": "noreplace"
             }
         ]

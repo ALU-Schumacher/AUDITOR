@@ -7,9 +7,9 @@ RequiredBy=multi-user.target
 
 [Service]
 Type=simple
-User=root
-Group=root
-WorkingDirectory=/opt/auditor
-ExecStart=/usr/bin/auditor /opt/auditor/auditor.yml
+User=auditor
+Group=auditor
+WorkingDirectory=/etc/auditor
+ExecStart=/usr/bin/auditor /etc/auditor/auditor.yml
 Restart=on-failure
 RestartSec=60
