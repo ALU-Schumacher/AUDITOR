@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
+- RPMs: Change location of config- and unit files ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 
@@ -15,10 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Add role based access control service ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add TLS certificate generation guide ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- RPMs: Add unit files and example config files ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - APEL plugin: Fix bug in republish script when list of records is empty ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- RPMs: Changed folder structure to follow conventions ([@dirksammel](https://github.com/dirksammel))
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
