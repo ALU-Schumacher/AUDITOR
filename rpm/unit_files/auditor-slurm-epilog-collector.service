@@ -1,0 +1,16 @@
+
+[Unit]
+Description=Slurm epilog collector for AUDITOR
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/etc/auditor
+ExecStart=/usr/bin/auditor-slurm-epilog-collector /etc/auditor/auditor-slurm-epilog-collector.yml
+Restart=on-failure
+RestartSec=60
