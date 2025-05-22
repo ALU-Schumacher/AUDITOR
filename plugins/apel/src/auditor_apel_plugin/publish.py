@@ -73,6 +73,7 @@ def run(logger: Logger, config: Config, client, args):
             aggr_sync_dict: Dict[str, Dict[str, Union[str, int]]] = {}
             aggr_summary_dict: Dict[str, Dict[str, Union[str, int]]] = {}
             loop_day = begin_month
+            has_records = False
 
             while current_time.replace(tzinfo=timezone.utc) > loop_day:
                 next_day = loop_day + timedelta(days=1)
@@ -84,9 +85,13 @@ def run(logger: Logger, config: Config, client, args):
 
                 records = get_records(config, client, loop_day, site, next_day)
 
+                loop_day = next_day
+
                 if len(records) == 0:
-                    logger.info(f"No new records for {site}")
-                    break
+                    logger.warning(f"No records for {site} on this day")
+                    continue
+
+                has_records = True
 
                 latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
                 logger.debug(f"Latest stop time is {latest_stop_time}")
@@ -115,7 +120,9 @@ def run(logger: Logger, config: Config, client, args):
                     aggr_summary_dict,
                 )
 
-                loop_day = next_day
+            if not has_records:
+                logger.warning(f"No records for site {site} in this month")
+                continue
 
             sync_message = create_message(MessageType.sync, sync_dict)
             logger.debug(f"Sync message:\n{sync_message}")
