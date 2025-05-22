@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- HTCondor collector: Add record_id to debug output ([@thdesy](https://github.com/thdesy))
 
 ### Changed
 
