@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Migration | Auditor </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    
+    <style>
+    :root {
+        /* Primary theme color */
+        /* --primary-color: #FED43F; */
+        --primary-color: #344A9A;
+        /* Primary theme text color */
+        --primary-text-color: #000000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/juice.css">
+    
+    
+</head>
+
+<body>
+    
+<header class="box-shadow">
+    
+
+<a href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.9.4&#x2F;">
+    <div class="logo">
+        <img src="https://alu-schumacher.github.io/AUDITOR//v0.9.4/white_transparent_background.png" alt="logo">
+         UDITOR
+    </div>
+</a>
+
+<nav>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.9.4&#x2F;about&#x2F;">About</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.9.4&#x2F;changelog&#x2F;">ChangeLog</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.9.4&#x2F;development&#x2F;">Development</a>
+    
+    <a class="nav-item header-text" href="https:&#x2F;&#x2F;alu-schumacher.github.io&#x2F;AUDITOR&#x2F;&#x2F;v0.9.4&#x2F;migration&#x2F;">Migration</a>
+    
+    
+        
+        <a class="nav-item header-text" href="https:&#x2F;&#x2F;github.com&#x2F;ALU-Schumacher&#x2F;AUDITOR">Github</a>
+        
+    
+</nav>
+
+</header>
+
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-9-4-to-unreleased">From 0.9.4 to unreleased</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-9-3-to-0-9-4">From 0.9.3 to 0.9.4</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#update-to-sqlx-0-8-6"><small>- Update to sqlx 0.8.6</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-9-2-to-0-9-3">From 0.9.2 to 0.9.3</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#update-to-sqlx-0-8-5"><small>- Update to sqlx 0.8.5</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-9-1-to-0-9-2">From 0.9.1 to 0.9.2</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-9-0-to-0-9-1">From 0.9.0 to 0.9.1</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-8-0-to-0-9-0">From 0.8.0 to 0.9.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor"><small>- Auditor</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-7-1-to-0-8-0">From 0.7.1 to 0.8.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-7-0-to-0-7-1">From 0.7.0 to 0.7.1</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#remove-forbidden-characters"><small>- Remove forbidden characters:</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-6-3-to-0-7-0">From 0.6.3 to 0.7.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#update-to-sqlx-0-8-3"><small>- Update to sqlx 0.8.3</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#remove-forbidden-characters-1"><small>- Remove forbidden characters:</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#tls-configuration-table-for-auditor-auditor-is-referred-to-as-the-server"><small>- TLS Configuration Table for AUDITOR (AUDITOR is referred to as the server)</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#tls-configuration-table-for-collectors-and-plugins-all-collectors-and-plugins-are-referred-to-as-the-clients"><small>- TLS Configuration Table for Collectors and Plugins (All collectors and plugins are referred to as the clients)</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-6-2-to-0-6-3">From 0.6.2 to 0.6.3</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#update-to-sqlx-0-8-2"><small>- Update to sqlx 0.8.2</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-5-0-to-0-6-2">From 0.5.0 to 0.6.2</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor-db"><small>- Auditor DB:</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#apel-plugin-2"><small>- Apel plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#docker-container"><small>- Docker container</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#development"><small>- Development</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-3-0-0-3-1-to-0-4-0">From 0.3.0&#x2F;0.3.1 to 0.4.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor-1"><small>- AUDITOR</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#apel-plugin-3"><small>- Apel plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#removed"><small>- Removed</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#development-1"><small>- Development</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#slurm-collector"><small>- Slurm collector</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#priority-plugin"><small>- Priority plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor-2"><small>- AUDITOR</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#development-2"><small>- Development</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#from-0-1-0-to-0-2-0">From 0.1.0 to 0.2.0</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#apel-plugin-4"><small>- Apel plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor-client"><small>- Auditor client</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#auditor-server"><small>- Auditor server</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#docker-containers"><small>- Docker containers</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#htcondor-plugin"><small>- HTCondor plugin</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//v0.9.4/migration/#development-3"><small>- Development</small></a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+<div class="heading-text">Migration Guide</div>
+<h1 id="from-0-9-4-to-unreleased">From 0.9.4 to unreleased</h1>
+<h1 id="from-0-9-3-to-0-9-4">From 0.9.3 to 0.9.4</h1>
+<h3 id="update-to-sqlx-0-8-6">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.6</a></h3>
+<p>Use this command to update the sqlx-cli to 0.8.6</p>
+<ul>
+<li><code>cargo install --version=0.8.6 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-9-2-to-0-9-3">From 0.9.2 to 0.9.3</h1>
+<h3 id="update-to-sqlx-0-8-5">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.5</a></h3>
+<p>Use this command to update the sqlx-cli to 0.8.5</p>
+<ul>
+<li><code>cargo install --version=0.8.5 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-9-1-to-0-9-2">From 0.9.1 to 0.9.2</h1>
+<h1 id="from-0-9-0-to-0-9-1">From 0.9.0 to 0.9.1</h1>
+<h1 id="from-0-8-0-to-0-9-0">From 0.8.0 to 0.9.0</h1>
+<h2 id="auditor">Auditor</h2>
+<ul>
+<li><code>AUDITOR_APPLICATION__ADDR</code> is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files">documentation</a></li>
+</ul>
+<h1 id="from-0-7-1-to-0-8-0">From 0.7.1 to 0.8.0</h1>
+<h2 id="apel-plugin">Apel plugin</h2>
+<ul>
+<li>Due to the switch to the ARGO AMS library, the config file has to be adjusted. The <code>authentication</code> section needs to be replaced with the new <code>messaging</code> section. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
+<li>The <code>NormalisedWallDurationField</code> class was removed, but the default <code>base_value</code> of the <code>NormalisedField</code> class is now the <code>runtime</code> of the record. Replace <code>NormalisedWallDuration: !NormalisedWallDurationField</code> with <code>NormalisedWallDuration: !NormalisedField</code> in the config file.</li>
+</ul>
+<h1 id="from-0-7-0-to-0-7-1">From 0.7.0 to 0.7.1</h1>
+<p>Please backup your db before proceeding with any changes that are listed below.</p>
+<h2 id="remove-forbidden-characters">Remove forbidden characters:</h2>
+<p>The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:</p>
+<h3 id="htcondor-collector-v0-6-3-and-earlier-or-slurm-collector-v0-6-3-and-earlier">HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier</h3>
+<ul>
+<li>Clone the github repository <a href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
+<li>Move into the cloned repository <code>cd AUDITOR</code></li>
+<li>Install the required dependencies with <code>pip install -r auditor/scripts/revert_encoding/requirements.txt</code></li>
+<li>Replace the placeholder values in the .env file present at <code>auditor/scripts/revert_encoding</code> with the values corresponding to your database config.</li>
+<li>Run <code>python auditor/scripts/revert_encoding/revert_encodings.py</code></li>
+</ul>
+<h1 id="from-0-6-3-to-0-7-0">From 0.6.3 to 0.7.0</h1>
+<h3 id="update-to-sqlx-0-8-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.3</a></h3>
+<p>Use this command to update the sqlx-cli to 0.8.3</p>
+<ul>
+<li><code>cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<p>Please backup your db before proceeding with any changes that are listed below.</p>
+<h2 id="remove-forbidden-characters-1">Remove forbidden characters:</h2>
+<p>The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:</p>
+<h3 id="htcondor-collector-v0-6-3-and-earlier-or-slurm-collector-v0-6-3-and-earlier-1">HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier</h3>
+<ul>
+<li>Clone the github repository <a href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
+<li>The script for reverting encodings is located at: <code>auditor/scripts/revert_encoding</code>.</li>
+<li>Install the required dependencies with <code>pip install -r requirements.txt</code></li>
+<li>Replace the placeholder values in the .env file with the values corresponding to your database config.</li>
+<li>Run <code>python revert_encodings.py</code></li>
+</ul>
+<h3 id="new-feature-tls">New feature - TLS</h3>
+<p>TLS is added to AUDITOR, all collectors and plugins. A new config section called tls_config is required by all config files. <code>use_tls</code> is a compulsory field of type bool that defines whether to use the TLS or not.</p>
+<h2 id="tls-configuration-table-for-auditor-auditor-is-referred-to-as-the-server">TLS Configuration Table for AUDITOR (AUDITOR is referred to as the server)</h2>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th><th>Example Value</th><th>Required if <code>use_tls</code> is <code>true</code></th></tr></thead><tbody>
+<tr><td><code>use_tls</code></td><td>Boolean</td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td><td><code>true</code> or <code>false</code></td><td>Yes</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>String</td><td>Path to the root Certificate Authority (CA) certificate for validating client certificates.</td><td><code>/path/rootCA.pem</code></td><td>Yes</td></tr>
+<tr><td><code>server_cert_path</code></td><td>String</td><td>Path to the server's TLS certificate.</td><td><code>/path/server-cert.pem</code></td><td>Yes</td></tr>
+<tr><td><code>server_key_path</code></td><td>String</td><td>Path to the server's private key used for TLS.</td><td><code>/path/server-key.pem</code></td><td>Yes</td></tr>
+<tr><td><code>https_addr</code></td><td>String</td><td>The HTTPS address where the server will listen. Defaults to a pre-configured value if not set.</td><td><code>"0.0.0.0"</code></td><td>No</td></tr>
+<tr><td><code>https_port</code></td><td>Integer</td><td>The HTTPS port where the server will listen. Defaults to a pre-configured value if not set.</td><td><code>8003</code></td><td>No</td></tr>
+</tbody></table>
+<p>An example config is provided at the following directory in the github repository <code>auditor/configuration/tls_config.yaml</code></p>
+<hr />
+<h2 id="tls-configuration-table-for-collectors-and-plugins-all-collectors-and-plugins-are-referred-to-as-the-clients">TLS Configuration Table for Collectors and Plugins (All collectors and plugins are referred to as the clients)</h2>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th><th>Example Value</th><th>Required if <code>use_tls</code> is <code>true</code></th></tr></thead><tbody>
+<tr><td><code>use_tls</code></td><td>Boolean</td><td>Specifies whether TLS is enabled (<code>true</code>) or disabled (<code>false</code>).</td><td><code>true</code> or <code>false</code></td><td>Yes</td></tr>
+<tr><td><code>ca_cert_path</code></td><td>String</td><td>Path to the root Certificate Authority (CA) certificate for validating server certificates.</td><td><code>/path/rootCA.pem</code></td><td>Yes</td></tr>
+<tr><td><code>client_cert_path</code></td><td>String</td><td>Path to the client's TLS certificate.</td><td><code>/path/client-cert.pem</code></td><td>Yes</td></tr>
+<tr><td><code>client_key_path</code></td><td>String</td><td>Path to the client's private key used for TLS.</td><td><code>/path/client-key.pem</code></td><td>Yes</td></tr>
+<tr><td>Please have a look at the AUDITOR documentation for the new changes in the config files for <a href="https://alu-schumacher.github.io/AUDITOR/latest/#collectors">collectors</a> and <a href="https://alu-schumacher.github.io/AUDITOR/latest/#plugins">plugins</a>.</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<h1 id="from-0-6-2-to-0-6-3">From 0.6.2 to 0.6.3</h1>
+<h3 id="update-to-sqlx-0-8-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.2</a></h3>
+<p>Use this command to update the sqlx-cli to 0.8.2</p>
+<ul>
+<li><code>cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-5-0-to-0-6-2">From 0.5.0 to 0.6.2</h1>
+<h2 id="auditor-db">Auditor DB:</h2>
+<ul>
+<li>WARNING: Please create a backup of the database before running the migration script.</li>
+<li>AUDITOR db should be migrated to use the new schema. Run <code>sqlx migrate run --source migration</code> from the AUDITOR home directory. It is also possible using the container which can be found here <a href="../#migrating-the-database">Documentation</a>.</li>
+</ul>
+<h2 id="apel-plugin-1">Apel plugin</h2>
+<ul>
+<li>The APEL message can now be configured via the config. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
+<li><code>auditor-apel-republish</code> now needs the arguments <code>--begin-date</code> and <code>--end-date</code> instead of <code>--month</code> and <code>--year</code>. The format is <code>yyyy-mm-dd hh:mm:ss+00:00</code>, e.g. <code>2023-11-29 21:10:54+00:00</code>.</li>
+</ul>
+<h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
+<h2 id="apel-plugin-2">Apel plugin</h2>
+<ul>
+<li>The format of the config file was changed from INI to YAML. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
+<li>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
+To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5_0.py</code> located in the <code>scripts</code> folder:</li>
+</ul>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: migration-0_4_0-to-0_5_0.py </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG -d DB -j JSON
+</span><span>
+</span><span>options:
+</span><span>  -h, --help            show this help message and exit
+</span><span>  -c CONFIG, --config CONFIG
+</span><span>                        Path to the config file
+</span><span>  -d DB, --db DB        Path to the time database file
+</span><span>  -j JSON, --json JSON  Path to the time JSON file
+</span></code></pre>
+<p>This already requires a config file with YAML format.</p>
+<h2 id="docker-container">Docker container</h2>
+<p>The Auditor Docker container can now be used to run database migrations. For details, see the <a href="../#migrating-the-database">documentation</a>.</p>
+<p>If you run Auditor using the Docker container and provide an external config file, you need to change the way how you run the Docker container:</p>
+<ul>
+<li>Old<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> /auditor/config.yaml
+</span></code></pre>
+</li>
+<li>New<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> auditor /auditor/config.yaml
+</span></code></pre>
+</li>
+</ul>
+<p>I.e., you need to add <code>auditor</code> as the first argument before pointing to the configuration file.</p>
+<h2 id="development">Development</h2>
+<h3 id="update-to-sqlx-0-7-4">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.4</p>
+<ul>
+<li><code>cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-3-0-0-3-1-to-0-4-0">From 0.3.0/0.3.1 to 0.4.0</h1>
+<h2 id="auditor-1">AUDITOR</h2>
+<h3 id="rest-apis">REST APIs</h3>
+<p>Auditor REST APIs are changed as shown in the table below.</p>
+<table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>Health check</td><td><code>/health_check</code> (GET)</td><td><code>/health_check</code> (GET)</td></tr>
+<tr><td>Add record</td><td><code>/add</code> (POST)</td><td><code>/record</code> (POST)</td></tr>
+<tr><td>Update record</td><td><code>/update</code> (POST)</td><td><code>/record</code> (PUT)</td></tr>
+<tr><td>Insert Bulk records</td><td>Did not exist</td><td><code>/records</code> (PUT)</td></tr>
+<tr><td>Get all records</td><td><code>/get</code> (GET)</td><td><code>/records</code> (GET)</td></tr>
+<tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/records?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
+</tbody></table>
+<p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
+<p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
+<h2 id="apel-plugin-3">Apel plugin</h2>
+<p>The config parameter <code>site_name_mapping</code> is removed and the structure of the config parameter <code>sites_to_report</code> is changed. <code>sites_to_report</code> is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.</p>
+<p>Before:</p>
+<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>[</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
+</span><span>site_name_mapping </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>}
+</span></code></pre>
+<p>After:</p>
+<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>], </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]}
+</span></code></pre>
+<h2 id="removed">Removed</h2>
+<p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
+functions but throws a deprecated warning if used.</p>
+<h2 id="development-1">Development</h2>
+<h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.3</p>
+<ul>
+<li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
+<h2 id="slurm-collector">Slurm collector</h2>
+<p>New filter options for querying slurm jobs are available.
+Due to this, a new section <code>job_filter</code> has been introduced for the config file.
+The <code>job_status</code> field has been renamed to <code>status</code> and is now part of the <code>job_filter</code> section.</p>
+<p>Before:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">job_status</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">&quot;completed&quot;
+</span><span>  - </span><span style="color:#00a33f;">&quot;failed&quot;
+</span></code></pre>
+<p>After:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">job_filter</span><span>:
+</span><span>  </span><span style="color:#00a33f;">status</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">&quot;completed&quot;
+</span><span>    - </span><span style="color:#00a33f;">&quot;failed&quot;
+</span></code></pre>
+<p>The new filter options are <code>partition</code>, <code>user</code>, <code>group</code>, and <code>account</code> and work similar to the <code>status</code> filter.</p>
+<h2 id="priority-plugin">Priority plugin</h2>
+<p>The priority plugin now supports exporting metrics for the amount of provided resources and the updated priority to Prometheus.
+The metrics can be accessed via a GET request to the <code>/metrics</code> endpoint.
+Because the metrics endpoint provided by the Prometheus exporter needs to be available all the time, the architecture of the
+priority plugin has been changed. It now will run continuously. In most cases, it should be started as a systemd service.</p>
+<p>The structure of the config file has changed. The <code>addr</code> and <code>port</code> options are now put under a common <code>auditor</code> section.
+The frequency of recalculation for the provided resources and priorities can now be controlled with the <code>frequency</code> field, which assumes that the number given is in seconds.
+It defaults to 1 hour (i.e. 3600s).</p>
+<p>The Prometheus exporter can be configured in the <code>prometheus</code> section.
+It can be enabled and disabled with the <code>enable</code> field.
+The address and port of the HTTP server that serves the metrics can be set with the <code>addr</code> and <code>port</code> fields.
+The <code>metrics</code> list specifies the metrics that are exported. Right now the values <code>ResourceUsage</code> (for the amount of provided resources in the given duration)
+and <code>Priority</code> (for the calculated priority value) are supported.
+The <code>prometheus</code> section is optional. If it is not present, it has the same effect as setting <code>enable</code> to <code>false</code>.</p>
+<p>Below, you find an example of the priority plugin configuration before and after the change.</p>
+<ul>
+<li>
+<p>Before</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span>... </span><span style="color:#00a33f;">(other options)
+</span></code></pre>
+</li>
+<li>
+<p>After</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">auditor</span><span>:
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">frequency</span><span>: 3600
+</span><span>... </span><span style="color:#00a33f;">(other options)
+</span><span style="color:#00a33f;">prometheus</span><span>:
+</span><span>  </span><span style="color:#00a33f;">enable</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;0.0.0.0&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 9000
+</span><span>  </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">ResourceUsage
+</span><span>    - </span><span style="color:#00a33f;">Priority
+</span></code></pre>
+</li>
+</ul>
+<h2 id="auditor-2">AUDITOR</h2>
+<h3 id="standardized-rest-apis">Standardized REST APIs</h3>
+<p>Auditor REST APIs are changed as shown in the table below.</p>
+<table><thead><tr><th>Action</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>Health check</td><td><code>/health_check</code> (GET)</td><td><code>/health_check</code> (GET)</td></tr>
+<tr><td>Add record</td><td><code>/add</code> (POST)</td><td><code>/record</code> (POST)</td></tr>
+<tr><td>Update record</td><td><code>/update</code> (POST)</td><td><code>/record</code> (PUT)</td></tr>
+<tr><td>Get all records</td><td><code>/get</code> (GET)</td><td><code>/record</code> (GET)</td></tr>
+<tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/record?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
+</tbody></table>
+<h2 id="development-2">Development</h2>
+<h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.2</p>
+<ul>
+<li><code>cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+<h1 id="from-0-1-0-to-0-2-0">From 0.1.0 to 0.2.0</h1>
+<h2 id="apel-plugin-4">Apel plugin</h2>
+<ul>
+<li>The config file now needs to have a field <code>cpu_time_unit</code> present, which describes the unit of total CPU time in the AUDITOR records.
+Possible values are <code>seconds</code> or <code>milliseconds</code>.</li>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+</ul>
+<h2 id="auditor-client">Auditor client</h2>
+<ul>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+<li>Due to the update of the <code>pyo3</code> library, the timezone of datetime objects now needs to be <code>datetime.timezone.utc</code> instead of <code>pytz.utc</code>
+when creating a new record:
+<ul>
+<li>When the datetime object is already in UTC
+<ul>
+<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">import </span><span>pytz
+</span><span>
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>pytz.utc)
+</span></code></pre>
+</li>
+<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span>
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>datetime.timezone.utc)
+</span></code></pre>
+</li>
+</ul>
+</li>
+<li>If it is in local time
+<ul>
+<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">import </span><span>pytz
+</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
+</span><span>
+</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(pytz.utc)
+</span></code></pre>
+</li>
+<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
+</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
+</span><span>
+</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
+</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(datetime.timezone.utc)
+</span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="auditor-server">Auditor server</h2>
+<ul>
+<li>Updating a non-existent record now returns an HTTP 404 error instead of HTTP 400 error</li>
+</ul>
+<h2 id="docker-containers">Docker containers</h2>
+<ul>
+<li>The <code>main</code> tag was replaced with the <code>edge</code> tag. In addition, we also now offer docker tags corresponding to releases, i.e., use the tag <code>0.2.0</code> for this release.</li>
+</ul>
+<h2 id="htcondor-plugin">HTCondor plugin</h2>
+<ul>
+<li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
+</ul>
+<h2 id="development-3">Development</h2>
+<h3 id="update-to-sqlx-0-7-1">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
+<p>Use this command to update the sqlx-cli to 0.7.1</p>
+<ul>
+<li><code>cargo install --version=0.7.1 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
+</ul>
+
+
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+</html>
