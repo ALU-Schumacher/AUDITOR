@@ -47,7 +47,7 @@ pyo3 = { version = "0.24.1", features = ["chrono", "extension-module", "anyhow"]
 pyo3-async-runtimes = { version = "0.24.0", features = ["attributes", "tokio-runtime"] }
 quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
-rand = "0.8.5"
+rand = "0.9.1"
 rand_distr = "0.4.3"
 regex = "1.11.1"
 reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"] }
