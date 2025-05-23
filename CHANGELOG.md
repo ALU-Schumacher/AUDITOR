@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.11.4 to 2.11.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.9 to 0.12.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 80.4.0 to 80.9.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-pyyaml from 6.0.12.20250402 to 6.0.12.20250516 ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add some details about required values for the APEL plugin, mention `bump_version` script ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Allow for reading history from file ([@rfvc](https://github.com/rfvc))
 - HTCondor collector: Fix bug that prevented reading old jobs on first collection ([@maxfischer2781](https://github.com/maxfischer2781))
