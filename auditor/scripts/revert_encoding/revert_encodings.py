@@ -1,12 +1,13 @@
 import json
 import os
 from json.decoder import JSONDecodeError
+from pathlib import Path
 from urllib.parse import unquote
 
 import psycopg2
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="auditor/scripts/revert_encoding/.env")
+load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 
 
 DB_CONFIG = {
