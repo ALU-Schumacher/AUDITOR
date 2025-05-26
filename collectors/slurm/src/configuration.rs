@@ -11,10 +11,18 @@ use auditor::telemetry::deserialize_log_level;
 use chrono::{DateTime, Duration, Local, NaiveDateTime, Utc, offset::FixedOffset};
 use color_eyre::eyre::{Report, Result, WrapErr, eyre};
 use itertools::Itertools;
-use once_cell::unsync::Lazy;
-use regex::{Captures, Regex, RegexSet};
+use once_cell::sync::Lazy;
+use regex::{Captures, Regex};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use tracing_subscriber::filter::LevelFilter;
+
+static TIME_PATTERNS: [Lazy<Regex>; 3] = [
+    Lazy::new(|| Regex::new(r"^(?P<min>\d{2}):(?P<sec>\d{2})\.(?P<milli>\d+)$").unwrap()),
+    Lazy::new(|| Regex::new(r"^(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$").unwrap()),
+    Lazy::new(|| {
+        Regex::new(r"^(?P<day>\d{1,3})-(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$").unwrap()
+    }),
+];
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -375,54 +383,10 @@ impl ParsableType {
                 )
             }
             ParsableType::Time => {
-                let set = Lazy::new(|| {
-                    RegexSet::new([
-                        r"^(?P<min>\d{2}):(?P<sec>\d{2})\.(?P<milli>\d+)$",
-                        r"^(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$",
-                        r"^(?P<day>\d{1,2})-(?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})$",
-                    ])
-                    .unwrap()
-                });
-                let regexes = Lazy::new(|| {
-                    set.patterns()
-                        .iter()
-                        .map(|pat| Regex::new(pat).unwrap())
-                        .collect::<Vec<_>>()
-                });
-                if !set.is_match(input) {
-                    return Err(eyre!("Cannot parse time string: {}", input));
-                }
-
-                let captures: Vec<Captures> = set
-                    .matches(input)
-                    .into_iter()
-                    .map(|match_idx| &regexes[match_idx])
-                    .map(|pat| -> Result<Captures> {
-                        pat.captures(input).ok_or_else(|| {
-                            eyre!(
-                                "Impossible error when parsing time string: {}. Tell Stefan!",
-                                input
-                            )
-                        })
-                    })
-                    .collect::<Result<Vec<_>>>()?;
-
-                if captures.is_empty() {
-                    return Err(eyre!(
-                        "No regex pattern matched when parsing time {}. This is impossible.",
-                        input
-                    ));
-                }
-
-                if captures.len() > 1 {
-                    tracing::warn!(
-                        "Multiple regex patterns matched when parsing time {}. This should not happen. Taking first one.",
-                        input
-                    );
-                }
-
-                // Unwrap is fine because we have ensured that there is exactly one element.
-                let cap = captures.into_iter().next().unwrap();
+                let cap = TIME_PATTERNS
+                    .iter()
+                    .find_map(|p| p.captures(input))
+                    .ok_or_else(|| eyre!("Cannot parse time string: {}", input))?;
 
                 let pm = |name: &'static str, reg_match: &Captures| -> Result<i64> {
                     Ok(if let Some(a) = reg_match.name(name) {
