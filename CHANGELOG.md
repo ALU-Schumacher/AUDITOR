@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 
