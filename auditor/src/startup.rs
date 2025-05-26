@@ -40,7 +40,7 @@ pub async fn run(
 
     let db_pool = web::Data::new(db_pool);
 
-    let maybe_enforcer = if enforce_rbac {
+    let enforcer_settings = if enforce_rbac {
         let m = DefaultModel::from_file("model.conf").await.unwrap();
         let adapter = FileAdapter::new("policy.csv");
         let mut enforcer = Enforcer::new(m, adapter).await.unwrap();
@@ -51,7 +51,7 @@ pub async fn run(
     };
 
     let app_config = move || {
-        let enforcer_data = web::Data::new(maybe_enforcer.clone());
+        let enforcer_data = web::Data::new(enforcer_settings.clone());
         let enforce_rbac_data = web::Data::new(enforce_rbac);
 
         App::new()

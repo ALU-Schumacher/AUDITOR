@@ -39,6 +39,8 @@ COPY --from=builder /auditor/containers/auditor/health_check.sh health_check.sh
 
 COPY auditor/configuration configuration
 
+COPY model.conf model.conf
+
 ENV AUDITOR_ENVIRONMENT=production
 HEALTHCHECK --start-period=3s CMD [ "/auditor/health_check.sh" ]
 ENTRYPOINT ["./entrypoint.sh"]

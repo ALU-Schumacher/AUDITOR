@@ -271,8 +271,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
             .prefix_separator("_")
             .list_separator(",")
             .with_list_parse_key("application.addr")
-            .with_list_parse_key("rbac_config.collector_cn")
-            .with_list_parse_key("rbac_config.plugin_cn")
+            .with_list_parse_key("rbac_config.read_access_cn")
+            .with_list_parse_key("rbac_config.write_access_cn")
             .try_parsing(true),
     );
 
