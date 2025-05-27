@@ -293,7 +293,7 @@ async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
         let query = format!(
-            "start_time[gte]={}&meta[group_id][c]=group_1",
+            "start_time[gte]={}&meta[group_id][c][0]=group_1",
             encoded_datetime
         );
 

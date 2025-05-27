@@ -284,7 +284,7 @@ impl MetaOperator {
     ///     
     ///     meta_operator = MetaOperator().contains("group_1")
     ///     meta_query = MetaQuery().meta_operator("group_id", meta_operator)
-    fn contains(mut self_: PyRefMut<Self>, c: String) -> PyRefMut<Self> {
+    fn contains(mut self_: PyRefMut<Self>, c: Vec<String>) -> PyRefMut<Self> {
         self_.inner.c = Some(c);
         self_
     }
@@ -303,7 +303,7 @@ impl MetaOperator {
     /// .. code-block:: python
     ///     
     ///     operator = MetaOperator().does_not_contain("group_1")
-    fn does_not_contain(mut self_: PyRefMut<Self>, dnc: String) -> PyRefMut<Self> {
+    fn does_not_contain(mut self_: PyRefMut<Self>, dnc: Vec<String>) -> PyRefMut<Self> {
         self_.inner.dnc = Some(dnc);
         self_
     }

@@ -163,27 +163,30 @@ After installing PostgreSQL, the database needs to be migrated with `sqlx`.
 
 AUDITORs configuration can be adapted with environment variables.
 
-| Variable                              | Description                                                                                                     |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------|
-| `AUDITOR_APPLICATION__ADDR`           | Address to bind to (default `0.0.0.0`). Supports (dualstack) IPv4 and IPv6 addresses as comma separated values  |
-| `AUDITOR_APPLICATION__PORT`           | Port to bind to (default `8000`)                                                                                |
-| `AUDITOR_DATABASE__HOST`              | Host address of PostgreSQL database (default `localhost`)                                                       |
-| `AUDITOR_DATABASE__PORT`              | Port of PostgreSQL database (default `5432`)                                                                    |
-| `AUDITOR_DATABASE__USERNAME`          | PostgreSQL database username (default `postgres`)                                                               |
-| `AUDITOR_DATABASE__PASSWORD`          | PostgreSQL database password (default `password`)                                                               |
-| `AUDITOR_DATABASE__DATABASE_NAME`     | Name of the PostgreSQL database (default `auditor`)                                                             |
-| `AUDITOR_DATABASE__REQUIRE_SSL`       | Whether or not to use SSL (default `true`)                                                                      |
-| `AUDITOR_LOG_LEVEL`                   | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`)       |
-| `AUDITOR_TLS_CONFIG__USE_TLS`         | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                |
-| `AUDITOR_TLS_CONFIG__HTTPS_ADDR`      | The HTTPS address where the server will listen. Defaults to `AUDITOR_APPLICATION__ADDR` value if not set.       |
-| `AUDITOR_TLS_CONFIG__HTTPS_PORT`      | The HTTPS port where the server will listen. (default `8443`).                                                  |
-| `AUDITOR_TLS_CONFIG__CA_CERT_PATH`    | Path to the root Certificate Authority (CA) certificate for validating client certificates.                     |
-| `AUDITOR_TLS_CONFIG__SERVER_CERT_PATH`| Path to the server's TLS certificate.                                                                           |
-| `AUDITOR_TLS_CONFIG__SERVER_KEY_PATH` | Path to the server's private key used for TLS.                                                                  |
-
+| Variable                                                         | Description                                                                                                     |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------|
+| `AUDITOR_APPLICATION__ADDR`                                      | Address to bind to (default `0.0.0.0`). Supports (dualstack) IPv4 and IPv6 addresses as comma separated values  |
+| `AUDITOR_APPLICATION__PORT`                                      | Port to bind to (default `8000`)                                                                                |
+| `AUDITOR_DATABASE__HOST`                                         | Host address of PostgreSQL database (default `localhost`)                                                       |
+| `AUDITOR_DATABASE__PORT`                                         | Port of PostgreSQL database (default `5432`)                                                                    |
+| `AUDITOR_DATABASE__USERNAME`                                     | PostgreSQL database username (default `postgres`)                                                               |
+| `AUDITOR_DATABASE__PASSWORD`                                     | PostgreSQL database password (default `password`)                                                               |
+| `AUDITOR_DATABASE__DATABASE_NAME`                                | Name of the PostgreSQL database (default `auditor`)                                                             |
+| `AUDITOR_DATABASE__REQUIRE_SSL`                                  | Whether or not to use SSL (default `true`)                                                                      |
+| `AUDITOR_LOG_LEVEL`                                              | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`)       |
+| `AUDITOR_TLS_CONFIG__USE_TLS`                                    | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                |
+| `AUDITOR_TLS_CONFIG__HTTPS_ADDR`                                 | The HTTPS address where the server will listen. Defaults to `AUDITOR_APPLICATION__ADDR` value if not set.       |
+| `AUDITOR_TLS_CONFIG__HTTPS_PORT`                                 | The HTTPS port where the server will listen. (default `8443`).                                                  |
+| `AUDITOR_TLS_CONFIG__CA_CERT_PATH`                               | Path to the root Certificate Authority (CA) certificate for validating client certificates.                     |
+| `AUDITOR_TLS_CONFIG__SERVER_CERT_PATH`                           | Path to the server's TLS certificate.                                                                           |
+| `AUDITOR_TLS_CONFIG__SERVER_KEY_PATH`                            | Path to the server's private key used for TLS.                                                                  |
+| `AUDITOR_RBAC_CONFIG__ENFORCE_RBAC`                              | Specifies whether RBAC is enabled (`true`) or disabled (`false`).                                               |
+| `AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN`                        | Specifies list of CN that are allowed to read the auditor prometheus metrics                                    |
+| `AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN`                           | Specifies which clients are allowed to perform the write operations from AUDITOR                                |
+| `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operaitons from AUDITOR                                 |
 
 Use `docker run` to execute Auditor:
-
+    
 ```bash
 docker run aluschumacher/auditor:<version>
 ```
@@ -244,7 +247,7 @@ For dualstack operation, you can set the IPv4 and IPv6 addresses as a list in th
 
 ```yaml
 application:
-  addr: 
+  addr:
     - 0.0.0.0
     - ::1
 ```
@@ -254,6 +257,93 @@ IPv4 and IPv6 addresses can also be specified as an ENV variable
 ```bash
 AUDITOR_APPLICATION__ADDR=127.0.0.1,::1
 ```
+
+With rbac (role based access control)
+
+
+```yaml
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: true
+  ca_cert_path: "./auditor/certs/rootCA.pem"
+  server_cert_path: "./auditor/certs/server-cert.pem"
+  server_key_path: "./auditor/certs/server-key.pem"
+rbac_config:
+  enforce_rbac: true
+  monitoring_role_cn:
+    - monitoring.role
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+  data_access_rules:
+    - reader_cn: apel.plugin
+      meta_info:
+        site_id:
+          - site_id_1
+          - site_id_2
+```
+
+write_access_cn and read_access_cn takes in the common name from certs for your collectors and plugins.
+
+### monitoring_role_cn (list of strings):
+Specifies which clients (identified by their TLS certificate Common Name) are allowed to read the metrics from AUDITOR database.
+
+```yaml
+monitoring_role_cn:
+  - monitoring.role
+```
+
+### write_access_cn (list of strings):
+Specifies which clients (identified by their TLS certificate Common Name) are allowed to perform write operations.
+
+```yaml
+write_access_cn:
+  - htcondor.collector
+```
+
+### read_access_cn (list of strings):
+Lists clients allowed to perform general read operations.
+```yaml
+read_access_cn:
+  - apel.plugin
+```
+
+### data_access_rules (list of objects):
+Defines fine-grained read permissions for specific metadata values (e.g., site-specific data).
+Each rule consists of:
+
+reader_cn: The client CN permitted to read restricted data.
+
+meta_info: A mapping of metadata keys (e.g., site_id) to allowed values.
+
+```yaml
+data_access_rules:
+  - reader_cn: apel.plugin
+    meta_info:
+      site_id: 
+        - site_id_1
+        - site_id_2
+```
+
+This means:
+
+The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.
 
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
@@ -1278,6 +1368,117 @@ Then, on the nodes in question the directory `/srv/auditor/{apel,collector,prome
 
 If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files `ca.pem`, `client.pem` and `client.key` in the `files` directory of its chart.
 
+
+# TLS Certificate Generation Guide
+
+## 1. Create `rootCA` (if not present)
+
+```bash
+openssl genrsa -out rootCA.key 4096
+```
+
+## 2. Create rootCA
+```bash
+openssl req -x509 -new -key rootCA.key -sha256 -days 3650 -out rootCA.crt
+cat rootCA.crt > rootCA.pem
+```
+
+## 3. Create the OpenSSL Configuration File (openssl.cnf)
+Create a file called `openssl.cnf` and add the config as shown below:
+
+```
+[ req ]
+default_bits       = 2048
+prompt             = no
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = v3_req
+
+[ dn ]
+CN = server.auditor
+
+[ v3_req ]
+basicConstraints     = CA:FALSE
+keyUsage             = digitalSignature, keyEncipherment
+extendedKeyUsage     = clientAuth, serverAuth
+subjectAltName       = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+IP.1 = 127.0.0.1
+```
+
+If you plan to run the auditor inside Docker, consider adding the following entry to the [ alt_names ] section:
+
+```ini
+DNS.2 = host.docker.internal
+```
+
+
+## 4. Creating server/client certificates
+```bash
+openssl req -new -nodes -newkey rsa:2048 \
+  -keyout server-key.pem \
+  -out server-req.pem \
+  -config openssl.cnf
+```
+
+```bash
+openssl x509 -req -in server-req.pem \
+  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+  -out server-cert.pem -days 365 \
+  -extensions v3_req -extfile openssl.cnf
+```
+
+Your final file structure would look something like this:
+```bash
+certs/
+├── rootCA.crt
+├── rootCA.key
+├── rootCA.pem
+├── server-cert.pem
+├── server-key.pem
+├── server-req.pem
+├── openssl.cnf
+```
+
+## 5. Configure Auditor with RBAC Settings
+
+When setting up Auditor, you must assign role-based access control (RBAC) using certificate Common Names (CNs).
+
+### Generating Certificates for Plugins and collectors
+You can skip this step if you've already created the certificates. Otherwise:
+
+
+1. Modify the CN in openssl.cnf before generating certificates for each component.
+
+Example for APEL Plugin:
+
+```ini
+[ dn ]
+CN = apel.plugin
+```
+
+Example for HTCondor Collector:
+
+```ini
+[ dn ]
+CN = htcondor.collector
+```
+
+2. Then generate the certificates using Step 4 in this guide.
+
+### Updating the Auditor RBAC Config
+The APEL Plugin should have read access, and the HTCondor Collector should have write access. Update the rbac_config section of the AUDITOR config file as follows:
+
+```yaml
+rbac_config:
+  enforce_rbac: true
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+```
 
 # License
 

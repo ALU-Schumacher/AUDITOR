@@ -1,0 +1,35 @@
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: true
+  ca_cert_path: "./auditor/certs/rootCA.pem"
+  server_cert_path: "./auditor/certs/server-cert.pem"
+  server_key_path: "./auditor/certs/server-key.pem"
+rbac_config:
+  enforce_rbac: true
+  monitoring_role_cn:
+    - monitoring.role
+  write_access_cn:
+    - htcondor.collector
+  read_access_cn:
+    - apel.plugin
+  data_access_rules:
+    - reader_cn: apel.plugin
+      meta_info:
+        site_id: 
+          - site_id_1
+          - site_id_2

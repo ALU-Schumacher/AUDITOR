@@ -184,7 +184,7 @@ fn benchmark_record_query_from_auditor(c: &mut Criterion) {
     let time_and_site_query = QueryBuilder::new()
         .with_meta_query(MetaQuery::new().meta_operator(
             "site_id".to_string(),
-            MetaOperator::default().contains("site_1".to_string()),
+            MetaOperator::default().contains(vec!["site_1".to_string()]),
         ))
         .with_start_time(
             Operator::default()
@@ -214,7 +214,7 @@ fn benchmark_record_query_from_auditor(c: &mut Criterion) {
         )
         .with_meta_query(MetaQuery::new().meta_operator(
             "site_id".to_string(),
-            MetaOperator::default().contains("site_1".to_string()),
+            MetaOperator::default().contains(vec!["site_1".to_string()]),
         ))
         .with_component_query(
             ComponentQuery::new()
@@ -235,7 +235,7 @@ fn benchmark_record_query_from_auditor(c: &mut Criterion) {
         )
         .with_meta_query(MetaQuery::new().meta_operator(
             "group_id".to_string(),
-            MetaOperator::default().contains("group_1".to_string()),
+            MetaOperator::default().contains(vec!["group_1".to_string()]),
         ))
         .with_component_query(
             ComponentQuery::new()
