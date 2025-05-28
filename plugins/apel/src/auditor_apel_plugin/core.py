@@ -34,12 +34,15 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
     sites_to_report = config.site.sites_to_report
     meta_key_site = config.auditor.site_meta_field
 
+    if isinstance(meta_key_site, str):
+        meta_key_site = [meta_key_site]
+
     site_ids = []
 
     if site is not None:
         site_ids = sites_to_report[site]
     else:
-        for k, v in sites_to_report.items():
+        for v in sites_to_report.values():
             site_ids.extend(v)
 
     records = []
@@ -54,9 +57,10 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
             stop_time_query = stop_time_query.with_stop_time(get_range_operator)
         for site in site_ids:
             site_operator = MetaOperator().contains(site)
-            site_query = MetaQuery().meta_operator(meta_key_site, site_operator)
-            query_string = stop_time_query.with_meta_query(site_query).build()
-            records.extend(client.advanced_query(query_string))
+            for meta_key in meta_key_site:
+                site_query = MetaQuery().meta_operator(meta_key, site_operator)
+                query_string = stop_time_query.with_meta_query(site_query).build()
+                records.extend(client.advanced_query(query_string))
         return records
     except Exception as e:
         logger.critical(e)
@@ -128,20 +132,6 @@ def update_time_json(config, time_dict, site, stop_time, report_time):
             json.dump(time_dict, f)
     except FileNotFoundError:
         logger.critical(f"Path {time_json_path} not found, could not update time json")
-        raise
-
-
-def get_site_id(config, record):
-    meta_key_site = config["auditor"]["meta_key_site"]
-
-    try:
-        site_id = record.meta.get(meta_key_site)[0]
-        return site_id
-    except AttributeError:
-        logger.critical(f"No meta data found in {record.record_id}, aborting")
-        raise
-    except TypeError:
-        logger.critical(f"No site name found in {record.record_id}, aborting")
         raise
 
 
@@ -496,22 +486,3 @@ def convert_to_seconds(config, cpu_time):
             "Possible values are seconds or milliseconds."
         )
         raise ValueError
-
-
-def check_sites_in_records(config, records):
-    sites_to_report = config["site"]["sites_to_report"]
-
-    logger.debug(f"Sites to report from config: {list(sites_to_report.keys())}")
-
-    sites_in_records = {get_site_id(config, r) for r in records}
-    sites = []
-
-    for site_id in sites_in_records:
-        for k, v in sites_to_report.items():
-            if site_id in v:
-                sites.append(k)
-                break
-
-    logger.debug(f"Sites found in records: {sites}")
-
-    return sites

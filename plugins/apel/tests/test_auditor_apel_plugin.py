@@ -3,7 +3,6 @@ import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path, PurePath
-from unittest.mock import PropertyMock, patch
 
 import pyauditor
 import pytest
@@ -11,14 +10,12 @@ import yaml
 
 from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
-    check_sites_in_records,
     convert_to_seconds,
     create_time_json,
     get_begin_current_month,
     get_begin_previous_month,
     get_records,
     get_report_time,
-    get_site_id,
     get_time_json,
     sign_msg,
     update_time_json,
@@ -572,146 +569,6 @@ class TestAuditorApelPlugin:
             get_records(config, client, start_time)
         assert pytest_error.type is RuntimeError
 
-    def test_get_site_id(self):
-        sites_to_report = (
-            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
-        )
-        default_submit_host = "https://default.submit_host.de:1234/xxx"
-        infrastructure_type = "grid"
-        benchmark_name = "hepscore"
-        cores_name = "Cores"
-        cpu_time_name = "TotalCPU"
-        nnodes_name = "NNodes"
-        meta_key_site = "site_id"
-        meta_key_submithost = "headnode"
-        meta_key_voms = "voms"
-        meta_key_username = "subject"
-
-        conf = {}
-        conf["site"] = {
-            "sites_to_report": sites_to_report,
-            "default_submit_host": default_submit_host,
-            "infrastructure_type": infrastructure_type,
-        }
-        conf["auditor"] = {
-            "benchmark_name": benchmark_name,
-            "cores_name": cores_name,
-            "cpu_time_name": cpu_time_name,
-            "nnodes_name": nnodes_name,
-            "meta_key_site": meta_key_site,
-            "meta_key_submithost": meta_key_submithost,
-            "meta_key_voms": meta_key_voms,
-            "meta_key_username": meta_key_username,
-        }
-
-        rec_1_values = {
-            "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "n_cores": 8,
-            "hepscore": 10.0,
-            "tot_cpu": 15520000,
-            "n_nodes": 1,
-            "site": "test-site-1",
-            "submit_host": "https://test1.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
-            "voms": "/atlas/de",
-        }
-
-        rec_2_values = {
-            "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
-            "n_cores": 1,
-            "hepscore": 23.0,
-            "tot_cpu": 12234325,
-            "n_nodes": 2,
-            "site": "test-site-2",
-            "submit_host": "https://test2.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
-            "voms": "/atlas/de",
-        }
-
-        rec_1 = create_rec(rec_1_values, conf["auditor"])
-        rec_2 = create_rec(rec_2_values, conf["auditor"])
-
-        result = get_site_id(conf, rec_1)
-        assert result == rec_1_values["site"]
-
-        result = get_site_id(conf, rec_2)
-        assert result == rec_2_values["site"]
-
-    def test_get_site_id_fail(self):
-        sites_to_report = (
-            '{"TEST_SITE_1": ["test-site-1"], "TEST_SITE_2": ["test-site-2"]}'
-        )
-        default_submit_host = "https://default.submit_host.de:1234/xxx"
-        infrastructure_type = "grid"
-        benchmark_name = "hepscore"
-        cores_name = "Cores"
-        cpu_time_name = "TotalCPU"
-        nnodes_name = "NNodes"
-        meta_key_site = "site_id"
-        meta_key_submithost = "headnode"
-        meta_key_voms = "voms"
-        meta_key_username = "subject"
-
-        conf = {}
-        conf["site"] = {
-            "sites_to_report": sites_to_report,
-            "default_submit_host": default_submit_host,
-            "infrastructure_type": infrastructure_type,
-        }
-        conf["auditor"] = {
-            "benchmark_name": benchmark_name,
-            "cores_name": cores_name,
-            "cpu_time_name": cpu_time_name,
-            "nnodes_name": nnodes_name,
-            "meta_key_site": meta_key_site,
-            "meta_key_submithost": meta_key_submithost,
-            "meta_key_voms": meta_key_voms,
-            "meta_key_username": meta_key_username,
-        }
-
-        rec_1_values = {
-            "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "n_cores": 8,
-            "hepscore": 10.0,
-            "tot_cpu": 15520000,
-            "n_nodes": 1,
-            "site": None,
-            "submit_host": "https://test1.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
-            "voms": "/atlas/de",
-        }
-
-        rec_2_values = {
-            "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
-            "n_cores": 1,
-            "hepscore": 23.0,
-            "tot_cpu": 12234325,
-            "n_nodes": 2,
-            "site": "test-site-2",
-            "submit_host": "https://test2.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
-            "voms": "/atlas/de",
-        }
-
-        rec_1 = create_rec(rec_1_values, conf["auditor"])
-        rec_2 = create_rec_metaless(rec_2_values, conf["auditor"])
-
-        with pytest.raises(Exception) as pytest_error:
-            get_site_id(conf, rec_1)
-        assert pytest_error.type is TypeError
-
-        with pytest.raises(Exception) as pytest_error:
-            get_site_id(conf, rec_2)
-        assert pytest_error.type is AttributeError
-
     def test_convert_to_seconds(self):
         cpu_time_name = "TotalCPU"
         cpu_time_unit = "seconds"
@@ -749,87 +606,3 @@ class TestAuditorApelPlugin:
         with pytest.raises(Exception) as pytest_error:
             convert_to_seconds(conf, 1100)
         assert pytest_error.type is ValueError
-
-    def test_check_sites_in_records(self):
-        sites_to_report = {
-            "TEST_SITE_1": ["test-site-1"],
-            "TEST_SITE_2": ["test-site-2"],
-        }
-        benchmark_name = "hepscore"
-        cores_name = "Cores"
-        cpu_time_name = "TotalCPU"
-        nnodes_name = "NNodes"
-        meta_key_site = "site_id"
-        meta_key_submithost = "headnode"
-        meta_key_voms = "voms"
-        meta_key_username = "subject"
-
-        conf = {}
-        conf["site"] = {
-            "sites_to_report": sites_to_report,
-        }
-        conf["auditor"] = {
-            "benchmark_name": benchmark_name,
-            "cores_name": cores_name,
-            "cpu_time_name": cpu_time_name,
-            "nnodes_name": nnodes_name,
-            "meta_key_site": meta_key_site,
-            "meta_key_submithost": meta_key_submithost,
-            "meta_key_voms": meta_key_voms,
-            "meta_key_username": meta_key_username,
-        }
-
-        runtime = 55
-
-        rec_1_values = {
-            "rec_id": "test_record_1",
-            "start_time": datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "stop_time": datetime(1985, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
-            "n_cores": 8,
-            "hepscore": 10.0,
-            "tot_cpu": 15520000,
-            "n_nodes": 1,
-            "site": "test-site-1",
-            "submit_host": "https://test1.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test1: test1",
-            "voms": "/atlas/de",
-        }
-
-        rec_2_values = {
-            "rec_id": "test_record_2",
-            "start_time": datetime(2023, 1, 1, 14, 24, 11).astimezone(tz=timezone.utc),
-            "stop_time": datetime(2023, 1, 2, 7, 11, 45).astimezone(tz=timezone.utc),
-            "n_cores": 1,
-            "hepscore": 23.0,
-            "tot_cpu": 12234325,
-            "n_nodes": 2,
-            "site": "test-site-2",
-            "submit_host": "https://test2.submit_host.de:1234/xxx",
-            "user_name": "/DC=ch/DC=cern/OU=Users/CN=test2: test2",
-            "voms": "/atlas/de",
-        }
-
-        rec_value_list = [rec_1_values, rec_2_values]
-        records = []
-
-        with patch(
-            "pyauditor.Record.runtime", new_callable=PropertyMock
-        ) as mocked_runtime:
-            mocked_runtime.return_value = runtime
-
-            for r_values in rec_value_list:
-                rec = create_rec(r_values, conf["auditor"])
-                records.append(rec)
-
-            result = check_sites_in_records(conf, records)
-            assert len(result) == 2
-
-            conf["site"]["sites_to_report"] = {"TEST_SITE_1": ["test-site-1"]}
-
-            result = check_sites_in_records(conf, records)
-            assert len(result) == 1
-
-            conf["site"]["sites_to_report"] = {"TEST_SITE_3": ["test-site-3"]}
-
-            result = check_sites_in_records(conf, records)
-            assert len(result) == 0
