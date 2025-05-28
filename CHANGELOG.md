@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))

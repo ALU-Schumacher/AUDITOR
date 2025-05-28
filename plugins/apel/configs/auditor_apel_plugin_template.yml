@@ -11,8 +11,11 @@
   
 # site:
 #   sites_to_report:
-#     SITE_A: ["site_id_1", "site_id_2"]
-#     SITE_B: ["site_id_3"]
+#     SITE_A:
+#       - site_id_1
+#       - site_id_2
+#     SITE_B:
+#       - site_id_3
 
 # messaging:
 #   host: msg.argo.grnet.gr
@@ -28,7 +31,7 @@
 #   ip: 127.0.0.1
 #   port: 3333
 #   timeout: 60
-#   site_meta_field: site_id
+#   site_meta_field: site_id # can alco be a list, e.g. [site_id, site]
 #   use_tls: True
 #   ca_cert_path: /path/rootCA.pem
 #   client_cert_path: /path/client-cert.pem

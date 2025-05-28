@@ -897,8 +897,11 @@ plugin:
   
 site:
   sites_to_report:
-    SITE_A: ["site_id_1", "site_id_2"]
-    SITE_B: ["site_id_3"]
+    SITE_A: 
+      - site_id_1 
+      - site_id_2
+    SITE_B: 
+      - site_id_3
 
 messaging:
   host: msg.argo.grnet.gr
@@ -914,7 +917,7 @@ auditor:
   ip: 127.0.0.1
   port: 3333
   timeout: 60
-  site_meta_field: site_id
+  site_meta_field: site_id # can also be a list, e.g. [site_id, site]
   use_tls: True
   ca_cert_path: /path/rootCA.pem
   client_cert_path: /path/client-cert.pem
@@ -979,7 +982,7 @@ The individual parameters in the config file are:
 | `auditor`   | `ip`               | IP of the AUDITOR instance.                                                                                                                                                                  |
 | `auditor`   | `port`             | Port of the AUDITOR instance.                                                                                                                                                                |
 | `auditor`   | `timeout`          | Time in seconds after which the connection to the AUDITOR instance times out.                                                                                                                |
-| `auditor`   | `site_meta_field`  | Name of the field that stores the name of the site in the AUDITOR records.                                                                                                                   |
+| `auditor`   | `site_meta_field`  | Name of the meta field that stores the name of the site in the AUDITOR records. This can also be a list, e.g. if your database contains records with different names of the meta field.      |
 | `auditor`   | `use_tls`          | Specifies whether TLS is enabled (`True`) or disabled (`False`).                                                                                                                             |
 | `auditor`   | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if `use_tls` is True.                                                                       |
 | `auditor`   | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if `use_tls` is True.                                                                           |
