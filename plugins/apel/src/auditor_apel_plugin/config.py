@@ -55,7 +55,7 @@ class AuditorConfig(Configurable):
     ip: str
     port: int
     timeout: int
-    site_meta_field: str
+    site_meta_field: Union[str, List[str]]
     use_tls: bool
     ca_cert_path: Optional[str] = None
     client_cert_path: Optional[str] = None
