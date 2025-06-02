@@ -1373,8 +1373,10 @@ If you want to run the APEL plugin on Kubernetes you need to provide it with cer
 
 
 # TLS Certificate Generation Guide
+The following are the guidelines for setting up the certificates for TLS setup. You can change and configure according to your requirements like the encryption type and the validity days for the certificate. 
+Have a look at the online resources for more details. [openssl](https://knowledge.digicert.com/general-information/openssl-quick-reference-guide)
 
-## 1. Create `rootCA` (if not present)
+## 1. Create `rootCA` key (if not present)
 
 ```bash
 openssl genrsa -out rootCA.key 4096
@@ -1382,8 +1384,7 @@ openssl genrsa -out rootCA.key 4096
 
 ## 2. Create rootCA
 ```bash
-openssl req -x509 -new -key rootCA.key -sha256 -days 3650 -out rootCA.crt
-cat rootCA.crt > rootCA.pem
+openssl req -x509 -new -key rootCA.key -sha256 -days 365 -out rootCA.pem
 ```
 
 ## 3. Create the OpenSSL Configuration File (openssl.cnf)
@@ -1433,6 +1434,7 @@ openssl x509 -req -in server-req.pem \
   -extensions v3_req -extfile openssl.cnf
 ```
 
+
 Your final file structure would look something like this:
 ```bash
 certs/
@@ -1450,26 +1452,56 @@ certs/
 When setting up Auditor, you must assign role-based access control (RBAC) using certificate Common Names (CNs).
 
 ### Generating Certificates for Plugins and collectors
-You can skip this step if you've already created the certificates. Otherwise:
 
 
-1. Modify the CN in openssl.cnf before generating certificates for each component.
+#### 1. Example for APEL Plugin:
 
-Example for APEL Plugin:
+Modify the CN in openssl.cnf
 
 ```ini
 [ dn ]
 CN = apel.plugin
 ```
 
-Example for HTCondor Collector:
+Creating certificates for Apel client 
+```bash
+openssl req -new -nodes -newkey rsa:2048 \
+  -keyout apel-client-key.pem \
+  -out apel-client-req.pem \
+  -config openssl.cnf
+```
 
+```bash
+openssl x509 -req -in apel-client-req.pem \
+  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+  -out apel-client-cert.pem -days 365 \
+  -extensions v3_req -extfile openssl.cnf
+```
+
+#### 2. Example for HTCondor Collector:
+
+Modify the CN in openssl.cnf
 ```ini
 [ dn ]
 CN = htcondor.collector
 ```
 
-2. Then generate the certificates using Step 4 in this guide.
+Creating certificates for Apel client 
+```bash
+openssl req -new -nodes -newkey rsa:2048 \
+  -keyout htcondor-client-key.pem \
+  -out htcondor-client-req.pem \
+  -config openssl.cnf
+```
+
+```bash
+openssl x509 -req -in htcondor-client-req.pem \
+  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+  -out htcondor-client-cert.pem -days 365 \
+  -extensions v3_req -extfile openssl.cnf
+```
+
+Similarly, you can just change the CN and the filenames for writing out the key and certs for other collectors/plugins.
 
 ### Updating the Auditor RBAC Config
 The APEL Plugin should have read access, and the HTCondor Collector should have write access. Update the rbac_config section of the AUDITOR config file as follows:
