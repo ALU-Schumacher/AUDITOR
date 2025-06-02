@@ -69,7 +69,12 @@ fn default_base_policies() -> Vec<Vec<String>> {
         vec![
             "write_access_base".to_string(),
             "/record".to_string(),
-            "UPDATE".to_string(),
+            "PUT".to_string(),
+        ],
+        vec![
+            "write_access_base".to_string(),
+            "/records".to_string(),
+            "POST".to_string(),
         ],
         vec![
             "write_access_base".to_string(),
