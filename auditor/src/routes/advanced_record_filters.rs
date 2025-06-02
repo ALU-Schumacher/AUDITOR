@@ -28,6 +28,8 @@ pub struct Filters {
     pub component: Option<HashMap<ValidName, Operator<ValidAmount>>>,
     pub sort_by: Option<SortOption>,
     pub limit: Option<ValidAmount>,
+    //#[serde(skip)]
+    //pub allowed_site_ids: Option<Vec<String>>,
 }
 
 impl Filters {
@@ -40,6 +42,92 @@ impl Filters {
             && self.component.is_none()
             && self.sort_by.is_none()
             && self.limit.is_none()
+    }
+
+    pub fn enforce_meta_filtering(
+        &mut self,
+        mut allowed_meta_ids: HashMap<String, Vec<String>>,
+    ) -> Result<(), String> {
+        if allowed_meta_ids.is_empty() {
+            return Err("No meta IDs available for the user".to_string());
+        }
+
+        if let Some(meta_filters) = &mut self.meta {
+            for (key, meta_operator) in meta_filters.clone() {
+                if let Some(requested_meta_ids) = &meta_operator.c {
+                    let all_authorized = requested_meta_ids.to_vec().iter().all(|site| {
+                        allowed_meta_ids
+                            .get(&key.to_string())
+                            .expect("meta_id does not exist")
+                            .contains(&site.to_string())
+                    });
+
+                    if !all_authorized {
+                        return Err(format!(
+                            "Permission denied to access the site with the meta_id {}",
+                            &key
+                        ));
+                    }
+                    return Ok(());
+                }
+                if let Some(dnc_sites) = &meta_operator.dnc {
+                    if let Some(sites) = allowed_meta_ids.get_mut(&key.to_string()) {
+                        sites.retain(|site| {
+                            !dnc_sites.contains(&ValidName::parse(site.to_string()).unwrap())
+                        });
+                    }
+
+                    if allowed_meta_ids
+                        .get(&key.to_string())
+                        .expect("meta_id does not exist")
+                        .is_empty()
+                    {
+                        return Err(
+                            "Permission denied to access the site with the meta_id".to_string()
+                        );
+                    }
+                    return Ok(());
+                }
+            }
+
+            if !allowed_meta_ids.is_empty() {
+                for (key, values) in allowed_meta_ids.iter() {
+                    let valid_values: Vec<ValidName> = values
+                        .iter()
+                        .map(|v| ValidName::parse(v.clone()).unwrap())
+                        .collect();
+
+                    meta_filters.insert(
+                        ValidName::parse(key.clone()).unwrap(),
+                        MetaOperator {
+                            c: Some(valid_values),
+                            dnc: None,
+                        },
+                    );
+                }
+            }
+        } else if !allowed_meta_ids.is_empty() {
+            let mut meta_filters = HashMap::new();
+
+            for (key, values) in allowed_meta_ids.iter() {
+                let valid_values: Vec<ValidName> = values
+                    .iter()
+                    .map(|v| ValidName::parse(v.clone()).unwrap())
+                    .collect();
+
+                meta_filters.insert(
+                    ValidName::parse(key.clone()).unwrap(),
+                    MetaOperator {
+                        c: Some(valid_values),
+                        dnc: None,
+                    },
+                );
+            }
+
+            self.meta = Some(meta_filters);
+        }
+
+        Ok(())
     }
 }
 
@@ -55,8 +143,8 @@ pub struct Operator<T> {
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct MetaOperator {
-    pub c: Option<ValidName>,
-    pub dnc: Option<ValidName>,
+    pub c: Option<Vec<ValidName>>,
+    pub dnc: Option<Vec<ValidName>>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -147,23 +235,26 @@ pub async fn advanced_record_filtering(
             for (key, meta_operator) in meta_filters {
                 if let Some(c) = &meta_operator.c {
                     // query string -> meta -> "site_id" @> jsonb_build_array("site1") and
-
-                    query.push(" meta ->  ".to_string());
-                    query.push_bind(key.clone());
-                    query.push(" @> jsonb_build_array(".to_string());
-                    query.push_bind(c.clone());
-                    query.push(") ");
-                    query.push(" and ");
+                    c.to_vec().iter().for_each(|site| {
+                        query.push(" meta ->  ".to_string());
+                        query.push_bind(key.clone());
+                        query.push(" @> jsonb_build_array(".to_string());
+                        query.push_bind(site.clone());
+                        query.push(") ");
+                        query.push(" and ");
+                    });
                 }
                 if let Some(dnc) = &meta_operator.dnc {
                     // query string -> NOT (meta -> "site_id" @> jsonb_build_array("site_1")) and
 
-                    query.push(" NOT (meta ->  ".to_string());
-                    query.push_bind(key.clone());
-                    query.push(" @> jsonb_build_array(".to_string());
-                    query.push_bind(dnc.clone());
-                    query.push(") ) ");
-                    query.push(" and ");
+                    dnc.to_vec().iter().for_each(|site| {
+                        query.push(" NOT (meta ->  ".to_string());
+                        query.push_bind(key.clone());
+                        query.push(" @> jsonb_build_array(".to_string());
+                        query.push_bind(site.clone());
+                        query.push(") ) ");
+                        query.push(" and ");
+                    });
                 }
             }
         }

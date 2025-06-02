@@ -184,7 +184,9 @@ pub async fn spawn_app() -> TestApp {
         connection_pool.clone(),
         db_watcher,
         None,
+        false,
     )
+    .await
     .expect("Failed to bind address");
     tokio::spawn(server);
     TestApp {
