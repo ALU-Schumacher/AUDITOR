@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- HTCondor collector: Add record_id to debug output ([@thdesy](https://github.com/thdesy))
 
 ### Changed
 - APEL plugin: Fix bug when list of records is empty ([@dirksammel](https://github.com/dirksammel))
