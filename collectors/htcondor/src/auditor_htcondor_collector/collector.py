@@ -177,6 +177,8 @@ class CondorHistoryCollector(object):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
 
             cmd.extend(["-constraint", f'"{job_stats}"'])
+        if self.config.get("history_file"):
+            cmd.extend(["-file", f'"{self.config.history_file}"'])
 
         self.logger.debug(f"Running command: {' '.join(cmd)!r}")
 
