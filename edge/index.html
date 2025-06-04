@@ -905,8 +905,11 @@ See below for all currently available collectors.</p>
 </span><span>  
 </span><span style="color:#00a33f;">site</span><span>:
 </span><span>  </span><span style="color:#00a33f;">sites_to_report</span><span>:
-</span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>]
-</span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
+</span><span>    </span><span style="color:#00a33f;">SITE_A</span><span>: 
+</span><span>      - </span><span style="color:#00a33f;">site_id_1 
+</span><span>      - </span><span style="color:#00a33f;">site_id_2
+</span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: 
+</span><span>      - </span><span style="color:#00a33f;">site_id_3
 </span><span>
 </span><span style="color:#00a33f;">messaging</span><span>:
 </span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">msg.argo.grnet.gr
@@ -922,7 +925,7 @@ See below for all currently available collectors.</p>
 </span><span>  </span><span style="color:#00a33f;">ip</span><span>: 127.0.0.1
 </span><span>  </span><span style="color:#00a33f;">port</span><span>: 3333
 </span><span>  </span><span style="color:#00a33f;">timeout</span><span>: 60
-</span><span>  </span><span style="color:#00a33f;">site_meta_field</span><span>: </span><span style="color:#00a33f;">site_id
+</span><span>  </span><span style="color:#00a33f;">site_meta_field</span><span>: </span><span style="color:#00a33f;">site_id </span><span style="color:#919191;"># can also be a list, e.g. [site_id, site]
 </span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">True
 </span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">/path/rootCA.pem
 </span><span>  </span><span style="color:#00a33f;">client_cert_path</span><span>: </span><span style="color:#00a33f;">/path/client-cert.pem
@@ -984,7 +987,7 @@ See below for all currently available collectors.</p>
 <tr><td><code>auditor</code></td><td><code>ip</code></td><td>IP of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>port</code></td><td>Port of the AUDITOR instance.</td></tr>
 <tr><td><code>auditor</code></td><td><code>timeout</code></td><td>Time in seconds after which the connection to the AUDITOR instance times out.</td></tr>
-<tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the field that stores the name of the site in the AUDITOR records.</td></tr>
+<tr><td><code>auditor</code></td><td><code>site_meta_field</code></td><td>Name of the meta field that stores the name of the site in the AUDITOR records. This can also be a list, e.g. if your database contains records with different names of the meta field.</td></tr>
 <tr><td><code>auditor</code></td><td><code>use_tls</code></td><td>Specifies whether TLS is enabled (<code>True</code>) or disabled (<code>False</code>).</td></tr>
 <tr><td><code>auditor</code></td><td><code>ca_cert_path</code></td><td>Path to the root Certificate Authority (CA) certificate for validating certificates. Only needed if <code>use_tls</code> is True.</td></tr>
 <tr><td><code>auditor</code></td><td><code>client_cert_path</code></td><td>Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Only needed if <code>use_tls</code> is True.</td></tr>
