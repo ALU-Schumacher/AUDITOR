@@ -51,7 +51,8 @@ class Config(object):
         self._config.update({k: v for k, v in args.__dict__.items() if v is not None})
 
         self._config["class_ads"] = self._config["class_ads"].union(
-            extract_values("key", file_config)
+            extract_values("key", file_config["components"]),
+            extract_values("key", file_config["meta"]),
         )
         self.check()
         self._config["condor_timestamp"] = int(
