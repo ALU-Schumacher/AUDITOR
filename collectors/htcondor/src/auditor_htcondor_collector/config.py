@@ -28,16 +28,17 @@ class Config(object):
         "log_file": None,
         "history_file": None,
         "earliest_datetime": date.today().isoformat(),
-        "class_ads": [
+        "class_ads": (
             "GlobalJobId",
             "ClusterId",
             "ProcId",
             "LastMatchTime",
             "EnteredCurrentStatus",
-        ],
+        ),
     }
 
     def __init__(self, args: Namespace):
+        self._config = type(self)._config.copy()
         with open(args.config) as f:
             file = yaml.safe_load(f)
 
