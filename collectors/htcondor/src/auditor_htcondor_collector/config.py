@@ -19,6 +19,9 @@ from .utils import extract_values
 
 
 class Config(object):
+    """Utility class to aggregate the configuration from CLI, file and defaults"""
+
+    # default configuration
     _config: T_Config = {
         "interval": 900,
         "log_level": "INFO",
