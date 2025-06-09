@@ -54,7 +54,7 @@ class Config(object):
             extract_values("key", file_config["components"]),
             extract_values("key", file_config["meta"]),
         )
-        self.check()
+        self._verify()
         self._config["condor_timestamp"] = int(
             dt.fromisoformat(self.earliest_datetime).timestamp()
         )
@@ -65,7 +65,9 @@ class Config(object):
     def get(self, attr: str, default=None):
         return self._config.get(attr, default)
 
-    def check(self):
+    def _verify(self):
+        """Verify presence and type of config items"""
+
         def _get(
             keys: Keys, config: T_Config = self._config
         ) -> Union[T_Config, int, str, List[T_Config], List[int], List[str], None]:
