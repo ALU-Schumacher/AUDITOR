@@ -66,9 +66,10 @@ class Config(object):
     def _verify(self):
         """Verify presence and type of config items"""
 
-        def _get(
+        def get_nested(
             keys: Keys, config: T_Config = self._config
         ) -> Union[T_Config, int, str, List[T_Config], List[int], List[str], None]:
+            """Provide `config[keys[0]]...[keys[-1]]` if present else `None`"""
             try:
                 return reduce(lambda d, k: d[k], keys, config)
             except KeyError:
@@ -87,7 +88,7 @@ class Config(object):
             (["components"], list),
             (["tls_config"], dict),
         ]:
-            _cfg = _get(keys)
+            _cfg = get_nested(keys)
             if _cfg is None:
                 raise MissingConfigEntryError(keys)
             if not isinstance(_cfg, _type):
@@ -103,7 +104,7 @@ class Config(object):
 
         # Check that certain config entries contain the required keys
         for keys in [["meta", "site"], ["components"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             assert isinstance(entries, list)  # For type checking
             for i, entry in enumerate(entries):
                 if not isinstance(entry, dict):
@@ -127,7 +128,7 @@ class Config(object):
 
         # Check that certain config entries are lists of non-empty strings
         for keys in [["schedd_names"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             assert isinstance(entries, list)  # For type checking
             for i, entry in enumerate(entries):
                 if not isinstance(entry, str) or len(entry.strip()) == 0:
@@ -136,7 +137,7 @@ class Config(object):
                     )
 
         for keys in [["tls_config"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             if not isinstance(entries["use_tls"], bool):
                 raise MalformedConfigEntryError(["use_tls"], "Must be a bool")
             if "use_tls" not in entries:
@@ -157,7 +158,7 @@ class Config(object):
         # If "job_status" is present, check that it is a list of integers
         if "job_status" in self._config:
             keys = ["job_status"]
-            entries = _get(keys)
+            entries = get_nested(keys)
             if not isinstance(entries, list):
                 raise MalformedConfigEntryError(
                     keys, "Must be a list of job status entries (integers)"
@@ -229,7 +230,7 @@ class Config(object):
                     )
             if len(keys) > 1:
                 if keys[-2] == "only_if":
-                    only_if = _get(keys[:-1])
+                    only_if = get_nested(keys[:-1])
                     if not isinstance(only_if, dict):
                         raise MalformedConfigEntryError(
                             keys[:-1],
