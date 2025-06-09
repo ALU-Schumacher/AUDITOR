@@ -41,6 +41,9 @@ class Config(object):
         self._config = type(self)._config.copy()
         with open(args.config) as f:
             file = yaml.safe_load(f)
+            assert (
+                "class_ads" not in file
+            ), "config may not set internal item 'class_ads'"
 
         self._config.update(file)
         self._config.update({k: v for k, v in args.__dict__.items() if v is not None})
