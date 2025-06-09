@@ -26,12 +26,14 @@ class Config(object):
         "log_level": "INFO",
         "log_file": None,
         "earliest_datetime": date.today().isoformat(),
-        "class_ads": (
-            "GlobalJobId",
-            "ClusterId",
-            "ProcId",
-            "LastMatchTime",
-            "EnteredCurrentStatus",
+        "class_ads": frozenset(
+            (
+                "GlobalJobId",
+                "ClusterId",
+                "ProcId",
+                "LastMatchTime",
+                "EnteredCurrentStatus",
+            )
         ),
     }
 
@@ -46,8 +48,8 @@ class Config(object):
         self._config.update(file)
         self._config.update({k: v for k, v in args.__dict__.items() if v is not None})
 
-        self._config["class_ads"] = list(
-            set(self._config["class_ads"]).union(set(extract_values("key", file)))
+        self._config["class_ads"] = self._config["class_ads"].union(
+            extract_values("key", file)
         )
         self.check()
         self._config["condor_timestamp"] = int(
