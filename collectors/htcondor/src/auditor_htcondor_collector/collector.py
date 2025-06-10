@@ -173,11 +173,14 @@ class CondorHistoryCollector(object):
         ]
         if self.config.get("pool"):
             cmd.extend(["-pool", self.config.pool])
+        # multiple `-constraint`s are implicitly &&'ed by HTCondor
         if self.config.get("job_status"):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
             if self.config.query_type == "shell":
                 job_stats = f'"{job_stats}"'
             cmd.extend(["-constraint", job_stats])
+        if constraint := self.config.get("constraint"):
+            cmd.extend(["-constraint", constraint])
         if self.config.get("history_file"):
             cmd.extend(["-file", f'"{self.config.history_file}"'])
 
