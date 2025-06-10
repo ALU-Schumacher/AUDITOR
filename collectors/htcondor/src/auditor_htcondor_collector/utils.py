@@ -1,8 +1,7 @@
 import re
-from typing import AnyStr, Generator, Union, TypeVar
+from typing import AnyStr, Generator, TypeVar, Union
 
 from .custom_types import Config as T_Config
-
 
 V = TypeVar("V")
 
