@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
-from asyncio import create_subprocess_shell
+from asyncio import create_subprocess_shell, create_subprocess_exec
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
@@ -175,14 +175,18 @@ class CondorHistoryCollector(object):
             cmd.extend(["-pool", self.config.pool])
         if self.config.get("job_status"):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
-
-            cmd.extend(["-constraint", f'"{job_stats}"'])
+            if self.config.query_type == "shell":
+                job_stats = f'"{job_stats}"'
+            cmd.extend(["-constraint", job_stats])
         if self.config.get("history_file"):
             cmd.extend(["-file", f'"{self.config.history_file}"'])
 
         self.logger.debug(f"Running command: {' '.join(cmd)!r}")
 
-        p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
+        if self.config.query_type == "shell":
+            p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
+        elif self.config.query_type == "exec":
+            p = await create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
         output, err = await p.communicate()
         if err:
             self.logger.error(f"Error querying HTCondor history:\n{err}")
