@@ -199,6 +199,12 @@ class Config(object):
             if not isfile(self._config["history_file"]):
                 raise MalformedConfigEntryError(["history_file"], "Is not a file")
 
+        if "query_type" in self._config:
+            if self._config["query_type"] not in ("shell", "exec"):
+                raise MalformedConfigEntryError(
+                    ["query_type"], "Must be one of 'shell' or 'exec'"
+                )
+
         def _iter_config(
             keys: Keys = [], config: T_Config = self._config
         ) -> Iterator[Tuple[Keys, Union[str, int]]]:
@@ -235,11 +241,6 @@ class Config(object):
                 except (TypeError, ValueError):
                     raise MalformedConfigEntryError(
                         keys, "Must be a valid ISO 8601 datetime string"
-                    )
-            elif keys == ["query_type"]:
-                if value not in ("shell", "exec"):
-                    raise MalformedConfigEntryError(
-                        keys, "Must be one of 'shell' or 'exec'"
                     )
             if len(keys) > 1:
                 if keys[-2] == "only_if":
