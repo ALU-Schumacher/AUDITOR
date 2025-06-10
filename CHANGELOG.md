@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Add role based access control service ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add TLS certificate generation guide ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- HTCondor collector: Support arbitrary HTCondor `constraint` expression to select jobs ([@maxfischer2781](https://github.com/maxfischer2781))
+- HTCondor collector: Support running queries via `exec` to avoid escapes for an intermediate shell ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ### Changed
 - APEL plugin: Fix bug in republish script when list of records is empty ([@dirksammel](https://github.com/dirksammel))
