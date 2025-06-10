@@ -26,6 +26,7 @@ class Config(object):
         "log_level": "INFO",
         "log_file": None,
         "earliest_datetime": date.today().isoformat(),
+        "query_type": "shell",
         "class_ads": frozenset(
             (
                 "GlobalJobId",
@@ -227,6 +228,11 @@ class Config(object):
                 except (TypeError, ValueError):
                     raise MalformedConfigEntryError(
                         keys, "Must be a valid ISO 8601 datetime string"
+                    )
+            elif keys == ["query_type"]:
+                if value not in ("shell", "exec"):
+                    raise MalformedConfigEntryError(
+                        keys, "Must be one of 'shell' or 'exec'"
                     )
             if len(keys) > 1:
                 if keys[-2] == "only_if":
