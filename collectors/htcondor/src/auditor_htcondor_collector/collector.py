@@ -190,6 +190,8 @@ class CondorHistoryCollector(object):
             p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
         elif self.config.query_type == "exec":
             p = await create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+        else:
+            raise NotImplementedError(f"query_type {self.config.query_type!r}")
         output, err = await p.communicate()
         if err:
             self.logger.error(f"Error querying HTCondor history:\n{err}")
