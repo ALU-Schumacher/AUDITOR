@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
-from asyncio import create_subprocess_shell, create_subprocess_exec
+from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
