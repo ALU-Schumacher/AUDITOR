@@ -1,10 +1,13 @@
 import re
-from typing import Any, AnyStr, Generator, Union
+from typing import AnyStr, Generator, Union, TypeVar
 
 from .custom_types import Config as T_Config
 
 
-def extract_values(key: str, var: dict) -> Generator[Any, None, None]:
+V = TypeVar("V")
+
+
+def extract_values(key: str, var: "dict[str, V]") -> Generator[V, None, None]:
     """Extracts all values from nested dictionary for a given key.
 
     Args:
