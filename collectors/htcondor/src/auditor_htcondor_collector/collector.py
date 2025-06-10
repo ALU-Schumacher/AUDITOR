@@ -160,7 +160,7 @@ class CondorHistoryCollector(object):
             )
             since = f"{job[0]}.{job[1]}"
 
-        cmd = [
+        cmd: list[str] = [
             "condor_history",
             "-backwards",
             "-wide",
