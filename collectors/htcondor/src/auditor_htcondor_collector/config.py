@@ -198,6 +198,10 @@ class Config(object):
                     ["query_type"], "Must be one of 'shell' or 'exec'"
                 )
 
+        if "constraint" in self._config:
+            if not isinstance(self._config["constraint"], str):
+                raise MalformedConfigEntryError(["constraint"], "Must be a string")
+
         def _iter_config(
             keys: Keys = [], config: T_Config = self._config
         ) -> Iterator[Tuple[Keys, Union[str, int]]]:
