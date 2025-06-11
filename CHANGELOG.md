@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
+- HTCondor collector: Support arbitrary HTCondor `constraint` expression to select jobs ([@maxfischer2781](https://github.com/maxfischer2781))
+- HTCondor collector: Support running queries via `exec` to avoid escapes for an intermediate shell ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ### Changed
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))

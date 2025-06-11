@@ -18,31 +18,40 @@ from .utils import extract_values
 
 
 class Config(object):
+    """Utility class to aggregate the configuration from CLI, file and defaults"""
+
+    # default configuration
     _config: T_Config = {
         "interval": 900,
         "log_level": "INFO",
         "log_file": None,
         "earliest_datetime": date.today().isoformat(),
-        "class_ads": [
-            "GlobalJobId",
-            "ClusterId",
-            "ProcId",
-            "LastMatchTime",
-            "EnteredCurrentStatus",
-        ],
+        "query_type": "shell",
+        "class_ads": frozenset(
+            (
+                "GlobalJobId",
+                "ClusterId",
+                "ProcId",
+                "LastMatchTime",
+                "EnteredCurrentStatus",
+            )
+        ),
     }
 
     def __init__(self, args: Namespace):
+        self._config = type(self)._config.copy()
         with open(args.config) as f:
-            file = yaml.safe_load(f)
+            file_config = yaml.safe_load(f)
+            assert "class_ads" not in file_config, "config may not set 'class_ads'"
 
-        self._config.update(file)
+        self._config.update(file_config)
         self._config.update({k: v for k, v in args.__dict__.items() if v is not None})
 
-        self._config["class_ads"] = list(
-            set(self._config["class_ads"]).union(set(extract_values("key", file)))
+        self._config["class_ads"] = self._config["class_ads"].union(
+            extract_values("key", file_config["components"]),
+            extract_values("key", file_config["meta"]),
         )
-        self.check()
+        self._verify()
         self._config["condor_timestamp"] = int(
             dt.fromisoformat(self.earliest_datetime).timestamp()
         )
@@ -53,10 +62,13 @@ class Config(object):
     def get(self, attr: str, default=None):
         return self._config.get(attr, default)
 
-    def check(self):
-        def _get(
+    def _verify(self):
+        """Verify presence and type of config items"""
+
+        def get_nested(
             keys: Keys, config: T_Config = self._config
         ) -> Union[T_Config, int, str, List[T_Config], List[int], List[str], None]:
+            """Provide `config[keys[0]]...[keys[-1]]` if present else `None`"""
             try:
                 return reduce(lambda d, k: d[k], keys, config)
             except KeyError:
@@ -75,7 +87,7 @@ class Config(object):
             (["components"], list),
             (["tls_config"], dict),
         ]:
-            _cfg = _get(keys)
+            _cfg = get_nested(keys)
             if _cfg is None:
                 raise MissingConfigEntryError(keys)
             if not isinstance(_cfg, _type):
@@ -91,7 +103,7 @@ class Config(object):
 
         # Check that certain config entries contain the required keys
         for keys in [["meta", "site"], ["components"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             assert isinstance(entries, list)  # For type checking
             for i, entry in enumerate(entries):
                 if not isinstance(entry, dict):
@@ -115,7 +127,7 @@ class Config(object):
 
         # Check that certain config entries are lists of non-empty strings
         for keys in [["schedd_names"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             assert isinstance(entries, list)  # For type checking
             for i, entry in enumerate(entries):
                 if not isinstance(entry, str) or len(entry.strip()) == 0:
@@ -124,7 +136,7 @@ class Config(object):
                     )
 
         for keys in [["tls_config"]]:
-            entries = _get(keys)
+            entries = get_nested(keys)
             if not isinstance(entries["use_tls"], bool):
                 raise MalformedConfigEntryError(["use_tls"], "Must be a bool")
             if "use_tls" not in entries:
@@ -145,7 +157,7 @@ class Config(object):
         # If "job_status" is present, check that it is a list of integers
         if "job_status" in self._config:
             keys = ["job_status"]
-            entries = _get(keys)
+            entries = get_nested(keys)
             if not isinstance(entries, list):
                 raise MalformedConfigEntryError(
                     keys, "Must be a list of job status entries (integers)"
@@ -177,6 +189,16 @@ class Config(object):
                 raise MalformedConfigEntryError(
                     ["timeout"], "Must be a positive integer"
                 )
+
+        if "query_type" in self._config:
+            if self._config["query_type"] not in ("shell", "exec"):
+                raise MalformedConfigEntryError(
+                    ["query_type"], "Must be one of 'shell' or 'exec'"
+                )
+
+        if "constraint" in self._config:
+            if not isinstance(self._config["constraint"], str):
+                raise MalformedConfigEntryError(["constraint"], "Must be a string")
 
         def _iter_config(
             keys: Keys = [], config: T_Config = self._config
@@ -217,7 +239,7 @@ class Config(object):
                     )
             if len(keys) > 1:
                 if keys[-2] == "only_if":
-                    only_if = _get(keys[:-1])
+                    only_if = get_nested(keys[:-1])
                     if not isinstance(only_if, dict):
                         raise MalformedConfigEntryError(
                             keys[:-1],
