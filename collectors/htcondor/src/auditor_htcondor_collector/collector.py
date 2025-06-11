@@ -182,11 +182,11 @@ class CondorHistoryCollector(object):
         if constraint := self.config.get("constraint"):
             cmd.extend(["-constraint", constraint])
 
-        self.logger.debug(f"Running command: {' '.join(cmd)!r}")
-
         if self.config.query_type == "shell":
+            self.logger.debug(f"Running command: {' '.join(cmd)!r}")
             p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
         elif self.config.query_type == "exec":
+            self.logger.debug(f"Running command: {cmd!r}")
             p = await create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
         else:
             raise NotImplementedError(f"query_type {self.config.query_type!r}")
