@@ -56,7 +56,7 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
             get_range_operator = get_since_operator.lt(end_time_value)
             stop_time_query = stop_time_query.with_stop_time(get_range_operator)
         for site in site_ids:
-            site_operator = MetaOperator().contains(site)
+            site_operator = MetaOperator().contains([site])
             for meta_key in meta_key_site:
                 site_query = MetaQuery().meta_operator(meta_key, site_operator)
                 query_string = stop_time_query.with_meta_query(site_query).build()

@@ -539,7 +539,7 @@ class TestAuditorApelPlugin:
         client = FakeAuditorClient("pass")
 
         sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
-        meta_key_site = "site_id"
+        meta_key_site = ["site_id"]
 
         config.site.sites_to_report = sites_to_report
         config.auditor.site_meta_field = meta_key_site
@@ -555,7 +555,7 @@ class TestAuditorApelPlugin:
             config: Config = yaml.load(f, Loader=get_loaders())
 
         sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
-        meta_key_site = "site_id"
+        meta_key_site = ["site_id"]
 
         config.site.sites_to_report = sites_to_report
         config.auditor.site_meta_field = meta_key_site

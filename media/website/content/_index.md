@@ -1412,7 +1412,7 @@ DNS.1 = localhost
 IP.1 = 127.0.0.1
 ```
 
-If you plan to run the auditor inside Docker, consider adding the following entry to the [ alt_names ] section:
+If you plan to run auditor inside Docker, consider adding the following entry to the [ alt_names ] section:
 
 ```ini
 DNS.2 = host.docker.internal
@@ -1486,7 +1486,7 @@ Modify the CN in openssl.cnf
 CN = htcondor.collector
 ```
 
-Creating certificates for Apel client 
+Creating certificates for HTCondor client 
 ```bash
 openssl req -new -nodes -newkey rsa:2048 \
   -keyout htcondor-client-key.pem \

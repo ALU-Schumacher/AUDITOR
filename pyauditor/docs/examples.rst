@@ -191,25 +191,25 @@ Filter Fields and Operators
 
 The table shows the fields and the corresponding operators available for each field with which a query can be built.
 
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| Field        | Description                                   | Operators                              | Examples (query representation)          |
-+==============+===============================================+========================================+==========================================+
-| `record_id`  | Exact record to be retrieved using record_id  |                                        | record_id=<record_id>                    |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `start_time` | Start time of the event (`DateTime<Utc>`)     | `gt`, `gte`, `lt`, `lte`               | start_time[gt]=<timestamp>               |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `stop_time`  | Stop time of the event (`DateTime<Utc>`)      | `gt`, `gte`, `lt`, `lte`               | stop_time[gt]=<timestamp>                |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `runtime`    | Runtime of the event (in seconds)             | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<int>                        |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `meta`       | Meta information                              | `c`, `dnc`                             | meta[<meta_key>][c]=<meta_value>         |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `component`  | Component identifier                          | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount> |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `sort_by`    | Sort the records                              | `asc`, `desc`                          | sort_by[asc]=<column_name>               |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
-| `limit`      | Limit the query results                       |                                        | limit=<number>                           |
-+--------------+-----------------------------------------------+----------------------------------------+------------------------------------------+
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| Field        | Description                                   | Operators                              | Examples (query representation)             |
++==============+===============================================+========================================+=============================================+
+| `record_id`  | Exact record to be retrieved using record_id  |                                        | record_id=<record_id>                       |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `start_time` | Start time of the event (`DateTime<Utc>`)     | `gt`, `gte`, `lt`, `lte`               | start_time[gt]=<timestamp>                  |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `stop_time`  | Stop time of the event (`DateTime<Utc>`)      | `gt`, `gte`, `lt`, `lte`               | stop_time[gt]=<timestamp>                   |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `runtime`    | Runtime of the event (in seconds)             | `gt`, `gte`, `lt`, `lte`               | runtime[gt]=<int>                           |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `meta`       | Meta information                              | `c`, `dnc`                             | meta[<meta_key>][c][0]=<meta_value>         |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `component`  | Component identifier                          | `gt`, `gte`, `lt`, `lte`, `equals`     | component[<component_name>][gt]=<amount>    |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `sort_by`    | Sort the records                              | `asc`, `desc`                          | sort_by[asc]=<column_name>                  |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
+| `limit`      | Limit the query results                       |                                        | limit=<number>                              |
++--------------+-----------------------------------------------+----------------------------------------+---------------------------------------------+
 
 
 Meta field can be used to query records by specifying the meta key and MetaOperator must be used
@@ -274,7 +274,7 @@ Query records with meta key = site_id and value = site1
 
     from pyauditor import MetaOperator, MetaQuery, QueryBuilder
 
-    meta_operator = MetaOperator().contains("site1")
+    meta_operator = MetaOperator().contains("[site1]")
     meta_query = MetaQuery().meta_operator("site_id", meta_operator)
     query_string = QueryBuilder().with_meta_query(meta_query).build()
     records = await client.advanced_query(query_string)
