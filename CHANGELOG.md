@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update build from 1.2.2.post1 to 1.3.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.3 to 45.0.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.11.4 to 2.11.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.9 to 0.12.7 ([@dirksammel](https://github.com/dirksammel))
 - Docs: Add some details about required values for the APEL plugin, mention `bump_version` script ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Allow for reading history from file ([@rfvc](https://github.com/rfvc))
