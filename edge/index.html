@@ -218,6 +218,33 @@
                 
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#tls-certificate-generation-guide">TLS Certificate Generation Guide</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#1-create-rootca-key-if-not-present"><small>- 1. Create rootCA key (if not present)</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#2-create-rootca"><small>- 2. Create rootCA</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#3-create-the-openssl-configuration-file-openssl-cnf"><small>- 3. Create the OpenSSL Configuration File (openssl.cnf)</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#4-creating-server-client-certificates"><small>- 4. Creating server&#x2F;client certificates</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#5-configure-auditor-with-rbac-settings"><small>- 5. Configure Auditor with RBAC Settings</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#license">License</a>
                 </div>
                 
@@ -356,6 +383,10 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_TLS_CONFIG__CA_CERT_PATH</code></td><td>Path to the root Certificate Authority (CA) certificate for validating client certificates.</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__SERVER_CERT_PATH</code></td><td>Path to the server's TLS certificate.</td></tr>
 <tr><td><code>AUDITOR_TLS_CONFIG__SERVER_KEY_PATH</code></td><td>Path to the server's private key used for TLS.</td></tr>
+<tr><td><code>AUDITOR_RBAC_CONFIG__ENFORCE_RBAC</code></td><td>Specifies whether RBAC is enabled (<code>true</code>) or disabled (<code>false</code>).</td></tr>
+<tr><td><code>AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN</code></td><td>Specifies list of CN that are allowed to read the auditor prometheus metrics</td></tr>
+<tr><td><code>AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN</code></td><td>Specifies which clients are allowed to perform the write operations from AUDITOR</td></tr>
+<tr><td><code>AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN</code></td><td>Specifies which clients are allowed to perform the read operaitons from AUDITOR</td></tr>
 </tbody></table>
 <p>Use <code>docker run</code> to execute Auditor:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
@@ -401,13 +432,80 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span></code></pre>
 <p>For dualstack operation, you can set the IPv4 and IPv6 addresses as a list in the auditor config file as shown below.</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
-</span><span>  </span><span style="color:#00a33f;">addr</span><span>: 
+</span><span>  </span><span style="color:#00a33f;">addr</span><span>:
 </span><span>    - 0.0.0.0
 </span><span>    - </span><span style="color:#00a33f;">::1
 </span></code></pre>
 <p>IPv4 and IPv6 addresses can also be specified as an ENV variable</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>AUDITOR_APPLICATION__ADDR</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">127.0.0.1,::1
 </span></code></pre>
+<p>With rbac (role based access control)</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">database</span><span>:
+</span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 5432
+</span><span>  </span><span style="color:#00a33f;">username</span><span>: </span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>  </span><span style="color:#00a33f;">password</span><span>: </span><span style="color:#00a33f;">&quot;password&quot;
+</span><span>  </span><span style="color:#00a33f;">database_name</span><span>: </span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>  </span><span style="color:#00a33f;">database</span><span>:
+</span><span>    </span><span style="color:#00a33f;">frequency</span><span>: 30
+</span><span>    </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">RecordCount
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;./auditor/certs/rootCA.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;./auditor/certs/server-cert.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_key_path</span><span>: </span><span style="color:#00a33f;">&quot;./auditor/certs/server-key.pem&quot;
+</span><span style="color:#00a33f;">rbac_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">enforce_rbac</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">monitoring_role_cn</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">monitoring.role
+</span><span>  </span><span style="color:#00a33f;">write_access_cn</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">htcondor.collector
+</span><span>  </span><span style="color:#00a33f;">read_access_cn</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">apel.plugin
+</span><span>  </span><span style="color:#00a33f;">data_access_rules</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">reader_cn</span><span>: </span><span style="color:#00a33f;">apel.plugin
+</span><span>      </span><span style="color:#00a33f;">meta_info</span><span>:
+</span><span>        </span><span style="color:#00a33f;">site_id</span><span>:
+</span><span>          - </span><span style="color:#00a33f;">site_id_1
+</span><span>          - </span><span style="color:#00a33f;">site_id_2
+</span></code></pre>
+<p>write_access_cn and read_access_cn takes in the common name from certs for your collectors and plugins.</p>
+<h3 id="monitoring-role-cn-list-of-strings">monitoring_role_cn (list of strings):</h3>
+<p>Specifies which clients (identified by their TLS certificate Common Name) are allowed to read the metrics from AUDITOR database.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">monitoring_role_cn</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">monitoring.role
+</span></code></pre>
+<h3 id="write-access-cn-list-of-strings">write_access_cn (list of strings):</h3>
+<p>Specifies which clients (identified by their TLS certificate Common Name) are allowed to perform write operations.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">write_access_cn</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">htcondor.collector
+</span></code></pre>
+<h3 id="read-access-cn-list-of-strings">read_access_cn (list of strings):</h3>
+<p>Lists clients allowed to perform general read operations.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">read_access_cn</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">apel.plugin
+</span></code></pre>
+<h3 id="data-access-rules-list-of-objects">data_access_rules (list of objects):</h3>
+<p>Defines fine-grained read permissions for specific metadata values (e.g., site-specific data).
+Each rule consists of:</p>
+<p>reader_cn: The client CN permitted to read restricted data.</p>
+<p>meta_info: A mapping of metadata keys (e.g., site_id) to allowed values.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">data_access_rules</span><span>:
+</span><span>  - </span><span style="color:#00a33f;">reader_cn</span><span>: </span><span style="color:#00a33f;">apel.plugin
+</span><span>    </span><span style="color:#00a33f;">meta_info</span><span>:
+</span><span>      </span><span style="color:#00a33f;">site_id</span><span>: 
+</span><span>        - </span><span style="color:#00a33f;">site_id_1
+</span><span>        - </span><span style="color:#00a33f;">site_id_2
+</span></code></pre>
+<p>This means:</p>
+<p>The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.</p>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
 <p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
 <p>If you run Auditor using Docker, then you first need to mount the configuration file inside the container, before you can use it.
@@ -1243,6 +1341,106 @@ The <code>value.yaml</code> files contain a section with a simple example for th
 If you want to use it, set <code>persistentVolume.use</code> to <code>true</code> in the appropriate <code>values.yaml</code> and add the node to use in <code>persistentVolume.nodeAffinity</code>.
 Then, on the nodes in question the directory <code>/srv/auditor/{apel,collector,prometheus}</code> should exists.</p>
 <p>If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files <code>ca.pem</code>, <code>client.pem</code> and <code>client.key</code> in the <code>files</code> directory of its chart.</p>
+<h1 id="tls-certificate-generation-guide">TLS Certificate Generation Guide</h1>
+<p>The following are the guidelines for setting up the certificates for TLS setup. You can change and configure according to your requirements like the encryption type and the validity days for the certificate.
+Have a look at the online resources for more details. <a href="https://knowledge.digicert.com/general-information/openssl-quick-reference-guide">openssl</a></p>
+<h2 id="1-create-rootca-key-if-not-present">1. Create <code>rootCA</code> key (if not present)</h2>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl genrsa -out rootCA.key 4096
+</span></code></pre>
+<h2 id="2-create-rootca">2. Create rootCA</h2>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl req -x509 -new -key rootCA.key -sha256 -days 365 -out rootCA.pem
+</span></code></pre>
+<h2 id="3-create-the-openssl-configuration-file-openssl-cnf">3. Create the OpenSSL Configuration File (openssl.cnf)</h2>
+<p>Create a file called <code>openssl.cnf</code> and add the config as shown below:</p>
+<pre style="background-color:#ffffff;color:#000000;"><code><span>[ req ]
+</span><span>default_bits       = 2048
+</span><span>prompt             = no
+</span><span>default_md         = sha256
+</span><span>distinguished_name = dn
+</span><span>req_extensions     = v3_req
+</span><span>
+</span><span>[ dn ]
+</span><span>CN = server.auditor
+</span><span>
+</span><span>[ v3_req ]
+</span><span>basicConstraints     = CA:FALSE
+</span><span>keyUsage             = digitalSignature, keyEncipherment
+</span><span>extendedKeyUsage     = clientAuth, serverAuth
+</span><span>subjectAltName       = @alt_names
+</span><span>
+</span><span>[ alt_names ]
+</span><span>DNS.1 = localhost
+</span><span>IP.1 = 127.0.0.1
+</span></code></pre>
+<p>If you plan to run auditor inside Docker, consider adding the following entry to the [ alt_names ] section:</p>
+<pre data-lang="ini" style="background-color:#ffffff;color:#000000;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#a535ae;">DNS</span><span style="color:#ff5600;">.</span><span>2 </span><span style="color:#ff5600;">=</span><span> host</span><span style="color:#ff5600;">.</span><span>docker</span><span style="color:#ff5600;">.</span><span>internal
+</span></code></pre>
+<h2 id="4-creating-server-client-certificates">4. Creating server/client certificates</h2>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl req -new -nodes -newkey rsa:2048 \
+</span><span>  -keyout server-key.pem \
+</span><span>  -out server-req.pem \
+</span><span>  -config openssl.cnf
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl x509 -req -in server-req.pem \
+</span><span>  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+</span><span>  -out server-cert.pem -days 365 \
+</span><span>  -extensions v3_req -extfile openssl.cnf
+</span></code></pre>
+<p>Your final file structure would look something like this:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>certs/
+</span><span>├── rootCA.crt
+</span><span>├── rootCA.key
+</span><span>├── rootCA.pem
+</span><span>├── server-cert.pem
+</span><span>├── server-key.pem
+</span><span>├── server-req.pem
+</span><span>├── openssl.cnf
+</span></code></pre>
+<h2 id="5-configure-auditor-with-rbac-settings">5. Configure Auditor with RBAC Settings</h2>
+<p>When setting up Auditor, you must assign role-based access control (RBAC) using certificate Common Names (CNs).</p>
+<h3 id="generating-certificates-for-plugins-and-collectors">Generating Certificates for Plugins and collectors</h3>
+<h4 id="1-example-for-apel-plugin">1. Example for APEL Plugin:</h4>
+<p>Modify the CN in openssl.cnf</p>
+<pre data-lang="ini" style="background-color:#ffffff;color:#000000;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#ff5600;">[ dn ]
+</span><span style="color:#a535ae;">CN </span><span style="color:#ff5600;">=</span><span> apel</span><span style="color:#ff5600;">.</span><span>plugin
+</span></code></pre>
+<p>Creating certificates for Apel client</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl req -new -nodes -newkey rsa:2048 \
+</span><span>  -keyout apel-client-key.pem \
+</span><span>  -out apel-client-req.pem \
+</span><span>  -config openssl.cnf
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl x509 -req -in apel-client-req.pem \
+</span><span>  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+</span><span>  -out apel-client-cert.pem -days 365 \
+</span><span>  -extensions v3_req -extfile openssl.cnf
+</span></code></pre>
+<h4 id="2-example-for-htcondor-collector">2. Example for HTCondor Collector:</h4>
+<p>Modify the CN in openssl.cnf</p>
+<pre data-lang="ini" style="background-color:#ffffff;color:#000000;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#ff5600;">[ dn ]
+</span><span style="color:#a535ae;">CN </span><span style="color:#ff5600;">=</span><span> htcondor</span><span style="color:#ff5600;">.</span><span>collector
+</span></code></pre>
+<p>Creating certificates for HTCondor client</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl req -new -nodes -newkey rsa:2048 \
+</span><span>  -keyout htcondor-client-key.pem \
+</span><span>  -out htcondor-client-req.pem \
+</span><span>  -config openssl.cnf
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>openssl x509 -req -in htcondor-client-req.pem \
+</span><span>  -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
+</span><span>  -out htcondor-client-cert.pem -days 365 \
+</span><span>  -extensions v3_req -extfile openssl.cnf
+</span></code></pre>
+<p>Similarly, you can just change the CN and the filenames for writing out the key and certs for other collectors/plugins.</p>
+<h3 id="updating-the-auditor-rbac-config">Updating the Auditor RBAC Config</h3>
+<p>The APEL Plugin should have read access, and the HTCondor Collector should have write access. Update the rbac_config section of the AUDITOR config file as follows:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">rbac_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">enforce_rbac</span><span>: </span><span style="color:#a535ae;">true
+</span><span>  </span><span style="color:#00a33f;">write_access_cn</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">htcondor.collector
+</span><span>  </span><span style="color:#00a33f;">read_access_cn</span><span>:
+</span><span>    - </span><span style="color:#00a33f;">apel.plugin
+</span></code></pre>
 <h1 id="license">License</h1>
 <p>Licensed under either of</p>
 <ul>
