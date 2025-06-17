@@ -39,6 +39,8 @@ def run(logger: Logger, config: Config, client, args):
     month = args.month
     year = args.year
 
+    has_records = False
+
     begin_month = datetime(year, month, 1, tzinfo=timezone.utc)
     if month == 12:
         end_month = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
@@ -67,8 +69,10 @@ def run(logger: Logger, config: Config, client, args):
         loop_day = next_day
 
         if len(records) == 0:
-            logger.warning("No records found!")
+            logger.warning(f"No records for {site} on this day")
             continue
+
+        has_records = True
 
         latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
         logger.debug(f"Latest stop time is {latest_stop_time}")
@@ -88,6 +92,10 @@ def run(logger: Logger, config: Config, client, args):
         message_dict = create_dict(
             MessageType.summaries, grouped_db, optional_fields, aggr_summary_dict
         )
+
+    if not has_records:
+        logger.warning(f"No records for site {site} in this month")
+        quit()
 
     message = create_message(MessageType.summaries, message_dict)
     logger.log(TRACE, f"Message:\n{message}")
