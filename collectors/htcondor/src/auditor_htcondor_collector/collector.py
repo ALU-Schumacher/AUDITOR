@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
-from asyncio import create_subprocess_shell
+from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
@@ -160,7 +160,7 @@ class CondorHistoryCollector(object):
             )
             since = f"{job[0]}.{job[1]}"
 
-        cmd = [
+        cmd: list[str] = [
             "condor_history",
             "-backwards",
             "-wide",
@@ -173,14 +173,23 @@ class CondorHistoryCollector(object):
         ]
         if self.config.get("pool"):
             cmd.extend(["-pool", self.config.pool])
+        # multiple `-constraint`s are implicitly &&'ed by HTCondor
         if self.config.get("job_status"):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
+            if self.config.query_type == "shell":
+                job_stats = f'"{job_stats}"'
+            cmd.extend(["-constraint", job_stats])
+        if constraint := self.config.get("constraint"):
+            cmd.extend(["-constraint", constraint])
 
-            cmd.extend(["-constraint", f'"{job_stats}"'])
-
-        self.logger.debug(f"Running command: {' '.join(cmd)!r}")
-
-        p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
+        if self.config.query_type == "shell":
+            self.logger.debug(f"Running command: {' '.join(cmd)!r}")
+            p = await create_subprocess_shell(" ".join(cmd), stdout=PIPE, stderr=PIPE)
+        elif self.config.query_type == "exec":
+            self.logger.debug(f"Running command: {cmd!r}")
+            p = await create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+        else:
+            raise NotImplementedError(f"query_type {self.config.query_type!r}")
         output, err = await p.communicate()
         if err:
             self.logger.error(f"Error querying HTCondor history:\n{err}")

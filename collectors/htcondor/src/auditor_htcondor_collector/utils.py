@@ -1,10 +1,12 @@
 import re
-from typing import Any, AnyStr, Generator, Union
+from typing import AnyStr, Iterator, TypeVar, Union
 
 from .custom_types import Config as T_Config
 
+V = TypeVar("V")
 
-def extract_values(key: str, var: dict) -> Generator[Any, None, None]:
+
+def extract_values(key: str, var: "dict[str, V] | list[V] | V") -> Iterator[V]:
     """Extracts all values from nested dictionary for a given key.
 
     Args:
@@ -12,20 +14,17 @@ def extract_values(key: str, var: dict) -> Generator[Any, None, None]:
         var (dict): Dictionary to extract from.
 
     Returns:
-        generator: Generator of values.
+        values: Iterator over matching values.
     """
-
-    if hasattr(var, "items"):
+    if isinstance(var, dict):
         for k, v in var.items():
             if k == key:
                 yield v
-            if isinstance(v, dict):
-                for result in extract_values(key, v):
-                    yield result
-            elif isinstance(v, list):
-                for d in v:
-                    for result in extract_values(key, d):
-                        yield result
+            else:
+                yield from extract_values(key, v)
+    elif isinstance(var, list):
+        for item in var:
+            yield from extract_values(key, item)
 
 
 def maybe_convert(value: AnyStr) -> Union[int, float, bool, AnyStr]:
