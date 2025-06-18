@@ -1,5 +1,5 @@
 [Unit]
-Description=AUDITOR accounting tool
+Description=Priority plugin for AUDITOR
 Documentation=https://alu-schumacher.github.io/AUDITOR/
 
 [Install]
@@ -9,7 +9,7 @@ RequiredBy=multi-user.target
 Type=simple
 User=root
 Group=root
-WorkingDirectory=/opt/auditor
-ExecStart=/usr/bin/auditor /opt/auditor/auditor.yml
+WorkingDirectory=/etc/auditor
+ExecStart=/usr/bin/auditor-priority-plugin /etc/auditor/auditor-priority-plugin.yml
 Restart=on-failure
 RestartSec=60
