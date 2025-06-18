@@ -302,7 +302,7 @@ The following columns are supported for sortby option
 <tr class="row-even"><td><p><cite>meta</cite></p></td>
 <td><p>Meta information</p></td>
 <td><p><cite>c</cite>, <cite>dnc</cite></p></td>
-<td><p>meta[&lt;meta_key&gt;][c]=&lt;meta_value&gt;</p></td>
+<td><p>meta[&lt;meta_key&gt;][c][0]=&lt;meta_value&gt;</p></td>
 </tr>
 <tr class="row-odd"><td><p><cite>component</cite></p></td>
 <td><p>Component identifier</p></td>
@@ -373,7 +373,7 @@ as an argument to advanced_query function to get the records.</p>
 <p>Query records with meta key = site_id and value = site1</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaOperator</span><span class="p">,</span> <span class="n">MetaQuery</span><span class="p">,</span> <span class="n">QueryBuilder</span>
 
-<span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;site1&quot;</span><span class="p">)</span>
+<span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;[site1]&quot;</span><span class="p">)</span>
 <span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_meta_query</span><span class="p">(</span><span class="n">meta_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
