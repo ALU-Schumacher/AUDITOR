@@ -685,6 +685,8 @@ Further, optional arguments are
                       ID of the job, condor_history to invoke with.
 -n SCHEDD, --schedd-names SCHEDD
                       Name of the schedd, condor_history to invoke with.
+-k HISTORY_FILE, --history-file HISTORY_FILE
+                      Path to history file, to read condor_history from.
 -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                       Log level. Defaults to INFO.
 -f LOG_FILE, --log-file LOG_FILE
@@ -729,6 +731,7 @@ The following parameters are optional:
 | `earliest_datetime` | Time of invocation | ISO 8601 datetime string. Only jobs completed after this timestamp are considered. This is only relevant for the very first invocation of the collector (as long as the state-DB does not contain a job id for the given `record_prefix`). |
 | `log_level`         | `INFO`             | Verbosity of logging. Possible values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`.                                                                                                                                              |
 | `log_file`          | None (stdout)      | File to write logs to. If not set, logs are directed to stdout.                                                                                                                                                                            |
+| `history_file`      | None               | Read condor history from specified file.                                                                                                                                                                                                   |
 
 ### `entry`
 
