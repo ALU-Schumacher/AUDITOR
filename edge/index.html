@@ -769,6 +769,8 @@ Further, optional arguments are</p>
 </span><span>                      ID of the job, condor_history to invoke with.
 </span><span>-n SCHEDD, --schedd-names SCHEDD
 </span><span>                      Name of the schedd, condor_history to invoke with.
+</span><span>-k HISTORY_FILE, --history-file HISTORY_FILE
+</span><span>                      Path to history file, to read condor_history from.
 </span><span>-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
 </span><span>                      Log level. Defaults to INFO.
 </span><span>-f LOG_FILE, --log-file LOG_FILE
@@ -804,6 +806,7 @@ Further, optional arguments are</p>
 <tr><td><code>earliest_datetime</code></td><td>Time of invocation</td><td>ISO 8601 datetime string. Only jobs completed after this timestamp are considered. This is only relevant for the very first invocation of the collector (as long as the state-DB does not contain a job id for the given <code>record_prefix</code>).</td></tr>
 <tr><td><code>log_level</code></td><td><code>INFO</code></td><td>Verbosity of logging. Possible values are <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, or <code>CRITICAL</code>.</td></tr>
 <tr><td><code>log_file</code></td><td>None (stdout)</td><td>File to write logs to. If not set, logs are directed to stdout.</td></tr>
+<tr><td><code>history_file</code></td><td>None</td><td>Read condor history from specified file.</td></tr>
 </tbody></table>
 <h3 id="entry"><code>entry</code></h3>
 <p>An <code>entry</code> describes how to get the value for a meta-var or component from the job.
