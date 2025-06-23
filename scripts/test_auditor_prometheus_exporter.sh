@@ -17,7 +17,7 @@ function setup_python_env() {
 	python3 -m venv "$ENV_DIR"
 	source "$ENV_DIR/bin/activate"
 	pip install --upgrade pip
-  pip install requests==2.31.0
+    pip install requests==2.32.4
 }
 
 function start_auditor() {

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - [CVE-2025-50181], [CVE-2025-50182]: Update urllib3 from 2.3.0 to 2.5.0 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2024-47081]: Update requests from 2.32.3 to 2.32.4 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
