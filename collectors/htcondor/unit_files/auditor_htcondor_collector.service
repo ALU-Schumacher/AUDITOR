@@ -7,9 +7,9 @@ RequiredBy=multi-user.target
 
 [Service]
 Type=simple
-User=root
-Group=root
+User=auditor-htcondor-collector
+Group=auditor
 WorkingDirectory=/opt/auditor_htcondor_collector
-ExecStart=/opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml
+ExecStart=/opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /etc/auditor/auditor_htcondor_collector.yml
 Restart=on-failure
 RestartSec=60

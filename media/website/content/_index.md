@@ -487,7 +487,7 @@ job_filter:
 sacct_frequency: 300
 sender_frequency: 60
 earliest_datetime: "2023-09-15T12:00:00+00:00"
-database_path: "/absolute/path/to/db.db"
+database_path: "/var/lib/auditor-slurm-collector/db.db"
 sites:
   - name: "mysite1"
     only_if:
@@ -754,7 +754,7 @@ See below for an example config and the use of such `entry`s.
 addr: localhost
 port: 8000
 timeout: 10
-state_db: htcondor_history_state.db
+state_db: /var/lib/auditor_htcondor_collector/htcondor_history_state.db
 record_prefix: htcondor
 interval: 900 # 15 minutes
 pool: htcondor.example.com
@@ -883,6 +883,7 @@ prometheus_addr: localhost
 prometheus_port: 31000
 record_prefix: "KUBE"
 earliest_datetime: "2024-04-18T12:00:00Z"
+database_path: "/var/lib/auditor-kubernetes-collector/"
 job_filter:
   namespace:
     - "default"
@@ -891,7 +892,7 @@ job_filter:
 auditor_timeout: 10
 prometheus_timeout: 90
 collect_interval: 30
-send_interval: 60
+merge_interval: 60
 backlog_interval: 300
 backlog_maxretries: 2
 log_level: debug
@@ -985,7 +986,7 @@ Example config:
 plugin:
   log_level: INFO
   log_file: /var/log/auditor_apel_plugin.log
-  time_json_path: /etc/auditor_apel_plugin/time.json
+  time_json_path: /var/lib/auditor_apel_plugin/time.json
   report_interval: 86400
   
 site:
@@ -1156,7 +1157,7 @@ group_mapping:
   group3:
     - "part3"
 commands:
-  - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> {group}.txt"'
+  - '/usr/bin/bash -c "/usr/bin/echo \"$(date --rfc-3339=sec --utc) | {resource} | {priority}\" >> /var/lib/auditor-priority-plugin/{group}.txt"'
   - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
 min_priority: 1
 max_priority: 65335
