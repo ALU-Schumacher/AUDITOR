@@ -5,7 +5,7 @@ from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
-from typing import List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from pyauditor import (
     AuditorClient,
@@ -147,6 +147,13 @@ class CondorHistoryCollector(object):
             assert type(job) is tuple and len(job) == 2, "Invalid job id"
             assert isinstance(job[0], int) and isinstance(job[1], int), "Invalid job id"
 
+        if self.config.query_type == "shell":
+            escape: Callable[[str], str] = lambda arg: f"'{arg}'"
+        elif self.config.query_type == "exec":
+            escape = lambda arg: arg
+        else:
+            raise NotImplementedError(f"query_type {self.config.query_type!r}")
+
         since = f"'CompletionDate<={self.config.condor_timestamp} && CompletionDate>0'"
         if job is None:
             self.logger.debug(
@@ -167,7 +174,7 @@ class CondorHistoryCollector(object):
             "-name",
             schedd_name,
             "-since",
-            since,
+            escape(since),
             "-af:,",
             *self.config.class_ads,
         ]
@@ -176,9 +183,7 @@ class CondorHistoryCollector(object):
         # multiple `-constraint`s are implicitly &&'ed by HTCondor
         if self.config.get("job_status"):
             job_stats = " || ".join(f"JobStatus == {j}" for j in self.config.job_status)
-            if self.config.query_type == "shell":
-                job_stats = f'"{job_stats}"'
-            cmd.extend(["-constraint", job_stats])
+            cmd.extend(["-constraint", escape(job_stats)])
         if constraint := self.config.get("constraint"):
             cmd.extend(["-constraint", constraint])
         if self.config.get("history_file"):
