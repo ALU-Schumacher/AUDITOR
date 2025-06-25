@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Slurm collector: Speed up parsing of `sacct` output ([@rkleinem](https://github.com/rkleinem))
 - HTCondor collector: Allow for reading history from file ([@rfvc](https://github.com/rfvc))
+- HTCondor collector: Fix bug that prevented reading old jobs on first collection ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ### Removed
 
