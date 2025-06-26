@@ -216,6 +216,18 @@ Follow the steps below in order to create a new release.
 
 Example PR: [https://github.com/ALU-Schumacher/AUDITOR/pull/547](https://github.com/ALU-Schumacher/AUDITOR/pull/547)
 
+- All version number updates mentioned below (except for `sqlx`) can be done with `scripts/bump_version.py`.
+
+```bash
+usage: bump_version.py [-h] -o OLD -n NEW [-y]
+
+options:
+  -h, --help       show this help message and exit
+  -o, --old OLD    Old version
+  -n, --new NEW    New version
+  -y, --assumeyes  Don't ask for confirmation
+  ```
+
 - Update the version number in all `Cargo.toml` files
 - Run `cargo update` to update dependencies in `Cargo.lock`
 - If `sqlx` is updated, don't forget to also change the version in all workflows, containers, documentation, etc.
