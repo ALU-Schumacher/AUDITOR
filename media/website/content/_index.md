@@ -1089,6 +1089,8 @@ The section `summary_fields` has the subsections `mandatory` and `optional`. `ma
 | `NormalisedCpuDuration`  | `int`     |
 | `NormalisedWallDuration` | `int`     |
 
+`CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `RemoteSysCpu + RemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline). 
+
 There are actually more mandatory fields, but they are handled internally and don't need any input from the user.
 
 `optional` fields can be used to provide additional information to APEL:
@@ -1104,9 +1106,7 @@ There are actually more mandatory fields, but they are handled internally and do
 | `NodeCount`      | `int`     |
 | `Processors`     | `int`     |
 
-The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records).
-
-Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/).
+The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records). Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!
 
 Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, and `NormalisedField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
 
@@ -1116,7 +1116,7 @@ Different field types are available, depending on the source of the value that i
 
 `ConstantField` has the mandatory parameter `value`, which is exactly what will be written in the message field.
 
-`ScoreField` extracts the score value from a given component from the AUDITOR record. The mandatory parameters are `name`, the name of the score, and `component_name`, the name of the component.
+`ScoreField` extracts the score value from a given component from the AUDITOR record. The mandatory parameters are `name`, the name of the score, and `component_name`, the name of the component. In case you are reporting the benchmark score of a CPU, the score has to be the benchmark value of a **single** core.
 
 `NormalisedField` has the parameters `base_value` and `score`, where `score` is a `ScoreField` and `base_value` either a `ComponentField` or a `RecordField`. The resulting value is the product of the score and the base value. The default `base_value` is the `runtime` of the record. This is used to retrieve the `NormalisedWallDuration`.
 
