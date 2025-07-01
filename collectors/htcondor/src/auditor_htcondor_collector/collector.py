@@ -147,12 +147,14 @@ class CondorHistoryCollector(object):
             assert type(job) is tuple and len(job) == 2, "Invalid job id"
             assert isinstance(job[0], int) and isinstance(job[1], int), "Invalid job id"
 
-        if self.config.query_type == "shell":
-            escape: Callable[[str], str] = lambda arg: f"'{arg}'"
-        elif self.config.query_type == "exec":
-            escape = lambda arg: arg
-        else:
-            raise NotImplementedError(f"query_type {self.config.query_type!r}")
+        def escape(arg: str) -> str:
+            """Escape a CLI argument to avoid interpretation for the chosen execution type"""
+            if self.config.query_type == "shell":
+                return f"'{arg}'"
+            elif self.config.query_type == "exec":
+                return arg
+            else:
+                raise NotImplementedError(f"query_type {self.config.query_type!r}")
 
         since = f"'CompletionDate<={self.config.condor_timestamp} && CompletionDate>0'"
         if job is None:
