@@ -5,7 +5,7 @@ from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
-from typing import Callable, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from pyauditor import (
     AuditorClient,
