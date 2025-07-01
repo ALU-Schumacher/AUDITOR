@@ -161,7 +161,8 @@ class CondorHistoryCollector(object):
                 f"Querying HTCondor history for {schedd_name!r} starting "
                 f"from {dt.fromtimestamp(self.config.condor_timestamp)}."
             )
-            since = f"CompletionDate<={self.config.condor_timestamp}"
+            # need to exclude 0 CompletionDate, see AUDITOR#1309
+            since = f"CompletionDate <= {self.config.condor_timestamp} && CompletionDate > 0"
         else:
             self.logger.debug(
                 f"Querying HTCondor history for {schedd_name!r} "
