@@ -156,12 +156,12 @@ class CondorHistoryCollector(object):
             else:
                 raise NotImplementedError(f"query_type {self.config.query_type!r}")
 
-        since = f"'CompletionDate<={self.config.condor_timestamp} && CompletionDate>0'"
         if job is None:
             self.logger.debug(
                 f"Querying HTCondor history for {schedd_name!r} starting "
                 f"from {dt.fromtimestamp(self.config.condor_timestamp)}."
             )
+            since = f"CompletionDate<={self.config.condor_timestamp}"
         else:
             self.logger.debug(
                 f"Querying HTCondor history for {schedd_name!r} "
