@@ -415,7 +415,7 @@ class TestConfig:
         with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
-        value = config.summary_fields.optional["VO"].get_value(record)
+        value = config.summary_fields.mandatory["VO"].get_value(record)
 
         assert value == "atlas"
 
@@ -423,7 +423,7 @@ class TestConfig:
         meta.insert("user", ["atlsg000"])
         record.with_meta(meta)
 
-        value = config.summary_fields.optional["VO"].get_value(record)
+        value = config.summary_fields.mandatory["VO"].get_value(record)
 
         assert value == "ops"
 
@@ -431,7 +431,7 @@ class TestConfig:
         meta.insert("user", ["ops000"])
         record.with_meta(meta)
 
-        value = config.summary_fields.optional["VO"].get_value(record)
+        value = config.summary_fields.mandatory["VO"].get_value(record)
 
         assert value == "ops"
 
@@ -439,6 +439,6 @@ class TestConfig:
         meta.insert("user", ["ilc000"])
         record.with_meta(meta)
 
-        value = config.summary_fields.optional["VO"].get_value(record)
+        value = config.summary_fields.mandatory["VO"].get_value(record)
 
         assert value == "None"

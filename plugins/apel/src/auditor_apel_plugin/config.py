@@ -101,6 +101,26 @@ class FieldConfig(Configurable):
     mandatory: Dict[str, Field]
     optional: Dict[str, Field] = {}
 
+    @model_validator(mode="after")
+    def check_mandatory_fields(self):
+        mandatory_fields = [
+            "Processors",
+            "VO",
+            "SubmitHost",
+            "CpuDuration",
+            "NormalisedCpuDuration",
+            "NormalisedWallDuration",
+        ]
+        missing_fields = [
+            field_name
+            for field_name in mandatory_fields
+            if field_name not in list(self.mandatory.keys())
+        ]
+        if missing_fields:
+            missing_fields_str = ", ".join(missing_fields)
+            raise ValueError(f"Fields {missing_fields_str} are mandatory")
+        return self
+
 
 class ComponentField(Field):
     name: str

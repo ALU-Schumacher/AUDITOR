@@ -27,6 +27,18 @@ auditor:
   
 summary_fields:
   mandatory:
+    VO: !MetaField
+      name: user
+      function:
+        name: vo_mapping
+        parameters:
+          atlpr: atlas
+          atlsg: ops
+          ops: ops
+    SubmitHost: !MetaField
+      name: headnode
+    Processors: !ComponentField
+      name: Cores
     NormalisedWallDuration: !NormalisedField
       score:
         name: hepscore23
@@ -45,25 +57,13 @@ summary_fields:
   optional:
     GlobalUserName: !MetaField
       name: subject
-    VO: !MetaField
-      name: user
-      function:
-        name: vo_mapping
-        parameters:
-          atlpr: atlas
-          atlsg: ops
-          ops: ops
     VOGroup: !MetaField
       name: voms
       regex: (?=%2F).*?\S(?=%2F)
     VORole: !MetaField
       name: voms
       regex: (?=Role).*
-    SubmitHost: !MetaField
-      name: headnode
     Infrastructure: !ConstantField
       value: grid
     NodeCount: !ComponentField
       name: NNodes
-    Processors: !ComponentField
-      name: Cores
