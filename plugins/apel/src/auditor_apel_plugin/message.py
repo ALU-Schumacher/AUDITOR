@@ -29,7 +29,7 @@ class SummaryMessage(Message):
         "RecordID TEXT UNIQUE NOT NULL",
     ]
 
-    group_by: List[str] = ["Site", "Month", "Year"]
+    group_by: List[str] = ["Site", "Month", "Year", "VO", "SubmitHost", "Processors"]
 
     store_as: List[str] = [
         "COUNT(RecordID) as NumberOfJobs",

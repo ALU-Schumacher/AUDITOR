@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 - Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Move `VO`, `Processors`, and `SubmitHost` to `mandatory` fields in the config ([@dirksammel](https://github.com/dirksammel))
 
 ### Security
 - [CVE-2025-50181], [CVE-2025-50182]: Update urllib3 from 2.3.0 to 2.5.0 ([@dirksammel](https://github.com/dirksammel))
