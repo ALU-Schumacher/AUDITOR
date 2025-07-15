@@ -31,7 +31,7 @@
 #   ip: 127.0.0.1
 #   port: 3333
 #   timeout: 60
-#   site_meta_field: site_id # can alco be a list, e.g. [site_id, site]
+#   site_meta_field: site_id # can also be a list, e.g. [site_id, site]
 #   use_tls: True
 #   ca_cert_path: /path/rootCA.pem
 #   client_cert_path: /path/client-cert.pem
@@ -39,17 +39,22 @@
 
 # summary_fields:
 #   mandatory:
+#     VO: !MetaField
+#       name: voms
+#       regex: (?<=/).*?(?=/|$)
+#     Processors: !ComponentField
+#       name: Cores
+#     SubmitHost: !MetaField
+#       name: headnode
 #     NormalisedWallDuration: !NormalisedWallDurationField
 #       score:
 #         name: hepscore23
 #         component_name: Cores
 #     CpuDuration: !ComponentField
 #       name: TotalCPU
-#       divide_by: 1000
 #     NormalisedCpuDuration: !NormalisedField
 #       base_value: !ComponentField
 #         name: TotalCPU
-#         divide_by: 1000
 #       score:
 #         name: hepscore23
 #         component_name: Cores
@@ -57,20 +62,13 @@
 #   optional:
 #     GlobalUserName: !MetaField
 #       name: subject
-#     VO: !MetaField
-#       name: voms
-#       regex: (?<=/).*?(?=/|$)
 #     VOGroup: !MetaField
 #       name: voms
 #       regex: (?<=/).*?(?=/Role|$)
 #     VORole: !MetaField
 #       name: voms
 #       regex: '(?=Role).*?(?=/|$)'
-#     SubmitHost: !MetaField
-#       name: headnode
 #     Infrastructure: !ConstantField
 #       value: grid
 #     NodeCount: !ComponentField
 #       name: NNodes
-#     Processors: !ComponentField
-#       name: Cores

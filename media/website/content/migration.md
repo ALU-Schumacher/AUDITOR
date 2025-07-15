@@ -6,6 +6,11 @@ weight = 3
 
 # From 0.9.4 to unreleased
 
+## Apel plugin
+
+- `auditor-apel-republish` now has the parameters `month` and `year` instead of `begin_date` and `end_date`. See the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin) or `auditor-apel-republish -h` for usage information.
+- `VO`, `Processors`, and `SubmitHost` are now `mandatory` fields in the config, since this information is necessary for correct EGI accounting. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin).
+
 # From 0.9.3 to 0.9.4
 
 ### Update to [sqlx 0.8.6](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
@@ -26,7 +31,7 @@ Use this command to update the sqlx-cli to 0.8.5
 
 ## Auditor
 
-- `AUDITOR_APPLICATION__ADDR` is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files)
+- `AUDITOR_APPLICATION__ADDR` is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the [documentation](https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files).
 
 # From 0.7.1 to 0.8.0
 

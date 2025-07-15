@@ -236,10 +236,11 @@ def get_data_tuple(
     elif message_type == MessageType.sync:
         month = record.stop_time.replace(tzinfo=timezone.utc).month
         year = record.stop_time.replace(tzinfo=timezone.utc).year
-        submithost_field = config.get_optional_fields().get("SubmitHost")
+        submithost_field = config.get_mandatory_fields().get("SubmitHost")
         if submithost_field is not None:
             submithost = submithost_field.get_value(record)
         else:
+            logger.warning("SubmitHost field not defined!")
             submithost = "None"
 
         record_id = record.record_id
