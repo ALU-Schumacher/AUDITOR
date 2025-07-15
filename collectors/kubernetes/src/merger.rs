@@ -35,7 +35,7 @@ enum MergeError {
 
 impl Display for MergeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self)
+        write!(f, "{self:?}")
     }
 }
 impl Error for MergeError {}
@@ -119,20 +119,19 @@ async fn obtain_metric(
             .0 // data
             .into_vector()
             .map_err(|data| {
-                MergeError::Critical(format!("Bad result from Prometheus: {:?}", data))
+                MergeError::Critical(format!("Bad result from Prometheus: {data:?}"))
             })?,
         Err(e) => {
             if is_connection(&e) {
                 return Err(MergeError::NoConnection);
             } else {
-                return Err(MergeError::Critical(format!("{:?}", e)));
+                return Err(MergeError::Critical(format!("{e:?}")));
             }
         }
     };
     if metric.len() > 1 {
         return Err(MergeError::Critical(format!(
-            "Retrieved too many series for query {}",
-            query
+            "Retrieved too many series for query {query}"
         )));
     };
     metric
@@ -174,14 +173,12 @@ async fn fill_record(rec: &mut RecordAdd, client: &PClient) -> Result<(), MergeE
     let cpu_query = format!(
         r#"sum by (namespace,pod) (
         max_over_time(increase(
-        pod_cpu_usage_seconds_total{{{0}}}[{1}s])[{1}s:]
-        ))"#,
-        labels, duration
+        pod_cpu_usage_seconds_total{{{labels}}}[{duration}s])[{duration}s:]
+        ))"#
     );
     let mem_query = format!(
         r#"sum by (namespace,pod) (
-        max_over_time(pod_memory_working_set_bytes{{{}}}[{}s]))"#,
-        labels, duration
+        max_over_time(pod_memory_working_set_bytes{{{labels}}}[{duration}s]))"#
     );
 
     // Obtain CPU
@@ -258,7 +255,7 @@ async fn send(database: &Database, aclient: &AClient) -> anyhow::Result<()> {
         .context("Failed reading from queue")?;
     let ids: Vec<_> = incomplete.iter().map(|r| r.record_id.as_ref()).collect();
     if !ids.is_empty() {
-        tracing::warn!("Sending incomplete records: {:?}", ids);
+        tracing::warn!("Sending incomplete records: {ids:?}");
     };
     records.extend(incomplete);
     for r in records {

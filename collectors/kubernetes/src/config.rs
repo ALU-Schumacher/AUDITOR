@@ -20,8 +20,8 @@ impl Display for ConfigError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         //write!(f, "{:?}", self)
         match self {
-            ConfigError::FileOpenError(e) => write!(f, "Cannot open configuration: {}", e),
-            ConfigError::InvalidYaml(e) => write!(f, "Cannot parse configuration: {}", e),
+            ConfigError::FileOpenError(e) => write!(f, "Cannot open configuration: {e}"),
+            ConfigError::InvalidYaml(e) => write!(f, "Cannot parse configuration: {e}"),
         }
     }
 }
@@ -193,8 +193,7 @@ where
         ))
     } else {
         let dur = TimeDelta::try_seconds(seconds).ok_or(serde::de::Error::custom(format!(
-            "Cannot convert {} seconds to TimeDelta",
-            seconds
+            "Cannot convert {seconds} seconds to TimeDelta"
         )))?;
         if let Err(e) = dur.to_std() {
             Err(serde::de::Error::custom(e))

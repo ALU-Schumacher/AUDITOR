@@ -55,7 +55,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 .unwrap();
 
             if let Err(e) = tls.validate_tls_paths() {
-                eprintln!("Configuration error: {}", e);
+                eprintln!("Configuration error: {e}");
                 // Handle the error or return early
             }
 
@@ -65,7 +65,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
             match env::current_dir() {
                 Ok(path) => println!("Current directory: {}", path.display()),
-                Err(e) => eprintln!("Error getting current directory: {}", e),
+                Err(e) => eprintln!("Error getting current directory: {e}"),
             }
 
             // import CA cert

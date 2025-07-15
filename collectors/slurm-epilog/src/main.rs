@@ -135,7 +135,7 @@ async fn main() -> Result<(), Error> {
 
         let _ = tls_config
             .validate_tls_paths()
-            .map_err(|e| format!("Configuration error: {}", e));
+            .map_err(|e| format!("Configuration error: {e}"));
 
         let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
         let client_key_path = tls_config.client_key_path.as_ref().unwrap();

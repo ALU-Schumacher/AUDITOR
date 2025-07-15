@@ -96,7 +96,7 @@ pub async fn run(
                 .on_connect(get_client_cert);
 
             for addr in &addrs {
-                let address = format!("{}:{}", addr, port);
+                let address = format!("{addr}:{port}");
                 server = server.bind(&address)?;
             }
 
@@ -125,7 +125,7 @@ pub async fn run(
             let mut server = HttpServer::new(app_config).workers(web_workers);
 
             for addr in &addrs {
-                let address = format!("{}:{}", addr, port);
+                let address = format!("{addr}:{port}");
                 server = server.bind(&address)?;
             }
             Ok(server.run())

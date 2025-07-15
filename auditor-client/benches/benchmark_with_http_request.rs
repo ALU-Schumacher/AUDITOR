@@ -110,12 +110,12 @@ async fn insert_worst_case_records(num: i64) -> Result<(), anyhow::Error> {
 
 fn generate_group_id(rng: &mut impl Rng) -> String {
     let random_group_id = rng.gen_range(1..=6);
-    format!("group_{}", random_group_id)
+    format!("group_{random_group_id}")
 }
 
 fn generate_site_id(rng: &mut impl Rng) -> String {
     let random_group_id = rng.gen_range(1..=6);
-    format!("site_{}", random_group_id)
+    format!("site_{random_group_id}")
 }
 
 fn generate_component_scores(rng: &mut impl Rng) -> i64 {

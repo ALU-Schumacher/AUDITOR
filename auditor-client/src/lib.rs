@@ -703,7 +703,7 @@ impl AuditorClientBuilder {
     #[must_use]
     pub fn timeout(mut self, timeout: i64) -> Self {
         self.timeout = Duration::try_seconds(timeout)
-            .unwrap_or_else(|| panic!("Could not convert {} to duration", timeout));
+            .unwrap_or_else(|| panic!("Could not convert {timeout} to duration"));
         self
     }
 
@@ -715,7 +715,7 @@ impl AuditorClientBuilder {
     /// * `interval` - Interval in seconds.
     pub fn send_interval(mut self, interval: i64) -> Self {
         self.send_interval = Duration::try_seconds(interval)
-            .unwrap_or_else(|| panic!("Could not convert {} to duration", interval));
+            .unwrap_or_else(|| panic!("Could not convert {interval} to duration"));
         self
     }
 
@@ -743,21 +743,21 @@ impl AuditorClientBuilder {
                 match Identity::from_pem(&[client_cert, client_key].concat()) {
                     Ok(identity) => tls_config.identity = Some(identity),
                     Err(e) => {
-                        eprintln!("Failed to create identity from client cert and key: {}", e)
+                        eprintln!("Failed to create identity from client cert and key: {e}")
                     }
                 }
             }
             (Err(e), _) | (_, Err(e)) => {
-                eprintln!("Failed to read client certificate or key: {}", e);
+                eprintln!("Failed to read client certificate or key: {e}");
             }
         }
 
         match fs::read(ca_cert_path) {
             Ok(ca_cert) => match Certificate::from_pem(&ca_cert) {
                 Ok(ca_certificate) => tls_config.ca_certificate = Some(ca_certificate),
-                Err(e) => eprintln!("Failed to parse CA certificate PEM: {}", e),
+                Err(e) => eprintln!("Failed to parse CA certificate PEM: {e}"),
             },
-            Err(e) => eprintln!("Failed to read CA certificate file: {}", e),
+            Err(e) => eprintln!("Failed to read CA certificate file: {e}"),
         }
 
         self.tls_config = Some(tls_config);
