@@ -1018,17 +1018,22 @@ auditor:
 
 summary_fields:
   mandatory:
+    VO: !MetaField
+      name: voms
+      regex: (?<=/).*?(?=/|$)
+    Processors: !ComponentField
+      name: Cores
+    SubmitHost: !MetaField
+      name: headnode
     NormalisedWallDuration: !NormalisedField
       score:
         name: hepscore23
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
-      divide_by: 1000
     NormalisedCpuDuration: !NormalisedField
       base_value: !ComponentField
         name: TotalCPU
-        divide_by: 1000
       score:
         name: hepscore23
         component_name: Cores
@@ -1036,23 +1041,16 @@ summary_fields:
   optional:
     GlobalUserName: !MetaField
       name: subject
-    VO: !MetaField
-      name: voms
-      regex: (?<=/).*?(?=/|$)
     VOGroup: !MetaField
       name: voms
       regex: (?<=/).*?(?=/Role|$)
     VORole: !MetaField
       name: voms
       regex: '(?=Role).*?(?=/|$)'
-    SubmitHost: !MetaField
-      name: headnode
     Infrastructure: !ConstantField
       value: grid
     NodeCount: !ComponentField
       name: NNodes
-    Processors: !ComponentField
-      name: Cores
 ```
 
 The individual parameters in the config file are:
@@ -1088,6 +1086,9 @@ The section `summary_fields` has the subsections `mandatory` and `optional`. `ma
 | `CpuDuration`            | `int`     |
 | `NormalisedCpuDuration`  | `int`     |
 | `NormalisedWallDuration` | `int`     |
+| `VO`                     | `str`     |
+| `SubmitHost`             | `str`     |
+| `Processors`             | `int`     |
 
 `CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `RemoteSysCpu + RemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline). 
 
@@ -1098,15 +1099,16 @@ There are actually more mandatory fields, but they are handled internally and do
 | Name             | Data type |
 |:-----------------|:---------:|
 | `GlobalUserName` | `str`     |
-| `VO`             | `str`     |
 | `VOGroup`        | `str`     |
 | `VORole`         | `str`     |
-| `SubmitHost`     | `str`     |
 | `Infrastructure` | `str`     |
 | `NodeCount`      | `int`     |
-| `Processors`     | `int`     |
 
-The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/) and [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records). Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!
+Except for `NodeCount`, none of the `optional` information appears on the [EGI Accounting Portal](https://accounting.egi.eu/), so it is possible that this information is not used at all.
+
+The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records). Exceptions are `VO`, `SubmitHost`, and `Processors`, which the APEL plugin considers necessary.
+
+Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: [https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/](https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/).
 
 Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, and `NormalisedField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
 
