@@ -260,7 +260,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let tls_config = &config.tls_config;
         let _ = tls_config
             .validate_tls_paths()
-            .map_err(|e| format!("Configuration error: {}", e));
+            .map_err(|e| format!("Configuration error: {e}"));
 
         let ca_cert_path = tls_config.ca_cert_path.as_ref().unwrap();
         let client_key_path = tls_config.client_key_path.as_ref().unwrap();
@@ -292,7 +292,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let prometheus_addr = prometheus_settings.addr.clone();
             let prometheus_port = prometheus_settings.port;
             enable_prometheus = prometheus_settings.enable;
-            let address = format!("{}:{}", prometheus_addr, prometheus_port);
+            let address = format!("{prometheus_addr}:{prometheus_port}");
             prometheus_metrics = prometheus_settings.metrics;
 
             // Create a TcpListener for a given address and port

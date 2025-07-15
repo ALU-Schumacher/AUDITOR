@@ -32,7 +32,7 @@ async fn get_advanced_queries_returns_a_200_and_list_of_records() {
         let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
-        let query = format!("start_time[gte]={}", encoded_datetime);
+        let query = format!("start_time[gte]={encoded_datetime}");
 
         let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -85,7 +85,7 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
         let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
-        let query = format!("start_time[gte]={}", encoded_datetime);
+        let query = format!("start_time[gte]={encoded_datetime}");
 
         let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -123,7 +123,7 @@ async fn get_started_since_returns_a_200_and_no_records() {
     let datetime_utc = Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap();
     let datetime_str = datetime_utc.to_rfc3339();
     let encoded_datetime = encode(&datetime_str);
-    let query = format!("start_time[gte]={}", encoded_datetime);
+    let query = format!("start_time[gte]={encoded_datetime}");
 
     let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -159,7 +159,7 @@ async fn get_stopped_since_returns_a_200_and_list_of_records() {
         let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
-        let query = format!("stop_time[gte]={}", encoded_datetime);
+        let query = format!("stop_time[gte]={encoded_datetime}");
 
         let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -214,7 +214,7 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
         let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
-        let query = format!("stop_time[gte]={}", encoded_datetime);
+        let query = format!("stop_time[gte]={encoded_datetime}");
 
         let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -252,7 +252,7 @@ async fn get_stopped_since_returns_a_200_and_no_records() {
     let datetime_utc = Utc.with_ymd_and_hms(2022, 10, 3, 9, 47, 0).unwrap();
     let datetime_str = datetime_utc.to_rfc3339();
     let encoded_datetime = encode(&datetime_str);
-    let query = format!("start_time[gte]={}", encoded_datetime);
+    let query = format!("start_time[gte]={encoded_datetime}");
 
     let (received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -292,10 +292,7 @@ async fn get_meta_queries_c_returns_a_200_and_list_of_records() {
         let datetime_utc = Utc.with_ymd_and_hms(2022, 10, i, 9, 47, 0).unwrap();
         let datetime_str = datetime_utc.to_rfc3339();
         let encoded_datetime = encode(&datetime_str);
-        let query = format!(
-            "start_time[gte]={}&meta[group_id][c][0]=group_1",
-            encoded_datetime
-        );
+        let query = format!("start_time[gte]={encoded_datetime}&meta[group_id][c][0]=group_1");
 
         let (mut received_records, status) = app.advanced_queries(query).await.unwrap();
 
@@ -499,7 +496,7 @@ async fn exact_record_id_returns_a_200_and_list_of_records() {
     let query = "r3".to_string();
 
     let response = app.get_single_record(query).await;
-    println!("{:?}", response);
+    println!("{response:?}");
 
     assert_eq!(200, response.status().as_u16());
 
