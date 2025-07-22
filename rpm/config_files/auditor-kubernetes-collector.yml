@@ -1,0 +1,25 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/#kubernetes-collector
+# Please make sure that all values correspond to your setup.
+
+# auditor_addr: localhost
+# auditor_port: 8000
+# prometheus_addr: localhost
+# prometheus_port: 31000
+# record_prefix: "KUBE"
+# earliest_datetime: "2024-04-18T12:00:00Z"
+# database_path: "/var/lib/auditor-kubernetes-collector/"
+# job_filter:
+#   namespace:
+#     - "default"
+#   labels:
+#     - app==test
+# auditor_timeout: 10
+# prometheus_timeout: 90
+# collect_interval: 30
+# merge_interval: 60
+# backlog_interval: 300
+# backlog_maxretries: 2
+# log_level: debug
+# tls_config:
+#   use_tls: false
