@@ -1034,17 +1034,22 @@ See below for all currently available collectors.</p>
 </span><span>
 </span><span style="color:#00a33f;">summary_fields</span><span>:
 </span><span>  </span><span style="color:#00a33f;">mandatory</span><span>:
+</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
+</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/|$)
+</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
+</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
+</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
 </span><span>    </span><span style="color:#00a33f;">NormalisedWallDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedField
 </span><span>      </span><span style="color:#00a33f;">score</span><span>:
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
 </span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
 </span><span>    </span><span style="color:#00a33f;">CpuDuration</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>      </span><span style="color:#00a33f;">divide_by</span><span>: 1000
 </span><span>    </span><span style="color:#00a33f;">NormalisedCpuDuration</span><span>: </span><span style="color:#ff5600;">!NormalisedField
 </span><span>      </span><span style="color:#00a33f;">base_value</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">TotalCPU
-</span><span>        </span><span style="color:#00a33f;">divide_by</span><span>: 1000
 </span><span>      </span><span style="color:#00a33f;">score</span><span>:
 </span><span>        </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">hepscore23
 </span><span>        </span><span style="color:#00a33f;">component_name</span><span>: </span><span style="color:#00a33f;">Cores
@@ -1052,23 +1057,16 @@ See below for all currently available collectors.</p>
 </span><span>  </span><span style="color:#00a33f;">optional</span><span>:
 </span><span>    </span><span style="color:#00a33f;">GlobalUserName</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">subject
-</span><span>    </span><span style="color:#00a33f;">VO</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
-</span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/|$)
 </span><span>    </span><span style="color:#00a33f;">VOGroup</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">(?&lt;=/).*?(?=/Role|$)
 </span><span>    </span><span style="color:#00a33f;">VORole</span><span>: </span><span style="color:#ff5600;">!MetaField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">voms
 </span><span>      </span><span style="color:#00a33f;">regex</span><span>: </span><span style="color:#00a33f;">&#39;(?=Role).*?(?=/|$)&#39;
-</span><span>    </span><span style="color:#00a33f;">SubmitHost</span><span>: </span><span style="color:#ff5600;">!MetaField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">headnode
 </span><span>    </span><span style="color:#00a33f;">Infrastructure</span><span>: </span><span style="color:#ff5600;">!ConstantField
 </span><span>      </span><span style="color:#00a33f;">value</span><span>: </span><span style="color:#00a33f;">grid
 </span><span>    </span><span style="color:#00a33f;">NodeCount</span><span>: </span><span style="color:#ff5600;">!ComponentField
 </span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">NNodes
-</span><span>    </span><span style="color:#00a33f;">Processors</span><span>: </span><span style="color:#ff5600;">!ComponentField
-</span><span>      </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">Cores
 </span></code></pre>
 <p>The individual parameters in the config file are:</p>
 <table><thead><tr><th>Section</th><th>Parameter</th><th>Description</th></tr></thead><tbody>
@@ -1099,21 +1097,23 @@ See below for all currently available collectors.</p>
 <tr><td style="text-align: left"><code>CpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
 <tr><td style="text-align: left"><code>NormalisedCpuDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
 <tr><td style="text-align: left"><code>NormalisedWallDuration</code></td><td style="text-align: center"><code>int</code></td></tr>
+<tr><td style="text-align: left"><code>VO</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>SubmitHost</code></td><td style="text-align: center"><code>str</code></td></tr>
+<tr><td style="text-align: left"><code>Processors</code></td><td style="text-align: center"><code>int</code></td></tr>
 </tbody></table>
 <p><code>CpuDuration</code> and <code>NormalisedCpuDuration</code> have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. <code>RemoteSysCpu + RemoteUserCpu</code> for HTCondor). <code>NormalisedWallDuration</code> has to contain the time the job was actually running, i.e. <strong>not</strong> multiplied by the number of cores (this is done later in the APEL pipeline).</p>
 <p>There are actually more mandatory fields, but they are handled internally and don't need any input from the user.</p>
 <p><code>optional</code> fields can be used to provide additional information to APEL:</p>
 <table><thead><tr><th style="text-align: left">Name</th><th style="text-align: center">Data type</th></tr></thead><tbody>
 <tr><td style="text-align: left"><code>GlobalUserName</code></td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>VO</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>VOGroup</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>VORole</code></td><td style="text-align: center"><code>str</code></td></tr>
-<tr><td style="text-align: left"><code>SubmitHost</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>Infrastructure</code></td><td style="text-align: center"><code>str</code></td></tr>
 <tr><td style="text-align: left"><code>NodeCount</code></td><td style="text-align: center"><code>int</code></td></tr>
-<tr><td style="text-align: left"><code>Processors</code></td><td style="text-align: center"><code>int</code></td></tr>
 </tbody></table>
-<p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/">https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/</a> and <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>. Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL!</p>
+<p>Except for <code>NodeCount</code>, none of the <code>optional</code> information appears on the <a href="https://accounting.egi.eu/">EGI Accounting Portal</a>, so it is possible that this information is not used at all.</p>
+<p>The information about the possible fields, their required data types, and what is mandatory or optional, is taken from <a href="https://github.com/apel/apel/tree/master/apel/db/records">https://github.com/apel/apel/tree/master/apel/db/records</a>. Exceptions are <code>VO</code>, <code>SubmitHost</code>, and <code>Processors</code>, which the APEL plugin considers necessary.</p>
+<p>Please make sure that the information you extract from the AUDITOR records has the correct data type as expected by APEL! This is documented here: <a href="https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/">https://docs.egi.eu/internal/accounting/record-and-message-formats/grid-accounting/</a>.</p>
 <p>Different field types are available, depending on the source of the value that is needed: <code>ComponentField</code>, <code>MetaField</code>, <code>ConstantField</code>, <code>ScoreField</code>, and <code>NormalisedField</code>. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. <code>Processors: !ComponentField</code>.</p>
 <p><code>ComponentField</code> extracts the value from a <code>component</code> in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter <code>divide_by</code> has to be used.</p>
 <p><code>MetaField</code> extracts the value from the <code>meta</code> information in the AUDITOR record. The mandatory parameter of this field is <code>name</code>, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters <code>regex</code> or <code>function</code> can be used. <code>regex</code> takes a regular expression, searches the value for this expression, and returns the complete match, <code>function</code> has the parameters <code>name</code> and <code>parameters</code>, where the latter is optional and can be used to provide additional parameters to the function. If you want to manipulate the value of the <code>Metafield</code> with a custom function, it has to be present in <code>utility.py</code> and can be added via a pull request.</p>

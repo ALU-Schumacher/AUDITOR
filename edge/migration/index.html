@@ -79,6 +79,12 @@
                 </div>
                 
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                </div>
+                
+                
+                
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-9-3-to-0-9-4">From 0.9.3 to 0.9.4</a>
                 </div>
@@ -128,7 +134,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
                 </div>
                 
                 
@@ -188,7 +194,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-1"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-2"><small>- Apel plugin</small></a>
                 </div>
                 
                 
@@ -199,7 +205,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-2"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-3"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -222,7 +228,7 @@
                 </div>
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-3"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-4"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -264,7 +270,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-4"><small>- Apel plugin</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#apel-plugin-5"><small>- Apel plugin</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -298,6 +304,11 @@
             
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-9-4-to-unreleased">From 0.9.4 to unreleased</h1>
+<h2 id="apel-plugin">Apel plugin</h2>
+<ul>
+<li><code>auditor-apel-republish</code> now has the parameters <code>month</code> and <code>year</code> instead of <code>begin_date</code> and <code>end_date</code>. See the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a> or <code>auditor-apel-republish -h</code> for usage information.</li>
+<li><code>VO</code>, <code>Processors</code>, and <code>SubmitHost</code> are now <code>mandatory</code> fields in the config, since this information is necessary for correct EGI accounting. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
+</ul>
 <h1 id="from-0-9-3-to-0-9-4">From 0.9.3 to 0.9.4</h1>
 <h3 id="update-to-sqlx-0-8-6">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.6</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.6</p>
@@ -315,10 +326,10 @@
 <h1 id="from-0-8-0-to-0-9-0">From 0.8.0 to 0.9.0</h1>
 <h2 id="auditor">Auditor</h2>
 <ul>
-<li><code>AUDITOR_APPLICATION__ADDR</code> is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files">documentation</a></li>
+<li><code>AUDITOR_APPLICATION__ADDR</code> is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files">documentation</a>.</li>
 </ul>
 <h1 id="from-0-7-1-to-0-8-0">From 0.7.1 to 0.8.0</h1>
-<h2 id="apel-plugin">Apel plugin</h2>
+<h2 id="apel-plugin-1">Apel plugin</h2>
 <ul>
 <li>Due to the switch to the ARGO AMS library, the config file has to be adjusted. The <code>authentication</code> section needs to be replaced with the new <code>messaging</code> section. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
 <li>The <code>NormalisedWallDurationField</code> class was removed, but the default <code>base_value</code> of the <code>NormalisedField</code> class is now the <code>runtime</code> of the record. Replace <code>NormalisedWallDuration: !NormalisedWallDurationField</code> with <code>NormalisedWallDuration: !NormalisedField</code> in the config file.</li>
@@ -385,13 +396,13 @@
 <li>WARNING: Please create a backup of the database before running the migration script.</li>
 <li>AUDITOR db should be migrated to use the new schema. Run <code>sqlx migrate run --source migration</code> from the AUDITOR home directory. It is also possible using the container which can be found here <a href="../#migrating-the-database">Documentation</a>.</li>
 </ul>
-<h2 id="apel-plugin-1">Apel plugin</h2>
+<h2 id="apel-plugin-2">Apel plugin</h2>
 <ul>
 <li>The APEL message can now be configured via the config. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
 <li><code>auditor-apel-republish</code> now needs the arguments <code>--begin-date</code> and <code>--end-date</code> instead of <code>--month</code> and <code>--year</code>. The format is <code>yyyy-mm-dd hh:mm:ss+00:00</code>, e.g. <code>2023-11-29 21:10:54+00:00</code>.</li>
 </ul>
 <h1 id="from-0-4-0-to-0-5-0">From 0.4.0 to 0.5.0</h1>
-<h2 id="apel-plugin-2">Apel plugin</h2>
+<h2 id="apel-plugin-3">Apel plugin</h2>
 <ul>
 <li>The format of the config file was changed from INI to YAML. An updated example config file can be found in the <a href="../#apel-plugin">Documentation</a>.</li>
 <li>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
@@ -439,7 +450,7 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 </tbody></table>
 <p><code>/record</code> endpoint handles single record operations such as adding one record, updating one record and querying one record.</p>
 <p><code>/records</code> endpoint handles multiple and bulk record operations such as inserting bulk records and querying multiple records.</p>
-<h2 id="apel-plugin-3">Apel plugin</h2>
+<h2 id="apel-plugin-4">Apel plugin</h2>
 <p>The config parameter <code>site_name_mapping</code> is removed and the structure of the config parameter <code>sites_to_report</code> is changed. <code>sites_to_report</code> is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.</p>
 <p>Before:</p>
 <pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>[</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
@@ -531,7 +542,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <li><code>cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 <h1 id="from-0-1-0-to-0-2-0">From 0.1.0 to 0.2.0</h1>
-<h2 id="apel-plugin-4">Apel plugin</h2>
+<h2 id="apel-plugin-5">Apel plugin</h2>
 <ul>
 <li>The config file now needs to have a field <code>cpu_time_unit</code> present, which describes the unit of total CPU time in the AUDITOR records.
 Possible values are <code>seconds</code> or <code>milliseconds</code>.</li>
