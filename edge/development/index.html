@@ -282,6 +282,17 @@ A local version of the documentation can be built with</p>
 <p>Follow the steps below in order to create a new release.</p>
 <p>Example PR: <a href="https://github.com/ALU-Schumacher/AUDITOR/pull/547">https://github.com/ALU-Schumacher/AUDITOR/pull/547</a></p>
 <ul>
+<li>All version number updates mentioned below (except for <code>sqlx</code>) can be done with <code>scripts/bump_version.py</code>.</li>
+</ul>
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: bump_version.py </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -o OLD -n NEW </span><span style="color:#ff5600;">[</span><span>-y</span><span style="color:#ff5600;">]
+</span><span>
+</span><span>options:
+</span><span>  -h, --help       show this help message and exit
+</span><span>  -o, --old OLD    Old version
+</span><span>  -n, --new NEW    New version
+</span><span>  -y, --assumeyes  Don</span><span style="color:#00a33f;">&#39;t ask for confirmation
+</span></code></pre>
+<ul>
 <li>Update the version number in all <code>Cargo.toml</code> files</li>
 <li>Run <code>cargo update</code> to update dependencies in <code>Cargo.lock</code></li>
 <li>If <code>sqlx</code> is updated, don't forget to also change the version in all workflows, containers, documentation, etc.</li>
