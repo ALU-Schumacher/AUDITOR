@@ -190,7 +190,7 @@ class CondorHistoryCollector(object):
         if constraint := self.config.get("constraint"):
             cmd.extend(["-constraint", constraint])
         if self.config.get("history_file"):
-            cmd.extend(["-file", f'"{self.config.history_file}"'])
+            cmd.extend(["-file", escape(self.config.history_file)])
 
         if self.config.query_type == "shell":
             self.logger.debug(f"Running command: {' '.join(cmd)!r}")
