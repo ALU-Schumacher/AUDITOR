@@ -823,26 +823,14 @@ tls_config:
 
 
 ## Kubernetes Collector
-This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via it's API. This means that the collector needs to be able to access the API as well as Prometheus.
+This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via its API. This means that the collector needs to be able to access the API as well as Prometheus.
 
-The easiest way to ensure access to the API is by running the collector directly on Kubernetes via the provided Helm Chart. Prometheus needs to be able to access the Kubelets of your cluster. If it is installed on Kubernetes, make sure it has some persistent storage. A small tutorial for an example setup can be found [here](#kubernetes).
+The easiest way to ensure access to the API is by running the collector directly on Kubernetes via a Helm Chart. Prometheus needs to be able to access the Kubelets of your cluster. If it is installed on Kubernetes, make sure it has some persistent storage. A small tutorial for an example setup will be provided in the near future.
 The following section explains the configuration of the collector.
 
 The collector can be started manually
 ```bash
 ./auditor-kubernetes-collector config.yaml
-```
-
-Or it can be installed on Kubernetes via the single Helm Chart
-
-```bash
-helm install auditor-collector helmcharts/charts/auditor-collector/ -n auditor
-```
-
-or through the parent Chart
-
-```bash
-helm install auditor helmcharts/ -n auditor
 ```
 
 ### Configuration
@@ -1260,7 +1248,7 @@ The individual endpoints are further detailed down below.
   A successful response (`200 OK`) indicates that the server is running and reachable.
 - Add single record: This endpoint is used to add a single record to the database.
   The record data should be included in the request body in JSON format and needs to be serializable into the [RecordAdd](https://docs.rs/auditor/latest/auditor/domain/struct.RecordAdd.html) struct.
-- Add multiple records: Similar to the previous endpoint, but it's used to add multiple records at once.
+- Add multiple records: Similar to the previous endpoint, but it is used to add multiple records at once.
   The request body should contain an array of records in JSON format.
 - Update record: This endpoint is used to update an existing record.
   The record data should be included in the request body in JSON format and needs to be serializable into the [RecordUpdate](https://docs.rs/auditor/latest/auditor/domain/struct.RecordUpdate.html) struct.
@@ -1273,111 +1261,6 @@ The individual endpoints are further detailed down below.
   In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (`400 BAD REQUEST`).
 
 In the event of unforeseen errors, the server will respond with a `500 INTERNAL SERVER ERROR`.
-
-# Examples
-## Kubernetes
-To install an AUDITOR stack on a Kubernetes cluster we provide a Helm Chart in `./helmcharts/` that includes the subcharts
-- `auditor` for the AUDITOR server
-- `auditor-collector` for the Kubernetes collector
-- `auditor-prometheus` for a Prometheus to scrape the kubelets
-- `auditor-apel` for the APEL plugin
-
-All charts can be (de-)activated in the partent charts `values.yaml` individually, so everything can be run on Kubernetes or separately.
-With the exception of the server chart, all deployments should be provided with persistent storage, while the `auditor` chart requires a Postgres.
-
-For the sake of this example we will provide a small Docker compose setup to run a Postgres instance and install all other components on Kubernetes.
-
-To set up Postgres we use the following files:
-```
-# .env
-AUDITOR_VERSION=0.6.2
-
-POSTGRES_USER="auditor"
-POSTGRES_PASSWORD="super_safe"
-POSTGRES_DB="auditor"
-POSTGRES_HOST="postgres"
-POSTGRES_PORT="5433"
-```
-```
-# docker-compose.yml
-services:
-
-  postgres:
-    image: postgres:16.2-alpine
-    hostname: postgres
-    volumes:
-      - vol_postgres:/var/lib/postgresql/data
-    # Note: During init the server is ready but only accepts connections via
-    # socket. Specifying localhost makes sure init is done.
-    healthcheck:
-      test:
-        - "CMD"
-        - "pg_isready"
-        - "--dbname=$POSTGRES_DB"
-        - "--username=$POSTGRES_USER"
-        - "--host=localhost"
-      interval: 60s
-      timeout: 3s
-      start_period: 60s
-      start_interval: 2s
-      retries: 1
-    ports:
-      - ${POSTGRES_PORT}:5432
-    networks:
-      - auditor-on-kubernetes
-
-volumes:
-  vol_postgres:
-
-networks:
-  auditor-on-kubernetes:
-```
-```
-# docker-compose-setup.yml
-services:
-  migrate:
-    image: aluschumacher/auditor:${AUDITOR_VERSION}
-    environment:
-      AUDITOR_DATABASE__USERNAME: ${POSTGRES_USER}
-      AUDITOR_DATABASE__PASSWORD: ${POSTGRES_PASSWORD}
-      AUDITOR_DATABASE__DATABASE_NAME: ${POSTGRES_DB}
-      AUDITOR_DATABASE__HOST: postgres
-      AUDITOR_DATABASE__PORT: 5432
-    command: migrate
-    networks:
-      - auditor-on-kubernetes
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  postgres:
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-```
-The first start of Postgres is done with
-```
-docker compose -f docker-compose.yml -f docker-compose-setup.yml up
-```
-to run the migration.
-
-The configuration of the AUDITOR stack is done through the `values.yaml` files of the charts.
-In particular, we need to provide the Postgres address in the parent chart or the `auditor` chart.
-
-We then install everything via the Helm Charts:
-```
-kubectl create namespace auditor
-helm install -n auditor auditor-stack helmcharts/
-```
-
-Note that, per default, none of the pods will have a persistent storage. It is however advised to provide the collector, the APEL plugin and especially the Prometheus instance with persistent storage.
-The `value.yaml` files contain a section with a simple example for this, using local paths.
-If you want to use it, set `persistentVolume.use` to `true` in the appropriate `values.yaml` and add the node to use in `persistentVolume.nodeAffinity`.
-Then, on the nodes in question the directory `/srv/auditor/{apel,collector,prometheus}` should exists.
-
-If you want to run the APEL plugin on Kubernetes you need to provide it with certificate files `ca.pem`, `client.pem` and `client.key` in the `files` directory of its chart.
-
 
 # TLS Certificate Generation Guide
 The following are the guidelines for setting up the certificates for TLS setup. You can change and configure according to your requirements like the encryption type and the validity days for the certificate. 
