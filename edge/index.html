@@ -527,7 +527,7 @@ The frequency setting should be somewhat in accordance with the Prometheus scrap
 <p>Alternatively, Auditor can be compiled and run directly.
 Instructions for compiling Auditor from source can be found in the <a href="https://alu-schumacher.github.io/AUDITOR//edge/development/#compiling-auditor-from-source">development</a> documentation.</p>
 <h1 id="packages">Packages</h1>
-<p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>.</p>
+<p>RPMs are provided for each release on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">Github release page</a>. After installation, default unit- and config files can be found in <code>/usr/lib/systemd/system/</code> and <code>/etc/auditor/</code>, respectively.</p>
 <h1 id="collectors">Collectors</h1>
 <p>Collectors are used to collect data from various sources.
 See below for all currently available collectors.</p>
@@ -598,7 +598,7 @@ The following filters are supported:</p>
 </span><span style="color:#00a33f;">sacct_frequency</span><span>: 300
 </span><span style="color:#00a33f;">sender_frequency</span><span>: 60
 </span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2023-09-15T12:00:00+00:00&quot;
-</span><span style="color:#00a33f;">database_path</span><span>: </span><span style="color:#00a33f;">&quot;/absolute/path/to/db.db&quot;
+</span><span style="color:#00a33f;">database_path</span><span>: </span><span style="color:#00a33f;">&quot;/var/lib/auditor-slurm-collector/db.db&quot;
 </span><span style="color:#00a33f;">sites</span><span>:
 </span><span>  - </span><span style="color:#00a33f;">name</span><span>: </span><span style="color:#00a33f;">&quot;mysite1&quot;
 </span><span>    </span><span style="color:#00a33f;">only_if</span><span>:
@@ -770,7 +770,7 @@ Further, optional arguments are</p>
 </span></code></pre>
 <p>Command line arguments override the values set in the config file.</p>
 <h3 id="rpm">rpm</h3>
-<p>The HTCondor collector is also available as rpm on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>. The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_htcondor_collector</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_htcondor_collector.service</code>. This service runs the command <code>auditor-htcondor-collector</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_htcondor_collector.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.</p>
+<p>The HTCondor collector is also available as rpm on the <a href="https://github.com/ALU-Schumacher/AUDITOR/releases">GitHub Release page</a>. The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_htcondor_collector</code>. After installation, a unit file is available at <code>/usr/lib/systemd/system/auditor_htcondor_collector.service</code>. This service runs the command <code>auditor-htcondor-collector</code> and expects a config file at <code>/etc/auditor/auditor_htcondor_collector.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file.</p>
 <h3 id="configuration-1">Configuration</h3>
 <p>The collector is configured using a yaml-file. Configuration parameters are as follows:</p>
 <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
@@ -814,7 +814,7 @@ In case the regex contains a group, the value is set to the (first) matching gro
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">localhost
 </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">timeout</span><span>: 10
-</span><span style="color:#00a33f;">state_db</span><span>: </span><span style="color:#00a33f;">htcondor_history_state.db
+</span><span style="color:#00a33f;">state_db</span><span>: </span><span style="color:#00a33f;">/var/lib/auditor_htcondor_collector/htcondor_history_state.db
 </span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">htcondor
 </span><span style="color:#00a33f;">interval</span><span>: 900 </span><span style="color:#919191;"># 15 minutes
 </span><span style="color:#00a33f;">pool</span><span>: </span><span style="color:#00a33f;">htcondor.example.com
@@ -917,6 +917,7 @@ The following section explains the configuration of the collector.</p>
 </span><span style="color:#00a33f;">prometheus_port</span><span>: 31000
 </span><span style="color:#00a33f;">record_prefix</span><span>: </span><span style="color:#00a33f;">&quot;KUBE&quot;
 </span><span style="color:#00a33f;">earliest_datetime</span><span>: </span><span style="color:#00a33f;">&quot;2024-04-18T12:00:00Z&quot;
+</span><span style="color:#00a33f;">database_path</span><span>: </span><span style="color:#00a33f;">&quot;/var/lib/auditor-kubernetes-collector/&quot;
 </span><span style="color:#00a33f;">job_filter</span><span>:
 </span><span>  </span><span style="color:#00a33f;">namespace</span><span>:
 </span><span>    - </span><span style="color:#00a33f;">&quot;default&quot;
@@ -925,7 +926,7 @@ The following section explains the configuration of the collector.</p>
 </span><span style="color:#00a33f;">auditor_timeout</span><span>: 10
 </span><span style="color:#00a33f;">prometheus_timeout</span><span>: 90
 </span><span style="color:#00a33f;">collect_interval</span><span>: 30
-</span><span style="color:#00a33f;">send_interval</span><span>: 60
+</span><span style="color:#00a33f;">merge_interval</span><span>: 60
 </span><span style="color:#00a33f;">backlog_interval</span><span>: 300
 </span><span style="color:#00a33f;">backlog_maxretries</span><span>: 2
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">debug
@@ -977,7 +978,7 @@ See below for all currently available collectors.</p>
 </span><span>client_key: hostkey.pem
 </span></code></pre>
 <h3 id="rpm-1">rpm</h3>
-<p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/etc/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish</code> and expects a config file at <code>/opt/auditor_apel_plugin/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
+<p>The rpm will install a virtual environment including all dependencies in <code>/opt/auditor_apel_plugin</code>. After installation, a unit file is available at <code>/usr/lib/systemd/system/auditor_apel_plugin.service</code>. This service runs the command <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish</code> and expects a config file at <code>/etc/auditor/auditor_apel_plugin.yml</code>. An example config file is available at this location, but this needs to be adjusted according to your setup. You can also modify the unit file, e.g. change the location of the config file. The republish command is available at <code>/opt/auditor_apel_plugin/venv/bin/auditor-apel-republish</code>.</p>
 <h3 id="config">Config</h3>
 <p>The config file is written in YAML format and has the main sections <code>plugin</code>, <code>site</code>, <code>messaging</code>, <code>auditor</code>, and <code>summary_fields</code>.</p>
 <p>Please note that the example config below is not ready for usage! Make sure that all values (file paths, URLS, IPs, ports, etc.) correspond to your setup, especially the names of the AUDITOR record fields you want to access.</p>
@@ -986,7 +987,7 @@ See below for all currently available collectors.</p>
 </span><span style="color:#00a33f;">plugin</span><span>:
 </span><span>  </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">INFO
 </span><span>  </span><span style="color:#00a33f;">log_file</span><span>: </span><span style="color:#00a33f;">/var/log/auditor_apel_plugin.log
-</span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/etc/auditor_apel_plugin/time.json
+</span><span>  </span><span style="color:#00a33f;">time_json_path</span><span>: </span><span style="color:#00a33f;">/var/lib/auditor_apel_plugin/time.json
 </span><span>  </span><span style="color:#00a33f;">report_interval</span><span>: 86400
 </span><span>  
 </span><span style="color:#00a33f;">site</span><span>:
@@ -1132,7 +1133,7 @@ Priorities are updated at a frequency that can be set via the configuration.</p>
 </span><span>  </span><span style="color:#00a33f;">group3</span><span>:
 </span><span>    - </span><span style="color:#00a33f;">&quot;part3&quot;
 </span><span style="color:#00a33f;">commands</span><span>:
-</span><span>  - </span><span style="color:#00a33f;">&#39;/usr/bin/bash -c &quot;/usr/bin/echo \&quot;$(date --rfc-3339=sec --utc) | {resource} | {priority}\&quot; &gt;&gt; {group}.txt&quot;&#39;
+</span><span>  - </span><span style="color:#00a33f;">&#39;/usr/bin/bash -c &quot;/usr/bin/echo \&quot;$(date --rfc-3339=sec --utc) | {resource} | {priority}\&quot; &gt;&gt; /var/lib/auditor-priority-plugin/{group}.txt&quot;&#39;
 </span><span>  - </span><span style="color:#00a33f;">&quot;/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}&quot;
 </span><span style="color:#00a33f;">min_priority</span><span>: 1
 </span><span style="color:#00a33f;">max_priority</span><span>: 65335
