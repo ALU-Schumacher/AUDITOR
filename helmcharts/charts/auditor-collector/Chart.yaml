@@ -1,8 +1,0 @@
-apiVersion: v2
-name: auditor-collector
-description: AUDITOR collector for Kubernetes
-type: application
-version: 0.7.0
-appVersion: "0.7.0"
-kubeVersion: ">=1.28.0-0"
-home: https://alu-schumacher.github.io/AUDITOR

@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTCondor collector: Fix bug that prevented reading old jobs on first collection ([@maxfischer2781](https://github.com/maxfischer2781))
 
 ### Removed
+- Kubernetes collector: remove helm charts ([@dirksammel](https://github.com/dirksammel))
 
 ## [0.9.4] 2025-05-23
 
