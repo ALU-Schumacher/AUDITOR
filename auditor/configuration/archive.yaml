@@ -1,0 +1,27 @@
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+tls_config:
+  use_tls: false
+  ca_cert_path: "/path/rootCA.pem"
+  server_cert_path: "/path/server-cert.pem"
+  server_key_path: "/path/server-key.pem"
+archival_config:
+  archive_older_than_months: 1
+  archive_path: "./archived_records"
+  archive_file_prefix: "auditor"
+  cron_schedule: "0 0 2 1 * *"
+  compression_type: "Gzip"

@@ -1,0 +1,6 @@
+file_path: "../../../../archived_records/auditor_2025_5.parquet"
+db_username: postgres
+password: password
+port: 5432
+host: localhost
+database_name: auditor

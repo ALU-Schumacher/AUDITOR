@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - AUDITOR: Add config fields to specify the meta key namespace for prometheus metrics ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Add `ignore_record_exists_error` config option to treat record exists error as a warning ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add archival functionality to archive old records from db to parquet files ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Add parquet restoration scripts that restores archived records in parquet file to AUDTIOR db (Rust and python script) ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Docs: Add documentation for archival configs and usage of parquet restoration scripts ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Add role based access control service ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add TLS certificate generation guide ([@raghuvar-vijay](https://github.com/raghuvar-vijay))

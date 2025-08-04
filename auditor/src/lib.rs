@@ -10,6 +10,8 @@
 extern crate quickcheck_macros;
 
 #[cfg(feature = "server")]
+pub mod archive;
+#[cfg(feature = "server")]
 pub mod configuration;
 pub mod constants;
 pub mod domain;

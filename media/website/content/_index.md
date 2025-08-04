@@ -163,27 +163,32 @@ After installing PostgreSQL, the database needs to be migrated with `sqlx`.
 
 AUDITORs configuration can be adapted with environment variables.
 
-| Variable                                                         | Description                                                                                                     |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------|
-| `AUDITOR_APPLICATION__ADDR`                                      | Address to bind to (default `0.0.0.0`). Supports (dualstack) IPv4 and IPv6 addresses as comma separated values  |
-| `AUDITOR_APPLICATION__PORT`                                      | Port to bind to (default `8000`)                                                                                |
-| `AUDITOR_DATABASE__HOST`                                         | Host address of PostgreSQL database (default `localhost`)                                                       |
-| `AUDITOR_DATABASE__PORT`                                         | Port of PostgreSQL database (default `5432`)                                                                    |
-| `AUDITOR_DATABASE__USERNAME`                                     | PostgreSQL database username (default `postgres`)                                                               |
-| `AUDITOR_DATABASE__PASSWORD`                                     | PostgreSQL database password (default `password`)                                                               |
-| `AUDITOR_DATABASE__DATABASE_NAME`                                | Name of the PostgreSQL database (default `auditor`)                                                             |
-| `AUDITOR_DATABASE__REQUIRE_SSL`                                  | Whether or not to use SSL (default `true`)                                                                      |
-| `AUDITOR_LOG_LEVEL`                                              | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`)       |
-| `AUDITOR_TLS_CONFIG__USE_TLS`                                    | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                |
-| `AUDITOR_TLS_CONFIG__HTTPS_ADDR`                                 | The HTTPS address where the server will listen. Defaults to `AUDITOR_APPLICATION__ADDR` value if not set.       |
-| `AUDITOR_TLS_CONFIG__HTTPS_PORT`                                 | The HTTPS port where the server will listen. (default `8443`).                                                  |
-| `AUDITOR_TLS_CONFIG__CA_CERT_PATH`                               | Path to the root Certificate Authority (CA) certificate for validating client certificates.                     |
-| `AUDITOR_TLS_CONFIG__SERVER_CERT_PATH`                           | Path to the server's TLS certificate.                                                                           |
-| `AUDITOR_TLS_CONFIG__SERVER_KEY_PATH`                            | Path to the server's private key used for TLS.                                                                  |
-| `AUDITOR_RBAC_CONFIG__ENFORCE_RBAC`                              | Specifies whether RBAC is enabled (`true`) or disabled (`false`).                                               |
-| `AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN`                        | Specifies list of CN that are allowed to read the auditor prometheus metrics                                    |
-| `AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN`                           | Specifies which clients are allowed to perform the write operations from AUDITOR                                |
-| `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operaitons from AUDITOR                                 |
+| Variable                                                         | Description                                                                                                            |
+| ---------------------------------------------------------------- | -----------------------------------------------------------------------------------------------------------------------|
+| `AUDITOR_APPLICATION__ADDR`                                      | Address to bind to (default `0.0.0.0`). Supports (dualstack) IPv4 and IPv6 addresses as comma separated values         |
+| `AUDITOR_APPLICATION__PORT`                                      | Port to bind to (default `8000`)                                                                                       |
+| `AUDITOR_DATABASE__HOST`                                         | Host address of PostgreSQL database (default `localhost`)                                                              |
+| `AUDITOR_DATABASE__PORT`                                         | Port of PostgreSQL database (default `5432`)                                                                           |
+| `AUDITOR_DATABASE__USERNAME`                                     | PostgreSQL database username (default `postgres`)                                                                      |
+| `AUDITOR_DATABASE__PASSWORD`                                     | PostgreSQL database password (default `password`)                                                                      |
+| `AUDITOR_DATABASE__DATABASE_NAME`                                | Name of the PostgreSQL database (default `auditor`)                                                                    |
+| `AUDITOR_DATABASE__REQUIRE_SSL`                                  | Whether or not to use SSL (default `true`)                                                                             |
+| `AUDITOR_LOG_LEVEL`                                              | Set the verbosity of logging. Possible values: `trace`, `debug`, `info`, `warn`, `error` (default `info`)              |
+| `AUDITOR_TLS_CONFIG__USE_TLS`                                    | Specifies whether TLS is enabled (`true`) or disabled (`false`).                                                       |
+| `AUDITOR_TLS_CONFIG__HTTPS_ADDR`                                 | The HTTPS address where the server will listen. Defaults to `AUDITOR_APPLICATION__ADDR` value if not set.              |
+| `AUDITOR_TLS_CONFIG__HTTPS_PORT`                                 | The HTTPS port where the server will listen. (default `8443`).                                                         |
+| `AUDITOR_TLS_CONFIG__CA_CERT_PATH`                               | Path to the root Certificate Authority (CA) certificate for validating client certificates.                            |
+| `AUDITOR_TLS_CONFIG__SERVER_CERT_PATH`                           | Path to the server's TLS certificate.                                                                                  |
+| `AUDITOR_TLS_CONFIG__SERVER_KEY_PATH`                            | Path to the server's private key used for TLS.                                                                         |
+| `AUDITOR_RBAC_CONFIG__ENFORCE_RBAC`                              | Specifies whether RBAC is enabled (`true`) or disabled (`false`).                                                      |
+| `AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN`                        | Specifies list of CN that are allowed to read the auditor prometheus metrics                                           |
+| `AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN`                           | Specifies which clients are allowed to perform the write operations from AUDITOR                                       |
+| `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operaitons from AUDITOR                                        |
+| `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_OLDER_THAN_MONTHS`             | Specifies the lifetime of records. eg: 3 -> records are stored for 3 months from the current date and then archived    |
+| `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_PATH`                          | Specifies the path to store the archived records in parquet files                                                       |
+| `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX`                   | Specifies the prefix for the archive files. (default: `auditor`)                                                       |
+| `AUDITOR_ARCHIVAL_CONFIG__CRON_SCHEDULE`                         | Archives the file according to the cron schedule                                                                       |
+| `AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE`                      | Specifies the compression algorithm for parquet files -> GZip or Snappy. (default: `GZip`)                             |
 
 Use `docker run` to execute Auditor:
     
@@ -351,8 +356,13 @@ This means:
 
 The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.
 
-## Ignoring `record exists` error
-! CAUTION -> Please proceed to implement this config only if you are certain
+
+For enabling archival process:
+AUDITOR can be configured to automatically to archive old records from the database to parquet files grouped by year and month
+CAUTION: It is always a good idea to backup the database, since this feature will delete the records from the database after writing the records to the parquet files.
+
+
+With archival service:
 
 ```yaml
 application:
@@ -371,6 +381,38 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+tls_config:
+  use_tls: false
+  ca_cert_path: "/path/rootCA.pem"
+  server_cert_path: "/path/server-cert.pem"
+  server_key_path: "/path/server-key.pem"
+archival_config:
+  archive_older_than_months: 1
+  archive_path: "./archived_records"
+  archive_file_prefix: "auditor"
+  cron_schedule: "0 0 2 1 * *"
+  compression_type: "Gzip"
+```
+
+
+archive_older_than_months specifies the lifetime of records in the AUDITOR db. If you specify 3 months, all the records older than 3 months from the current month will be archived to parquet files where the records are grouped by each month.
+eg: auditor_2025_4.parquet, auditor_2025_3.parquet
+
+These files are then written into the archive_path mentioned in the config. If the path doesn't exist, it will create a new path as specified.
+
+cron_schedule is in UTC, so specify accordingly.
+
+compression type specifies the type of compression algorithm used to create the parquet file. GZip is produces the smallest file size but requires longer time to process, whereas Snappy is quicker but results in a larger file size.
+Benchmark tests:
+For archiving 12.7 million records 
+GZip -> filesize: 256mb in 32.2 minutes
+Snappy -> filesize: 571mb in 25.2 minutes
+
+
+## Ignoring `record exists` error
+! CAUTION -> Please proceed to implement this config only if you are certain
+
+```yaml
 ignore_record_exists_error: true
 ```
 
@@ -1439,6 +1481,57 @@ rbac_config:
   read_access_cn:
     - apel.plugin
 ```
+
+# Restoring archived parquet files back to AUDTIOR 
+
+We provide a python script and a Rust script to restore the parquet files back to AUDITOR db.
+
+The scripts are present in the AUDITOR main repository.
+
+clone the repository [https://github.com/ALU-Schumacher/AUDITOR](https://github.com/ALU-Schumacher/AUDITOR)
+
+cd auditor/scripts/parquet_to_auditor/
+
+Here you can find two folders, python_script and rust_script
+
+if you want to use python script,
+
+1. run `cd python_script`
+
+2. run `pip install -r requirements.txt`
+
+3. This folder also contains a .env file, so please change the config values in this file suited to your setup. 
+
+```yaml
+DB_NAME=auditor
+DB_USER=postgres
+DB_PASSWORD=password
+DB_HOST=localhost
+DB_PORT=5432
+PARQUET_PATH=../auditor_2025_4.parquet
+```
+
+4. The parquet_path is the file path indicating the location of the parquet file you want to restore to AUDITOR.
+
+5. Then run `python3 parquet_to_auditor.py`
+
+
+If you want to use rust script,
+
+1. run `cd rust_script`
+
+2. In the configuration folder, you will find the config.yaml file. Please change the config fields according to your setup
+
+```yaml
+file_path:"../archived_records/auditor_2025_5.parquet"
+db_username: postgres
+password: password
+port: 5432
+host: localhost
+database_name: auditor
+```
+
+3. Then run `cargo run` to trigger the restoration of the records from this parquet file to AUDITOR db. 
 
 # License
 

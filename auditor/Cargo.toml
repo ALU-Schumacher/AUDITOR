@@ -35,6 +35,8 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
+arrow.workspace = true
+arrow-array.workspace = true
 actix-web-opentelemetry.workspace = true 
 actix-web = { workspace = true, features = ["rustls-0_23"] }
 actix-tls = { workspace = true, features = ["rustls-0_23"] }
@@ -52,6 +54,7 @@ num-traits.workspace = true
 opentelemetry-prometheus.workspace = true
 opentelemetry.workspace = true
 opentelemetry_sdk.workspace = true
+parquet.workspace = true 
 prometheus.workspace = true
 rand.workspace = true
 regex.workspace = true
@@ -66,6 +69,7 @@ serde_with.workspace = true
 sqlx = { workspace = true, features = ["postgres", "json"] }
 thiserror.workspace = true
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
+tokio-cron-scheduler.workspace = true
 tracing-actix-web.workspace = true
 tracing-bunyan-formatter.workspace = true
 tracing-log.workspace = true

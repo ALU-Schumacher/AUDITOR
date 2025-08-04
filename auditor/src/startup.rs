@@ -5,7 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::configuration::TLSParams;
+use crate::archive::ArchiveService;
+use crate::configuration::{ArchivalConfig, TLSParams};
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
 use crate::middleware::rbac;
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
@@ -15,13 +16,12 @@ use actix_web::middleware::from_fn;
 use actix_web::{App, HttpResponse, HttpServer, web};
 use actix_web::{dev::Extensions, rt::net::TcpStream};
 use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
+use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter};
 use opentelemetry::global;
 use sqlx::PgPool;
 use std::{any::Any, net::SocketAddr, sync::Arc};
 use tracing::info;
 use tracing_actix_web::TracingLogger;
-
-use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter};
 
 /// Configures and starts the HttpServer
 #[allow(clippy::too_many_arguments)]
@@ -34,11 +34,17 @@ pub async fn run(
     tls_params: Option<TLSParams>,
     enforce_rbac: bool,
     ignore_record_exists_error: bool,
+    archival_config: Option<ArchivalConfig>,
 ) -> Result<Server, anyhow::Error> {
     let request_metrics: PrometheusExporterConfig = PrometheusExporterBuilder::new()
         .with_database_watcher(db_watcher)
         .build()?;
     global::set_meter_provider(request_metrics.provider);
+
+    if let Some(archival_config) = archival_config {
+        let archival_service = ArchiveService::new(db_pool.clone(), archival_config);
+        archival_service.start_scheduler().await?;
+    }
 
     let db_pool = web::Data::new(db_pool);
 
