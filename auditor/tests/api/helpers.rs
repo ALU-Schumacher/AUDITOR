@@ -186,6 +186,7 @@ pub async fn spawn_app() -> TestApp {
         None,
         false,
         false,
+        None,
     )
     .await
     .expect("Failed to bind address");

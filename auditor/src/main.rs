@@ -197,6 +197,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 Some(tls_params),
                 enforce_rbac,
                 configuration.ignore_record_exists_error,
+                configuration.archival_config,
             )
             .await?
             .await?;
@@ -211,6 +212,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 None,
                 false,
                 configuration.ignore_record_exists_error,
+                configuration.archival_config,
             )
             .await?
             .await?;
@@ -226,6 +228,7 @@ async fn main() -> Result<(), anyhow::Error> {
             None,
             false,
             configuration.ignore_record_exists_error,
+            configuration.archival_config,
         )
         .await?
         .await?;

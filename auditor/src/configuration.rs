@@ -30,6 +30,32 @@ pub struct Settings {
     pub rbac_config: Option<RbacConfig>,
     #[serde(default = "default_ignore_record_exists_error")]
     pub ignore_record_exists_error: bool,
+    pub archival_config: Option<ArchivalConfig>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+pub enum CompressionType {
+    Gzip,
+    Snappy,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+pub struct ArchivalConfig {
+    pub archive_older_than_months: i32,
+    pub archive_path: String,
+    #[serde(default = "default_archive_file_prefix")]
+    pub archive_file_prefix: String,
+    pub cron_schedule: String, // e.g., "0 0 2 1 * *" // Monthly
+    #[serde(default = "default_compression_type")]
+    pub compression_type: CompressionType,
+}
+
+fn default_compression_type() -> CompressionType {
+    CompressionType::Gzip
+}
+
+fn default_archive_file_prefix() -> String {
+    "auditor".to_string()
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
