@@ -12,9 +12,9 @@ class TestMultipleEntries(unittest.TestCase):
         record1_data = {
             "record_id": "record-1",
             "meta": {
-                "site_id": ["site1"],
-                "group_id": ["group1"],
-                "user_id": ["user1"],
+                "site": ["site1"],
+                "group": ["group1"],
+                "user": ["user1"],
             },
             "components": [
                 {
@@ -32,9 +32,9 @@ class TestMultipleEntries(unittest.TestCase):
         record2_data = {
             "record_id": "record-2",
             "meta": {
-                "site_id": ["site1"],
-                "group_id": ["group1"],
-                "user_id": ["user1"],
+                "site": ["site1"],
+                "group": ["group1"],
+                "user": ["user1"],
             },
             "components": [
                 {
@@ -51,9 +51,9 @@ class TestMultipleEntries(unittest.TestCase):
         record3_data = {
             "record_id": "record-3",
             "meta": {
-                "site_id": ["site1"],
-                "group_id": ["group2"],
-                "user_id": ["user2"],
+                "site": ["site1"],
+                "group": ["group2"],
+                "user": ["user2"],
             },
             "components": [
                 {
@@ -70,9 +70,9 @@ class TestMultipleEntries(unittest.TestCase):
         record4_data = {
             "record_id": "record-4",
             "meta": {
-                "site_id": ["site2"],
-                "group_id": ["group1"],
-                "user_id": ["user2"],
+                "site": ["site2"],
+                "group": ["group1"],
+                "user": ["user2"],
             },
             "components": [
                 {

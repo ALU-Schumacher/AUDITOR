@@ -11,9 +11,9 @@ class TestSingleEntry(unittest.TestCase):
         record1_data = {
             "record_id": "record-1",
             "meta": {
-                "site_id": ["site1"],
-                "group_id": ["group1"],
-                "user_id": ["user1"],
+                "site": ["site1"],
+                "group": ["group1"],
+                "user": ["user1"],
             },
             "components": [
                 {
