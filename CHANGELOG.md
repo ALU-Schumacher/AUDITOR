@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update mypy from 1.15.0 to 1.17.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.11.4 to 2.11.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.3.5 to 8.4.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest-cov from 6.1.1 to 6.2.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.11.9 to 0.12.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update setuptools from 80.4.0 to 80.9.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20250402 to 6.0.12.20250516 ([@dirksammel](https://github.com/dirksammel))
