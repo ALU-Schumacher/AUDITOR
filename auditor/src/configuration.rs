@@ -196,6 +196,24 @@ pub struct DatabaseMetricsSettings {
     #[serde_as(as = "serde_with::DurationSeconds<i64>")]
     pub frequency: chrono::Duration,
     pub metrics: Vec<crate::metrics::DatabaseMetricsOptions>,
+    #[serde(default = "default_meta_key_site")]
+    pub meta_key_site: String,
+    #[serde(default = "default_meta_key_site")]
+    pub meta_key_group: String,
+    #[serde(default = "default_meta_key_site")]
+    pub meta_key_user: String,
+}
+
+fn default_meta_key_site() -> String {
+    "site".to_string()
+}
+
+fn default_meta_key_group() -> String {
+    "group".to_string()
+}
+
+fn default_meta_key_user() -> String {
+    "user".to_string()
 }
 
 fn default_db_metrics_frequency() -> chrono::Duration {
@@ -207,6 +225,9 @@ fn default_metrics() -> MetricsSettings {
         database: DatabaseMetricsSettings {
             frequency: default_db_metrics_frequency(),
             metrics: vec![],
+            meta_key_site: default_meta_key_site(),
+            meta_key_group: default_meta_key_group(),
+            meta_key_user: default_meta_key_user(),
         },
     }
 }

@@ -227,6 +227,9 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+    meta_key_site: "site"
+    meta_key_group: "group"
+    meta_key_user: "user"
 log_level: info
 tls_config:
   use_tls: false
@@ -278,6 +281,9 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+    meta_key_site: "site"
+    meta_key_group: "group"
+    meta_key_user: "user"
 tls_config:
   use_tls: true
   ca_cert_path: "./auditor/certs/rootCA.pem"
@@ -365,6 +371,7 @@ Metrics for Prometheus are exposed via the `/metrics` endpoint.
 By default HTTP metrics are exported.
 In addition, database metrics are exported as well (optional).
 These include the current number of records in the database, as a well as the number of records per site, group and user.
+Specify the correct meta key namespace as configured in your records.
 Database metrics export can be configured in the configuration:
 
 ```yaml
@@ -378,6 +385,9 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+    meta_key_site: "site"
+    meta_key_group: "group"
+    meta_key_user: "user"
 ```
 
 How often the database metrics are computed is defined by the `frequency` configuration variable.
