@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - APEL plugin: Fix bug in republish script when list of records is empty ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Change the meta query field as an array ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update argo-ams-library from 0.6.2 to 1.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.2.2.post1 to 1.3.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 44.0.3 to 45.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.15.0 to 1.17.1 ([@dirksammel](https://github.com/dirksammel))
