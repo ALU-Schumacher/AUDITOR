@@ -28,6 +28,8 @@ pub struct Settings {
     pub log_level: LevelFilter,
     pub tls_config: Option<TLSConfig>,
     pub rbac_config: Option<RbacConfig>,
+    #[serde(default = "default_ignore_record_exists_error")]
+    pub ignore_record_exists_error: bool,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -41,6 +43,10 @@ pub struct RbacConfig {
     pub write_access_cn: Option<Vec<String>>,
     pub read_access_cn: Option<Vec<String>>,
     pub data_access_rules: Option<Vec<Cn>>,
+}
+
+fn default_ignore_record_exists_error() -> bool {
+    false
 }
 
 fn default_enforce_rbac() -> bool {

@@ -185,6 +185,7 @@ pub async fn spawn_app() -> TestApp {
         db_watcher,
         None,
         false,
+        false,
     )
     .await
     .expect("Failed to bind address");

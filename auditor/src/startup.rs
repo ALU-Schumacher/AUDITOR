@@ -24,6 +24,7 @@ use tracing_actix_web::TracingLogger;
 use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter};
 
 /// Configures and starts the HttpServer
+#[allow(clippy::too_many_arguments)]
 pub async fn run(
     addrs: Vec<String>,
     port: u16,
@@ -32,6 +33,7 @@ pub async fn run(
     db_watcher: DatabaseMetricsWatcher,
     tls_params: Option<TLSParams>,
     enforce_rbac: bool,
+    ignore_record_exists_error: bool,
 ) -> Result<Server, anyhow::Error> {
     let request_metrics: PrometheusExporterConfig = PrometheusExporterBuilder::new()
         .with_database_watcher(db_watcher)
@@ -53,11 +55,13 @@ pub async fn run(
     let app_config = move || {
         let enforcer_data = web::Data::new(enforcer_settings.clone());
         let enforce_rbac_data = web::Data::new(enforce_rbac);
+        let ignore_record_exists_error_data = web::Data::new(ignore_record_exists_error);
 
         App::new()
             // Logging middleware
             .app_data(enforcer_data)
             .app_data(enforce_rbac_data)
+            .app_data(ignore_record_exists_error_data)
             .wrap(TracingLogger::default())
             .wrap(RequestMetrics::default())
             .wrap(from_fn(rbac))

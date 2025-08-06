@@ -351,6 +351,30 @@ This means:
 
 The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.
 
+## Ignoring `record exists` error
+! CAUTION -> Please proceed to implement this config only if you are certain
+
+```yaml
+application:
+  port: 8000
+database:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "auditor"
+metrics:
+  database:
+    frequency: 30
+    metrics:
+      - RecordCount
+      - RecordCountPerSite
+      - RecordCountPerGroup
+      - RecordCountPerUser
+ignore_record_exists_error: true
+```
+
+This makes sure that the RECORD EXISTS error which arises from the database while trying to insert a new record is treated just as a warning in the AUDITOR logs and returns `200` to the client.
 
 This configuration file can be passed to Auditor and will overwrite the default configuration.
 
