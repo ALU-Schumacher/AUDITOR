@@ -198,9 +198,9 @@ pub struct DatabaseMetricsSettings {
     pub metrics: Vec<crate::metrics::DatabaseMetricsOptions>,
     #[serde(default = "default_meta_key_site")]
     pub meta_key_site: String,
-    #[serde(default = "default_meta_key_site")]
+    #[serde(default = "default_meta_key_group")]
     pub meta_key_group: String,
-    #[serde(default = "default_meta_key_site")]
+    #[serde(default = "default_meta_key_user")]
     pub meta_key_user: String,
 }
 
