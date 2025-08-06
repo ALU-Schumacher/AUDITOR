@@ -14,6 +14,9 @@ metrics:
       - RecordCountPerSite
       - RecordCountPerGroup
       - RecordCountPerUser
+    meta_key_site: "site"
+    meta_key_group: "group"
+    meta_key_user: "user"
 tls_config:
   use_tls: false
   ca_cert_path: "/path/rootCA.pem"

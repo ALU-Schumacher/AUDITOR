@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2024-47081]: Update requests from 2.32.3 to 2.32.4 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- AUDITOR: Add config fields to specify the meta key namespace for prometheus metrics ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Add option for list of site_meta_fields in the config ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Add role based access control service ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Docs: Add TLS certificate generation guide ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
