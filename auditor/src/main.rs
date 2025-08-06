@@ -196,6 +196,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 db_metrics_watcher,
                 Some(tls_params),
                 enforce_rbac,
+                configuration.ignore_record_exists_error,
             )
             .await?
             .await?;
@@ -209,6 +210,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 db_metrics_watcher,
                 None,
                 false,
+                configuration.ignore_record_exists_error,
             )
             .await?
             .await?;
@@ -223,6 +225,7 @@ async fn main() -> Result<(), anyhow::Error> {
             db_metrics_watcher,
             None,
             false,
+            configuration.ignore_record_exists_error,
         )
         .await?
         .await?;

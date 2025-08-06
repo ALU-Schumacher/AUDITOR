@@ -20,6 +20,11 @@ pub enum AddError {
     // UnexpectedError,
 }
 
+#[derive(serde::Serialize)]
+struct WarningResponse {
+    warning: String,
+}
+
 debug_for_error!(AddError);
 // responseerror_for_error!(AddError, UnexpectedError => INTERNAL_SERVER_ERROR;);
 
@@ -62,20 +67,30 @@ impl ResponseError for AddError {
 pub async fn add(
     record: web::Json<RecordAdd>,
     pool: web::Data<PgPool>,
+    ignore_record_exists_error: web::Data<bool>,
 ) -> Result<HttpResponse, AddError> {
-    add_record(&record, &pool)
-        .await
-        .map_err(|e| match e.0.as_database_error() {
-            Some(db_err) => match db_err.code().as_ref() {
-                Some(code) => match code.as_ref() {
-                    "23505" => AddError::RecordExists,
-                    _ => AddError::UnexpectedError(e.into()),
-                },
-                _ => AddError::UnexpectedError(e.into()),
+    match add_record(&record, &pool).await {
+        Ok(_) => Ok(HttpResponse::Ok().finish()),
+        Err(e) => match e.0.as_database_error() {
+            Some(db_err) => match db_err.code() {
+                Some(code) if code == "23505" => {
+                    if **ignore_record_exists_error {
+                        tracing::warn!(
+                            "!! ----- RECORD ALREADY EXISTS – IGNORING DUE TO CONFIGURATION. ----- !!"
+                        );
+                        let body = WarningResponse {
+        warning: "Record already exists, but the error was ignored due to AUDITOR configuration.".into(),
+    };
+                        Ok(HttpResponse::Ok().json(body))
+                    } else {
+                        Err(AddError::RecordExists)
+                    }
+                }
+                _ => Err(AddError::UnexpectedError(e.into())),
             },
-            _ => AddError::UnexpectedError(e.into()),
-        })?;
-    Ok(HttpResponse::Ok().finish())
+            None => Err(AddError::UnexpectedError(e.into())),
+        },
+    }
 }
 
 #[tracing::instrument(name = "Inserting record into database", skip(record, pool))]
@@ -122,20 +137,33 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
 pub async fn bulk_add(
     records: web::Json<Vec<RecordAdd>>,
     pool: web::Data<PgPool>,
+    ignore_record_exists_error: web::Data<bool>,
 ) -> Result<HttpResponse, AddError> {
-    bulk_insert(&records, &pool)
-        .await
-        .map_err(|e| match e.0.as_database_error() {
-            Some(db_err) => match db_err.code().as_ref() {
-                Some(code) => match code.as_ref() {
-                    "23505" => AddError::RecordExists,
-                    _ => AddError::UnexpectedError(e.into()),
-                },
-                _ => AddError::UnexpectedError(e.into()),
-            },
-            _ => AddError::UnexpectedError(e.into()),
-        })?;
-    Ok(HttpResponse::Ok().finish())
+    match bulk_insert(&records, &pool).await {
+        Ok(_) => Ok(HttpResponse::Ok().finish()),
+
+        Err(e) => {
+            if let Some(db_err) = e.0.as_database_error() {
+                if let Some(code) = db_err.code().as_ref() {
+                    if code == "23505" {
+                        if **ignore_record_exists_error {
+                            tracing::warn!(
+                                "!! ----- ONE OR MORE RECORDS ALREADY EXIST – IGNORING DUE TO CONFIGURATION. ----- !!"
+                            );
+
+                            let body = WarningResponse {
+        warning: "One or more records already exist, but the error was ignored due to AUDITOR configuration.".into(),
+    };
+                            return Ok(HttpResponse::Ok().json(body));
+                        } else {
+                            return Err(AddError::RecordExists);
+                        }
+                    }
+                }
+            }
+            Err(AddError::UnexpectedError(e.into()))
+        }
+    }
 }
 
 #[tracing::instrument(name = "Inserting bulk records into database", skip(records, pool))]
