@@ -185,10 +185,10 @@ AUDITORs configuration can be adapted with environment variables.
 | `AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN`                           | Specifies which clients are allowed to perform the write operations from AUDITOR                                       |
 | `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operaitons from AUDITOR                                        |
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_OLDER_THAN_MONTHS`             | Specifies the lifetime of records. eg: 3 -> records are stored for 3 months from the current date and then archived    |
-| `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_PATH`                          | Specifies the path to store the archived records in parquet files                                                       |
+| `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_PATH`                          | Specifies the path to store the archived records in parquet files                                                      |
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX`                   | Specifies the prefix for the archive files. (default: `auditor`)                                                       |
 | `AUDITOR_ARCHIVAL_CONFIG__CRON_SCHEDULE`                         | Archives the file according to the cron schedule                                                                       |
-| `AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE`                      | Specifies the compression algorithm for parquet files -> GZip or Snappy. (default: `GZip`)                             |
+| `AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE`                      | Specifies the compression algorithm for parquet files -> Gzip or Snappy. (default: `Gzip`)                             |
 
 Use `docker run` to execute Auditor:
     
@@ -408,6 +408,11 @@ For archiving 12.7 million records
 GZip -> filesize: 256mb in 32.2 minutes
 Snappy -> filesize: 571mb in 25.2 minutes
 
+The scheduling format is as follows for `cron_schedule`:
+```
+sec   min   hour   day of month   month   day of week
+*     *     *      *              *       *
+```
 
 ## Ignoring `record exists` error
 ! CAUTION -> Please proceed to implement this config only if you are certain
