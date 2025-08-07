@@ -358,7 +358,7 @@ The apel.plugin is allowed to read data only where the metadata field site_id is
 
 
 For enabling archival process:
-AUDITOR can be configured to automatically to archive old records from the database to parquet files grouped by year and month
+AUDITOR can be configured to automatically archive old records from the database to parquet files grouped by year and month
 CAUTION: It is always a good idea to backup the database, since this feature will delete the records from the database after writing the records to the parquet files.
 
 
@@ -402,7 +402,7 @@ These files are then written into the archive_path mentioned in the config. If t
 
 cron_schedule is in UTC, so specify accordingly.
 
-compression type specifies the type of compression algorithm used to create the parquet file. GZip is produces the smallest file size but requires longer time to process, whereas Snappy is quicker but results in a larger file size.
+compression type specifies the type of compression algorithm used to create the parquet file. GZip produces the smallest file size but requires longer time to process, whereas Snappy is quicker but results in a larger file size.
 Benchmark tests:
 For archiving 12.7 million records 
 GZip -> filesize: 256mb in 32.2 minutes

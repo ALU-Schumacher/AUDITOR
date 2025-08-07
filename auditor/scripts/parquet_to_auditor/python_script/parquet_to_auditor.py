@@ -9,7 +9,7 @@ import pyarrow.parquet as pq
 from dotenv import load_dotenv
 from psycopg2.extras import Json, execute_values
 
-load_dotenv(dotenv_path=Path(__file__).parent / ".env", override=True)
+load_dotenv(dotenv_path=Path(__file__).parent / ".env", override=False)
 
 
 DB_CONFIG = {

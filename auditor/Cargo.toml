@@ -35,12 +35,12 @@ path = "src/main.rs"
 strip = true
 
 [dependencies]
-arrow.workspace = true
-arrow-array.workspace = true
 actix-web-opentelemetry.workspace = true 
 actix-web = { workspace = true, features = ["rustls-0_23"] }
 actix-tls = { workspace = true, features = ["rustls-0_23"] }
 anyhow.workspace = true
+arrow.workspace = true
+arrow-array.workspace = true
 async-stream.workspace = true
 casbin.workspace = true
 chrono.workspace = true

@@ -17,12 +17,12 @@ exclude = [
   ]
 
 [workspace.dependencies]
-arrow= "56"
-arrow-array= "56"
 actix-web = "4.8.0"
 actix-tls = "3.4.0"
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.96"
+arrow= "56"
+arrow-array= "56"
 async-stream = "0.3"
 auditor = { path = "./auditor", version = "0.9.4", default-features = false }
 auditor-client = { path = "./auditor-client", version = "0.9.4" }
