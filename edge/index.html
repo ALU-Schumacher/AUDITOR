@@ -144,6 +144,10 @@
                 </div>
                 
                 <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#ignoring-record-exists-error"><small>- Ignoring record exists error</small></a>
+                </div>
+                
+                <div class="toc-item-child">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#metrics-exporter-for-prometheus"><small>- Metrics exporter for Prometheus</small></a>
                 </div>
                 
@@ -501,6 +505,27 @@ Each rule consists of:</p>
 </span></code></pre>
 <p>This means:</p>
 <p>The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.</p>
+<h2 id="ignoring-record-exists-error">Ignoring <code>record exists</code> error</h2>
+<p>! CAUTION -&gt; Please proceed to implement this config only if you are certain</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
+</span><span style="color:#00a33f;">database</span><span>:
+</span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
+</span><span>  </span><span style="color:#00a33f;">port</span><span>: 5432
+</span><span>  </span><span style="color:#00a33f;">username</span><span>: </span><span style="color:#00a33f;">&quot;postgres&quot;
+</span><span>  </span><span style="color:#00a33f;">password</span><span>: </span><span style="color:#00a33f;">&quot;password&quot;
+</span><span>  </span><span style="color:#00a33f;">database_name</span><span>: </span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>  </span><span style="color:#00a33f;">database</span><span>:
+</span><span>    </span><span style="color:#00a33f;">frequency</span><span>: 30
+</span><span>    </span><span style="color:#00a33f;">metrics</span><span>:
+</span><span>      - </span><span style="color:#00a33f;">RecordCount
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
+</span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span style="color:#00a33f;">ignore_record_exists_error</span><span>: </span><span style="color:#a535ae;">true
+</span></code></pre>
+<p>This makes sure that the RECORD EXISTS error which arises from the database while trying to insert a new record is treated just as a warning in the AUDITOR logs and returns <code>200</code> to the client.</p>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
 <p>If you have compiled Auditor from source, pass the configuration file as first argument (i.e. <code>cargo run &lt;path-to-config&gt;</code> or <code>./auditor &lt;path-to-config&gt;</code>)</p>
 <p>If you run Auditor using Docker, then you first need to mount the configuration file inside the container, before you can use it.
