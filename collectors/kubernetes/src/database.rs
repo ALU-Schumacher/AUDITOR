@@ -70,6 +70,7 @@ impl Database {
         })
     }
 
+    #[allow(dead_code)]
     async fn in_memory(maxretries: u16, interval: i64) -> anyhow::Result<Database> {
         anyhow::ensure!(interval >= 0, "interval should be >= 0");
         let db_pool = SqlitePool::connect_with(
@@ -265,6 +266,7 @@ impl Database {
     }
 
     /// Closes the database connection
+    #[allow(dead_code)]
     #[tracing::instrument(name = "Closing database connection", level = "debug", skip(self))]
     pub(crate) async fn close(&self) {
         self.db_pool.close().await
