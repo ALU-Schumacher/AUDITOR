@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+
+### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.10.0] 2025-08-07
+
+### Breaking changes
 - Apel plugin: Change `begin_date` and `end_date` parameters of republish script to `month` and `year` ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Move `VO`, `Processors`, and `SubmitHost` to `mandatory` fields in the config ([@dirksammel](https://github.com/dirksammel))
 - RPMs: New location of config- and unit files ([@dirksammel](https://github.com/dirksammel))
@@ -829,7 +841,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.9.4...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.10.0...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -853,3 +865,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.9.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.2
 [0.9.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.3
 [0.9.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.4
+[0.10.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.0
