@@ -423,7 +423,7 @@
 //! The query string would look like:
 //!
 //! ```text
-//! GET records?meta[site_id][c]=site1&start_time[lte]=datetime_utc_lte
+//! GET records?meta[site_id][c][0]=site1&start_time[lte]=datetime_utc_lte
 //! ```
 //!
 //! ### Example 5:

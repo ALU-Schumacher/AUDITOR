@@ -113,15 +113,15 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<ResourceName, Res
             continue;
         };
         // If no group_id is present in the record, then record will be silently ignored
-        if let Some(meta) = r.meta.as_ref() {
-            if let Some(groups) = meta.get("group_id") {
-                if let Some(group_id) = groups.first() {
-                    // Only consider configured groups
-                    if config.group_mapping.contains_key(group_id) {
-                        // we know that the key exists (we filled it beforehand), therefore we can unwrap
-                        *resources.get_mut(group_id).unwrap() += val;
-                        println!("Resources: {resources:?}");
-                    }
+        if let Some(meta) = r.meta.as_ref()
+            && let Some(groups) = meta.get("group_id")
+        {
+            if let Some(group_id) = groups.first() {
+                // Only consider configured groups
+                if config.group_mapping.contains_key(group_id) {
+                    // we know that the key exists (we filled it beforehand), therefore we can unwrap
+                    *resources.get_mut(group_id).unwrap() += val;
+                    println!("Resources: {resources:?}");
                 }
             }
         } else {
