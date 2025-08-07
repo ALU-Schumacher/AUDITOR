@@ -24,14 +24,14 @@ pub async fn query_records(
         Err(err) => return Err(GetFilterError::InvalidQuery(err.to_string())),
     };
 
-    if **enforce_rbac {
-        if let Some(meta_info) = query.extensions().get::<HashMap<String, Vec<String>>>() {
-            let meta_info = meta_info.clone();
+    if **enforce_rbac
+        && let Some(meta_info) = query.extensions().get::<HashMap<String, Vec<String>>>()
+    {
+        let meta_info = meta_info.clone();
 
-            match filters.enforce_meta_filtering(meta_info) {
-                Ok(_) => {}
-                Err(msg) => return Err(GetFilterError::UnexpectedError(msg)),
-            }
+        match filters.enforce_meta_filtering(meta_info) {
+            Ok(_) => {}
+            Err(msg) => return Err(GetFilterError::UnexpectedError(msg)),
         }
     }
 

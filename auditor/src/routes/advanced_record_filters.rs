@@ -209,14 +209,14 @@ pub async fn advanced_record_filtering(
             query.push(" and ".to_string());
         }
 
-        if let Some(start_time_filters) = &filters.start_time {
-            if let Some(operators) = get_operator(start_time_filters) {
-                for operator in operators {
-                    // query string -> a.start_time {} '{}' and
-                    query.push(format!(" start_time {} ", operator.0));
-                    query.push_bind(*operator.1);
-                    query.push(" and ".to_string());
-                }
+        if let Some(start_time_filters) = &filters.start_time
+            && let Some(operators) = get_operator(start_time_filters)
+        {
+            for operator in operators {
+                // query string -> a.start_time {} '{}' and
+                query.push(format!(" start_time {} ", operator.0));
+                query.push_bind(*operator.1);
+                query.push(" and ".to_string());
             }
         }
 
@@ -338,10 +338,10 @@ pub async fn advanced_record_filtering(
         if let Some(lte) = &operator.lte {
             operators.push(("<=", lte));
         }
-        if let Some(equals) = &operator.equals {
-            if !is_datetime::<T>() {
-                operators.push(("=", equals));
-            }
+        if let Some(equals) = &operator.equals
+            && !is_datetime::<T>()
+        {
+            operators.push(("=", equals));
         }
         if !operators.is_empty() {
             Some(operators)
