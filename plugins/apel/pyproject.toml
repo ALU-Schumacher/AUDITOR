@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auditor_apel_plugin"
-version = "0.9.4"
+version = "0.10.0"
 requires-python = ">=3.9"
 dependencies = [
-	     "python-auditor==0.9.4",
+	     "python-auditor==0.10.0",
 	     "cryptography==45.0.5",
 	     "pyyaml==6.0.2",
 	     "pydantic==2.11.7",
