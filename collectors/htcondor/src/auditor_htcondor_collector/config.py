@@ -149,7 +149,7 @@ class Config(object):
                 for cert_path in certs:
                     if not isinstance(entries[cert_path], str):
                         raise MalformedConfigEntryError([cert_path], "Must be a string")
-                    if len(entries[cert_path].strip() == 0):
+                    if len(entries[cert_path].strip()) == 0:
                         raise MalformedConfigEntryError(
                             [cert_path], "Must be a non-empty string"
                         )
