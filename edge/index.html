@@ -407,6 +407,9 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span>    </span><span style="color:#00a33f;">meta_key_site</span><span>: </span><span style="color:#00a33f;">&quot;site&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_group</span><span>: </span><span style="color:#00a33f;">&quot;group&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_user</span><span>: </span><span style="color:#00a33f;">&quot;user&quot;
 </span><span style="color:#00a33f;">log_level</span><span>: </span><span style="color:#00a33f;">info
 </span><span style="color:#00a33f;">tls_config</span><span>:
 </span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
@@ -445,6 +448,9 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span>    </span><span style="color:#00a33f;">meta_key_site</span><span>: </span><span style="color:#00a33f;">&quot;site&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_group</span><span>: </span><span style="color:#00a33f;">&quot;group&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_user</span><span>: </span><span style="color:#00a33f;">&quot;user&quot;
 </span><span style="color:#00a33f;">tls_config</span><span>:
 </span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">true
 </span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;./auditor/certs/rootCA.pem&quot;
@@ -507,6 +513,7 @@ Furthermore, you need to call the Docker container with the <code>auditor</code>
 By default HTTP metrics are exported.
 In addition, database metrics are exported as well (optional).
 These include the current number of records in the database, as a well as the number of records per site, group and user.
+Specify the correct meta key namespace as configured in your records.
 Database metrics export can be configured in the configuration:</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">metrics</span><span>:
 </span><span>  </span><span style="color:#00a33f;">database</span><span>:
@@ -518,6 +525,9 @@ Database metrics export can be configured in the configuration:</p>
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
+</span><span>    </span><span style="color:#00a33f;">meta_key_site</span><span>: </span><span style="color:#00a33f;">&quot;site&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_group</span><span>: </span><span style="color:#00a33f;">&quot;group&quot;
+</span><span>    </span><span style="color:#00a33f;">meta_key_user</span><span>: </span><span style="color:#00a33f;">&quot;user&quot;
 </span></code></pre>
 <p>How often the database metrics are computed is defined by the <code>frequency</code> configuration variable.
 Note that computing the database metrics is a potentially expensive operation.
