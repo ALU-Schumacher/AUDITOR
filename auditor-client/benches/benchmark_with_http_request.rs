@@ -36,17 +36,17 @@ async fn insert_records(num: i64, increment: i64) -> Result<(), anyhow::Error> {
         let record_id = format!("record-{}", &i);
 
         let stop_time = start_time.checked_add_signed(chrono::Duration::hours(
-            generate_stop_time_duration(&mut rand::thread_rng(), &normal),
+            generate_stop_time_duration(&mut rand::rng(), &normal),
         ));
 
         let mut meta = HashMap::new();
-        let meta1 = generate_site_id(&mut rand::thread_rng());
-        let meta3 = generate_site_id(&mut rand::thread_rng());
-        let meta2 = generate_group_id(&mut rand::thread_rng());
+        let meta1 = generate_site_id(&mut rand::rng());
+        let meta3 = generate_site_id(&mut rand::rng());
+        let meta2 = generate_group_id(&mut rand::rng());
         meta.insert("site_id".to_string(), vec![meta1]);
         meta.insert("group_id".to_string(), vec![meta2]);
 
-        let score: i64 = generate_component_scores(&mut rand::thread_rng());
+        let score: i64 = generate_component_scores(&mut rand::rng());
 
         let component_cpu = Component::new("CPU", score)?.with_score(Score::new("HEPSPEC06", 9.2)?);
 
@@ -109,17 +109,17 @@ async fn insert_worst_case_records(num: i64) -> Result<(), anyhow::Error> {
 }
 
 fn generate_group_id(rng: &mut impl Rng) -> String {
-    let random_group_id = rng.gen_range(1..=6);
+    let random_group_id = rng.random_range(1..=6);
     format!("group_{random_group_id}")
 }
 
 fn generate_site_id(rng: &mut impl Rng) -> String {
-    let random_group_id = rng.gen_range(1..=6);
+    let random_group_id = rng.random_range(1..=6);
     format!("site_{random_group_id}")
 }
 
 fn generate_component_scores(rng: &mut impl Rng) -> i64 {
-    let random_component_score: i64 = rng.gen_range(5..=10);
+    let random_component_score: i64 = rng.random_range(5..=10);
     random_component_score
 }
 
