@@ -45,10 +45,10 @@ impl Error for MergeError {}
 fn is_connection(e: &prometheus_http_query::error::Error) -> bool {
     match e {
         PError::Client(e) => {
-            if let Some(e) = e.inner() {
-                if e.is_timeout() || e.is_connect() {
-                    return true;
-                }
+            if let Some(e) = e.inner()
+                && (e.is_timeout() || e.is_connect())
+            {
+                return true;
             }
         }
         PError::Prometheus(e) => match e.error_type() {

@@ -220,14 +220,14 @@ pub async fn advanced_record_filtering(
             }
         }
 
-        if let Some(stop_time_filters) = &filters.stop_time {
-            if let Some(operators) = get_operator(stop_time_filters) {
-                for operator in operators {
-                    // query string -> a.stop_time {} '{}' and
-                    query.push(format!(" stop_time {} ", operator.0));
-                    query.push_bind(*operator.1);
-                    query.push(" and ".to_string());
-                }
+        if let Some(stop_time_filters) = &filters.stop_time
+            && let Some(operators) = get_operator(stop_time_filters)
+        {
+            for operator in operators {
+                // query string -> a.stop_time {} '{}' and
+                query.push(format!(" stop_time {} ", operator.0));
+                query.push_bind(*operator.1);
+                query.push(" and ".to_string());
             }
         }
 
