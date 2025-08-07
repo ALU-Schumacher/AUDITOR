@@ -105,7 +105,7 @@ impl Eq for Score {}
 
 impl PartialOrd for Score {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.name.as_ref().cmp(other.name.as_ref()))
+        Some(self.cmp(other))
     }
 }
 
@@ -142,12 +142,7 @@ impl ScoreTest {
 
 impl PartialOrd for ScoreTest {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(
-            self.name
-                .as_ref()
-                .unwrap()
-                .cmp(other.name.as_ref().unwrap()),
-        )
+        Some(self.cmp(other))
     }
 }
 

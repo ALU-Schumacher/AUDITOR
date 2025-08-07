@@ -143,22 +143,21 @@ pub async fn bulk_add(
         Ok(_) => Ok(HttpResponse::Ok().finish()),
 
         Err(e) => {
-            if let Some(db_err) = e.0.as_database_error() {
-                if let Some(code) = db_err.code().as_ref() {
-                    if code == "23505" {
-                        if **ignore_record_exists_error {
-                            tracing::warn!(
-                                "!! ----- ONE OR MORE RECORDS ALREADY EXIST – IGNORING DUE TO CONFIGURATION. ----- !!"
-                            );
+            if let Some(db_err) = e.0.as_database_error()
+                && let Some(code) = db_err.code().as_ref()
+                && code == "23505"
+            {
+                if **ignore_record_exists_error {
+                    tracing::warn!(
+                        "!! ----- ONE OR MORE RECORDS ALREADY EXIST – IGNORING DUE TO CONFIGURATION. ----- !!"
+                    );
 
-                            let body = WarningResponse {
+                    let body = WarningResponse {
         warning: "One or more records already exist, but the error was ignored due to AUDITOR configuration.".into(),
     };
-                            return Ok(HttpResponse::Ok().json(body));
-                        } else {
-                            return Err(AddError::RecordExists);
-                        }
-                    }
+                    return Ok(HttpResponse::Ok().json(body));
+                } else {
+                    return Err(AddError::RecordExists);
                 }
             }
             Err(AddError::UnexpectedError(e.into()))
