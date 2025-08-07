@@ -64,8 +64,6 @@ function stop_auditor() {
   wait $AUDITOR_SERVER_PID
 }
 
-# change the dates
-
 function fill_auditor_db_group1() {
   curl -X POST --header "Content-Type: application/json" \
     --data '{ "record_id": "1", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{ "name": "NumCPUs", "amount": 40, "scores": [{ "name": "HEPSPEC", "value": 1.2 }] }], "start_time": "2025-05-01T15:00:00Z", "stop_time": "2025-05-01T15:01:00Z" }' \
@@ -77,7 +75,7 @@ function fill_auditor_db_group1() {
 
 function fill_auditor_db_group2() {
   curl -X POST --header "Content-Type: application/json" \
-    --data '{ "record_id": "3", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group2"]}, "components": [{ "name": "NumCPUs", "amount": 20, "scores": [{ "name": "HEPSPEC", "value": 1.8 }] }], "start_time": "2022-06-01T14:00:00Z", "stop_time": "2023-06-01T14:08:00Z" }' \
+    --data '{ "record_id": "3", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group2"]}, "components": [{ "name": "NumCPUs", "amount": 20, "scores": [{ "name": "HEPSPEC", "value": 1.8 }] }], "start_time": "2022-06-01T14:00:00Z", "stop_time": "2022-06-01T14:08:00Z" }' \
     http://localhost:8000/record
   curl -X POST --header "Content-Type: application/json" \
     --data '{ "record_id": "4", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group2"]}, "components": [{ "name": "NumCPUs", "amount": 10, "scores": [{ "name": "HEPSPEC", "value": 0.8 }] }], "start_time": "2022-06-30T13:00:00Z", "stop_time": "2022-06-30T13:01:00Z" }' \
@@ -131,7 +129,6 @@ function run_parquet_to_auditor_db() {
 
   sleep 25
 
-  #restore_parquet_to_auditor_db_to_check_cron_schedule
   compile_python
   run_python_parquet_to_auditor_script
   
@@ -194,11 +191,7 @@ function compiling_rust_parquet_restore_script() {
 
 function restore_parquet_to_auditor_db() {
   cd auditor/scripts/parquet_to_auditor/rust_script
-  cargo run -- ./configuration/config.yaml
-}
-
-function restore_parquet_to_auditor_db_to_check_cron_schedule() {
-  file_path="../../../../archived_records/auditor_2025_1.parquet" cargo run
+  FILE_PATH="../../../../archived_records/auditor_2025_5.parquet" cargo run -- ./configuration/config.yaml
 }
 
 function check_if_records_group_4_records_are_restored() {
@@ -237,7 +230,7 @@ function compile_python() {
 }
 
 function run_python_parquet_to_auditor_script() {
-  python3 parquet_to_auditor.py
+  PARQUET_PATH="../../../../archived_records/auditor_2025_1.parquet" python3 parquet_to_auditor.py
 }
 
 auditor_adding_records
