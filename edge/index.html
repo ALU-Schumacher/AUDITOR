@@ -238,6 +238,11 @@
                 
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#restoring-archived-parquet-files-back-to-audtior">Restoring archived parquet files back to AUDTIOR</a>
+                </div>
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#license">License</a>
                 </div>
                 
@@ -380,6 +385,11 @@ After installing PostgreSQL, the database needs to be migrated with <code>sqlx</
 <tr><td><code>AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN</code></td><td>Specifies list of CN that are allowed to read the auditor prometheus metrics</td></tr>
 <tr><td><code>AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN</code></td><td>Specifies which clients are allowed to perform the write operations from AUDITOR</td></tr>
 <tr><td><code>AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN</code></td><td>Specifies which clients are allowed to perform the read operaitons from AUDITOR</td></tr>
+<tr><td><code>AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_OLDER_THAN_MONTHS</code></td><td>Specifies the lifetime of records. eg: 3 -&gt; records are stored for 3 months from the current date and then archived</td></tr>
+<tr><td><code>AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_PATH</code></td><td>Specifies the path to store the archived records in parquet files</td></tr>
+<tr><td><code>AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX</code></td><td>Specifies the prefix for the archive files. (default: <code>auditor</code>)</td></tr>
+<tr><td><code>AUDITOR_ARCHIVAL_CONFIG__CRON_SCHEDULE</code></td><td>Archives the file according to the cron schedule</td></tr>
+<tr><td><code>AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE</code></td><td>Specifies the compression algorithm for parquet files -&gt; GZip or Snappy. (default: <code>GZip</code>)</td></tr>
 </tbody></table>
 <p>Use <code>docker run</code> to execute Auditor:</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
@@ -505,8 +515,10 @@ Each rule consists of:</p>
 </span></code></pre>
 <p>This means:</p>
 <p>The apel.plugin is allowed to read data only where the metadata field site_id is either site_id_1 or site_id_2.</p>
-<h2 id="ignoring-record-exists-error">Ignoring <code>record exists</code> error</h2>
-<p>! CAUTION -&gt; Please proceed to implement this config only if you are certain</p>
+<p>For enabling archival process:
+AUDITOR can be configured to automatically archive old records from the database to parquet files grouped by year and month
+CAUTION: It is always a good idea to backup the database, since this feature will delete the records from the database after writing the records to the parquet files.</p>
+<p>With archival service:</p>
 <pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">application</span><span>:
 </span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
 </span><span style="color:#00a33f;">database</span><span>:
@@ -523,7 +535,30 @@ Each rule consists of:</p>
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerSite
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerGroup
 </span><span>      - </span><span style="color:#00a33f;">RecordCountPerUser
-</span><span style="color:#00a33f;">ignore_record_exists_error</span><span>: </span><span style="color:#a535ae;">true
+</span><span style="color:#00a33f;">tls_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">use_tls</span><span>: </span><span style="color:#a535ae;">false
+</span><span>  </span><span style="color:#00a33f;">ca_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/rootCA.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_cert_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/server-cert.pem&quot;
+</span><span>  </span><span style="color:#00a33f;">server_key_path</span><span>: </span><span style="color:#00a33f;">&quot;/path/server-key.pem&quot;
+</span><span style="color:#00a33f;">archival_config</span><span>:
+</span><span>  </span><span style="color:#00a33f;">archive_older_than_months</span><span>: 1
+</span><span>  </span><span style="color:#00a33f;">archive_path</span><span>: </span><span style="color:#00a33f;">&quot;./archived_records&quot;
+</span><span>  </span><span style="color:#00a33f;">archive_file_prefix</span><span>: </span><span style="color:#00a33f;">&quot;auditor&quot;
+</span><span>  </span><span style="color:#00a33f;">cron_schedule</span><span>: </span><span style="color:#00a33f;">&quot;0 0 2 1 * *&quot;
+</span><span>  </span><span style="color:#00a33f;">compression_type</span><span>: </span><span style="color:#00a33f;">&quot;Gzip&quot;
+</span></code></pre>
+<p>archive_older_than_months specifies the lifetime of records in the AUDITOR db. If you specify 3 months, all the records older than 3 months from the current month will be archived to parquet files where the records are grouped by each month.
+eg: auditor_2025_4.parquet, auditor_2025_3.parquet</p>
+<p>These files are then written into the archive_path mentioned in the config. If the path doesn't exist, it will create a new path as specified.</p>
+<p>cron_schedule is in UTC, so specify accordingly.</p>
+<p>compression type specifies the type of compression algorithm used to create the parquet file. GZip produces the smallest file size but requires longer time to process, whereas Snappy is quicker but results in a larger file size.
+Benchmark tests:
+For archiving 12.7 million records
+GZip -&gt; filesize: 256mb in 32.2 minutes
+Snappy -&gt; filesize: 571mb in 25.2 minutes</p>
+<h2 id="ignoring-record-exists-error">Ignoring <code>record exists</code> error</h2>
+<p>! CAUTION -&gt; Please proceed to implement this config only if you are certain</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">ignore_record_exists_error</span><span>: </span><span style="color:#a535ae;">true
 </span></code></pre>
 <p>This makes sure that the RECORD EXISTS error which arises from the database while trying to insert a new record is treated just as a warning in the AUDITOR logs and returns <code>200</code> to the client.</p>
 <p>This configuration file can be passed to Auditor and will overwrite the default configuration.</p>
@@ -1372,6 +1407,58 @@ Have a look at the online resources for more details. <a href="https://knowledge
 </span><span>  </span><span style="color:#00a33f;">read_access_cn</span><span>:
 </span><span>    - </span><span style="color:#00a33f;">apel.plugin
 </span></code></pre>
+<h1 id="restoring-archived-parquet-files-back-to-audtior">Restoring archived parquet files back to AUDTIOR</h1>
+<p>We provide a python script and a Rust script to restore the parquet files back to AUDITOR db.</p>
+<p>The scripts are present in the AUDITOR main repository.</p>
+<p>clone the repository <a href="https://github.com/ALU-Schumacher/AUDITOR">https://github.com/ALU-Schumacher/AUDITOR</a></p>
+<p>cd auditor/scripts/parquet_to_auditor/</p>
+<p>Here you can find two folders, python_script and rust_script</p>
+<p>if you want to use python script,</p>
+<ol>
+<li>
+<p>run <code>cd python_script</code></p>
+</li>
+<li>
+<p>run <code>pip install -r requirements.txt</code></p>
+</li>
+<li>
+<p>This folder also contains a .env file, so please change the config values in this file suited to your setup.</p>
+</li>
+</ol>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">DB_NAME=auditor
+</span><span style="color:#00a33f;">DB_USER=postgres
+</span><span style="color:#00a33f;">DB_PASSWORD=password
+</span><span style="color:#00a33f;">DB_HOST=localhost
+</span><span style="color:#00a33f;">DB_PORT=5432
+</span><span style="color:#00a33f;">PARQUET_PATH=../auditor_2025_4.parquet
+</span></code></pre>
+<ol start="4">
+<li>
+<p>The parquet_path is the file path indicating the location of the parquet file you want to restore to AUDITOR.</p>
+</li>
+<li>
+<p>Then run <code>python3 parquet_to_auditor.py</code></p>
+</li>
+</ol>
+<p>If you want to use rust script,</p>
+<ol>
+<li>
+<p>run <code>cd rust_script</code></p>
+</li>
+<li>
+<p>In the configuration folder, you will find the config.yaml file. Please change the config fields according to your setup</p>
+</li>
+</ol>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">file_path:&quot;../archived_records/auditor_2025_5.parquet&quot;
+</span><span style="color:#00a33f;">db_username</span><span>: </span><span style="color:#00a33f;">postgres
+</span><span style="color:#00a33f;">password</span><span>: </span><span style="color:#00a33f;">password
+</span><span style="color:#00a33f;">port</span><span>: 5432
+</span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">localhost
+</span><span style="color:#00a33f;">database_name</span><span>: </span><span style="color:#00a33f;">auditor
+</span></code></pre>
+<ol start="3">
+<li>Then run <code>cargo run</code> to trigger the restoration of the records from this parquet file to AUDITOR db.</li>
+</ol>
 <h1 id="license">License</h1>
 <p>Licensed under either of</p>
 <ul>
