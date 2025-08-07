@@ -107,6 +107,7 @@ impl Database {
     }
 
     /// Delete all records from the "insert" queue with a row id lower or equal to `rowid`
+    #[allow(dead_code)]
     #[tracing::instrument(name = "Deleting records from database", level = "debug", skip(self))]
     pub(crate) async fn delete_inserts_le(&self, rowid: i64) -> Result<(), sqlx::Error> {
         sqlx::query!(r#"DELETE FROM inserts WHERE rowid<=$1"#, rowid)
@@ -189,6 +190,7 @@ impl Database {
     }
 
     /// Retrieve records from the "updates" queue, for which the row is less or equal than `rowid`
+    #[allow(dead_code)]
     #[tracing::instrument(
         name = "Getting update records from database",
         level = "debug",
@@ -234,6 +236,7 @@ impl Database {
     }
 
     /// Closes the database connection
+    #[allow(dead_code)]
     #[tracing::instrument(name = "Closing database connection", level = "debug", skip(self))]
     pub(crate) async fn close(&self) {
         self.db_pool.close().await
