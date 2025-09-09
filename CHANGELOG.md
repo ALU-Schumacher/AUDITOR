@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pyauditor: Fix tls params order ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pytest from 8.4.1 to 8.4.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pytest-cov from 6.2.1 to 7.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyyaml from 6.0.2 to 6.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.12.7 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update types-pyyaml from 6.0.12.20250516 to 6.0.12.20250915 ([@dirksammel](https://github.com/dirksammel))
