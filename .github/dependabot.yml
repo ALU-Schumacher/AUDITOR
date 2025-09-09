@@ -5,18 +5,22 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 50
   # APEL plugin
   - package-ecosystem: "pip"
     directory: "/plugins/apel"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 50
   # HTCondor collector
   - package-ecosystem: "pip"
     directory: "/collectors/htcondor"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 50      
   # GitHub action
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 50

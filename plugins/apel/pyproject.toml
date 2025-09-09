@@ -23,7 +23,7 @@ style = [
 ]
 tests = [
       "pytest==8.4.2",
-      "pytest-cov==6.2.1",
+      "pytest-cov==7.0.0",
       "mypy==1.17.1",	
       "types-pyyaml==6.0.12.20250915",
 ]
