@@ -149,6 +149,10 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
 
     let cmd_out = Command::new(binary).args(&args).output().await?;
 
+    if !cmd_out.status.success() {
+        return Err(eyre!("sacct error: {:?}", cmd_out.stderr));
+    };
+
     let cmd_out = std::str::from_utf8(&cmd_out.stdout)?;
     tracing::debug!("Got: {}", cmd_out);
 
