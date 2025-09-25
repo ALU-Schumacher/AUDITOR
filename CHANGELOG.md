@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update pyyaml from 6.0.2 to 6.0.3 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
