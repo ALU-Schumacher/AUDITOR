@@ -26,9 +26,9 @@ async def main():
         .address("localhost", 8443)
         .timeout(10)
         .with_tls(
-            "scripts/certs/rootCA.pem",
             "scripts/certs/client-cert.pem",
             "scripts/certs/client-key.pem",
+            "scripts/certs/rootCA.pem",
         )
         .build()
     )
