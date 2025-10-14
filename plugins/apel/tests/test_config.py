@@ -18,6 +18,7 @@ from auditor_apel_plugin.config import (
     PluginConfig,
     RecordField,
     ScoreField,
+    SiteConfig,
     get_loaders,
 )
 
@@ -442,3 +443,35 @@ class TestConfig:
         value = config.summary_fields.mandatory["VO"].get_value(record)
 
         assert value == "None"
+
+    def test_benchmark_config(self):
+        sites_to_report = {"test": ["test"]}
+
+        siteconfig = SiteConfig(sites_to_report=sites_to_report)
+
+        assert siteconfig.benchmark_type.value == "HEPscore23"
+
+        benchmark_type = "HEPscore23"
+
+        siteconfig = SiteConfig(
+            sites_to_report=sites_to_report, benchmark_type=benchmark_type
+        )
+
+        assert siteconfig.benchmark_type.value == "HEPscore23"
+
+        benchmark_type = "HEPSPEC"
+
+        siteconfig = SiteConfig(
+            sites_to_report=sites_to_report, benchmark_type=benchmark_type
+        )
+
+        assert siteconfig.benchmark_type.value == "hepspec"
+
+        benchmark_type = "hepspec23"
+
+        with pytest.raises(Exception) as pytest_error:
+            siteconfig = SiteConfig(
+                sites_to_report=sites_to_report, benchmark_type=benchmark_type
+            )
+
+        assert pytest_error.type is ValidationError

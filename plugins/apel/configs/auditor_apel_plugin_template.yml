@@ -16,6 +16,7 @@
 #       - site_id_2
 #     SITE_B:
 #       - site_id_3
+#   benchmark_type: HEPscore23
 
 # messaging:
 #   host: msg.argo.grnet.gr

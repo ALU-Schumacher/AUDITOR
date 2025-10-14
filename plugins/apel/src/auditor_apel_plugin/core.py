@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
 from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, Value
 
-from auditor_apel_plugin.config import Config, Field, MessageType
+from auditor_apel_plugin.config import BenchmarkType, Config, Field, MessageType
 from auditor_apel_plugin.message import (
     Message,
     PluginMessage,
@@ -379,7 +379,9 @@ def create_dict(
 
 
 def create_message(
-    message_type: MessageType, aggr_dict: Dict[str, Dict[str, Union[str, int]]]
+    message_type: MessageType,
+    aggr_dict: Dict[str, Dict[str, Union[str, int]]],
+    benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
 ) -> str:
     message = Message()
 
@@ -393,6 +395,8 @@ def create_message(
 
     for group in aggr_dict.values():
         for k, v in group.items():
+            if "Norm" in k:
+                v = f"{{{benchmark_type.value}: {v}}}"
             message_list.append(f"{k}: {v}\n")
 
         message_list.append("%%\n")
