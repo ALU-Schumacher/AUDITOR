@@ -26,6 +26,19 @@ class MessageType(Enum):
         return cls.summaries
 
 
+class BenchmarkType(Enum):
+    hepspec = "hepspec"
+    HEPscore23 = "HEPscore23"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            value_lower = value.lower()
+            for member in cls:
+                if value_lower == member.name.lower():
+                    return member
+
+
 class Configurable(BaseModel):
     @classmethod
     def from_yaml(cls, loader: yaml.SafeLoader, node: yaml.nodes.MappingNode):
@@ -49,6 +62,7 @@ class PluginConfig(Configurable):
 
 class SiteConfig(Configurable):
     sites_to_report: Dict[str, List[str]]
+    benchmark_type: BenchmarkType = BenchmarkType.HEPscore23
 
 
 class AuditorConfig(Configurable):

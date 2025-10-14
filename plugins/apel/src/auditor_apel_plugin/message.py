@@ -18,7 +18,7 @@ class Message(BaseModel):
 
 
 class SummaryMessage(Message):
-    message_header: str = "APEL-summary-job-message: v0.3\n"
+    message_header: str = "APEL-normalised-summary-message: v0.4\n"
 
     create_sql: List[str] = [
         "Site TEXT NOT NULL",
