@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pyyaml from 6.0.2 to 6.0.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.12.7 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update types-pyyaml from 6.0.12.20250516 to 6.0.12.20250915 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
