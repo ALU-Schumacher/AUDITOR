@@ -39,6 +39,7 @@ TRACE = logging.DEBUG - 5
 def run(logger: Logger, config: Config, client, args):
     report_interval = config.plugin.report_interval
     sites_to_report = config.site.sites_to_report
+    benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
     optional_fields = config.get_optional_fields()
     dry_run = args.dry_run
@@ -135,7 +136,9 @@ def run(logger: Logger, config: Config, client, args):
                 post_sync = send_payload(config, payload_sync)
                 logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
-            message = create_message(MessageType.summaries, message_dict)
+            message = create_message(
+                MessageType.summaries, message_dict, benchmark_type
+            )
             logger.log(TRACE, f"Message:\n{message}")
             signed_message = sign_msg(config, message)
             logger.log(TRACE, f"Signed message:\n{signed_message}")

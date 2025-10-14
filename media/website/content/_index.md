@@ -1067,6 +1067,7 @@ site:
       - site_id_2
     SITE_B: 
       - site_id_3
+  benchmark_type: HEPscore23
 
 messaging:
   host: msg.argo.grnet.gr
@@ -1134,6 +1135,7 @@ The individual parameters in the config file are:
 | `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
 | `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
+| `site`      | `benchmark_type`   | The name of the benchmark that you report. Possible values are `si2k`, `hepspec` and `HEPscore23`. The default value is `HEPscore23`.                                                        |
 | `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                             |
 | `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                        |
 | `messaging` | `client_cert`      | Path of the host certificate.                                                                                                                                                                |
