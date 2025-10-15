@@ -486,7 +486,7 @@ The Slurm collector collects information from slurm jobs based on the `sacct` co
 It can be installed from the provided RPM or can be built with this command:
 
 ```bash
-RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-collector
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl -p auditor-slurm-collector
 ```
 
 The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-slurm-collector` and should be placed on the Slurm head node.
@@ -625,7 +625,7 @@ tls_config:
 The Slurm epilog collector can installed from the provided RPM or can be built with this command:
 
 ```bash
-RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-epilog-collector
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl -p auditor-slurm-epilog-collector
 ```
 
 The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-slurm-epilog-collector` and is ideally placed on the Slurm head node.
@@ -1205,7 +1205,7 @@ The computed priorities are set via shelling out, and the executed commands can 
 The priority plugin is available as RPM or can be built with the command:
 
 ```bash
-RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl --bin auditor-priority-plugin
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl -p auditor-priority-plugin
 ```
 
 The resulting binary can be found in `target/x86_64-unknown-linux-musl/release/auditor-priority-plugin` and is ideally placed on a node where the priorities should be set.

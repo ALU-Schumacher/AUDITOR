@@ -22,6 +22,10 @@ exclude = [
     "nohup.out"
 ]
 
+[[bin]]
+name = "auditor-kubernetes-collector"
+path = "src/main.rs"
+
 [dependencies]
 anyhow.workspace = true
 auditor.workspace = true

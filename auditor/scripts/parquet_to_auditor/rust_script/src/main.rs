@@ -1,12 +1,12 @@
-use chrono::{ DateTime, Utc};
-use arrow::array::{Array, StringArray, Int64Array, TimestampMillisecondArray};
+use arrow::array::{Array, Int64Array, StringArray, TimestampMillisecondArray};
 use arrow_array::RecordBatch;
-use parquet::arrow::arrow_reader::{ParquetRecordBatchReaderBuilder, ParquetRecordBatchReader};
-use serde::{Serialize, Deserialize};
+use chrono::{DateTime, Utc};
+use parquet::arrow::arrow_reader::{ParquetRecordBatchReader, ParquetRecordBatchReaderBuilder};
+use serde::{Deserialize, Serialize};
 pub mod configuration;
+use auditor::domain::Record;
 use configuration::get_configuration;
 use std::{collections::HashMap, fs::File};
-use auditor::domain::Record;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Component {
@@ -33,110 +33,124 @@ pub struct RecordData {
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
+    let configuration = get_configuration().expect("Failed to read configuration.");
 
-            let configuration = get_configuration().expect("Failed to read configuration.");
-        
-            let file_path = &configuration.file_path;
+    let file_path = &configuration.file_path;
 
-            let database_url = std::env::var("DATABASE_URL")
-    .unwrap_or_else(|_| configuration.to_url());
+    let database_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| configuration.to_url());
 
-            println!("{database_url}");
-            let file = File::open(&file_path)?;
-            let arrow_reader = ParquetRecordBatchReaderBuilder::try_new(file)?;
-            
-            let parquet_metadata = arrow_reader.metadata();
+    println!("{database_url}");
+    let file = File::open(file_path)?;
+    let arrow_reader = ParquetRecordBatchReaderBuilder::try_new(file)?;
 
-            let num_rows = parquet_metadata.file_metadata().num_rows();
+    let parquet_metadata = arrow_reader.metadata();
 
-            println!("Number of records in '{:?}': {}", &file_path, num_rows);
-                      
-        let _ = restore_to_db(arrow_reader.build()?, database_url).await;
-    
+    let num_rows = parquet_metadata.file_metadata().num_rows();
+
+    println!("Number of records in '{:?}': {}", &file_path, num_rows);
+
+    let _ = restore_to_db(arrow_reader.build()?, database_url).await;
 
     Ok(())
-
 }
 
-
 fn arrow_batch_to_records(batch: RecordBatch) -> anyhow::Result<Vec<Record>> {
-        let mut records = Vec::new();
-        let num_rows = batch.num_rows();
-        
-        let record_id_array = batch.column(0).as_any().downcast_ref::<StringArray>().unwrap();
-        let meta_array = batch.column(1).as_any().downcast_ref::<StringArray>().unwrap();
-        let components_array = batch.column(2).as_any().downcast_ref::<StringArray>().unwrap();
-        let start_time_array = batch.column(3).as_any().downcast_ref::<TimestampMillisecondArray>().unwrap();
-        let stop_time_array = batch.column(4).as_any().downcast_ref::<TimestampMillisecondArray>().unwrap();
-        let runtime_array = batch.column(5).as_any().downcast_ref::<Int64Array>().unwrap();
+    let mut records = Vec::new();
+    let num_rows = batch.num_rows();
 
+    let record_id_array = batch
+        .column(0)
+        .as_any()
+        .downcast_ref::<StringArray>()
+        .unwrap();
+    let meta_array = batch
+        .column(1)
+        .as_any()
+        .downcast_ref::<StringArray>()
+        .unwrap();
+    let components_array = batch
+        .column(2)
+        .as_any()
+        .downcast_ref::<StringArray>()
+        .unwrap();
+    let start_time_array = batch
+        .column(3)
+        .as_any()
+        .downcast_ref::<TimestampMillisecondArray>()
+        .unwrap();
+    let stop_time_array = batch
+        .column(4)
+        .as_any()
+        .downcast_ref::<TimestampMillisecondArray>()
+        .unwrap();
+    let runtime_array = batch
+        .column(5)
+        .as_any()
+        .downcast_ref::<Int64Array>()
+        .unwrap();
 
-        for i in 0..num_rows {
-            let record = Record {
-                record_id: record_id_array.value(i).to_string(),
-                meta: serde_json::from_str(meta_array.value(i))?,
-                components: serde_json::from_str(components_array.value(i))?,
-                start_time: Some(DateTime::from_timestamp_millis(start_time_array.value(i))
+    for i in 0..num_rows {
+        let record = Record {
+            record_id: record_id_array.value(i).to_string(),
+            meta: serde_json::from_str(meta_array.value(i))?,
+            components: serde_json::from_str(components_array.value(i))?,
+            start_time: Some(
+                DateTime::from_timestamp_millis(start_time_array.value(i))
                     .unwrap()
-                    .with_timezone(&Utc)),
-                stop_time: Some(DateTime::from_timestamp_millis(stop_time_array.value(i))
+                    .with_timezone(&Utc),
+            ),
+            stop_time: Some(
+                DateTime::from_timestamp_millis(stop_time_array.value(i))
                     .unwrap()
-                    .with_timezone(&Utc)),
-                runtime: Some(runtime_array.value(i)),
-            };
+                    .with_timezone(&Utc),
+            ),
+            runtime: Some(runtime_array.value(i)),
+        };
 
-             records.push(record);
-        }
-
-        Ok(records)
+        records.push(record);
     }
 
-use sqlx::PgPool;
+    Ok(records)
+}
+
 use serde_json::Value;
+use sqlx::PgPool;
 
-async fn restore_to_db(arrow_reader: ParquetRecordBatchReader, database_url: String) -> anyhow::Result<()> {
-
-
-
-    
+async fn restore_to_db(
+    arrow_reader: ParquetRecordBatchReader,
+    database_url: String,
+) -> anyhow::Result<()> {
     // Create a connection pool
     let pool = PgPool::connect(&database_url).await?;
-    
+
     let mut transaction = match pool.begin().await {
         Ok(transaction) => transaction,
         Err(e) => return Err(e.into()),
     };
 
     println!("Your parquet file is being processed back to AUDITOR db. Please wait ---");
-        
-        for batch in arrow_reader {
-        
-            let batch = batch?;
-            
-            let records = arrow_batch_to_records(batch.clone())?;
-    
-        let record_ids: Vec<_> = records
-        .iter()
-        .map(|r| r.record_id.clone())
-        .collect();
-    let start_times: Vec<_> = records.iter().map(|r| r.start_time.unwrap()).collect();
-    let stop_times: Vec<_> = records.iter().map(|r| r.stop_time.unwrap()).collect();
-    let runtimes: Vec<_> = records
-        .iter()
-        .map(|r| r.runtime.unwrap())
-        .collect();
-    let updated_at_vec: Vec<_> = std::iter::repeat(Utc::now()).take(records.len()).collect();
 
-    let meta_values: Vec<Value> = records
-        .iter()
-        .map(|r| serde_json::to_value(&r.meta).unwrap_or(serde_json::Value::Null))
-        .collect();
-    let component_values: Vec<Value> = records
-        .iter()
-        .map(|r| serde_json::to_value(&r.components).unwrap_or(serde_json::Value::Null))
-        .collect();
+    for batch in arrow_reader {
+        let batch = batch?;
 
-    sqlx::query!(
+        let records = arrow_batch_to_records(batch.clone())?;
+
+        let record_ids: Vec<_> = records.iter().map(|r| r.record_id.clone()).collect();
+        let start_times: Vec<_> = records.iter().map(|r| r.start_time.unwrap()).collect();
+        let stop_times: Vec<_> = records.iter().map(|r| r.stop_time.unwrap()).collect();
+        let runtimes: Vec<_> = records.iter().map(|r| r.runtime.unwrap()).collect();
+        let updated_at_vec: Vec<_> = std::iter::repeat_n(Utc::now(), records.len()).collect();
+
+        let meta_values: Vec<Value> = records
+            .iter()
+            .map(|r| serde_json::to_value(&r.meta).unwrap_or(serde_json::Value::Null))
+            .collect();
+        let component_values: Vec<Value> = records
+            .iter()
+            .map(|r| serde_json::to_value(&r.components).unwrap_or(serde_json::Value::Null))
+            .collect();
+
+        sqlx::query!(
         r#"
         INSERT INTO auditor_accounting (
             record_id, start_time, stop_time, meta, components, runtime, updated_at
@@ -154,7 +168,6 @@ async fn restore_to_db(arrow_reader: ParquetRecordBatchReader, database_url: Str
     )
     .fetch_all(&mut *transaction)
     .await.unwrap();
-            
     }
 
     if let Err(e) = transaction.commit().await {
@@ -163,7 +176,5 @@ async fn restore_to_db(arrow_reader: ParquetRecordBatchReader, database_url: Str
         println!("Parquet file successfully loaded to AUDITOR");
     }
 
-    
-
-        return Ok(())
+    Ok(())
 }

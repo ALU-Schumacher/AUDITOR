@@ -85,9 +85,9 @@ function start_container() {
 
 function compile_auditor() {
 	if [ "$RELEASE_MODE" = true ]; then
-		cargo build --bin auditor --release
+		cargo build -p auditor --release
 	else
-		cargo build --bin auditor
+		cargo build -p auditor
 	fi
 }
 
@@ -96,13 +96,13 @@ function compile_collector() {
 		RUSTFLAGS='-C link-args=-s' \
 			cargo build \
 			--target $TARGET_ARCH \
-			--bin auditor-slurm-collector \
+			-p auditor-slurm-collector \
 			--release
 	else
 		RUSTFLAGS='-C link-args=-s' \
 			cargo build \
 			--target $TARGET_ARCH \
-			--bin auditor-slurm-collector
+			-p auditor-slurm-collector
 	fi
 }
 

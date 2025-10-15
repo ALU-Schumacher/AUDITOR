@@ -71,10 +71,10 @@ jobs:
           sudo apt-get install musl musl-tools
 
       - name: Build auditor
-        run: cargo build --bin auditor
+        run: cargo build -p auditor
 
       - name: Build priority plugin
-        run: cargo build --bin auditor-priority-plugin --target x86_64-unknown-linux-musl
+        run: cargo build -p auditor-priority-plugin --target x86_64-unknown-linux-musl
 
       - name: Test priority plugin
         run: SKIP_COMPILATION=true ./scripts/test_priority_plugin.sh

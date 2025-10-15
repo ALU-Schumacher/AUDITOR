@@ -85,9 +85,9 @@ function start_container() {
 
 function compile_priority_plugin() {
   if [ "$RELEASE_MODE" = true ]; then
-    cargo build --bin auditor-priority-plugin --target x86_64-unknown-linux-musl --release
+    cargo build -p auditor-priority-plugin --target x86_64-unknown-linux-musl --release
   else
-    cargo build --bin auditor-priority-plugin --target x86_64-unknown-linux-musl
+    cargo build -p auditor-priority-plugin --target x86_64-unknown-linux-musl
   fi
 }
 
@@ -125,9 +125,9 @@ function stop_priority_plugin() {
 
 function compile_auditor() {
   if [ "$RELEASE_MODE" = true ]; then
-    cargo build --bin auditor --release
+    cargo build -p auditor --release
   else
-    cargo build --bin auditor
+    cargo build -p auditor
   fi
 }
 
@@ -136,13 +136,13 @@ function compile_plugin() {
     RUSTFLAGS='-C link-args=-s' \
       cargo build \
       --target $TARGET_ARCH \
-      --bin auditor-priority-plugin \
+      -p auditor-priority-plugin \
       --release
   else
     RUSTFLAGS='-C link-args=-s' \
       cargo build \
       --target $TARGET_ARCH \
-      --bin auditor-priority-plugin
+      -p auditor-priority-plugin
   fi
 }
 

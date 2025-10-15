@@ -73,10 +73,10 @@ jobs:
           sudo apt-get install musl musl-tools
 
       - name: Build auditor
-        run: cargo build --bin auditor
+        run: cargo build -p auditor
 
       - name: Build Slurm collector
-        run: cargo build --bin auditor-slurm-collector --target x86_64-unknown-linux-musl
+        run: cargo build -p auditor-slurm-collector --target x86_64-unknown-linux-musl
 
       - name: Test Slurm collector
         run: SKIP_COMPILATION=true ./scripts/test_slurm_collector.sh

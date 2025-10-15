@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Add `benchmark_type` to config ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- CI/CD: Switch from `--bin` to `-p` for `cargo build` ([@dirksammel](https://github.com/dirksammel))
 - Pyauditor: Fix tls params order ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pyyaml from 6.0.2 to 6.0.3 ([@dirksammel](https://github.com/dirksammel))
 

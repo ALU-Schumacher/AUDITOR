@@ -31,9 +31,6 @@ path = "src/lib.rs"
 name = "auditor"
 path = "src/main.rs"
 
-[profile.release]
-strip = true
-
 [dependencies]
 actix-web-opentelemetry.workspace = true 
 actix-web = { workspace = true, features = ["rustls-0_23"] }
