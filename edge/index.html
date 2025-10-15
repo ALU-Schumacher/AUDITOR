@@ -1071,6 +1071,7 @@ See below for all currently available collectors.</p>
 </span><span>      - </span><span style="color:#00a33f;">site_id_2
 </span><span>    </span><span style="color:#00a33f;">SITE_B</span><span>: 
 </span><span>      - </span><span style="color:#00a33f;">site_id_3
+</span><span>  </span><span style="color:#00a33f;">benchmark_type</span><span>: </span><span style="color:#00a33f;">HEPscore23
 </span><span>
 </span><span style="color:#00a33f;">messaging</span><span>:
 </span><span>  </span><span style="color:#00a33f;">host</span><span>: </span><span style="color:#00a33f;">msg.argo.grnet.gr
@@ -1135,6 +1136,7 @@ See below for all currently available collectors.</p>
 <tr><td><code>plugin</code></td><td><code>time_json_path</code></td><td>Path of the <code>time.json</code> file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL.</td></tr>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
+<tr><td><code>site</code></td><td><code>benchmark_type</code></td><td>The name of the benchmark that you report. Possible values are <code>si2k</code>, <code>hepspec</code> and <code>HEPscore23</code>. The default value is <code>HEPscore23</code>.</td></tr>
 <tr><td><code>messaging</code></td><td><code>host</code></td><td>Host address of the AMS service.</td></tr>
 <tr><td><code>messaging</code></td><td><code>port</code></td><td>Port of the AMS host.</td></tr>
 <tr><td><code>messaging</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
