@@ -64,7 +64,7 @@ jobs:
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
 
       - name: Build auditor
-        run: SQLX_OFFLINE=true cargo build --bin auditor
+        run: SQLX_OFFLINE=true cargo build -p auditor
 
       - name: Install pyauditor and dependencies
         run: |

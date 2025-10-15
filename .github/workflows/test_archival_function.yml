@@ -80,7 +80,7 @@ jobs:
           sudo apt-get install musl musl-tools
 
       - name: Build auditor
-        run: cargo build --bin auditor
+        run: cargo build -p auditor
       
       - name: Test archival function
         run: SKIP_COMPILATION=true ./scripts/test_archive.sh

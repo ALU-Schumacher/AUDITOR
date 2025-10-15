@@ -2,22 +2,24 @@
 name = "rust_script"
 version = "0.1.0"
 edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "rust_script"
+path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0"
-auditor = "0.9.4"
-chrono = "0.4"
-serde_json = "1.0.139"
-parquet = "55.1"
-arrow-array= "55.1"
-arrow= "55.1"
-serde = { version = "1.0.218", features = ["derive"] }
-config = "0.15.9"
-sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "macros", "uuid", "chrono", "migrate", "runtime-tokio", "json"] }
-thiserror = "2.0.7"
-tokio = "1.44.1"
-serde-aux = "4.6.0"
-secrecy = { version = "0.8.0", features = ["serde"] }
-
-[workspace]
-
+anyhow.workspace = true
+arrow.workspace = true
+arrow-array.workspace = true
+auditor.workspace = true
+chrono.workspace = true
+config.workspace = true
+parquet.workspace = true
+secrecy.workspace = true
+serde.workspace = true
+serde-aux.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+tokio.workspace = true

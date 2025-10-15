@@ -58,7 +58,7 @@ jobs:
           sudo apt-get install musl musl-tools rpm
 
       - name: Build binary
-        run: cargo build --bin ${{ matrix.binary }} --target x86_64-unknown-linux-musl --release
+        run: cargo build -p ${{ matrix.binary }} --target x86_64-unknown-linux-musl --release
 
       - name: Build RPM
         run: |

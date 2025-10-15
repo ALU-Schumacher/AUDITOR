@@ -7,7 +7,7 @@ FROM chef AS planner
 COPY . .
 # Creates a lock file
 # Does not work since we need to do COPY . . after cargo chef cook in the builder
-#RUN cargo chef prepare --bin auditor-kubernetes-collector --recipe-path recipe.json
+#RUN cargo chef prepare -p auditor-kubernetes-collector --recipe-path recipe.json
 # CI chain might want everything
 RUN cargo chef prepare --recipe-path recipe.json
 
@@ -16,11 +16,11 @@ FROM chef AS builder
 RUN cargo install --version=0.8.6 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
 COPY --from=planner /auditor/recipe.json recipe.json
-RUN cargo chef cook --release --bin auditor-kubernetes-collector --recipe-path recipe.json
+RUN cargo chef cook --release -p auditor-kubernetes-collector --recipe-path recipe.json
 
 COPY . .
 ENV SQLX_OFFLINE=true
-RUN cargo build --release --bin auditor-kubernetes-collector
+RUN cargo build --release -p auditor-kubernetes-collector
 
 # Runtime stage
 FROM debian:bookworm-slim AS runtime

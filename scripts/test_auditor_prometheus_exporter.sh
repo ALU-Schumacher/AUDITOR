@@ -7,9 +7,9 @@ ENV_DIR=${ENV_DIR:=".env_test"}
 
 function compile_auditor() {
 	if [ "$RELEASE_MODE" = true ]; then
-		cargo build --bin auditor --release
+		cargo build -p auditor --release
 	else
-		cargo build --bin auditor
+		cargo build -p auditor
 	fi
 }
 

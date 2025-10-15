@@ -1,6 +1,6 @@
-use serde_aux::field_attributes::deserialize_number_from_string;
+use secrecy::ExposeSecret;
 use secrecy::Secret;
-use secrecy::ExposeSecret; 
+use serde_aux::field_attributes::deserialize_number_from_string;
 
 #[derive(serde::Deserialize, Debug)]
 pub struct ParquetToAuditorSettings {
@@ -13,9 +13,8 @@ pub struct ParquetToAuditorSettings {
     pub database_name: String,
 }
 
-impl ParquetToAuditorSettings{
+impl ParquetToAuditorSettings {
     pub fn to_url(&self) -> String {
-
         format!(
             "postgres://{}:{}@{}:{}/{}",
             self.db_username,
@@ -33,11 +32,13 @@ pub fn get_configuration() -> Result<ParquetToAuditorSettings, config::ConfigErr
 
     let base_yaml_path = configuration_directory.join("config.yaml");
 
-    println!("Reading config from: {:?}", base_yaml_path);
+    println!("Reading config from: {base_yaml_path:?}");
 
     let mut settings = config::Config::builder();
 
-    settings = settings.add_source(config::File::from(base_yaml_path).required(true)).add_source(config::Environment::default());
+    settings = settings
+        .add_source(config::File::from(base_yaml_path).required(true))
+        .add_source(config::Environment::default());
 
-    settings.build()?.try_deserialize()     
+    settings.build()?.try_deserialize()
 }

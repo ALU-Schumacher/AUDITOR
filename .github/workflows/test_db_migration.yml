@@ -75,7 +75,7 @@ jobs:
 
       - name: Compile auditor
         run: |
-          cargo build --bin auditor
+          cargo build -p auditor
 
       - name: Checkout to current branch
         run: |

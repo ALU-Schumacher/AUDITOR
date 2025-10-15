@@ -4034,6 +4034,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust_script"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arrow",
+ "arrow-array",
+ "auditor",
+ "chrono",
+ "config",
+ "parquet",
+ "secrecy",
+ "serde",
+ "serde-aux",
+ "serde_json",
+ "sqlx",
+ "thiserror 2.0.12",
+ "tokio",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"

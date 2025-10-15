@@ -26,9 +26,6 @@ exclude = [
 name = "auditor-priority-plugin"
 path = "src/main.rs"
 
-[profile.release]
-strip = true
-
 [dependencies]
 actix-web.workspace = true
 actix-web-opentelemetry.workspace = true
@@ -51,5 +48,3 @@ tracing.workspace = true
 tracing-actix-web.workspace = true
 tracing-subscriber.workspace = true
 uuid.workspace = true
-
-[dev-dependencies]

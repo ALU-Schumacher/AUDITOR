@@ -74,7 +74,7 @@ jobs:
         run: |
           cd auditor
           # cargo sqlx prepare --check -- --lib
-          cargo sqlx prepare --check -- --bin auditor
+          cargo sqlx prepare --check -- -p auditor
 
       - name: cargo test
         run: cargo test
@@ -245,7 +245,7 @@ jobs:
         run: ./scripts/init_client_sqlite.sh
 
       - name: Build auditor
-        run: cargo build --bin auditor
+        run: cargo build -p auditor
 
       - name: Run tests
         run: SKIP_COMPILATION=true ./scripts/test_auditor_prometheus_exporter.sh
@@ -319,7 +319,7 @@ jobs:
         run: ./scripts/init_client_sqlite.sh
 
       - name: Build auditor
-        run: cargo build --bin auditor
+        run: cargo build -p auditor
       
       - name: Run rbac tests
         run: ./scripts/test_rbac.sh

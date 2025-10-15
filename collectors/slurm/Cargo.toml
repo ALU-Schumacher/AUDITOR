@@ -26,9 +26,6 @@ exclude = [
 name = "auditor-slurm-collector"
 path = "src/main.rs"
 
-[profile.release]
-strip = true
-
 [dependencies]
 anyhow.workspace = true
 auditor.workspace = true
@@ -50,5 +47,3 @@ tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "pr
 tracing.workspace = true
 tracing-subscriber.workspace = true
 uuid.workspace = true
-
-[dev-dependencies]

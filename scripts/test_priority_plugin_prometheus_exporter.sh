@@ -14,9 +14,9 @@ function setup_python_env() {
 
 function compile_auditor() {
   if [ "$RELEASE_MODE" = true ]; then
-    cargo build --bin auditor --release
+    cargo build -p auditor --release
   else
-    cargo build --bin auditor
+    cargo build -p auditor
   fi
 }
 
@@ -52,9 +52,9 @@ function stop_auditor() {
 
 function compile_priority_plugin() {
   if [ "$RELEASE_MODE" = true ]; then
-    cargo build --bin auditor-priority-plugin --release
+    cargo build -p auditor-priority-plugin --release
   else
-    cargo build --bin auditor-priority-plugin
+    cargo build -p auditor-priority-plugin
   fi
 }
 
