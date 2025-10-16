@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Switch from `--bin` to `-p` for `cargo build` ([@dirksammel](https://github.com/dirksammel))
 - Pyauditor: Fix tls params order ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pyyaml from 6.0.2 to 6.0.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.12.7 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
