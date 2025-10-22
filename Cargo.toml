@@ -27,7 +27,7 @@ casbin = "2.10.1"
 chrono = { version = "0.4.40", default-features = false, features = ["serde"] }
 claim = { version = "0.7.1", package = "claims" }
 color-eyre = "0.6.3"
-config = "0.15.9"
+config = "0.15.18"
 criterion = {version = "0.5.1", features = ["html_reports", "async_tokio"]}
 criterion-macro = "0.4.0"
 csv = "1.1"
