@@ -30,7 +30,7 @@ color-eyre = "0.6.3"
 config = "0.15.9"
 criterion = {version = "0.5.1", features = ["html_reports", "async_tokio"]}
 criterion-macro = "0.4.0"
-csv = "1.1"
+csv = "1.4"
 fake = { version = "2.9.2", features = ["chrono"] }
 futures = "0.3"
 futures-util = "0.3"
