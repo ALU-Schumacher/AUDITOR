@@ -17,8 +17,8 @@ actix-web = "4.8.0"
 actix-tls = "3.4.0"
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.96"
-arrow= "56"
-arrow-array= "56"
+arrow= "56.2.0"
+arrow-array= "56.2.0"
 async-stream = "0.3"
 auditor = { path = "./auditor", version = "0.10.0", default-features = false }
 auditor-client = { path = "./auditor-client", version = "0.10.0" }
@@ -30,7 +30,7 @@ color-eyre = "0.6.3"
 config = "0.15.9"
 criterion = {version = "0.5.1", features = ["html_reports", "async_tokio"]}
 criterion-macro = "0.4.0"
-csv = "1.1"
+csv = "1.4.0"
 fake = { version = "4.4", features = ["chrono"] }
 futures = "0.3"
 futures-util = "0.3"
@@ -51,7 +51,7 @@ quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
 rand = "0.9.2"
 rand_distr = "0.5.1"
-regex = "1.11.1"
+regex = "1.12.2"
 reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"] }
 reqwest-streams = { version = "0.9", features= ["json"] }
 rustls = "0.23.23"
