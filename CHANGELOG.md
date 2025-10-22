@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update arrow from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.1.0 to 25.9.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.28.4 to 1.38.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update csv from 1.3.1 to 1.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update fake from 2.9.2 to 4.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
