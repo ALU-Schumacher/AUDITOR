@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update csv from 1.3.1 to 1.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update fake from 2.9.2 to 4.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update itertools from 0.13.0 to 0.14.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.17.1 to 1.18.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.11.7 to 2.12.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest from 8.4.1 to 8.4.2 ([@dirksammel](https://github.com/dirksammel))
