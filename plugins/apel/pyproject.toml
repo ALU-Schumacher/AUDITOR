@@ -10,7 +10,7 @@ dependencies = [
 	     "python-auditor==0.10.0",
 	     "cryptography==46.0.3",
 	     "pyyaml==6.0.3",
-	     "pydantic==2.11.7",
+	     "pydantic==2.12.3",
 	     "argo-ams-library==1.0.0",
 ]
 description = "AUDITOR plugin for sending accounting data to APEL"
