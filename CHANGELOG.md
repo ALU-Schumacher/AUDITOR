@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ruff from 0.12.7 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.2 to 0.21.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20250516 to 6.0.12.20250915 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: update wiremock from 0.6.2 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
