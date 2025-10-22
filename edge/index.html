@@ -608,7 +608,7 @@ See below for all currently available collectors.</p>
 <h2 id="slurm-collector">SLURM Collector</h2>
 <p>The Slurm collector collects information from slurm jobs based on the <code>sacct</code> command.
 It can be installed from the provided RPM or can be built with this command:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-collector
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl -p auditor-slurm-collector
 </span></code></pre>
 <p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-slurm-collector</code> and should be placed on the Slurm head node.</p>
 <p>Run the Slurm collector with</p>
@@ -722,7 +722,7 @@ The following filters are supported:</p>
 </span></code></pre>
 <h2 id="slurm-epilog-collector">SLURM Epilog Collector</h2>
 <p>The Slurm epilog collector can installed from the provided RPM or can be built with this command:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-slurm-epilog-collector
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl -p auditor-slurm-epilog-collector
 </span></code></pre>
 <p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-slurm-epilog-collector</code> and is ideally placed on the Slurm head node.</p>
 <p>Add this to your epilog shell script (on the slurm head node):</p>
@@ -1187,7 +1187,7 @@ See below for all currently available collectors.</p>
 This allows one to transfer provided resources on one system to priorities in another system.
 The computed priorities are set via shelling out, and the executed commands can be defined as needed.</p>
 <p>The priority plugin is available as RPM or can be built with the command:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl --bin auditor-priority-plugin
+<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl -p auditor-priority-plugin
 </span></code></pre>
 <p>The resulting binary can be found in <code>target/x86_64-unknown-linux-musl/release/auditor-priority-plugin</code> and is ideally placed on a node where the priorities should be set.</p>
 <p>The priority plugin runs continuously. Ideally, it is installed as a systemd service.
