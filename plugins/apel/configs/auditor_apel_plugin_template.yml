@@ -47,7 +47,7 @@
 #       name: Cores
 #     SubmitHost: !MetaField
 #       name: headnode
-#     NormalisedWallDuration: !NormalisedWallDurationField
+#     NormalisedWallDuration: !NormalisedField
 #       score:
 #         name: hepscore23
 #         component_name: Cores
