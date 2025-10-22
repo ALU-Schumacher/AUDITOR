@@ -183,7 +183,7 @@ AUDITORs configuration can be adapted with environment variables.
 | `AUDITOR_RBAC_CONFIG__ENFORCE_RBAC`                              | Specifies whether RBAC is enabled (`true`) or disabled (`false`).                                                      |
 | `AUDITOR_RBAC_CONFIG__MONITORING_ROLE_CN`                        | Specifies list of CN that are allowed to read the auditor prometheus metrics                                           |
 | `AUDITOR_RBAC_CONFIG__WRITE_ACCESS_CN`                           | Specifies which clients are allowed to perform the write operations from AUDITOR                                       |
-| `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operaitons from AUDITOR                                        |
+| `AUDTIOR_RBAC_CONFIG__READ_ACCESS_CN`                            | Specifies which clients are allowed to perform the read operations from AUDITOR                                        |
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_OLDER_THAN_MONTHS`             | Specifies the lifetime of records. eg: 3 -> records are stored for 3 months from the current date and then archived    |
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_PATH`                          | Specifies the path to store the archived records in parquet files                                                      |
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX`                   | Specifies the prefix for the archive files. (default: `auditor`)                                                       |
