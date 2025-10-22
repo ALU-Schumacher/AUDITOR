@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Disable automatic rebasing of dependabot PRs ([@dirksammel](https://github.com/dirksammel))
 - Pyauditor: Fix tls params order ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actions/checkout from 4 to 5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actions/setup-python from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update arrow from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.1.0 to 25.9.0 ([@dirksammel](https://github.com/dirksammel))
