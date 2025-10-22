@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_with from 3.14.0 to 3.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update shalzz/zola-deploy-action from 0.19.2 to 0.21.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update thiserror from 2.0.12 to 2.0.17 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tokio from 1.44.1 to 1.48.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20250516 to 6.0.12.20250915 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: update wiremock from 0.6.2 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
 
