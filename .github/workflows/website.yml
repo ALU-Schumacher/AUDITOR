@@ -24,7 +24,7 @@ jobs:
         run: echo "GITHUB_PAGES_URL=$(gh api repos/$GITHUB_REPOSITORY/pages --jq '.html_url')" >> $GITHUB_ENV
 
       - name: Checkout main/tag
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build only 
         uses: shalzz/zola-deploy-action@v0.19.2
@@ -62,7 +62,7 @@ jobs:
         run: echo "GITHUB_PAGES_URL=$(gh api repos/$GITHUB_REPOSITORY/pages --jq '.html_url')" >> $GITHUB_ENV
 
       - name: Checkout gh-pages
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           fetch-depth: 0 # otherwise, you will failed to push refs to dest repo

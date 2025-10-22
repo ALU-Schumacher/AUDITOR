@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout Actions Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         
       - name: Set up toolchain
         uses: dtolnay/rust-toolchain@stable
