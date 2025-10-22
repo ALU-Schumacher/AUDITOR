@@ -26,7 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update arrow from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 56.0.0 to 56.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.1.0 to 25.9.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update chrono from 0.4.41 to 0.4.42 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update casbin from 2.10.1 to 2.14.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update chrono from 0.4.40 to 0.4.42 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update config from 0.15.13 to 0.15.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.28.4 to 1.38.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -44,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update reqwest from 0.12.5 to 0.12.24 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest-streams from 0.9.0 to 0.12.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update ruff from 0.12.7 to 0.14.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update rustls from 0.23.31 to 0.23.34 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update secrecy from 0.8.0 to 0.10.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_json from 1.0.142 to 1.0.145 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_qs from 0.13.0 to 0.15.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.14.0 to 3.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -52,7 +55,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tokio from 1.44.1 to 1.48.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio-cron-scheduler from 0.14.0 to 0.15.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update types-pyyaml from 6.0.12.20250516 to 6.0.12.20250915 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update uuid from 1.17.0 to 1.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: update wiremock from 0.6.2 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update x509-parser from 0.15.1 to 0.18.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
