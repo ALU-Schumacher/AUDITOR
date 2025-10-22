@@ -659,7 +659,7 @@ dependencies = [
  "reqwest-streams",
  "rustls 0.23.31",
  "rustls-pemfile 2.2.0",
- "secrecy",
+ "secrecy 0.10.3",
  "serde",
  "serde-aux",
  "serde_json",
@@ -2599,7 +2599,7 @@ dependencies = [
  "pin-project",
  "rustls 0.21.12",
  "rustls-pemfile 1.0.4",
- "secrecy",
+ "secrecy 0.8.0",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -2922,7 +2922,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
@@ -4044,7 +4044,7 @@ dependencies = [
  "chrono",
  "config",
  "parquet",
- "secrecy",
+ "secrecy 0.10.3",
  "serde",
  "serde-aux",
  "serde_json",
@@ -4267,6 +4267,16 @@ name = "secrecy"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9bd1c54ea06cfd2f6b63219704de0b9b4f72dcc2b8fdef820be6cd799780e91e"
+dependencies = [
+ "serde",
+ "zeroize",
+]
+
+[[package]]
+name = "secrecy"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e891af845473308773346dc847b2c23ee78fe442e0472ac50e22a18a93d3ae5a"
 dependencies = [
  "serde",
  "zeroize",
