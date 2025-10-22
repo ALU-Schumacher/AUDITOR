@@ -16,7 +16,7 @@ resolver = "3"
 actix-web = "4.8.0"
 actix-tls = "3.4.0"
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
-anyhow = "1.0.96"
+anyhow = "1.0.100"
 arrow= "56"
 arrow-array= "56"
 async-stream = "0.3"
