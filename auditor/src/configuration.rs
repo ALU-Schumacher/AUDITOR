@@ -7,7 +7,7 @@
 
 use crate::telemetry::deserialize_log_level;
 use rustls::ServerConfig;
-use secrecy::{ExposeSecret, Secret};
+use secrecy::{ExposeSecret, SecretString};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::ConnectOptions;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
@@ -206,7 +206,7 @@ fn default_workers() -> usize {
 #[serde(deny_unknown_fields)]
 pub struct DatabaseSettings {
     pub username: String,
-    pub password: Secret<String>,
+    pub password: SecretString,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
     pub host: String,
