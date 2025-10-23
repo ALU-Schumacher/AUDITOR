@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update regex from 1.11.1 to 1.12.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest from 0.12.5 to 0.12.24 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest-streams from 0.9.0 to 0.12.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update ruff from 0.12.7 to 0.14.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update ruff from 0.12.7 to 0.14.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_json from 1.0.142 to 1.0.145 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_qs from 0.13.0 to 0.15.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.14.0 to 3.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
