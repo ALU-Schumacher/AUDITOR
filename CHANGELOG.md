@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update arrow from 56.0.0 to 57.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 56.0.0 to 57.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.1.0 to 25.9.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update casbin from 2.10.1 to 2.14.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update casbin from 2.10.1 to 2.15.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update chrono from 0.4.40 to 0.4.42 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update config from 0.15.13 to 0.15.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.28.4 to 1.38.1 ([@dirksammel](https://github.com/dirksammel))
