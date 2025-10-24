@@ -33,7 +33,7 @@ jobs:
           args: --release --sdist -o dist --interpreter --manifest-path pyauditor/Cargo.toml
 
       - name: Upload sdist wheel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: dist/*.gz
           name: pyauditor-wheels-source

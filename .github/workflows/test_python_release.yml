@@ -44,7 +44,7 @@ jobs:
           args: --release -o dist --interpreter python3.9 --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: dist
           name: pyauditor-wheels-linux-3.9

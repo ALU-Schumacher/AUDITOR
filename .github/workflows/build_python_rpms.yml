@@ -38,7 +38,7 @@ jobs:
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
       - name: Upload RPM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: ./plugins/apel/*rpm
           name: apel-plugin-rpm
@@ -73,7 +73,7 @@ jobs:
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
       - name: Upload RPM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: ./collectors/htcondor/*rpm
           name: htcondor-collector-rpm
