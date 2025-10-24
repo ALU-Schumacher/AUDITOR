@@ -4014,9 +4014,9 @@ dependencies = [
 
 [[package]]
 name = "reqwest-streams"
-version = "0.9.0"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7c5c3436b21f323e34b937f18b090a99c459b5065c710bee637645ebc703532"
+checksum = "3abcb780f3446325368204e87894b3b1c1c1b227d81f858f868c5f755716d5a6"
 dependencies = [
  "async-trait",
  "bytes",
@@ -4025,7 +4025,6 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
- "tokio",
  "tokio-util",
 ]
 
