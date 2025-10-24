@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
       - name: Download wheel
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: ./plugins/apel
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
@@ -52,7 +52,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
       - name: Download wheel
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: ./plugins/apel
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
