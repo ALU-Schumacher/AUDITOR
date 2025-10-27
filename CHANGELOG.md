@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Apel plugin: Add `benchmark_type` to config ([@dirksammel](https://github.com/dirksammel))
+- AUDITOR: Add SIGTERM and SIGINT for AUDITOR ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Apel plugin: Fix error in template config ([@dirksammel](https://github.com/dirksammel))

@@ -20,10 +20,15 @@ use std::env;
 
 use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, MgmtApi, RbacApi};
 
+use tokio::signal;
+
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
     // Read in configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
+
+    let mut sigterm = signal::unix::signal(signal::unix::SignalKind::terminate())
+        .expect("failed to install SIGTERM handler");
 
     // Set up logging
     let subscriber = get_subscriber("AUDITOR".into(), configuration.log_level, std::io::stdout);
@@ -232,6 +237,15 @@ async fn main() -> Result<(), anyhow::Error> {
         )
         .await?
         .await?;
+
+        tokio::select! {
+            _ = signal::ctrl_c() => {
+                tracing::info!("Received SIGINT (Ctrl-C)");
+            }
+            _ = sigterm.recv() => {
+                tracing::info!("Received SIGTERM");
+            }
+        }
     }
 
     Ok(())
