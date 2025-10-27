@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update chrono from 0.4.40 to 0.4.42 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update config from 0.15.13 to 0.15.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.28.4 to 1.38.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update criterion from 0.5.1 to 0.7.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 45.0.5 to 46.0.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update csv from 1.3.1 to 1.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update fake from 2.9.2 to 4.4.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
