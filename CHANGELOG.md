@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [0.10.1] 2025-10-27
+
+### Breaking changes
+
+### Security
+
+### Added
 - Apel plugin: Add `benchmark_type` to config ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Add SIGTERM and SIGINT for AUDITOR ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
@@ -890,7 +902,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.10.1...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -915,3 +927,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.9.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.3
 [0.9.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.4
 [0.10.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.0
+[0.10.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.1

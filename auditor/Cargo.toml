@@ -1,6 +1,6 @@
 [package]
 name = "auditor"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2024"
 default-run = "auditor"

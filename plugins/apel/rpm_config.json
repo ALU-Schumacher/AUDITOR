@@ -11,7 +11,7 @@
         "license": "BSD-2-Clause-Patent",
         "name": "auditor_apel_plugin",
         "summary": "AUDITOR plugin for sending accounting data to APEL",
-        "version": "0.10.0"
+        "version": "0.10.1"
     },
     "python_venv": {
         "name": "venv",
@@ -53,6 +53,7 @@
         "files": "%dir %attr(0750 auditor-apel-plugin auditor) /var/lib/auditor_apel_plugin",
         "desc": "AUDITOR plugin for sending accounting data to APEL",
         "changelog": [
+            "* Mon Oct 27 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.1\n- Release v0.10.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Thu Aug 07 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.0\n- Release v0.10.0 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Fri May 23 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.4\n- Release v0.9.4 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Wed May 14 2025 Dirk Sammel <dirk.sammel@physik.uni-freiburg.de> - 0.9.3\n- Release v0.9.3 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
