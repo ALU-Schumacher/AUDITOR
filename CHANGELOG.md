@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
