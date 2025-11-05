@@ -9,7 +9,7 @@ import logging
 import sqlite3
 from datetime import datetime, time, timedelta, timezone
 from sqlite3 import Error
-from typing import Dict, List, Tuple, Union, cast
+from typing import Union, cast
 
 from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
 from cryptography import x509
@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
 from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, Value
 
-from auditor_apel_plugin.config import BenchmarkType, Config, Field, MessageType
+from auditor_apel_plugin.config import BenchmarkType, Config, Field
 from auditor_apel_plugin.message import (
     Message,
     PluginMessage,
@@ -89,7 +89,7 @@ def get_time_json(config):
     time_json_path = config.plugin.time_json_path
 
     try:
-        with open(time_json_path, "r", encoding="utf-8") as f:
+        with open(time_json_path, encoding="utf-8") as f:
             time_dict = json.load(f)
     except FileNotFoundError:
         logger.warning(f"Path {time_json_path} not found, creating new time json")
@@ -100,10 +100,7 @@ def get_time_json(config):
 
 def create_time_json(time_json_path):
     initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
-    time_dict = {
-        "last_report_time": initial_report_time.isoformat(),
-        "site_end_times": {},
-    }
+    time_dict = {"last_report_time": initial_report_time.isoformat()}
 
     try:
         with write_transaction(time_json_path, encoding="utf-8") as f:
@@ -121,11 +118,10 @@ def get_report_time(time_dict):
     return report_time
 
 
-def update_time_json(config, time_dict, site, stop_time, report_time):
+def update_time_json(config, time_dict, report_time):
     time_json_path = config.plugin.time_json_path
 
     time_dict["last_report_time"] = report_time.isoformat()
-    time_dict["site_end_times"][site] = stop_time.isoformat()
 
     try:
         with write_transaction(time_json_path, encoding="utf-8") as f:
@@ -135,19 +131,10 @@ def update_time_json(config, time_dict, site, stop_time, report_time):
         raise
 
 
-def create_db(
-    fields_dict: Dict[str, Field], message_type: MessageType
-) -> sqlite3.Connection:
-    message = Message()
-
-    if message_type == MessageType.summaries:
-        message = SummaryMessage()
-    elif message_type == MessageType.sync:
-        message = SyncMessage()
-
+def create_db(fields_dict: dict[str, Field], message: Message) -> sqlite3.Connection:
     field_list = message.create_sql
 
-    for k, v in fields_dict.items():
+    for k in fields_dict:
         if k not in message.message_fields:
             logger.critical(
                 f"Field {k} not in list of possible fields: {message.message_fields}"
@@ -177,21 +164,14 @@ def create_db(
 def fill_db(
     config: Config,
     conn: sqlite3.Connection,
-    message_type: MessageType,
-    fields_dict: Dict[str, Field],
+    message: Message,
+    fields_dict: dict[str, Field],
     site: str,
-    records: List[Record],
+    records: list[Record],
 ) -> sqlite3.Connection:
-    message = Message()
-
-    if message_type == MessageType.summaries:
-        message = SummaryMessage()
-    elif message_type == MessageType.sync:
-        message = SyncMessage()
-
     field_list = [field.split(" ")[0] for field in message.create_sql]
 
-    for k in fields_dict.keys():
+    for k in fields_dict:
         field_list.append(k)
 
     field_list_str = ",".join(field_list)
@@ -203,7 +183,7 @@ def fill_db(
     )
 
     for r in records:
-        data_tuple = get_data_tuple(config, message_type, fields_dict, site, r)
+        data_tuple = get_data_tuple(config, message, fields_dict, site, r)
 
         try:
             with conn:
@@ -217,33 +197,30 @@ def fill_db(
 
 def get_data_tuple(
     config: Config,
-    message_type: MessageType,
-    fields_dict: Dict[str, Field],
+    message: Message,
+    fields_dict: dict[str, Field],
     site: str,
     record: Record,
-) -> Tuple[int, float, str]:
+) -> tuple[int, float, str]:
     value_list = []
 
-    if message_type == MessageType.summaries:
-        month = record.stop_time.replace(tzinfo=timezone.utc).month
-        year = record.stop_time.replace(tzinfo=timezone.utc).year
+    month = record.stop_time.replace(tzinfo=timezone.utc).month
+    year = record.stop_time.replace(tzinfo=timezone.utc).year
+    record_id = record.record_id
+
+    if isinstance(message, SummaryMessage):
         stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
         runtime = record.runtime
-        record_id = record.record_id
 
         value_list = [site, month, year, stop_time, runtime, record_id]
 
-    elif message_type == MessageType.sync:
-        month = record.stop_time.replace(tzinfo=timezone.utc).month
-        year = record.stop_time.replace(tzinfo=timezone.utc).year
+    elif isinstance(message, SyncMessage):
         submithost_field = config.get_mandatory_fields().get("SubmitHost")
         if submithost_field is not None:
             submithost = submithost_field.get_value(record)
         else:
             logger.warning("SubmitHost field not defined!")
             submithost = "None"
-
-        record_id = record.record_id
 
         value_list = [site, month, year, submithost, record_id]
 
@@ -257,18 +234,11 @@ def get_data_tuple(
 
 
 def group_db(
-    conn: sqlite3.Connection, message_type: MessageType, fields_dict: Dict[str, Field]
-) -> List[sqlite3.Row]:
-    message = Message()
-
-    if message_type == MessageType.summaries:
-        message = SummaryMessage()
-    elif message_type == MessageType.sync:
-        message = SyncMessage()
-
+    conn: sqlite3.Connection, message: Message, fields_dict: dict[str, Field]
+) -> list[sqlite3.Row]:
     group_by_list = message.group_by
 
-    for k in fields_dict.keys():
+    for k in fields_dict:
         group_by_list.append(k)
 
     sql_group_by = ",".join(group_by_list)
@@ -293,12 +263,12 @@ def group_db(
     return grouped_sql
 
 
-def get_total_numbers(summary_dict: Dict[str, Dict[str, Union[str, int]]]) -> str:
+def get_total_numbers(summary_dict: dict[str, dict[str, Union[str, int]]]) -> str:
     message = PluginMessage()
     aggr_fields = message.aggr_fields
     group_by_list = message.group_by
 
-    hash_dict: Dict[str, Dict[str, Union[str, int]]] = {}
+    hash_dict: dict[str, dict[str, Union[str, int]]] = {}
 
     for group in summary_dict.values():
         hashstr = ""
@@ -333,20 +303,13 @@ def get_total_numbers(summary_dict: Dict[str, Dict[str, Union[str, int]]]) -> st
 
 
 def create_dict(
-    message_type: MessageType,
-    grouped_sql: List[sqlite3.Row],
-    fields_dict: Dict[str, Field],
-    hash_dict: Dict[str, Dict[str, Union[str, int]]],
-) -> Dict[str, Dict[str, Union[str, int]]]:
-    message = Message()
-
-    if message_type == MessageType.summaries:
-        message = SummaryMessage()
-    elif message_type == MessageType.sync:
-        message = SyncMessage()
-
+    message: Message,
+    grouped_sql: list[sqlite3.Row],
+    fields_dict: dict[str, Field],
+    hash_dict: dict[str, dict[str, Union[str, int]]],
+) -> dict[str, dict[str, Union[str, int]]]:
     group_by_list = message.group_by
-    for k in fields_dict.keys():
+    for k in fields_dict:
         group_by_list.append(k)
 
     message_fields = message.message_fields
@@ -379,17 +342,10 @@ def create_dict(
 
 
 def create_message(
-    message_type: MessageType,
-    aggr_dict: Dict[str, Dict[str, Union[str, int]]],
+    message: Message,
+    aggr_dict: dict[str, dict[str, Union[str, int]]],
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
 ) -> str:
-    message = Message()
-
-    if message_type == MessageType.summaries:
-        message = SummaryMessage()
-    elif message_type == MessageType.sync:
-        message = SyncMessage()
-
     header = message.message_header
     message_list = [header]
 
@@ -407,10 +363,10 @@ def create_message(
 
 
 def aggregate_messages(
-    new_dict: Dict[str, Union[str, int]],
-    aggr_dict: Dict[str, Union[str, int]],
-    aggr_fields: List[str],
-) -> Dict[str, Union[str, int]]:
+    new_dict: dict[str, Union[str, int]],
+    aggr_dict: dict[str, Union[str, int]],
+    aggr_fields: list[str],
+) -> dict[str, Union[str, int]]:
     for field in aggr_fields:
         aggr_dict[field] = cast(int, aggr_dict[field]) + cast(int, new_dict[field])
 
@@ -475,19 +431,3 @@ def send_payload(config, payload):
     except AmsException as e:
         logger.critical(f"Could not send message: {e}")
         raise
-
-
-def convert_to_seconds(config, cpu_time):
-    cpu_time_name = config["auditor"]["cpu_time_name"]
-    cpu_time_unit = config["auditor"]["cpu_time_unit"]
-
-    if cpu_time_unit == "seconds":
-        return cpu_time
-    elif cpu_time_unit == "milliseconds":
-        return round(cpu_time / 1000)
-    else:
-        logger.critical(
-            f"Unknown unit for {cpu_time_name}: {cpu_time_unit}. "
-            "Possible values are seconds or milliseconds."
-        )
-        raise ValueError

@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from pathlib import Path, PurePath
+from pathlib import PurePath
 
 import pyauditor
 import pytest
@@ -27,7 +27,7 @@ test_dir = PurePath(__file__).parent
 
 class TestConfig:
     def test_plugin_config(self):
-        with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
+        with open(test_dir / "test_config.yml") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
         log_file = config.plugin.log_file
@@ -413,7 +413,7 @@ class TestConfig:
 
         assert value == "atlas"
 
-        with open(Path.joinpath(test_dir, "test_config.yml"), "r") as f:
+        with open(test_dir / "test_config.yml") as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
         value = config.summary_fields.mandatory["VO"].get_value(record)

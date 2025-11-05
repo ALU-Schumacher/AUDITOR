@@ -9,12 +9,12 @@ from datetime import datetime, timedelta, timezone
 from logging import Logger
 from logging.handlers import RotatingFileHandler
 from time import sleep
-from typing import Dict, Union
+from typing import Union
 
 import yaml
 from pyauditor import AuditorClientBuilder
 
-from auditor_apel_plugin.config import Config, MessageType, get_loaders
+from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
     build_payload,
     create_db,
@@ -32,6 +32,7 @@ from auditor_apel_plugin.core import (
     sign_msg,
     update_time_json,
 )
+from auditor_apel_plugin.message import SummaryMessage, SyncMessage
 
 TRACE = logging.DEBUG - 5
 
@@ -41,6 +42,8 @@ def run(logger: Logger, config: Config, client, args):
     sites_to_report = config.site.sites_to_report
     benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
+    message_dict = {}
+    sync_dict = {}
     optional_fields = config.get_optional_fields()
     dry_run = args.dry_run
 
@@ -70,9 +73,9 @@ def run(logger: Logger, config: Config, client, args):
         else:
             begin_month = get_begin_current_month(current_time)
 
-        for site in sites_to_report.keys():
-            aggr_sync_dict: Dict[str, Dict[str, Union[str, int]]] = {}
-            aggr_summary_dict: Dict[str, Dict[str, Union[str, int]]] = {}
+        for site in sites_to_report:
+            aggr_sync_dict: dict[str, dict[str, Union[str, int]]] = {}
+            aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
             loop_day = begin_month
             has_records = False
 
@@ -97,25 +100,25 @@ def run(logger: Logger, config: Config, client, args):
                 latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
                 logger.debug(f"Latest stop time is {latest_stop_time}")
 
-                sync_db = create_db({}, MessageType.sync)
+                sync_db = create_db({}, SyncMessage())
                 filled_sync_db = fill_db(
-                    config, sync_db, MessageType.sync, {}, site, records
+                    config, sync_db, SyncMessage(), {}, site, records
                 )
-                grouped_sync_db = group_db(filled_sync_db, MessageType.sync, {})
+                grouped_sync_db = group_db(filled_sync_db, SyncMessage(), {})
                 filled_sync_db.close()
                 sync_dict = create_dict(
-                    MessageType.sync, grouped_sync_db, {}, aggr_sync_dict
+                    SyncMessage(), grouped_sync_db, {}, aggr_sync_dict
                 )
 
-                db = create_db(field_dict, MessageType.summaries)
+                db = create_db(field_dict, SummaryMessage())
                 filled_db = fill_db(
-                    config, db, MessageType.summaries, field_dict, site, records
+                    config, db, SummaryMessage(), field_dict, site, records
                 )
                 del records
-                grouped_db = group_db(filled_db, MessageType.summaries, optional_fields)
+                grouped_db = group_db(filled_db, SummaryMessage(), optional_fields)
                 filled_db.close()
                 message_dict = create_dict(
-                    MessageType.summaries,
+                    SummaryMessage(),
                     grouped_db,
                     optional_fields,
                     aggr_summary_dict,
@@ -125,7 +128,7 @@ def run(logger: Logger, config: Config, client, args):
                 logger.warning(f"No records for site {site} in this month")
                 continue
 
-            sync_message = create_message(MessageType.sync, sync_dict)
+            sync_message = create_message(SyncMessage(), sync_dict)
             logger.debug(f"Sync message:\n{sync_message}")
             signed_sync = sign_msg(config, sync_message)
             logger.debug(f"Signed sync message:\n{signed_sync}")
@@ -136,9 +139,7 @@ def run(logger: Logger, config: Config, client, args):
                 post_sync = send_payload(config, payload_sync)
                 logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
-            message = create_message(
-                MessageType.summaries, message_dict, benchmark_type
-            )
+            message = create_message(SummaryMessage(), message_dict, benchmark_type)
             logger.log(TRACE, f"Message:\n{message}")
             signed_message = sign_msg(config, message)
             logger.log(TRACE, f"Signed message:\n{signed_message}")
@@ -150,9 +151,7 @@ def run(logger: Logger, config: Config, client, args):
                 logger.info(f"Message sent to server, response:\n{post_message}")
 
                 latest_report_time = datetime.now()
-                update_time_json(
-                    config, time_dict, site, latest_stop_time, latest_report_time
-                )
+                update_time_json(config, time_dict, latest_report_time)
 
             total_numbers = get_total_numbers(message_dict)
             logger.info(f"Total numbers reported by the plugin:\n{total_numbers}")
@@ -177,7 +176,7 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.config, "r") as f:
+    with open(args.config) as f:
         config: Config = yaml.load(f, Loader=get_loaders())
 
     log_level = config.plugin.log_level

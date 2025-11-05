@@ -3,24 +3,22 @@
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
-from typing import List
-
 from pydantic import BaseModel
 
 
 class Message(BaseModel):
     message_header: str = ""
-    create_sql: List[str] = []
-    group_by: List[str] = []
-    store_as: List[str] = []
-    message_fields: List[str] = []
-    aggr_fields: List[str] = []
+    create_sql: list[str] = []
+    group_by: list[str] = []
+    store_as: list[str] = []
+    message_fields: list[str] = []
+    aggr_fields: list[str] = []
 
 
 class SummaryMessage(Message):
     message_header: str = "APEL-normalised-summary-message: v0.4\n"
 
-    create_sql: List[str] = [
+    create_sql: list[str] = [
         "Site TEXT NOT NULL",
         "Month INT NOT NULL",
         "Year INT NOT NULL",
@@ -29,9 +27,9 @@ class SummaryMessage(Message):
         "RecordID TEXT UNIQUE NOT NULL",
     ]
 
-    group_by: List[str] = ["Site", "Month", "Year", "VO", "SubmitHost", "Processors"]
+    group_by: list[str] = ["Site", "Month", "Year", "VO", "SubmitHost", "Processors"]
 
-    store_as: List[str] = [
+    store_as: list[str] = [
         "COUNT(RecordID) as NumberOfJobs",
         "SUM(WallDuration) as WallDuration",
         "SUM(NormalisedWallDuration) as NormalisedWallDuration",
@@ -41,7 +39,7 @@ class SummaryMessage(Message):
         "MAX(StopTime) as LatestEndTime",
     ]
 
-    message_fields: List[str] = [
+    message_fields: list[str] = [
         "Site",
         "Month",
         "Year",
@@ -62,7 +60,7 @@ class SummaryMessage(Message):
         "NumberOfJobs",
     ]
 
-    aggr_fields: List[str] = [
+    aggr_fields: list[str] = [
         "WallDuration",
         "CpuDuration",
         "NormalisedWallDuration",
@@ -74,7 +72,7 @@ class SummaryMessage(Message):
 class SyncMessage(Message):
     message_header: str = "APEL-sync-message: v0.1\n"
 
-    create_sql: List[str] = [
+    create_sql: list[str] = [
         "Site TEXT NOT NULL",
         "Month INT NOT NULL",
         "Year INT NOT NULL",
@@ -82,19 +80,19 @@ class SyncMessage(Message):
         "RecordID TEXT UNIQUE NOT NULL",
     ]
 
-    group_by: List[str] = ["Site", "Month", "Year", "SubmitHost"]
+    group_by: list[str] = ["Site", "Month", "Year", "SubmitHost"]
 
-    store_as: List[str] = ["COUNT(RecordID) as NumberOfJobs"]
+    store_as: list[str] = ["COUNT(RecordID) as NumberOfJobs"]
 
-    message_fields: List[str] = ["Site", "SubmitHost", "NumberOfJobs", "Month", "Year"]
+    message_fields: list[str] = ["Site", "SubmitHost", "NumberOfJobs", "Month", "Year"]
 
-    aggr_fields: List[str] = ["NumberOfJobs"]
+    aggr_fields: list[str] = ["NumberOfJobs"]
 
 
 class PluginMessage(Message):
-    group_by: List[str] = ["Site", "Month", "Year"]
+    group_by: list[str] = ["Site", "Month", "Year"]
 
-    aggr_fields: List[str] = [
+    aggr_fields: list[str] = [
         "NumberOfJobs",
         "WallDuration",
         "CpuDuration",
