@@ -1,5 +1,5 @@
-import pathlib
 import secrets
+from pathlib import Path
 
 import pytest
 
@@ -13,13 +13,14 @@ CONTENT = [
     secrets.token_hex(4096),
     "\n".join([secrets.token_hex(1025) for _ in range(9)]),
 ]
-# Some content is very long and randomized, parametrize over indizes to keep tests manageable
+# Some content is very long and randomized
+# Parametrize over indizes to keep tests manageable
 CONTENT_IDXS = range(len(CONTENT))
 
 
 @pytest.mark.parametrize("initial_idx", CONTENT_IDXS)
 @pytest.mark.parametrize("final_idx", CONTENT_IDXS)
-def test_write_transaction(tmp_path: pathlib.Path, initial_idx: int, final_idx: int):
+def test_write_transaction(tmp_path: Path, initial_idx: int, final_idx: int):
     initial, final = CONTENT[initial_idx], CONTENT[final_idx]
     file_path = tmp_path / "test_file.txt"
     file_path.write_text(initial)
@@ -37,7 +38,7 @@ def test_write_transaction(tmp_path: pathlib.Path, initial_idx: int, final_idx: 
     [KeyError, EOFError, IOError, GeneratorExit, SystemExit],
 )
 def test_write_transaction_failure(
-    tmp_path: pathlib.Path,
+    tmp_path: Path,
     initial_idx: int,
     final_idx: int,
     failure: "type[BaseException]",
