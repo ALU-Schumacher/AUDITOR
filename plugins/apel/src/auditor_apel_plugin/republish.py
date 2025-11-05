@@ -7,12 +7,12 @@ import argparse
 import logging
 from datetime import datetime, timedelta, timezone
 from logging import Logger
-from typing import Dict, Union
+from typing import Union
 
 import yaml
 from pyauditor import AuditorClientBuilder
 
-from auditor_apel_plugin.config import Config, MessageType, get_loaders
+from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
     build_payload,
     create_db,
@@ -25,6 +25,7 @@ from auditor_apel_plugin.core import (
     send_payload,
     sign_msg,
 )
+from auditor_apel_plugin.message import SummaryMessage
 
 TRACE = logging.DEBUG - 5
 
@@ -36,6 +37,7 @@ def run(logger: Logger, config: Config, client, args):
     sites_to_report = config.site.sites_to_report
     benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
+    message_dict = {}
     optional_fields = config.get_optional_fields()
 
     month = args.month
@@ -52,7 +54,7 @@ def run(logger: Logger, config: Config, client, args):
     if dry_run:
         logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
-    aggr_summary_dict: Dict[str, Dict[str, Union[str, int]]] = {}
+    aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
     loop_day = begin_month
 
     while end_month > loop_day:
@@ -79,27 +81,27 @@ def run(logger: Logger, config: Config, client, args):
         latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
         logger.debug(f"Latest stop time is {latest_stop_time}")
 
-        db = create_db(field_dict, MessageType.summaries)
+        db = create_db(field_dict, SummaryMessage())
         filled_db = fill_db(
             config,
             db,
-            MessageType.summaries,
+            SummaryMessage(),
             field_dict,
             site,
             records,
         )
         del records
-        grouped_db = group_db(filled_db, MessageType.summaries, optional_fields)
+        grouped_db = group_db(filled_db, SummaryMessage(), optional_fields)
         filled_db.close()
         message_dict = create_dict(
-            MessageType.summaries, grouped_db, optional_fields, aggr_summary_dict
+            SummaryMessage(), grouped_db, optional_fields, aggr_summary_dict
         )
 
     if not has_records:
         logger.warning(f"No records for site {site} in this month")
         quit()
 
-    message = create_message(MessageType.summaries, message_dict, benchmark_type)
+    message = create_message(SummaryMessage(), message_dict, benchmark_type)
     logger.log(TRACE, f"Message:\n{message}")
     signed_message = sign_msg(config, message)
     logger.log(TRACE, f"Signed message:\n{signed_message}")
@@ -133,7 +135,7 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.config, "r") as f:
+    with open(args.config) as f:
         config: Config = yaml.load(f, Loader=get_loaders())
 
     log_level = config.plugin.log_level
