@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - CI/CD: Switch to official ruff git action ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.39.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.24.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3-async-runtimes from 0.24.0 to 0.27.0 ([@dirksammel](https://github.com/dirksammel))
