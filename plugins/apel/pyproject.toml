@@ -18,7 +18,7 @@ readme = "README.md"
 
 [project.optional-dependencies]
 style = [
-      "black==25.9.0",
+      "black==25.11.0",
       "ruff==0.14.4",
 ]
 tests = [
