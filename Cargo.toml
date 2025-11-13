@@ -23,7 +23,7 @@ async-stream = "0.3"
 auditor = { path = "./auditor", version = "0.10.1", default-features = false }
 auditor-client = { path = "./auditor-client", version = "0.10.1" }
 bincode = "1.3.3"
-casbin = "2.15.0"
+casbin = "2.17.0"
 chrono = { version = "0.4.42", default-features = false, features = ["serde"] }
 claim = { version = "0.7.1", package = "claims" }
 color-eyre = "0.6.3"
