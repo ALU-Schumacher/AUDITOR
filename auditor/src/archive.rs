@@ -38,34 +38,26 @@ impl ArchiveService {
         let pool = self.pool.clone();
         let config = self.config.clone();
 
-        {
+        let job_factory = move |_uuid, _lock| {
             let pool = pool.clone();
             let config = config.clone();
-            println!("Archival process is running");
-            match Self::archive_old_records(pool, config).await {
-                Ok(_) => println!("successfully archived records"),
-                Err(e) => println!("Archival process failed. Check the logs for more info {e}"),
-            }
-        }
-
-        let job = Job::new_async(
-            config.cron_schedule.clone().as_str(),
-            move |_uuid, _lock| {
-                let pool = pool.clone();
-                let config = config.clone();
-                Box::pin(async move {
-                    info!("Started scheduled archival process");
-                    match Self::archive_old_records(pool, config).await {
-                        Ok(_) => println!("Successfully archived records"),
-                        Err(e) => {
-                            println!("Archival process failed. Check the logs for more info {e}",)
-                        }
+            Box::pin(async move {
+                info!("Started scheduled archival process");
+                match Self::archive_old_records(pool, config).await {
+                    Ok(_) => println!("Successfully archived records"),
+                    Err(e) => {
+                        println!("Archival process failed. Check the logs for more info {e}",)
                     }
-                })
-            },
-        )?;
+                }
+            }) as std::pin::Pin<Box<dyn futures_util::Future<Output = ()> + Send>>
+        };
 
-        scheduler.add(job).await?;
+        let oneshot =
+            Job::new_one_shot_async(std::time::Duration::from_secs(1), job_factory.clone())?;
+        let cronjob = Job::new_async(self.config.cron_schedule.clone().as_str(), job_factory)?;
+
+        scheduler.add(oneshot).await?;
+        scheduler.add(cronjob).await?;
         scheduler.start().await?;
 
         Ok(())
