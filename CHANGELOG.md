@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - CI/CD: Switch to official ruff git action ([@dirksammel](https://github.com/dirksammel))
+- CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.39.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.12.3 to 2.12.4 ([@dirksammel](https://github.com/dirksammel))

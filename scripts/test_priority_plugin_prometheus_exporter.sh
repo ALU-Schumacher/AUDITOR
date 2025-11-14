@@ -89,8 +89,12 @@ function start_priority_plugin() {
 
 function stop_priority_plugin() {
   echo >&2 "Stopping Priority plugin"
-  kill -2 "$PRIORITY_PLUGIN"
-  wait "$PRIORITY_PLUGIN"
+  if kill -0 "$PRIORITY_PLUGIN" 2>/dev/null; then
+      kill -2 "$PRIORITY_PLUGIN"
+      wait "$PRIORITY_PLUGIN"
+  else
+      echo >&2 "Process $PRIORITY_PLUGIN does not exist. Nothing to stop."
+  fi
 }
 
 function test_priority_plugin_prometheus_exporter() {
