@@ -13,7 +13,7 @@ FROM chef AS builder
 RUN cargo install --version=0.8.6 sqlx-cli --no-default-features --features postgres,rustls,sqlite
 # Only build project dependencies
 COPY --from=planner /auditor/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json
+RUN cargo chef cook --release -p auditor --recipe-path recipe.json
 
 COPY . .
 ENV SQLX_OFFLINE=true

@@ -1,8 +1,7 @@
 services:
   auditor:
-    build:
-      context: ../../
-      dockerfile: containers/auditor/Dockerfile
+    image: aluschumacher/auditor
+    pull_policy: never
     environment:
       - AUDITOR_DATABASE__REQUIRE_SSL=false
       - AUDITOR_DATABASE__HOST=postgres

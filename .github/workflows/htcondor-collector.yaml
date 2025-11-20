@@ -1,10 +1,7 @@
 name: htcondor-collector
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  workflow_call
 
 jobs:
   test:
@@ -12,7 +9,8 @@ jobs:
     outputs:
       table: ${{ steps.table.outputs.table }}
     steps:
-    - uses: actions/checkout@v5
+    - name: Check out repo
+      uses: actions/checkout@v5
     - name: Set up Python 3.9
       uses: actions/setup-python@v6
       with:
@@ -21,27 +19,31 @@ jobs:
       run: |
         mkdir -p .cargo
         echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
-    - name: Build pyauditor
-      uses: messense/maturin-action@v1
+    - name: Download pyauditor wheel
+      uses: actions/download-artifact@v6
       with:
-        target: x86_64
-        manylinux: auto
-        command: build
-        args: --release -o dist --interpreter python3.9 --manifest-path pyauditor/Cargo.toml
+        name: pyauditor-wheels-linux-3.9
     - name: Build collector package
       run: |
         python3.9 -m venv pvenv
         source pvenv/bin/activate
         pip install --upgrade pip build
         python -m build -o dist collectors/htcondor
+    - name: Download auditor container tarball
+      uses: actions/download-artifact@v6
+      with:
+        name: auditor-container-tar
     - name: Start docker containers
       working-directory: containers/htcondor
       run: |
+        output=$(docker load -i /home/runner/work/AUDITOR/AUDITOR/auditor.tar)
+        image_name=$(echo "$output" | sed -n 's/^Loaded image: //p')
+        docker tag "$image_name" aluschumacher/auditor:latest
         docker compose -f docker-compose.yaml up -d --build
         sleep 5
     - name: Install pyauditor in container
       run: |
-        docker cp dist/python_auditor-*whl htcondor-auditor-collector-1:/tmp/
+        docker cp python_auditor-*whl htcondor-auditor-collector-1:/tmp/
         docker exec -u submituser htcondor-auditor-collector-1 \
           bash -c "pip install --upgrade pip && \
             pip install --no-cache-dir --no-index /tmp/python_auditor-*.whl"
