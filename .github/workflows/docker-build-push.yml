@@ -1,15 +1,12 @@
 name: Containers
 
 on:
-  pull_request:
-  push:
-    branches: ['main']
-    tags:
-      - v*.*.*
+  workflow_call
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  SUFFIX: ""
 
 jobs:
   build-and-push-image:
@@ -28,7 +25,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-
       - name: Log in to Docker Hub
         if: ${{ github.repository == 'ALU-Schumacher/AUDITOR' && github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
@@ -56,17 +52,39 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+            type=sha
 
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Empty SUFFIX env var
+        if: ${{ matrix.containers != 'auditor-apel-plugin'}}
+        run: echo "SUFFIX=" >> $GITHUB_ENV
+
+      - name: Fill SUFFIX env var
+        if: ${{ matrix.containers == 'auditor-apel-plugin'}}
+        run: echo "SUFFIX=_workflow" >> $GITHUB_ENV
+
+      - name: Download pyauditor wheel
+        uses: actions/download-artifact@v6
+        with:
+          name: pyauditor-wheels-linux-3.9
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: containers/${{ matrix.containers }}/Dockerfile
+          file: containers/${{ matrix.containers }}/Dockerfile${{ env.SUFFIX }}
           push: ${{ github.repository == 'ALU-Schumacher/AUDITOR' && github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.containers }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.containers }}
+          load: true
+      - name: Save Docker image as tarball
+        run: docker save aluschumacher/${{ matrix.containers }}:${{ steps.meta.outputs.version }} -o ${{ matrix.containers }}.tar
+      - name: Upload tarball
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ matrix.containers }}-container-tar
+          path: ${{ matrix.containers }}.tar
