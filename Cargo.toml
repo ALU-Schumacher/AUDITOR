@@ -28,7 +28,7 @@ chrono = { version = "0.4.42", default-features = false, features = ["serde"] }
 claim = { version = "0.7.1", package = "claims" }
 color-eyre = "0.6.3"
 config = "0.15.18"
-criterion = {version = "0.7.0", features = ["html_reports", "async_tokio"]}
+criterion = {version = "0.8.0", features = ["html_reports", "async_tokio"]}
 criterion-macro = "0.4.0"
 csv = "1.4.0"
 fake = { version = "4.4", features = ["chrono"] }
