@@ -57,7 +57,7 @@ jobs:
       contents: write
     steps:
       - name: Download pyauditor wheels
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: pyauditor-wheels-*
           path: dist

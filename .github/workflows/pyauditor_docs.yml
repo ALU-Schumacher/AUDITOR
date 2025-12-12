@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Download wheel
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
 
