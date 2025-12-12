@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download pyauditor source
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: pyauditor-wheels-source
 
