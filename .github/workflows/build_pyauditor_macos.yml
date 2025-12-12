@@ -40,7 +40,7 @@ jobs:
           args: --release -o dist --target universal2-apple-darwin --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           path: dist
           name: pyauditor-wheels-macos-${{ inputs.python-version }}
