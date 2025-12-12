@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Improve htcondor-collector workflow ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actions/upload-artifact from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.39.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
