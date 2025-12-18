@@ -54,9 +54,6 @@ async fn main() -> Result<(), anyhow::Error> {
         if tls.use_tls {
             let mut cert_store = RootCertStore::empty();
 
-            //rustls::crypto::default_provider().install_default().expect("failed to install default crypto provider");
-
-            // CryptoProvider::install_default();
             rustls::crypto::aws_lc_rs::default_provider()
                 .install_default()
                 .unwrap();
