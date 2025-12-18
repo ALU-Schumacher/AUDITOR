@@ -47,6 +47,10 @@ fn init() -> anyhow::Result<()> {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
+
     ensure_lazies();
     init()?;
     println!("Loaded config {:?}", CONFIG.get());

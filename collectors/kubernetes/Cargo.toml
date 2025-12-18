@@ -32,10 +32,12 @@ auditor.workspace = true
 auditor-client.workspace = true
 bincode.workspace = true
 chrono.workspace = true
-k8s-openapi = { workspace = true, features = ["v1_28"] }
+jiff.workspace = true
+k8s-openapi = { workspace = true, features = ["v1_35"] }
 kube.workspace = true
 prometheus-http-query = { workspace = true, features = ["rustls-tls"] }
 reqwest = { workspace = true, features = ["rustls-tls"] }
+rustls.workspace = true
 serde.workspace = true
 serde_yaml.workspace = true
 sqlx = { workspace = true, features = ["sqlite"] }
