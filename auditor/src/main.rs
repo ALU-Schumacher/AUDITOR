@@ -11,8 +11,10 @@ use auditor::startup::run;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
 
-use rustls::{RootCertStore, ServerConfig, pki_types::PrivateKeyDer, server::WebPkiClientVerifier};
-use rustls_pemfile::{certs, pkcs8_private_keys};
+use rustls::{
+    RootCertStore, ServerConfig, pki_types::CertificateDer, pki_types::PrivateKeyDer,
+    pki_types::PrivatePkcs8KeyDer, pki_types::pem::PemObject, server::WebPkiClientVerifier,
+};
 
 use std::{fs::File, io::BufReader, sync::Arc};
 
@@ -75,7 +77,9 @@ async fn main() -> Result<(), anyhow::Error> {
 
             // import CA cert
             let ca_cert = &mut BufReader::new(File::open(ca_cert_path)?);
-            let ca_cert = certs(ca_cert).collect::<Result<Vec<_>, _>>().unwrap();
+            let ca_cert = CertificateDer::pem_reader_iter(ca_cert)
+                .collect::<Result<Vec<_>, _>>()
+                .unwrap();
 
             for cert in ca_cert {
                 cert_store.add(cert).expect("root CA not added to store");
@@ -91,12 +95,16 @@ async fn main() -> Result<(), anyhow::Error> {
             let cert_file = &mut BufReader::new(File::open(server_cert_path)?);
             let key_file = &mut BufReader::new(File::open(server_key_path)?);
 
-            let cert_chain = certs(cert_file).collect::<Result<Vec<_>, _>>().unwrap();
-            let mut keys = pkcs8_private_keys(key_file)
-                .map(|key| key.map(PrivateKeyDer::Pkcs8))
+            let cert_chain = CertificateDer::pem_reader_iter(cert_file)
                 .collect::<Result<Vec<_>, _>>()
                 .unwrap();
-            let config = config.with_single_cert(cert_chain, keys.remove(0)).unwrap();
+            let mut keys: Vec<PrivatePkcs8KeyDer<'_>> =
+                PrivatePkcs8KeyDer::pem_reader_iter(key_file)
+                    .collect::<Result<Vec<_>, _>>()
+                    .unwrap();
+            let config = config
+                .with_single_cert(cert_chain, PrivateKeyDer::Pkcs8(keys.remove(0)))
+                .unwrap();
 
             let tls_params = TLSParams {
                 config,
