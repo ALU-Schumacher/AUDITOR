@@ -405,13 +405,12 @@ fn construct_components(
                 }))
             }
         })
-        .cloned()
         .map(|c| {
             if !job.contains_key(&c.key) {
                 if let Some(default_value) = c.default_value {
                     Ok(Component::new(&c.name, default_value)
                         .expect("Cannot construct component")
-                        .with_scores(construct_component_scores(job, &c)))
+                        .with_scores(construct_component_scores(job, c)))
                 } else {
                     // TODO we should probably create our own error type (enum) and return it here
                     // maybe this error type can also be used in other parts of this function
@@ -428,7 +427,7 @@ fn construct_components(
                     }),
                 )
                 .expect("Cannot construct component.")
-                .with_scores(construct_component_scores(job, &c)))
+                .with_scores(construct_component_scores(job, c)))
             }
         })
         .collect()
