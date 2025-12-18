@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use chrono::{DateTime, Utc};
+use jiff::Timestamp;
 use k8s_openapi::api::core::v1::Pod;
 use kube::api::ListParams;
 
@@ -139,10 +140,10 @@ pub(crate) fn pod_to_record(pod: Pod) -> anyhow::Result<Option<RecordAdd>> {
         format!("{}-{}-{}-{}", config.record_prefix, namespace, name, uid),
         meta,
         components.unwrap_or_default(),
-        start_time,
+        DateTime::from_timestamp_millis(start_time.as_millisecond()).expect(""),
     )?;
     Ok(Some(if let Some(t) = stop_time {
-        record.with_stop_time(t)
+        record.with_stop_time(DateTime::from_timestamp_millis(t.as_millisecond()).expect(""))
     } else {
         record
     }))
@@ -156,7 +157,7 @@ pub(crate) fn pod_to_record(pod: Pod) -> anyhow::Result<Option<RecordAdd>> {
     skip(pod),
     fields(podname = pod.metadata.name)
 )]
-fn get_stop_time(pod: &Pod) -> anyhow::Result<DateTime<Utc>> {
+fn get_stop_time(pod: &Pod) -> anyhow::Result<Timestamp> {
     let container_statuses = pod
         .status
         .as_ref()
@@ -270,7 +271,7 @@ fn get_components(pod: &Pod) -> anyhow::Result<Vec<Component>> {
                 "Container status incomplete {}",
                 line!()
             )))?;
-        naive_cpu_time += (finished.0 - started.0).num_seconds()
+        naive_cpu_time += (finished.0 - started.0).get_seconds()
             * parse_si(
                 &resources
                     .limits
@@ -437,8 +438,8 @@ mod tests {
 
     fn testcontainerstateterminated() -> ContainerStateTerminated {
         ContainerStateTerminated {
-            started_at: Some(Time(DateTime::default())),
-            finished_at: Some(Time(DateTime::default())),
+            started_at: Some(Time(Timestamp::default())),
+            finished_at: Some(Time(Timestamp::default())),
             ..ContainerStateTerminated::default()
         }
     }
@@ -462,7 +463,7 @@ mod tests {
         PodStatus {
             phase: Some("Failed".to_owned()),
             container_statuses: Some(vec![testcontainerstatus(), testcontainerstatus()]),
-            start_time: Some(Time(DateTime::default())),
+            start_time: Some(Time(Timestamp::default())),
             ..PodStatus::default()
         }
     }
@@ -499,10 +500,7 @@ mod tests {
 
     #[test]
     fn test_get_stop_time() {
-        assert_eq!(
-            get_stop_time(&testpod()).unwrap(),
-            DateTime::<Utc>::default()
-        );
+        assert_eq!(get_stop_time(&testpod()).unwrap(), Timestamp::default());
     }
 
     #[test]
