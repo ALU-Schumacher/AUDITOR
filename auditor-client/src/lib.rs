@@ -736,6 +736,10 @@ impl AuditorClientBuilder {
         client_key_path: P,
         ca_cert_path: P,
     ) -> Self {
+        rustls::crypto::aws_lc_rs::default_provider()
+            .install_default()
+            .unwrap();
+
         let mut tls_config = TlsConfig::new();
 
         match (fs::read(client_cert_path), fs::read(client_key_path)) {
