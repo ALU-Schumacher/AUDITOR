@@ -1,7 +1,12 @@
 name: Containers
 
 on:
-  workflow_call
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
 
 env:
   REGISTRY: ghcr.io
