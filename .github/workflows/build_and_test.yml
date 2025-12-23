@@ -24,6 +24,9 @@ jobs:
   docker-build-push:
     needs: build-pyauditor-linux
     uses: ./.github/workflows/docker-build-push.yml
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   build-python-rpms:
     needs: prepare-input-parameters
