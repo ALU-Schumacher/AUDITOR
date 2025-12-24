@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.12.3 to 2.12.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.24.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3-async-runtimes from 0.24.0 to 0.27.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update reqwest from 0.12.24 to 0.12.28 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.14.2 to 0.14.10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.145 to 1.0.147 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
