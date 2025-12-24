@@ -13,7 +13,7 @@ members = [
 resolver = "3"
 
 [workspace.dependencies]
-actix-web = "4.8.0"
+actix-web = "4.12.1"
 actix-tls = "3.4.0"
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.100"
