@@ -71,7 +71,7 @@ jobs:
         run: echo "SUFFIX=_workflow" >> $GITHUB_ENV
 
       - name: Download pyauditor wheel
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: pyauditor-wheels-linux-3.9
 

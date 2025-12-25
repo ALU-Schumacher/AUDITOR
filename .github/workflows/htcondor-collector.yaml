@@ -20,7 +20,7 @@ jobs:
         mkdir -p .cargo
         echo -e "[env]\nSQLX_OFFLINE = \"true\"" >> .cargo/config.toml
     - name: Download pyauditor wheel
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       with:
         name: pyauditor-wheels-linux-3.9
     - name: Build collector package
@@ -30,7 +30,7 @@ jobs:
         pip install --upgrade pip build
         python -m build -o dist collectors/htcondor
     - name: Download auditor container tarball
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       with:
         name: auditor-container-tar
     - name: Start docker containers
