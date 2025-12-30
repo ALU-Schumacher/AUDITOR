@@ -3977,9 +3977,9 @@ dependencies = [
 
 [[package]]
 name = "reqwest-streams"
-version = "0.12.0"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3abcb780f3446325368204e87894b3b1c1c1b227d81f858f868c5f755716d5a6"
+checksum = "bf0aa2e75f2dd977bd676f32bba8117964a9278e47ba68c7b0ac8405bbe6f5ed"
 dependencies = [
  "async-trait",
  "bytes",
