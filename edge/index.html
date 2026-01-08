@@ -728,7 +728,7 @@ The following filters are supported:</p>
 <p>Add this to your epilog shell script (on the slurm head node):</p>
 <pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;">#!/bin/sh
 </span><span>
-</span><span style="color:#919191;"># Divert stdout and sterr. Make sure the slurm user has write access to both locations.
+</span><span style="color:#919191;"># Divert stdout and stderr. Make sure the slurm user has write access to both locations.
 </span><span style="color:#919191;"># Ideally there is also log rotation in place for those logs.
 </span><span style="color:#a535ae;">exec </span><span style="color:#ff5600;">&gt;&gt;</span><span> /epilog_logs/epilog.log
 </span><span style="color:#a535ae;">exec </span><span>2</span><span style="color:#ff5600;">&gt;&gt;</span><span> /epilog_logs/epilog.log
