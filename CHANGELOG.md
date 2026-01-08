@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
-- [CVE-2025-66418], [CVE-2025-66471]: Update urllib3 from 2.5.0 to 2.6.2 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2025-66418], [CVE-2025-66471], [CVE-2026-21441]: Update urllib3 from 2.5.0 to 2.6.3 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - CI/CD: Add tests for Python 3.14 ([@dirksammel](https://github.com/dirksammel))
