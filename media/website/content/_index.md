@@ -635,7 +635,7 @@ Add this to your epilog shell script (on the slurm head node):
 ```bash
 #!/bin/sh
 
-# Divert stdout and sterr. Make sure the slurm user has write access to both locations.
+# Divert stdout and stderr. Make sure the slurm user has write access to both locations.
 # Ideally there is also log rotation in place for those logs.
 exec >> /epilog_logs/epilog.log
 exec 2>> /epilog_logs/epilog.log
