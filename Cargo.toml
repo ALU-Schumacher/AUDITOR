@@ -68,7 +68,7 @@ thiserror = "2.0.17"
 tokio = "1.48.0"
 tokio-cron-scheduler = "0.15.1"
 tracing = { version = "0.1.40", features = ["log"] }
-tracing-actix-web = "0.7.11"
+tracing-actix-web = "0.7.20"
 tracing-bunyan-formatter = "0.3.9"
 tracing-log = "0.2.0"
 tracing-subscriber = "0.3.18"
