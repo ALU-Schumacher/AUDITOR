@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ruff from 0.14.2 to 0.14.10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.145 to 1.0.147 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Prevent the archive service from blocking server startup ([@rkleinem](https://github.com/rkleinem))
 
 ### Removed
 
