@@ -6,7 +6,7 @@
 import logging
 import re
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import yaml
 from pyauditor import Record
@@ -15,15 +15,6 @@ from pydantic import BaseModel, model_validator
 from .utility import vo_mapping
 
 logger = logging.getLogger("apel_plugin")
-
-
-class MessageType(Enum):
-    summaries = "summaries"
-    sync = "sync"
-
-    @classmethod
-    def _missing_(cls, value):
-        return cls.summaries
 
 
 class BenchmarkType(Enum):
@@ -62,7 +53,7 @@ class PluginConfig(Configurable):
 
 
 class SiteConfig(Configurable):
-    sites_to_report: Dict[str, List[str]]
+    sites_to_report: dict[str, list[str]]
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23
 
 
@@ -70,7 +61,7 @@ class AuditorConfig(Configurable):
     ip: str
     port: int
     timeout: int
-    site_meta_field: Union[str, List[str]]
+    site_meta_field: Union[str, list[str]]
     use_tls: bool
     ca_cert_path: Optional[str] = None
     client_cert_path: Optional[str] = None
@@ -113,8 +104,8 @@ class Field(Configurable):
 
 
 class FieldConfig(Configurable):
-    mandatory: Dict[str, Field]
-    optional: Dict[str, Field] = {}
+    mandatory: dict[str, Field]
+    optional: dict[str, Field] = {}
 
     @model_validator(mode="after")
     def check_mandatory_fields(self):
@@ -168,7 +159,7 @@ class MetaField(Field):
     function: Optional[Function] = None
 
     def get_value(self, record: Record) -> Union[str, int, float]:
-        function_dict: Dict[str, Callable[[str, Any], Union[str, int, float]]] = {
+        function_dict: dict[str, Callable[[str, Any], Union[str, int, float]]] = {
             "vo_mapping": vo_mapping
         }
 
@@ -305,13 +296,13 @@ class Config(Configurable):
 
         return field_config
 
-    def get_mandatory_fields(self) -> Dict[str, Field]:
+    def get_mandatory_fields(self) -> dict[str, Field]:
         return self.get_field_config().mandatory
 
-    def get_optional_fields(self) -> Dict[str, Field]:
+    def get_optional_fields(self) -> dict[str, Field]:
         return self.get_field_config().optional
 
-    def get_all_fields(self) -> Dict[str, Field]:
+    def get_all_fields(self) -> dict[str, Field]:
         mandatory_dict = self.get_mandatory_fields()
         optional_dict = self.get_optional_fields()
 
