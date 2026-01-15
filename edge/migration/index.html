@@ -322,21 +322,21 @@
 <h1 id="from-0-9-4-to-0-10-0">From 0.9.4 to 0.10.0</h1>
 <h2 id="apel-plugin">Apel plugin</h2>
 <ul>
-<li><code>auditor-apel-republish</code> now has the parameters <code>month</code> and <code>year</code> instead of <code>begin_date</code> and <code>end_date</code>. See the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a> or <code>auditor-apel-republish -h</code> for usage information.</li>
-<li><code>VO</code>, <code>Processors</code>, and <code>SubmitHost</code> are now <code>mandatory</code> fields in the config, since this information is necessary for correct EGI accounting. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
+<li><code>auditor-apel-republish</code> now has the parameters <code>month</code> and <code>year</code> instead of <code>begin_date</code> and <code>end_date</code>. See the <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a> or <code>auditor-apel-republish -h</code> for usage information.</li>
+<li><code>VO</code>, <code>Processors</code>, and <code>SubmitHost</code> are now <code>mandatory</code> fields in the config, since this information is necessary for correct EGI accounting. Please have a look at the example config in the <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
 </ul>
 <h2 id="rpms">RPMs</h2>
 <ul>
 <li>The default location of the unit- and config files has changed. Unit files can now be found in <code>/usr/lib/systemd/system/</code>, config files in <code>/etc/auditor/</code>. The SQL migrations files are placed in <code>/usr/share/auditor/migrations</code>. Duration installation, the group <code>auditor</code> is created and a respective user for the installed component, e.g. <code>auditor-slurm-collector</code> or <code>auditor-priority-plugin</code>. By default, the services are run as this user.</li>
 </ul>
 <h1 id="from-0-9-3-to-0-9-4">From 0.9.3 to 0.9.4</h1>
-<h3 id="update-to-sqlx-0-8-6">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.6</a></h3>
+<h3 id="update-to-sqlx-0-8-6">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.6</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.6</p>
 <ul>
 <li><code>cargo install --version=0.8.6 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 <h1 id="from-0-9-2-to-0-9-3">From 0.9.2 to 0.9.3</h1>
-<h3 id="update-to-sqlx-0-8-5">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.5</a></h3>
+<h3 id="update-to-sqlx-0-8-5">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.5</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.5</p>
 <ul>
 <li><code>cargo install --version=0.8.5 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -346,12 +346,12 @@
 <h1 id="from-0-8-0-to-0-9-0">From 0.8.0 to 0.9.0</h1>
 <h2 id="auditor">Auditor</h2>
 <ul>
-<li><code>AUDITOR_APPLICATION__ADDR</code> is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files">documentation</a>.</li>
+<li><code>AUDITOR_APPLICATION__ADDR</code> is modified to be a list of addresses for IPv4/IPv6 dualstack support. Please have a look at the example config in the <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#configuration-files">documentation</a>.</li>
 </ul>
 <h1 id="from-0-7-1-to-0-8-0">From 0.7.1 to 0.8.0</h1>
 <h2 id="apel-plugin-1">Apel plugin</h2>
 <ul>
-<li>Due to the switch to the ARGO AMS library, the config file has to be adjusted. The <code>authentication</code> section needs to be replaced with the new <code>messaging</code> section. Please have a look at the example config in the <a href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
+<li>Due to the switch to the ARGO AMS library, the config file has to be adjusted. The <code>authentication</code> section needs to be replaced with the new <code>messaging</code> section. Please have a look at the example config in the <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#apel-plugin">documentation</a>.</li>
 <li>The <code>NormalisedWallDurationField</code> class was removed, but the default <code>base_value</code> of the <code>NormalisedField</code> class is now the <code>runtime</code> of the record. Replace <code>NormalisedWallDuration: !NormalisedWallDurationField</code> with <code>NormalisedWallDuration: !NormalisedField</code> in the config file.</li>
 </ul>
 <h1 id="from-0-7-0-to-0-7-1">From 0.7.0 to 0.7.1</h1>
@@ -360,14 +360,14 @@
 <p>The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:</p>
 <h3 id="htcondor-collector-v0-6-3-and-earlier-or-slurm-collector-v0-6-3-and-earlier">HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier</h3>
 <ul>
-<li>Clone the github repository <a href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
+<li>Clone the github repository <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
 <li>Move into the cloned repository <code>cd AUDITOR</code></li>
 <li>Install the required dependencies with <code>pip install -r auditor/scripts/revert_encoding/requirements.txt</code></li>
 <li>Replace the placeholder values in the .env file present at <code>auditor/scripts/revert_encoding</code> with the values corresponding to your database config.</li>
 <li>Run <code>python auditor/scripts/revert_encoding/revert_encodings.py</code></li>
 </ul>
 <h1 id="from-0-6-3-to-0-7-0">From 0.6.3 to 0.7.0</h1>
-<h3 id="update-to-sqlx-0-8-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.3</a></h3>
+<h3 id="update-to-sqlx-0-8-3">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.3</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.3</p>
 <ul>
 <li><code>cargo install --version=0.8.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -377,7 +377,7 @@
 <p>The following changes only apply to users who are either using HTCondor collector (v0.6.3 and earlier) or slurm collector (v0.6.3 and earlier), follow these steps to revert the encodings in your database records:</p>
 <h3 id="htcondor-collector-v0-6-3-and-earlier-or-slurm-collector-v0-6-3-and-earlier-1">HTCondor collector v0.6.3 and earlier or Slurm collector v0.6.3 and earlier</h3>
 <ul>
-<li>Clone the github repository <a href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
+<li>Clone the github repository <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
 <li>The script for reverting encodings is located at: <code>auditor/scripts/revert_encoding</code>.</li>
 <li>Install the required dependencies with <code>pip install -r requirements.txt</code></li>
 <li>Replace the placeholder values in the .env file with the values corresponding to your database config.</li>
@@ -402,10 +402,10 @@
 <tr><td><code>ca_cert_path</code></td><td>String</td><td>Path to the root Certificate Authority (CA) certificate for validating server certificates.</td><td><code>/path/rootCA.pem</code></td><td>Yes</td></tr>
 <tr><td><code>client_cert_path</code></td><td>String</td><td>Path to the client's TLS certificate.</td><td><code>/path/client-cert.pem</code></td><td>Yes</td></tr>
 <tr><td><code>client_key_path</code></td><td>String</td><td>Path to the client's private key used for TLS.</td><td><code>/path/client-key.pem</code></td><td>Yes</td></tr>
-<tr><td>Please have a look at the AUDITOR documentation for the new changes in the config files for <a href="https://alu-schumacher.github.io/AUDITOR/latest/#collectors">collectors</a> and <a href="https://alu-schumacher.github.io/AUDITOR/latest/#plugins">plugins</a>.</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Please have a look at the AUDITOR documentation for the new changes in the config files for <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#collectors">collectors</a> and <a rel="external" href="https://alu-schumacher.github.io/AUDITOR/latest/#plugins">plugins</a>.</td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
 <h1 id="from-0-6-2-to-0-6-3">From 0.6.2 to 0.6.3</h1>
-<h3 id="update-to-sqlx-0-8-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.2</a></h3>
+<h3 id="update-to-sqlx-0-8-2">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.8.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.8.2</p>
 <ul>
 <li><code>cargo install --version=0.8.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -428,30 +428,25 @@
 <li>The stop times of the latest reported job per site and the time of the latest report to APEL are now stored in a JSON file instead of a SQLite database. Therefore, the config parameter <code>time_db_path</code> has to be changed to <code>time_json_path</code>.
 To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5_0.py</code> located in the <code>scripts</code> folder:</li>
 </ul>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: migration-0_4_0-to-0_5_0.py </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -c CONFIG -d DB -j JSON
-</span><span>
-</span><span>options:
-</span><span>  -h, --help            show this help message and exit
-</span><span>  -c CONFIG, --config CONFIG
-</span><span>                        Path to the config file
-</span><span>  -d DB, --db DB        Path to the time database file
-</span><span>  -j JSON, --json JSON  Path to the time JSON file
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">usage:</span><span style="color: light-dark(#032F62, #9ECBFF);"> migration-0_4_0-to-0_5_0.py</span><span> [-h</span><span>] -c CONFIG -d DB -j JSON</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">options:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -h,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-help</span><span style="color: light-dark(#032F62, #9ECBFF);">            show</span><span style="color: light-dark(#032F62, #9ECBFF);"> this</span><span style="color: light-dark(#032F62, #9ECBFF);"> help</span><span style="color: light-dark(#032F62, #9ECBFF);"> message</span><span style="color: light-dark(#032F62, #9ECBFF);"> and</span><span style="color: light-dark(#032F62, #9ECBFF);"> exit</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -c</span><span style="color: light-dark(#032F62, #9ECBFF);"> CONFIG,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-config</span><span style="color: light-dark(#032F62, #9ECBFF);"> CONFIG</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">                        Path</span><span style="color: light-dark(#032F62, #9ECBFF);"> to</span><span style="color: light-dark(#032F62, #9ECBFF);"> the</span><span style="color: light-dark(#032F62, #9ECBFF);"> config</span><span style="color: light-dark(#032F62, #9ECBFF);"> file</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -d</span><span style="color: light-dark(#032F62, #9ECBFF);"> DB,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-db</span><span style="color: light-dark(#032F62, #9ECBFF);"> DB</span><span style="color: light-dark(#032F62, #9ECBFF);">        Path</span><span style="color: light-dark(#032F62, #9ECBFF);"> to</span><span style="color: light-dark(#032F62, #9ECBFF);"> the</span><span style="color: light-dark(#032F62, #9ECBFF);"> time</span><span style="color: light-dark(#032F62, #9ECBFF);"> database</span><span style="color: light-dark(#032F62, #9ECBFF);"> file</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -j</span><span style="color: light-dark(#032F62, #9ECBFF);"> JSON,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-json</span><span style="color: light-dark(#032F62, #9ECBFF);"> JSON</span><span style="color: light-dark(#032F62, #9ECBFF);">  Path</span><span style="color: light-dark(#032F62, #9ECBFF);"> to</span><span style="color: light-dark(#032F62, #9ECBFF);"> the</span><span style="color: light-dark(#032F62, #9ECBFF);"> time</span><span style="color: light-dark(#032F62, #9ECBFF);"> JSON</span><span style="color: light-dark(#032F62, #9ECBFF);"> file</span></span></code></pre>
 <p>This already requires a config file with YAML format.</p>
 <h2 id="docker-container">Docker container</h2>
 <p>The Auditor Docker container can now be used to run database migrations. For details, see the <a href="../#migrating-the-database">documentation</a>.</p>
 <p>If you run Auditor using the Docker container and provide an external config file, you need to change the way how you run the Docker container:</p>
 <ul>
-<li>Old<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> /auditor/config.yaml
-</span></code></pre>
-</li>
-<li>New<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>docker run -v </span><span style="color:#ff5600;">&lt;</span><span>absolute-path-to-config</span><span style="color:#ff5600;">&gt;</span><span>:/auditor/config.yaml aluschumacher/auditor:</span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;</span><span> auditor /auditor/config.yaml
-</span></code></pre>
-</li>
+<li>Old<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">docker</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">v</span><span style="color: light-dark(#D73A49, #F97583);"> &lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">absolute-path-to-confi</span><span>g</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);">:/auditor/config.yaml</span><span style="color: light-dark(#032F62, #9ECBFF);"> aluschumacher/auditor:</span><span style="color: light-dark(#D73A49, #F97583);">&lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">versio</span><span>n</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);"> /auditor/config.yaml</span></span></code></pre></li>
+<li>New<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">docker</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">v</span><span style="color: light-dark(#D73A49, #F97583);"> &lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">absolute-path-to-confi</span><span>g</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);">:/auditor/config.yaml</span><span style="color: light-dark(#032F62, #9ECBFF);"> aluschumacher/auditor:</span><span style="color: light-dark(#D73A49, #F97583);">&lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">versio</span><span>n</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);"> auditor</span><span style="color: light-dark(#032F62, #9ECBFF);"> /auditor/config.yaml</span></span></code></pre></li>
 </ul>
 <p>I.e., you need to add <code>auditor</code> as the first argument before pointing to the configuration file.</p>
 <h2 id="development">Development</h2>
-<h3 id="update-to-sqlx-0-7-4">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
+<h3 id="update-to-sqlx-0-7-4">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.4</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.4</p>
 <ul>
 <li><code>cargo install --version=0.7.4 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -473,17 +468,14 @@ To migrate an existing database to a JSON file, run <code>migration-0_4_0-to-0_5
 <h2 id="apel-plugin-4">Apel plugin</h2>
 <p>The config parameter <code>site_name_mapping</code> is removed and the structure of the config parameter <code>sites_to_report</code> is changed. <code>sites_to_report</code> is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.</p>
 <p>Before:</p>
-<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>[</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]
-</span><span>site_name_mapping </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>: </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>}
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span>sites_to_report</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> [</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_1</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_2</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_3</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>]</span></span>
+<span class="giallo-l"><span>site_name_mapping</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> {</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_1</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">SITE_A</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_2</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">SITE_A</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_3</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">SITE_B</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>}</span></span></code></pre>
 <p>After:</p>
-<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span>sites_to_report </span><span style="color:#ff5600;">= </span><span>{</span><span style="color:#00a33f;">&quot;SITE_A&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_1&quot;</span><span>, </span><span style="color:#00a33f;">&quot;site_id_2&quot;</span><span>], </span><span style="color:#00a33f;">&quot;SITE_B&quot;</span><span>: [</span><span style="color:#00a33f;">&quot;site_id_3&quot;</span><span>]}
-</span></code></pre>
-<h2 id="removed">Removed</h2>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span>sites_to_report</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> {</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">SITE_A</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>:</span><span> [</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_1</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_2</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>]</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">SITE_B</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>:</span><span> [</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">site_id_3</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span><span>]</span><span>}</span></span></code></pre><h2 id="removed">Removed</h2>
 <p><code>/get_[started/stopped]_since</code> endpoint is removed due to the introduction of advanced query. The auditor client and pyauditor client still contains the get_started_since and get_stopped_since
 functions but throws a deprecated warning if used.</p>
 <h2 id="development-1">Development</h2>
-<h3 id="update-to-sqlx-0-7-3">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
+<h3 id="update-to-sqlx-0-7-3">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.3</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.3</p>
 <ul>
 <li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -494,16 +486,14 @@ functions but throws a deprecated warning if used.</p>
 Due to this, a new section <code>job_filter</code> has been introduced for the config file.
 The <code>job_status</code> field has been renamed to <code>status</code> and is now part of the <code>job_filter</code> section.</p>
 <p>Before:</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">job_status</span><span>:
-</span><span>  - </span><span style="color:#00a33f;">&quot;completed&quot;
-</span><span>  - </span><span style="color:#00a33f;">&quot;failed&quot;
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">j</span><span style="color: light-dark(#22863A, #85E89D);">ob_status</span><span>:</span></span>
+<span class="giallo-l"><span>  -</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">completed</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span>  -</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">failed</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span></code></pre>
 <p>After:</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">job_filter</span><span>:
-</span><span>  </span><span style="color:#00a33f;">status</span><span>:
-</span><span>    - </span><span style="color:#00a33f;">&quot;completed&quot;
-</span><span>    - </span><span style="color:#00a33f;">&quot;failed&quot;
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">j</span><span style="color: light-dark(#22863A, #85E89D);">ob_filter</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">tatus</span><span>:</span></span>
+<span class="giallo-l"><span>    -</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">completed</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span>    -</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">failed</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span></code></pre>
 <p>The new filter options are <code>partition</code>, <code>user</code>, <code>group</code>, and <code>account</code> and work similar to the <code>status</code> filter.</p>
 <h2 id="priority-plugin">Priority plugin</h2>
 <p>The priority plugin now supports exporting metrics for the amount of provided resources and the updated priority to Prometheus.
@@ -523,27 +513,23 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <ul>
 <li>
 <p>Before</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
-</span><span style="color:#00a33f;">port</span><span>: 8000
-</span><span>... </span><span style="color:#00a33f;">(other options)
-</span></code></pre>
-</li>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">a</span><span style="color: light-dark(#22863A, #85E89D);">ddr</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">localhost</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">p</span><span style="color: light-dark(#22863A, #85E89D);">ort</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8000</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">...</span><span style="color: light-dark(#032F62, #9ECBFF);"> (</span><span style="color: light-dark(#032F62, #9ECBFF);">other options)</span></span></code></pre></li>
 <li>
 <p>After</p>
-<pre data-lang="yaml" style="background-color:#ffffff;color:#000000;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00a33f;">auditor</span><span>:
-</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;localhost&quot;
-</span><span>  </span><span style="color:#00a33f;">port</span><span>: 8000
-</span><span style="color:#00a33f;">frequency</span><span>: 3600
-</span><span>... </span><span style="color:#00a33f;">(other options)
-</span><span style="color:#00a33f;">prometheus</span><span>:
-</span><span>  </span><span style="color:#00a33f;">enable</span><span>: </span><span style="color:#a535ae;">true
-</span><span>  </span><span style="color:#00a33f;">addr</span><span>: </span><span style="color:#00a33f;">&quot;0.0.0.0&quot;
-</span><span>  </span><span style="color:#00a33f;">port</span><span>: 9000
-</span><span>  </span><span style="color:#00a33f;">metrics</span><span>:
-</span><span>    - </span><span style="color:#00a33f;">ResourceUsage
-</span><span>    - </span><span style="color:#00a33f;">Priority
-</span></code></pre>
-</li>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">a</span><span style="color: light-dark(#22863A, #85E89D);">uditor</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  a</span><span style="color: light-dark(#22863A, #85E89D);">ddr</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">localhost</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  p</span><span style="color: light-dark(#22863A, #85E89D);">ort</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8000</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">f</span><span style="color: light-dark(#22863A, #85E89D);">requency</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 3600</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">...</span><span style="color: light-dark(#032F62, #9ECBFF);"> (</span><span style="color: light-dark(#032F62, #9ECBFF);">other options)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">p</span><span style="color: light-dark(#22863A, #85E89D);">rometheus</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  e</span><span style="color: light-dark(#22863A, #85E89D);">nable</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> true</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  a</span><span style="color: light-dark(#22863A, #85E89D);">ddr</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">0.0.0.0</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  p</span><span style="color: light-dark(#22863A, #85E89D);">ort</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 9000</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  m</span><span style="color: light-dark(#22863A, #85E89D);">etrics</span><span>:</span></span>
+<span class="giallo-l"><span>    -</span><span style="color: light-dark(#032F62, #9ECBFF);"> R</span><span style="color: light-dark(#032F62, #9ECBFF);">esourceUsage</span></span>
+<span class="giallo-l"><span>    -</span><span style="color: light-dark(#032F62, #9ECBFF);"> P</span><span style="color: light-dark(#032F62, #9ECBFF);">riority</span></span></code></pre></li>
 </ul>
 <h2 id="auditor-2">AUDITOR</h2>
 <h3 id="standardized-rest-apis">Standardized REST APIs</h3>
@@ -556,7 +542,7 @@ The <code>prometheus</code> section is optional. If it is not present, it has th
 <tr><td>Get records since</td><td><code>/get/[started/stopped]/since/{date}</code> (GET)</td><td><code>/record?state=[started/stopped]&amp;since={date}</code> (GET)</td></tr>
 </tbody></table>
 <h2 id="development-2">Development</h2>
-<h3 id="update-to-sqlx-0-7-2">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
+<h3 id="update-to-sqlx-0-7-2">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.2</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.2</p>
 <ul>
 <li><code>cargo install --version=0.7.2 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
@@ -576,36 +562,28 @@ when creating a new record:
 <ul>
 <li>When the datetime object is already in UTC
 <ul>
-<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
-</span><span style="color:#ff5600;">import </span><span>pytz
-</span><span>
-</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>pytz.utc)
-</span></code></pre>
-</li>
-<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
-</span><span>
-</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>datetime.timezone.utc)
-</span></code></pre>
-</li>
+<li>Before<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> datetime</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> pytz</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>start_since</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> datetime</span><span>.</span><span>datetime</span><span>(</span><span style="color: light-dark(#005CC5, #79B8FF);">2022</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 11</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 30</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#E36209, #FFAB70);"> tzinfo</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span>pytz</span><span>.</span><span>utc</span><span>)</span></span></code></pre></li>
+<li>After<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> datetime</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>start_since</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> datetime</span><span>.</span><span>datetime</span><span>(</span><span style="color: light-dark(#005CC5, #79B8FF);">2022</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 11</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 30</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#E36209, #FFAB70);"> tzinfo</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span>datetime</span><span>.</span><span>timezone</span><span>.</span><span>utc</span><span>)</span></span></code></pre></li>
 </ul>
 </li>
 <li>If it is in local time
 <ul>
-<li>Before<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
-</span><span style="color:#ff5600;">import </span><span>pytz
-</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
-</span><span>
-</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
-</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(pytz.utc)
-</span></code></pre>
-</li>
-<li>After<pre data-lang="python" style="background-color:#ffffff;color:#000000;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#ff5600;">import </span><span>datetime
-</span><span style="color:#ff5600;">from </span><span>tzlocal </span><span style="color:#ff5600;">import </span><span>get_localzone
-</span><span>
-</span><span>local_tz </span><span style="color:#ff5600;">= </span><span>get_localzone()
-</span><span>start_since </span><span style="color:#ff5600;">= </span><span>datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo</span><span style="color:#ff5600;">=</span><span>local_tz).astimezone(datetime.timezone.utc)
-</span></code></pre>
-</li>
+<li>Before<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> datetime</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> pytz</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">from</span><span> tzlocal</span><span style="color: light-dark(#D73A49, #F97583);"> import</span><span> get_localzone</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>local_tz</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> get_localzone</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>start_since</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> datetime</span><span>.</span><span>datetime</span><span>(</span><span style="color: light-dark(#005CC5, #79B8FF);">2022</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 11</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 30</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#E36209, #FFAB70);"> tzinfo</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span>local_tz</span><span>)</span><span>.</span><span>astimezone</span><span>(</span><span>pytz</span><span>.</span><span>utc</span><span>)</span></span></code></pre></li>
+<li>After<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">import</span><span> datetime</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D73A49, #F97583);">from</span><span> tzlocal</span><span style="color: light-dark(#D73A49, #F97583);"> import</span><span> get_localzone</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>local_tz</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> get_localzone</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>start_since</span><span style="color: light-dark(#D73A49, #F97583);"> =</span><span> datetime</span><span>.</span><span>datetime</span><span>(</span><span style="color: light-dark(#005CC5, #79B8FF);">2022</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 8</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 11</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 30</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0</span><span>,</span><span style="color: light-dark(#E36209, #FFAB70);"> tzinfo</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span>local_tz</span><span>)</span><span>.</span><span>astimezone</span><span>(</span><span>datetime</span><span>.</span><span>timezone</span><span>.</span><span>utc</span><span>)</span></span></code></pre></li>
 </ul>
 </li>
 </ul>
@@ -624,7 +602,7 @@ when creating a new record:
 <li>Support for Python 3.6 and Python 3.7 has been dropped. Please move to a newer version of python.</li>
 </ul>
 <h2 id="development-3">Development</h2>
-<h3 id="update-to-sqlx-0-7-1">Update to <a href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
+<h3 id="update-to-sqlx-0-7-1">Update to <a rel="external" href="https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md">sqlx 0.7.1</a></h3>
 <p>Use this command to update the sqlx-cli to 0.7.1</p>
 <ul>
 <li><code>cargo install --version=0.7.1 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>

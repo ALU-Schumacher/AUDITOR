@@ -160,33 +160,27 @@
 <p>This document covers instructions for developers of Auditor and its plugins/collectors.</p>
 <h1 id="contributing-to-auditor">Contributing to Auditor</h1>
 <h2 id="getting-started">Getting started</h2>
-<p>First, fork the <a href="https://github.com/ALU-Schumacher/AUDITOR">AUDITOR</a> repo to your account. Then clone the forked repo to your machine. Also add the original repository as <code>upstream</code> remote.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#919191;"># if you use SSH authentication
-</span><span>git clone git@github.com:</span><span style="color:#ff5600;">&lt;</span><span>your-username</span><span style="color:#ff5600;">&gt;</span><span>/AUDITOR.git
-</span><span style="color:#a535ae;">cd</span><span> AUDITOR
-</span><span>git remote add upstream git@github.com:ALU-Schumacher/AUDITOR.git
-</span><span>
-</span><span style="color:#919191;"># if you use HTTPS authentication
-</span><span>git clone https://github.com/</span><span style="color:#ff5600;">&lt;</span><span>your-username</span><span style="color:#ff5600;">&gt;</span><span>/AUDITOR.git
-</span><span style="color:#a535ae;">cd</span><span> AUDITOR
-</span><span>git remote add upstream https://github.com/ALU-Schumacher/AUDITOR.git
-</span></code></pre>
-<h2 id="working-on-a-new-features">Working on a new features</h2>
+<p>First, fork the <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR">AUDITOR</a> repo to your account. Then clone the forked repo to your machine. Also add the original repository as <code>upstream</code> remote.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6A737D, #6A737D);">#</span><span style="color: light-dark(#6A737D, #6A737D);"> if you use SSH authentication</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> clone</span><span style="color: light-dark(#032F62, #9ECBFF);"> git@github.com:</span><span style="color: light-dark(#D73A49, #F97583);">&lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">your-usernam</span><span>e</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);">/AUDITOR.git</span></span>
+<span class="giallo-l"><span style="color: light-dark(#005CC5, #79B8FF);">cd</span><span style="color: light-dark(#032F62, #9ECBFF);"> AUDITOR</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> remote</span><span style="color: light-dark(#032F62, #9ECBFF);"> add</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream</span><span style="color: light-dark(#032F62, #9ECBFF);"> git@github.com:ALU-Schumacher/AUDITOR.git</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#6A737D, #6A737D);">#</span><span style="color: light-dark(#6A737D, #6A737D);"> if you use HTTPS authentication</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> clone</span><span style="color: light-dark(#032F62, #9ECBFF);"> https://github.com/</span><span style="color: light-dark(#D73A49, #F97583);">&lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">your-usernam</span><span>e</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#032F62, #9ECBFF);">/AUDITOR.git</span></span>
+<span class="giallo-l"><span style="color: light-dark(#005CC5, #79B8FF);">cd</span><span style="color: light-dark(#032F62, #9ECBFF);"> AUDITOR</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> remote</span><span style="color: light-dark(#032F62, #9ECBFF);"> add</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream</span><span style="color: light-dark(#032F62, #9ECBFF);"> https://github.com/ALU-Schumacher/AUDITOR.git</span></span></code></pre><h2 id="working-on-a-new-features">Working on a new features</h2>
 <p>Create a new branch in your fork</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git switch -c my-feature-branch
-</span><span>git push -u origin my-feature-branch
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> switch</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">c</span><span style="color: light-dark(#032F62, #9ECBFF);"> my-feature-branch</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> push</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">u</span><span style="color: light-dark(#032F62, #9ECBFF);"> origin</span><span style="color: light-dark(#032F62, #9ECBFF);"> my-feature-branch</span></span></code></pre>
 <p>You can now create and push new commits as usual.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git add my-file
-</span><span>git push
-</span></code></pre>
-<h2 id="creating-a-pull-request">Creating a pull request</h2>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> add</span><span style="color: light-dark(#032F62, #9ECBFF);"> my-file</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> push</span></span></code></pre><h2 id="creating-a-pull-request">Creating a pull request</h2>
 <p>We follow a rebased-based workflow. Therefore, you need to rebase your branch to the latest <code>main</code> branch of the <code>upstream</code> repo.</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git fetch upstream
-</span><span>git rebase upstream/main
-</span><span style="color:#919191;"># force push might be necessary
-</span><span>git push origin my-feature-branch -f
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> fetch</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> rebase</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream/main</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6A737D, #6A737D);">#</span><span style="color: light-dark(#6A737D, #6A737D);"> force push might be necessary</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> push</span><span style="color: light-dark(#032F62, #9ECBFF);"> origin</span><span style="color: light-dark(#032F62, #9ECBFF);"> my-feature-branch</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">f</span></span></code></pre>
 <p>You then can create a pull request through GitHub's UI.</p>
 <h1 id="compiling-auditor-from-source">Compiling Auditor from source</h1>
 <p>This section describes how to set up the required development environment in order to compile Auditor from source.
@@ -203,45 +197,30 @@ It also covers cross compiling and static linking against <code>musl</code> inst
 <h3 id="rust">Rust</h3>
 <p>Requires a recent Rust version (MSRV 1.56.1) and cargo.</p>
 <p>Ideally installed via rustup:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>curl --proto </span><span style="color:#00a33f;">&#39;=https&#39;</span><span> --tlsv1.2 -sSf https://sh.rustup.rs </span><span style="color:#ff5600;">| </span><span>sh
-</span></code></pre>
-<h3 id="sqlx">sqlx</h3>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo install --version</span><span style="color:#ff5600;">=</span><span>0.8.6 sqlx-cli --no-default-features --features postgres,rustls
-</span></code></pre>
-<h3 id="bunyan">bunyan</h3>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">curl</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-proto</span><span style="color: light-dark(#032F62, #9ECBFF);"> &#39;</span><span style="color: light-dark(#032F62, #9ECBFF);">=https</span><span style="color: light-dark(#032F62, #9ECBFF);">&#39;</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-tlsv1.2</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">sSf</span><span style="color: light-dark(#032F62, #9ECBFF);"> https://sh.rustup.rs</span><span style="color: light-dark(#D73A49, #F97583);"> |</span><span style="color: light-dark(#6F42C1, #B392F0);"> sh</span></span></code></pre><h3 id="sqlx">sqlx</h3>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> install</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-version=0.8.6</span><span style="color: light-dark(#032F62, #9ECBFF);"> sqlx-cli</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-no-default-features</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-features</span><span style="color: light-dark(#032F62, #9ECBFF);"> postgres,rustls</span></span></code></pre><h3 id="bunyan">bunyan</h3>
 <p>For nicer logs install bunyan:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo install bunyan
-</span></code></pre>
-<h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git clone git@github.com:ALU-Schumacher/AUDITOR.git
-</span><span style="color:#a535ae;">cd</span><span> AUDITOR
-</span><span>./scripts/init_db.sh
-</span><span>./scripts/init_client_sqlite.sh
-</span><span>./scripts/init_slurm_collector_sqlite.sh
-</span><span>cargo run
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> install</span><span style="color: light-dark(#032F62, #9ECBFF);"> bunyan</span></span></code></pre><h2 id="running-auditor-via-cargo">Running Auditor via cargo</h2>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> clone</span><span style="color: light-dark(#032F62, #9ECBFF);"> git@github.com:ALU-Schumacher/AUDITOR.git</span></span>
+<span class="giallo-l"><span style="color: light-dark(#005CC5, #79B8FF);">cd</span><span style="color: light-dark(#032F62, #9ECBFF);"> AUDITOR</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">./scripts/init_db.sh</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">./scripts/init_client_sqlite.sh</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">./scripts/init_slurm_collector_sqlite.sh</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span></span></code></pre>
 <p>Calling <code>./scripts/db_init.sh</code> will start a temporary PostgreSQL database in a Docker container and will automatically migrate the database.
 If you plan to run Auditor like this in production, make sure to properly set up a database and instead of calling <code>db_init.sh</code> pass the correct settings to auditor via the configuration environment variables mentioned above.
 Building requires a running database, because database queries are checked against the database during runtime! This can be disabled with:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo run
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span>SQLX_OFFLINE</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span style="color: light-dark(#032F62, #9ECBFF);">t</span><span style="color: light-dark(#032F62, #9ECBFF);">r</span><span style="color: light-dark(#032F62, #9ECBFF);">u</span><span style="color: light-dark(#032F62, #9ECBFF);">e</span><span style="color: light-dark(#6F42C1, #B392F0);"> cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span></span></code></pre>
 <p>For nicer logs pipe the output through <code>bunyan</code>:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo run </span><span style="color:#ff5600;">| </span><span>bunyan
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span><span style="color: light-dark(#D73A49, #F97583);"> |</span><span style="color: light-dark(#6F42C1, #B392F0);"> bunyan</span></span></code></pre>
 <p>Note that this will be a debug build which will not pass all optimizations during compilation.
 For maximum performance a <code>release</code> build is necessary:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo run --release
-</span></code></pre>
-<h2 id="running-the-tests">Running the tests</h2>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo test
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> run</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-release</span></span></code></pre><h2 id="running-the-tests">Running the tests</h2>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> test</span></span></code></pre>
 <p>Output logs while running the tests:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>TEST_LOG</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo test
-</span></code></pre>
-<h2 id="building-binaries">Building binaries</h2>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span>TEST_LOG</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span style="color: light-dark(#032F62, #9ECBFF);">t</span><span style="color: light-dark(#032F62, #9ECBFF);">r</span><span style="color: light-dark(#032F62, #9ECBFF);">u</span><span style="color: light-dark(#032F62, #9ECBFF);">e</span><span style="color: light-dark(#6F42C1, #B392F0);"> cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> test</span></span></code></pre><h2 id="building-binaries">Building binaries</h2>
 <p>Binaries used in production should be built in release mode:</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo build --release
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> build</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-release</span></span></code></pre>
 <p>The binary can then be found in <code>target/release/auditor</code>.</p>
 <p>Make sure a database is up and running when starting Auditor.</p>
 <h2 id="static-linking-and-cross-compiling">Static linking and cross compiling</h2>
@@ -251,53 +230,47 @@ This can be beneficial when cross compiling, in particular for older targets (e.
 This requires the <code>musl</code> dev tools to be installed on the system where Auditor is compiled.
 The exact packages needed depends on your Linux distribution.
 Furthermore, the <code>x86_64-unknown-linux-musl</code> target for Rust must be installed (once):</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>rustup target add x86_64-unknown-linux-musl
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">rustup</span><span style="color: light-dark(#032F62, #9ECBFF);"> target</span><span style="color: light-dark(#032F62, #9ECBFF);"> add</span><span style="color: light-dark(#032F62, #9ECBFF);"> x86_64-unknown-linux-musl</span></span></code></pre>
 <p>Then cross-compilation with static linking can be done via</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>RUSTFLAGS</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">&#39;-C link-arg=-s&#39; </span><span>cargo build --release --target x86_64-unknown-linux-musl
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span>RUSTFLAGS</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span style="color: light-dark(#032F62, #9ECBFF);">&#39;</span><span style="color: light-dark(#032F62, #9ECBFF);">-C link-arg=-s</span><span style="color: light-dark(#032F62, #9ECBFF);">&#39;</span><span style="color: light-dark(#6F42C1, #B392F0);"> cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> build</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-release</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-target</span><span style="color: light-dark(#032F62, #9ECBFF);"> x86_64-unknown-linux-musl</span></span></code></pre>
 <p>The resulting binaries will be placed in <code>target/x86_64-unknown-linux-musl/release</code>.</p>
 <h1 id="adding-new-plugins-and-collectors">Adding new plugins and collectors</h1>
 <p>TODO: Instructions for adding new plugins/collectors (especially directory structure, CI config, etc)</p>
 <h1 id="documentation">Documentation</h1>
 <h2 id="github-pages">Github pages</h2>
-<p>This webpage is based on the <a href="https://www.getzola.org/">Zola</a> framework.</p>
-<p>For local development, <a href="https://www.getzola.org/documentation/getting-started/installation/">install</a> the <code>zola</code> CLI program and run</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span> zola -r media/website serve
-</span></code></pre>
+<p>This webpage is based on the <a rel="external" href="https://www.getzola.org/">Zola</a> framework.</p>
+<p>For local development, <a rel="external" href="https://www.getzola.org/documentation/getting-started/installation/">install</a> the <code>zola</code> CLI program and run</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);"> zola</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">r</span><span style="color: light-dark(#032F62, #9ECBFF);"> media/website</span><span style="color: light-dark(#032F62, #9ECBFF);"> serve</span></span></code></pre>
 <p>in the root directory of the Auditor repo.</p>
-<p>The local version of the webpage is now available at <a href="http://127.0.0.1:1111/">http://127.0.0.1:1111/</a>.</p>
+<p>The local version of the webpage is now available at <a rel="external" href="http://127.0.0.1:1111/">http://127.0.0.1:1111/</a>.</p>
 <h2 id="rust-documentation">Rust documentation</h2>
 <p>A local version of the Rust documentation can be built with</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>cargo doc
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> doc</span></span></code></pre>
 <p>Use the<code>--open</code> flag to directly open the documentation in your browser.</p>
 <h2 id="python-client">Python client</h2>
-<p>The documentation of the python client is based on the <a href="https://www.sphinx-doc.org/">Sphinx</a> framework.
+<p>The documentation of the python client is based on the <a rel="external" href="https://www.sphinx-doc.org/">Sphinx</a> framework.
 A local version of the documentation can be built with</p>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>scripts/docs_pyauditor.sh
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">scripts/docs_pyauditor.sh</span></span></code></pre>
 <p>The documentation can then be found in <code>pyauditor/docs/_build/html/</code>.</p>
 <h1 id="creating-a-new-release">Creating a new release</h1>
 <p>Follow the steps below in order to create a new release.</p>
-<p>Example PR: <a href="https://github.com/ALU-Schumacher/AUDITOR/pull/547">https://github.com/ALU-Schumacher/AUDITOR/pull/547</a></p>
+<p>Example PR: <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR/pull/547">https://github.com/ALU-Schumacher/AUDITOR/pull/547</a></p>
 <ul>
 <li>All version number updates mentioned below (except for <code>sqlx</code>) can be done with <code>scripts/bump_version.py</code>.</li>
 </ul>
-<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>usage: bump_version.py </span><span style="color:#ff5600;">[</span><span>-h</span><span style="color:#ff5600;">]</span><span> -o OLD -n NEW </span><span style="color:#ff5600;">[</span><span>-y</span><span style="color:#ff5600;">]
-</span><span>
-</span><span>options:
-</span><span>  -h, --help       show this help message and exit
-</span><span>  -o, --old OLD    Old version
-</span><span>  -n, --new NEW    New version
-</span><span>  -y, --assumeyes  Don</span><span style="color:#00a33f;">&#39;t ask for confirmation
-</span></code></pre>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">usage:</span><span style="color: light-dark(#032F62, #9ECBFF);"> bump_version.py</span><span> [-h</span><span>] -o OLD -n NEW </span><span>[</span><span>-y</span><span>]</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">options:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -h,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-help</span><span style="color: light-dark(#032F62, #9ECBFF);">       show</span><span style="color: light-dark(#032F62, #9ECBFF);"> this</span><span style="color: light-dark(#032F62, #9ECBFF);"> help</span><span style="color: light-dark(#032F62, #9ECBFF);"> message</span><span style="color: light-dark(#032F62, #9ECBFF);"> and</span><span style="color: light-dark(#032F62, #9ECBFF);"> exit</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -o,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-old</span><span style="color: light-dark(#032F62, #9ECBFF);"> OLD</span><span style="color: light-dark(#032F62, #9ECBFF);">    Old</span><span style="color: light-dark(#032F62, #9ECBFF);"> version</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -n,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-new</span><span style="color: light-dark(#032F62, #9ECBFF);"> NEW</span><span style="color: light-dark(#032F62, #9ECBFF);">    New</span><span style="color: light-dark(#032F62, #9ECBFF);"> version</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">  -y,</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-assumeyes</span><span style="color: light-dark(#032F62, #9ECBFF);">  Don</span><span style="color: light-dark(#032F62, #9ECBFF);">&#39;</span><span style="color: light-dark(#032F62, #9ECBFF);">t ask for confirmation</span></span></code></pre>
 <ul>
 <li>Update the version number in all <code>Cargo.toml</code> files</li>
 <li>Run <code>cargo update</code> to update dependencies in <code>Cargo.lock</code></li>
 <li>If <code>sqlx</code> is updated, don't forget to also change the version in all workflows, containers, documentation, etc.</li>
 <li>Update the version number in all <code>pyproject.toml</code> files</li>
-<li>Finalize the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a>
+<li>Finalize the <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a>
 <ul>
 <li>Rename <code>Unreleased</code> to version number, add date</li>
 <li>Add new <code>Unreleased</code> section with all subsections (Breaking changes, Security, Added, Changed, Removed)</li>
@@ -305,20 +278,18 @@ A local version of the documentation can be built with</p>
 <li>At the bottom: Update link target for unreleased version</li>
 </ul>
 </li>
-<li>Finalize the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/migration.md">migration guide</a>
+<li>Finalize the <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/media/website/content/migration.md">migration guide</a>
 <ul>
 <li>Rename <code>Unreleased</code> to version number</li>
 </ul>
 </li>
-<li>Update changelog in <a href="https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm">RPM <code>.spec</code> files</a></li>
+<li>Update changelog in <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR/tree/main/rpm">RPM <code>.spec</code> files</a></li>
 <li>Update the version number and the changelog in <code>rpm_config.json</code> for the APEL plugin and the HTCondor collector</li>
 <li>Create PR and wait for approval from other team member</li>
-<li>Publish <code>auditor</code> crate first (you will need a <a href="https://crates.io/settings/tokens">crates.io API token</a>)<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a535ae;">cd</span><span> auditor
-</span><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo publish --dry-run
-</span><span>SQLX_OFFLINE</span><span style="color:#ff5600;">=</span><span style="color:#00a33f;">true </span><span>cargo publish
-</span><span style="color:#a535ae;">cd</span><span> ..
-</span></code></pre>
-</li>
+<li>Publish <code>auditor</code> crate first (you will need a <a rel="external" href="https://crates.io/settings/tokens">crates.io API token</a>)<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#005CC5, #79B8FF);">cd</span><span style="color: light-dark(#032F62, #9ECBFF);"> auditor</span></span>
+<span class="giallo-l"><span>SQLX_OFFLINE</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span style="color: light-dark(#032F62, #9ECBFF);">t</span><span style="color: light-dark(#032F62, #9ECBFF);">r</span><span style="color: light-dark(#032F62, #9ECBFF);">u</span><span style="color: light-dark(#032F62, #9ECBFF);">e</span><span style="color: light-dark(#6F42C1, #B392F0);"> cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> publish</span><span style="color: light-dark(#005CC5, #79B8FF);"> -</span><span style="color: light-dark(#005CC5, #79B8FF);">-dry-run</span></span>
+<span class="giallo-l"><span>SQLX_OFFLINE</span><span style="color: light-dark(#D73A49, #F97583);">=</span><span style="color: light-dark(#032F62, #9ECBFF);">t</span><span style="color: light-dark(#032F62, #9ECBFF);">r</span><span style="color: light-dark(#032F62, #9ECBFF);">u</span><span style="color: light-dark(#032F62, #9ECBFF);">e</span><span style="color: light-dark(#6F42C1, #B392F0);"> cargo</span><span style="color: light-dark(#032F62, #9ECBFF);"> publish</span></span>
+<span class="giallo-l"><span style="color: light-dark(#005CC5, #79B8FF);">cd</span><span style="color: light-dark(#032F62, #9ECBFF);"> ..</span></span></code></pre></li>
 <li>Then run the publish workflow for the <code>auditor-client</code> crate and all rust-based collectors/plugins (<code>cd</code> into corresponding dirs)
 <ul>
 <li><code>auditor-client</code> (prepend <code>cargo</code> commands with <code>SQLX_OFFLINE=true</code>)</li>
@@ -329,23 +300,22 @@ A local version of the documentation can be built with</p>
 </ul>
 </li>
 <li>Merge PR</li>
-<li>Create tag for version<pre data-lang="bash" style="background-color:#ffffff;color:#000000;" class="language-bash "><code class="language-bash" data-lang="bash"><span>git fetch upstream
-</span><span>git checkout upstream/main
-</span><span>git tag </span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;  </span><span style="color:#919191;"># e.g. v0.1.0
-</span><span>git push upstream </span><span style="color:#ff5600;">&lt;</span><span>version</span><span style="color:#ff5600;">&gt;
-</span></code></pre>
+<li>Create tag for version<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="shellscript"><span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> fetch</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> checkout</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream/main</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> tag</span><span style="color: light-dark(#D73A49, #F97583);"> &lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">versio</span><span>n</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span><span style="color: light-dark(#6A737D, #6A737D);">  #</span><span style="color: light-dark(#6A737D, #6A737D);"> e.g. v0.1.0</span></span>
+<span class="giallo-l"><span style="color: light-dark(#6F42C1, #B392F0);">git</span><span style="color: light-dark(#032F62, #9ECBFF);"> push</span><span style="color: light-dark(#032F62, #9ECBFF);"> upstream</span><span style="color: light-dark(#D73A49, #F97583);"> &lt;</span><span style="color: light-dark(#032F62, #9ECBFF);">versio</span><span>n</span><span style="color: light-dark(#D73A49, #F97583);">&gt;</span></span></code></pre>
 <ul>
 <li>This triggers the build of the pyauditor package and the python-based collectors/plugins</li>
 <li>This triggers the build of the docker containers and pushes them to DockerHub and GHCR</li>
 <li>This triggers a GitHub release
 <ul>
-<li>Update the release notes by copying the corresponding section from the <a href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a></li>
+<li>Update the release notes by copying the corresponding section from the <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md">changelog</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Announce in Mattermost AUDITOR channel</li>
-<li>Update the <code>pyauditor</code> version number in <a href="https://github.com/MatterMiners/tardis">tardis</a> (and update the code of the AUDITOR plugin if the release introduced breaking changes)</li>
+<li>Update the <code>pyauditor</code> version number in <a rel="external" href="https://github.com/MatterMiners/tardis">tardis</a> (and update the code of the AUDITOR plugin if the release introduced breaking changes)</li>
 </ul>
 
 
