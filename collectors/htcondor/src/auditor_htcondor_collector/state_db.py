@@ -15,8 +15,7 @@ class StateDB(object):
         self._db_path = db_path
         self._conn = sqlite3.connect(self._db_path)
         self._cursor = self._conn.cursor()
-        self._cursor.execute(
-            """
+        self._cursor.execute("""
             CREATE TABLE IF NOT EXISTS last_jobs (
                 schedd TEXT,
                 prefix TEXT,
@@ -24,8 +23,7 @@ class StateDB(object):
                 proc INT,
                 PRIMARY KEY (schedd, prefix)
             )
-        """
-        )
+        """)
         self._conn.commit()
         self._cursor.close()
         self._conn.close()
