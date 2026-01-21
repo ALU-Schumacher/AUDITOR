@@ -20,6 +20,7 @@ from auditor_apel_plugin.core import (
     create_message,
     fill_db,
     get_records,
+    get_total_numbers,
     group_db,
     send_payload,
     sign_msg,
@@ -108,6 +109,9 @@ def run(logger: Logger, config: Config, client, args):
     if not dry_run:
         post_message = send_payload(config, payload_message)
         logger.info(f"Message sent to server, response:\n{post_message}")
+
+    total_numbers = get_total_numbers(message_dict)
+    logger.info(f"Total numbers reported by the plugin:\n{total_numbers}")
 
 
 def main():
