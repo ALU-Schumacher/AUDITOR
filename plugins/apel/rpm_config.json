@@ -49,7 +49,10 @@
             "  groupdel auditor || true",
             "fi"
         ],
-        "install": "install -d -D -m 0750 %{buildroot}/var/lib/auditor_apel_plugin",
+        "install": [
+            "install -d -D -m 0750 %{buildroot}/var/lib/auditor_apel_plugin",
+            "pip install venvctrl"
+        ],
         "files": "%dir %attr(0750 auditor-apel-plugin auditor) /var/lib/auditor_apel_plugin",
         "desc": "AUDITOR plugin for sending accounting data to APEL",
         "changelog": [
