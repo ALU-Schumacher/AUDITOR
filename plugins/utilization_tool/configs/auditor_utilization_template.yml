@@ -1,0 +1,35 @@
+# This is just an example config and not ready for usage!
+# You can find information about the options in the documentation: https://alu-schumacher.github.io/AUDITOR/latest/
+
+#logging:
+#  level: INFO
+#  file: app.log
+#
+#auditor:
+#  hosts: [con2.bfg.uni-freiburg.de]
+#  port: [8001]
+#  timeout: 60
+#  site_meta_field: site_id # can also be a list, e.g. [site_id, site]
+#  use_tls: False
+#  ca_cert_path: /path/rootCA.pem
+#  client_cert_path: /path/client-cert.pem
+#  client_key_path: /path/client-key.pem 
+#
+#utilisation:
+#  groupedby: VOMS
+#  grouped_list: [production, lcgadmin, ilc, ops]
+#  watt_per_core: 4.6
+#  co2_per_kwh: 0.363
+#  interval: 10
+#
+#cluster:
+#  watt_per_core:
+#    site:
+#      site-a: 4.6
+#      site-b: 4.3
+#      site-c: 4.1
+#
+#email:
+#  enable_email_report: True
+#  smtp_server: mail.uni-freiburg.de
+#  smtp_port: 587

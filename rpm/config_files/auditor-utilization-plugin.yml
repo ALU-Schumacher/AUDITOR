@@ -1,0 +1,36 @@
+#log_file: "my_service.log"
+#log_level: "INFO"
+#task_interval: 5
+
+logging:
+  level: INFO
+  file: app.log
+
+auditor:
+  hosts: [con2.bfg.uni-freiburg.de]
+  port: [8001]
+  timeout: 60
+  site_meta_field: site_id # can also be a list, e.g. [site_id, site]
+  use_tls: False
+  ca_cert_path: /path/rootCA.pem
+  client_cert_path: /path/client-cert.pem
+  client_key_path: /path/client-key.pem 
+
+utilisation:
+  groupedby: VOMS
+  grouped_list: [production, lcgadmin, ilc, ops]
+  watt_per_core: 4.6
+  co2_per_kwh: 0.363
+  interval: 10
+
+cluster:
+  watt_per_core:
+    site:
+      bfg: 4.6
+      nemo: 4.3
+      horeka: 4.1
+
+email:
+  enable_email_report: True
+  smtp_server: mail.uni-freiburg.de
+  smtp_port: 587

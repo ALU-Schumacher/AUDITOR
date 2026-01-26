@@ -1,0 +1,16 @@
+[Unit]
+Description=Utilization report for AUDITOR
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Install]
+RequiredBy=multi-user.target
+
+[Service]
+Type=simple
+User=auditor-utilization-report
+Group=auditor
+WorkingDirectory=/opt/auditor
+ExecStart=/opt/auditor-utilization-report/venv/bin/auditor-utilization-report --config /etc/auditor/auditor_utilization_plugin.yml
+Restart=on-failure
+RestartSec=60
+
