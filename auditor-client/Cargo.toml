@@ -28,10 +28,10 @@ path = "src/lib.rs"
 [dependencies]
 anyhow.workspace = true
 auditor.workspace = true
-bincode.workspace = true
 chrono.workspace = true
 config.workspace = true
 futures.workspace = true
+postcard.workspace = true
 reqwest.workspace = true
 reqwest-streams.workspace = true
 serde.workspace = true

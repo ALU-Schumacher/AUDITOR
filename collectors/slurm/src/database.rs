@@ -36,7 +36,7 @@ impl Database {
     #[tracing::instrument(name = "Inserting record into database", level = "debug", skip(self))]
     pub(crate) async fn insert(&self, record: RecordAdd) -> Result<()> {
         let record_id = record.record_id.clone();
-        let record = bincode::serialize(&record)?;
+        let record = postcard::to_stdvec(&record)?;
         sqlx::query!(
             r#"INSERT OR IGNORE INTO records (id, record) VALUES ($1, $2)"#,
             record_id,
@@ -66,7 +66,7 @@ impl Database {
             .await?;
         Ok(records
             .into_iter()
-            .map(|Row { id, record }| (id, bincode::deserialize::<RecordAdd>(&record).unwrap()))
+            .map(|Row { id, record }| (id, postcard::from_bytes::<RecordAdd>(&record).unwrap()))
             .collect())
     }
 

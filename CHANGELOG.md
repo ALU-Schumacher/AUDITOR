@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Apel plugin: Add total reported numbers to log of republish script ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Add tests for Python 3.14 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Add postcard 1.1.3 to replace bincode ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR: Fix clippy and cargo deny issues ([@dirksammel](https://github.com/dirksammel)) 
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
+- Dependencies: Remove bincode 1.3.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ## [0.10.1] 2025-10-27
 

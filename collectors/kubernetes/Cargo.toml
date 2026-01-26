@@ -30,10 +30,10 @@ path = "src/main.rs"
 anyhow.workspace = true
 auditor.workspace = true
 auditor-client.workspace = true
-bincode.workspace = true
 chrono.workspace = true
 k8s-openapi = { workspace = true, features = ["v1_28"] }
 kube.workspace = true
+postcard.workspace = true
 prometheus-http-query = { workspace = true, features = ["rustls-tls"] }
 reqwest = { workspace = true, features = ["rustls-tls"] }
 serde.workspace = true
