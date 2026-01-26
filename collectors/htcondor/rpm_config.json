@@ -49,7 +49,10 @@
             "  groupdel auditor || true",
             "fi"
         ],
-        "install": "install -d -D -m 0750 %{buildroot}/var/lib/auditor_htcondor_collector",
+        "install": [
+            "install -d -D -m 0750 %{buildroot}/var/lib/auditor_htcondor_collector",
+            "pip install venvctrl"
+        ],
         "files": "%dir %attr(0750 auditor-htcondor-collector auditor) /var/lib/auditor_htcondor_collector",
         "desc": "AUDITOR collector for aggregating data from the HTCondor batch system",
         "changelog": [
