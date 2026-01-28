@@ -8,7 +8,7 @@ version = "0.10.1"
 requires-python = ">=3.9"
 dependencies = [
 	     "python-auditor==0.10.1",
-	     "cryptography==46.0.3",
+	     "cryptography==46.0.4",
 	     "pyyaml==6.0.3",
 	     "pydantic==2.12.5",
 	     "argo-ams-library==1.0.0",
