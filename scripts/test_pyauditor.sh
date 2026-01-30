@@ -58,7 +58,13 @@ function test_pyauditor() {
     SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
     start_auditor
     python3 $script
-    kill $AUDITOR_SERVER_PID
+    echo >&2 "Stopping AUDITOR server"
+    if kill -0 "$AUDITOR_SERVER_PID" 2>/dev/null; then
+        kill -2 "$AUDITOR_SERVER_PID"
+        wait "$AUDITOR_SERVER_PID"
+    else
+        echo >&2 "Process $$AUDITOR_SERVER_PID does not exist. Nothing to stop."
+    fi
   done
 }
 
