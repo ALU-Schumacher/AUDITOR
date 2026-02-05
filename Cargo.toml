@@ -18,7 +18,7 @@ actix-tls = "3.4.0"
 actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
 anyhow = "1.0.100"
 arrow= "57.0.0"
-arrow-array= "57.0.0"
+arrow-array= "57.2.0"
 async-stream = "0.3"
 auditor = { path = "./auditor", version = "0.10.1", default-features = false }
 auditor-client = { path = "./auditor-client", version = "0.10.1" }
