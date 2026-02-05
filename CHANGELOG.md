@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update thiserror from 2.0.17 to 2.0.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tokio from 1.48.0 to 1.49.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tracing-actix-web from 0.7.19 to 0.7.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update uuid from 1.18.1 to 1.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update x509-parser from 0.18.0 to 0.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
