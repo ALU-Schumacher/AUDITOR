@@ -65,7 +65,7 @@ serde_yaml = "0.9.34"
 shell-words = "1.1.0"
 sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "macros", "uuid", "chrono", "migrate", "runtime-tokio", "json"] }
 thiserror = "2.0.17"
-tokio = "1.48.0"
+tokio = "1.49.0"
 tokio-cron-scheduler = "0.15.1"
 tracing = { version = "0.1.40", features = ["log"] }
 tracing-actix-web = "0.7.11"
