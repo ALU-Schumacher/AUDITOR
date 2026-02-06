@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - [CVE-2025-66418], [CVE-2025-66471], [CVE-2026-21441]: Update urllib3 from 2.5.0 to 2.6.3 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-21895]: Update rsa from 0.9.8 to 0.9.10 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2026-25727]: Update time from 0.3.44 to 0.3.47 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 - Apel plugin: Add total reported numbers to log of republish script ([@dirksammel](https://github.com/dirksammel))
