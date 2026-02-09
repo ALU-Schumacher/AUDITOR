@@ -1,7 +1,7 @@
 import logging
 import pathlib
-from contextlib import contextmanager
-from typing import IO, ContextManager, Dict, Literal, overload
+from contextlib import AbstractContextManager, contextmanager
+from typing import IO, Literal, overload
 
 logger = logging.getLogger("apel_plugin")
 
@@ -9,13 +9,13 @@ logger = logging.getLogger("apel_plugin")
 @overload
 def write_transaction(
     path: "str | pathlib.PurePath", mode: Literal["w"] = ..., **kwargs
-) -> ContextManager[IO[str]]: ...
+) -> AbstractContextManager[IO[str]]: ...
 
 
 @overload
 def write_transaction(
     path: "str | pathlib.PurePath", mode: Literal["wb"], **kwargs
-) -> ContextManager[IO[bytes]]: ...
+) -> AbstractContextManager[IO[bytes]]: ...
 
 
 @contextmanager
@@ -34,7 +34,7 @@ def write_transaction(
         tmp_path.rename(path)
 
 
-def vo_mapping(user: str, vo_dict: Dict[str, str]) -> str:
+def vo_mapping(user: str, vo_dict: dict[str, str]) -> str:
     for k, v in vo_dict.items():
         if user.startswith(k):
             return v

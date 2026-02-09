@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Add tests for Python 3.14 ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
+- Apel plugin: Remove `MessageType` enum ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Fix clippy and cargo deny issues ([@dirksammel](https://github.com/dirksammel)) 
 - CI/CD: Switch to official ruff git action ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
