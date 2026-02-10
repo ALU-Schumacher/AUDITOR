@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.3.0 to 1.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.43.4 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 46.0.3 to 46.0.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.12.3 to 2.12.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.24.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
