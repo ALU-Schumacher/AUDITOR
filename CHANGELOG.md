@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actions/checkout from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update arrow from 57.0.0 to 57.3.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update arrow-array from 57.0.0 to 57.3.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.3.0 to 1.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.43.4 ([@dirksammel](https://github.com/dirksammel))
