@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Improve htcondor-collector workflow ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Set Python version in build_pyauditor workflows ([@dirksammel](https://github.com/dirksammel))
+- Priority-plugin: Fix clippy issues ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actions/checkout from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/download-artifact from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 5 to 6 ([@dirksammel](https://github.com/dirksammel))

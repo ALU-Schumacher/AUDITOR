@@ -47,8 +47,10 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<ResourceName, Res
 
     for r in records {
         let val: f64 = if let Some(runtime) = r.runtime {
-            f64::from_i64(runtime).unwrap()
-                * if r.components.is_none() {
+            let runtime_f = f64::from_i64(runtime).unwrap();
+
+            let factor: f64 = match &r.components {
+                None => {
                     if !config.components.is_empty() {
                         error!(
                             record_id = %r.record_id,
@@ -57,57 +59,49 @@ fn extract(records: Vec<Record>, config: &Settings) -> HashMap<ResourceName, Res
                         continue;
                     }
                     1.0
-                } else {
-                    match r.components.as_ref().unwrap().iter().fold(
-                        (1.0, false),
-                        |(acc, found), c| {
-                            if config.components.contains_key(c.name.as_ref()) {
-                                (
-                                    acc * f64::from_i64(*c.amount.as_ref()).unwrap()
-                                        * match c.scores.iter().fold(
-                                            (1.0, false),
-                                            |(acc, found), s| {
-                                                if s.name.as_ref()
-                                                    == config
-                                                        .components
-                                                        .get(c.name.as_ref())
-                                                        .unwrap()
-                                                {
-                                                    (*s.value.as_ref(), true)
-                                                } else {
-                                                    (acc, found)
-                                                }
-                                            },
-                                        ) {
-                                            (acc, true) => acc,
-                                            (_, false) => {
-                                                error!(
-                                                    record_id = %r.record_id,
-                                                    concat!(
-                                                        "Did not find configured score ",
-                                                        "in record! Assuming 1.0."
-                                                    )
-                                                );
-                                                1.0
-                                            }
-                                        },
-                                    true,
-                                )
-                            } else {
-                                (acc, found)
-                            }
-                        },
-                    ) {
-                        (acc, true) => acc,
-                        (_, false) => {
-                            error!(
-                                record_id = %r.record_id,
-                                "Did not find configured components in record! Ignoring record."
-                            );
-                            continue;
-                        }
-                    }
                 }
+                Some(components) => match components.iter().fold((1.0, false), |(acc, found), c| {
+                    if config.components.contains_key(c.name.as_ref()) {
+                        (
+                            acc * f64::from_i64(*c.amount.as_ref()).unwrap()
+                                * match c.scores.iter().fold((1.0, false), |(acc, found), s| {
+                                    if s.name.as_ref()
+                                        == config.components.get(c.name.as_ref()).unwrap()
+                                    {
+                                        (*s.value.as_ref(), true)
+                                    } else {
+                                        (acc, found)
+                                    }
+                                }) {
+                                    (acc, true) => acc,
+                                    (_, false) => {
+                                        error!(
+                                            record_id = %r.record_id,
+                                            concat!(
+                                                "Did not find configured score ",
+                                                "in record! Assuming 1.0."
+                                            )
+                                        );
+                                        1.0
+                                    }
+                                },
+                            true,
+                        )
+                    } else {
+                        (acc, found)
+                    }
+                }) {
+                    (acc, true) => acc,
+                    (_, false) => {
+                        error!(
+                            record_id = %r.record_id,
+                            "Did not find configured components in record! Ignoring record."
+                        );
+                        continue;
+                    }
+                },
+            };
+            runtime_f * factor
         } else {
             error!(record_id = %r.record_id, "Record without runtime, ignoring.");
             continue;
