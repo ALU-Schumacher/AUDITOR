@@ -27,7 +27,7 @@ struct RecRow {
 
 impl From<&RecRow> for RecordAdd {
     fn from(v: &RecRow) -> Self {
-        bincode::deserialize(&v.blob).expect("Should never fail on a record")
+        postcard::from_bytes(&v.blob).expect("Should never fail on a record")
     }
 }
 
@@ -116,7 +116,7 @@ impl Database {
                 "INSERT INTO mergequeue (record, rid, retry, updated, complete) ",
             );
             query_builder.push_values(chunk, |mut b, rec| {
-                let blob = bincode::serialize(rec).expect("Should never fail on a record");
+                let blob = postcard::to_stdvec(rec).expect("Should never fail on a record");
                 b.push_bind(blob)
                     .push_bind(&rec.record_id)
                     .push_bind(0)
@@ -137,7 +137,7 @@ impl Database {
     pub(crate) async fn replace_incomplete(&self, rec: &RecordAdd) -> Result<(), sqlx::Error> {
         let now = Utc::now().timestamp();
         let rid = rec.record_id.as_ref().to_owned();
-        let blob = bincode::serialize(rec).expect("Should never fail on a record");
+        let blob = postcard::to_stdvec(rec).expect("Should never fail on a record");
         sqlx::query!(
             r#"UPDATE mergequeue SET
                     record = $2,
@@ -163,7 +163,7 @@ impl Database {
     pub(crate) async fn replace_complete(&self, rec: &RecordAdd) -> Result<(), sqlx::Error> {
         let now = Utc::now().timestamp();
         let rid = rec.record_id.as_ref().to_owned();
-        let blob = bincode::serialize(rec).expect("Should never fail on a record");
+        let blob = postcard::to_stdvec(rec).expect("Should never fail on a record");
         sqlx::query!(
             r#"UPDATE mergequeue
                 SET (record, updated, complete) = ($1, $2, $3)

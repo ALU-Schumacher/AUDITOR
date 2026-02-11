@@ -60,7 +60,7 @@ impl Database {
         fields(record_id = %record.record_id)
     )]
     pub(crate) async fn insert(&self, record: &RecordAdd) -> Result<(), sqlx::Error> {
-        let record = bincode::serialize(record).expect("Should never fail on a record");
+        let record = postcard::to_stdvec(record).expect("Should never fail on a record");
         sqlx::query!(
             r#"INSERT OR IGNORE INTO inserts (record) VALUES ($1)"#,
             record
@@ -82,7 +82,7 @@ impl Database {
                 QueryBuilder::new("INSERT OR IGNORE INTO inserts (record) ");
             let blobs = chunk
                 .iter()
-                .map(|r| bincode::serialize(&r).expect("Should never fail on a record"));
+                .map(|r| postcard::to_stdvec(&r).expect("Should never fail on a record"));
             query_builder.push_values(blobs, |mut b, blob| {
                 b.push_bind(blob);
             });
@@ -99,7 +99,10 @@ impl Database {
         fields(record_id = %record.record_id)
     )]
     pub(crate) async fn update(&self, record: &RecordUpdate) -> Result<(), sqlx::Error> {
-        let record = bincode::serialize(record).expect("Should never fail on a record");
+        //let record = bincode::serialize(record).expect("Should never fail on a record");
+
+        let record = postcard::to_stdvec(record).expect("Should never fail on a record");
+
         sqlx::query!(r#"INSERT INTO updates (record) VALUES ($1)"#, record)
             .execute(&self.db_pool)
             .await?;
@@ -154,7 +157,7 @@ impl Database {
         let records = rows
             .into_iter()
             .map(|Row { rowid, record }| {
-                (rowid, bincode::deserialize::<RecordAdd>(&record).unwrap())
+                (rowid, postcard::from_bytes::<RecordAdd>(&record).unwrap())
             })
             .collect();
         Ok(records)
@@ -182,7 +185,7 @@ impl Database {
             .map(|Row { rowid, record }| {
                 (
                     rowid,
-                    bincode::deserialize::<RecordUpdate>(&record).unwrap(),
+                    postcard::from_bytes::<RecordUpdate>(&record).unwrap(),
                 )
             })
             .collect();
@@ -216,7 +219,7 @@ impl Database {
             .map(|Row { rowid, record }| {
                 (
                     rowid,
-                    bincode::deserialize::<RecordUpdate>(&record).unwrap(),
+                    postcard::from_bytes::<RecordUpdate>(&record).unwrap(),
                 )
             })
             .collect();
