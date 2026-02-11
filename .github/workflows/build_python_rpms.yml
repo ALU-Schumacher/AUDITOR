@@ -9,7 +9,8 @@ on:
 
 jobs:
   build-apel-plugin-rpm:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: almalinux:9
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -17,13 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Setup python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ inputs.python-version }}
-        
       - name: Install dependencies
         run: |
+          dnf install -y epel-release dnf-plugins-core
+          dnf config-manager --set-enabled crb
+          dnf install -y python3-pip rpm-build python3-virtualenv
+          dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
           pip install toml-to-requirements rpmvenv
           
@@ -44,7 +44,8 @@ jobs:
           name: apel-plugin-rpm
 
   build-htcondor-collector-rpm:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: almalinux:9
     defaults:
       run:
         working-directory: ./collectors/htcondor
@@ -52,13 +53,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Setup python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ inputs.python-version }}
-        
       - name: Install dependencies
         run: |
+          dnf install -y epel-release dnf-plugins-core
+          dnf config-manager --set-enabled crb
+          dnf install -y python3-pip rpm-build python3-virtualenv
+          dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
           pip install toml-to-requirements rpmvenv
 
