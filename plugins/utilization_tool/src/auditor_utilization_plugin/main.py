@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
+# SPDX-FileCopyrightText: © 2026 Raghuvar Vijayakumar <raghuvarvijayakumar@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
 import argparse
@@ -25,16 +25,16 @@ def load_config(path):
     try:
         with path.open("r", encoding="utf-8") as file:
             config = yaml.safe_load(file) or {}
-        print(f"Loaded configuration from {path}")
+        logging.info(f"Loaded configuration from {path}")
         return config
     except yaml.YAMLError as e:
-        print(f"YAML parsing error in {path}: {e}")
+        logging.info(f"YAML parsing error in {path}: {e}")
         raise ValueError(f"Invalid YAML format in {path}") from e
     except PermissionError:
-        print(f"Permission denied reading {path}")
+        logging.info(f"Permission denied reading {path}")
         raise
     except Exception as e:
-        print(f"Unexpected error loading configuration from {path}: {e}")
+        logging.info(f"Unexpected error loading configuration from {path}: {e}")
         raise
 
 
@@ -42,7 +42,7 @@ def override_config(config, args):
     if args.host:
         config["auditor"]["hosts"] = [args.host]
     if args.port:
-        config["auditor"]["port"] = args.port
+        config["auditor"]["port"] = [args.port]
     if args.timeout:
         config["auditor"]["timeout"] = args.timeout
     if args.interval:
@@ -61,7 +61,14 @@ def setup_logging(config):
     logging.addLevelName(TRACE, "TRACE")
     logging.basicConfig(level=log_level, format=log_format, datefmt=date_format)
 
-    logger = logging.getLogger("utilisation")
+    logging.basicConfig(
+        level=log_level,
+        format=log_format,
+        datefmt=date_format,
+        force=True,
+    )
+
+    logger = logging.getLogger("utilization")
 
     if log_file:
         handler = RotatingFileHandler(
@@ -73,13 +80,22 @@ def setup_logging(config):
     return logger
 
 
-def build_auditor_client(auditor_cfg):
+def iter_endpoints(auditor_cfg):
+    hosts = list(auditor_cfg.hosts)
+    ports = list(auditor_cfg.port)
+
+    if len(hosts) != len(ports):
+        raise ValueError(
+            f"auditor.hosts ({len(hosts)}) and auditor.port ({len(ports)}) must match length"
+        )
+
+    return list(zip(hosts, ports))
+
+
+def build_auditor_client(auditor_cfg, host, port):
     """Create and configure the Auditor client."""
     builder = AuditorClientBuilder()
 
-    # Use the first host/port pair for simplicity
-    host = auditor_cfg.hosts[0]
-    port = auditor_cfg.port[0]
     timeout = auditor_cfg.timeout
 
     if getattr(auditor_cfg, "use_tls", False):
@@ -95,11 +111,23 @@ def build_auditor_client(auditor_cfg):
     return client
 
 
+async def run_one_endpoint(logger, config, args, host, port):
+    client = build_auditor_client(config.auditor, host, port)
+
+    logger.info(f"Connected to auditor {host} {port}")
+    await generate_utilization_report(logger, config, args, client, host)
+
+
 async def main():
     parser = argparse.ArgumentParser(
         prog="EGI_validation",
         description="creates monthly summary to compare with EGI values",
-        epilog="Text at the bottom of help",
+        epilog="""
+Example:
+  auditor-utilization-plugin -c config.yaml --month 9 --year 2025 --oneshot
+
+Outputs a CSV summary
+""",
     )
 
     parser.add_argument("--port", type=int, dest="port", help="Port", default=None)
@@ -129,33 +157,29 @@ async def main():
         "-c", "--config", required=True, help="Path to YAML configuration file"
     )
     args = parser.parse_args()
-    print(args)
     config = load_config(args.config)
     config = override_config(config, args)
 
-    # Load config from YAML
     config = Config.from_yaml(args.config)
 
-    # Setup logging
     logger = setup_logging(config)
     logger.info("Starting utilization reporter")
 
-    # Setup auditor client
-    client = build_auditor_client(config.auditor)
-    logger.info(
-        f"Connected to auditor {config.auditor.hosts[0]}:{config.auditor.port[0]}"
-    )
+    endpoints = iter_endpoints(config.auditor)
 
-    try:
-        await generate_utilization_report(logger, config, args, client)
-    except KeyboardInterrupt:
-        logger.warning("User abort")
-    finally:
-        logger.critical("Utilization reporter stopped")
+    tasks = []
+
+    for host, port in endpoints:
+        task = run_one_endpoint(logger, config, args, host, port)
+        tasks.append(task)
+
+    await asyncio.gather(*tasks)
+
+    logger.critical("Utilization reporter stopped")
 
 
 def shutdown():
-    print("\nExiting gracefully...")
+    logging.info("\nExiting gracefully...")
     sys.exit(0)
 
 
