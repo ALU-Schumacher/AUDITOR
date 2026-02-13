@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
 
-async def send_email(smtp_server, smtp_port, df_sum):
+async def send_email(smtp_server, smtp_port, df_sum, logger):
     try:
         load_dotenv()
         sender_email = os.getenv("SENDER_EMAIL")
@@ -36,7 +36,7 @@ async def send_email(smtp_server, smtp_port, df_sum):
             server.login(sender_email, app_password)
             server.send_message(message)
 
-        print("Email with DataFrame sent successfully!")
+        logger.info("Email with DataFrame sent successfully!")
 
     except smtplib.SMTPAuthenticationError:
-        print("SMTP authentication failed. Check email or app password")
+        logger.exception("SMTP authentication failed. Check email or app password")

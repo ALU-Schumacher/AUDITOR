@@ -7,21 +7,23 @@ logging:
   file: app.log
 
 auditor:
-  hosts: [localhost]
+  hosts: [host.docker.internal]
   port: [8000]
   timeout: 60
   site_meta_field: site_id # can also be a list, e.g. [site_id, site]
   use_tls: False
   ca_cert_path: /path/rootCA.pem
   client_cert_path: /path/client-cert.pem
-  client_key_path: /path/client-key.pem 
+  client_key_path: /path/client-key.pem
 
 utilisation:
   groupedby: VOMS
   grouped_list: [production, lcgadmin, ilc, ops]
   watt_per_core: 4.6
   co2_per_kwh: 0.363
-  interval: 10
+  interval: 2592000
+  file_name: auditor_summary
+  file_path: 
 
 cluster:
   watt_per_core:
