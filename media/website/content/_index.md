@@ -1368,7 +1368,28 @@ email:
 | `email.smtp_port`                    | `587`         | SMTP server port                                                                               |
 
 
+The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
+If run as oneshot, then you can specify the particular month and the year that you want to generate the report using `--month` and `--year` options
 
+### pip
+pip package can be installed by `pip install auditor-utilization-plugin` and then run `auditor-utilization-plugin -c config.yaml` to run it as a service.
+To run it as oneshot for a particular month, `auditor-utilization-plugin -c config.yaml --month 9 --year 2025 --oneshot`
+
+### Docker
+
+Docker can be used to run as a service or one-shot using the command below.
+
+```
+docker run --rm --add-host=host.docker.internal:host-gateway -v "./config_folder:/app/" -v "$PWD/output:/data" aluschumacher/auditor-utilization-plugin:edge auditor-utilization-plugin -c /app/config.yaml
+```
+
+In this example, config_folder contains the config.yaml file.
+
+```$PWD/output:/data``` is dir path to store the summary csv. If this is used, then specify the file_path in the config as `/data`.
+This is an example and can be changed to any dir you want. Make sure to also specify the same dir in the config file.
+
+### rpm
+The RPM installs a Python virtual environment including all dependencies into `/opt/auditor_utilization_plugin`. After installation, a systemd unit file is available at: `/usr/lib/systemd/system/auditor_utilization_plugin.service`. A template configuration file is installed at this location `/etc/auditor/auditor_utilization_plugin.yml`. It must be adjusted to match your local setup.
 
 # Auditor Clients
 

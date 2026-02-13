@@ -48,7 +48,6 @@ function install_utilization_report_requirements() {
   python -m venv $ENV_DIR
   source $ENV_DIR/bin/activate
   cd plugins/utilization_tool/
-  pip install -r requirements.txt
 }
 
 function fill_auditor_db() {
@@ -71,7 +70,8 @@ function fill_auditor_db() {
 }
 
 function start_utilization_plugin {
-  python3 src/auditor_utilization_plugin/main.py -c configs/config.yaml --month 11 --year 2024 --oneshot True
+  pip install -e .
+  auditor-utilization-plugin -c configs/config.yaml --month 11 --year 2024 --oneshot
 }
 
 function validate_summary_report {
@@ -79,7 +79,7 @@ function validate_summary_report {
   row2="ilc,0.09464755555555554,1.1925693919429745,0.005143888888888889,0.023661888888888885,0.008589265666666665"
 
 
-  if grep -Fxq "$row1" summary_11_2024.csv; then
+  if grep -Fxq "$row1" auditor_summary_localhost_11_2024.csv; then
     echo "test data Row1 is computed correctly"
   else
     {
@@ -88,7 +88,7 @@ function validate_summary_report {
   }
   fi
 
-  if grep -Fxq "$row2" summary_11_2024.csv; then
+  if grep -Fxq "$row2" auditor_summary_localhost_11_2024.csv; then
     echo "test data Row2 is computed correctly"
   else
     {

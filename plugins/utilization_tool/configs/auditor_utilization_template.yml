@@ -21,6 +21,8 @@
 #  watt_per_core: 4.6
 #  co2_per_kwh: 0.363
 #  interval: 10
+#  file_name: auditor_summary
+#  file_path: /var/lib/auditor_utilization_plugin
 #
 #cluster:
 #  watt_per_core:

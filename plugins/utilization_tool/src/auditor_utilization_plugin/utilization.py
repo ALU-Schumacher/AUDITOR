@@ -4,6 +4,7 @@ import asyncio
 import datetime
 import json
 from datetime import timedelta, timezone
+from pathlib import Path
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -36,7 +37,6 @@ def records_to_df(records):
 
 def record_to_dict(rec):
     my_dict = {}
-    ## initialise dict
     for k, v in rec.items():
         if isinstance(v, str) or isinstance(v, int):
             my_dict[k] = v
@@ -70,7 +70,6 @@ def map_user_name(df, col_name, group_list):
                 voms = name
                 break
         names.append(voms)
-        # print(len(df), len(names))
     df["names"] = names
     return df
 
@@ -105,19 +104,7 @@ def categorize_power(site_name, power_dict):
     return power_dict.get(site_name, None)
 
 
-def override_config(config, args):
-    if args.host:
-        config.auditor.hosts = [args.host]
-    if args.port:
-        config.auditor.port = [args.port]
-    if args.timeout:
-        config.auditor.timeout = args.timeout
-    if args.interval:
-        config.utilisation.interval = args.interval
-    return config
-
-
-async def generate_utilization_report(logger, config, args, client):
+async def generate_utilization_report(logger, config, args, client, host):
     while True:
         today = datetime.datetime.now(datetime.timezone.utc)
 
@@ -140,86 +127,85 @@ async def generate_utilization_report(logger, config, args, client):
                 today.year, today.month, 1, tzinfo=datetime.timezone.utc
             )
 
-        filename = "test.csv"
+        loop_day = start_day
 
-        for i, host in enumerate(config.auditor.hosts):
-            print("Retrieving data from host: ", host)
+        total_records = 0
 
-            loop_day = start_day
+        daily_summaries = []
 
-            total_records = 0
+        while end_day > loop_day:
+            next_day = loop_day + timedelta(days=1)
+            query = build_query(loop_day, next_day)
 
-            daily_summaries = []
-
-            while end_day > loop_day:
-                next_day = loop_day + timedelta(days=1)
-                query = build_query(loop_day, next_day)
-
-                try:
-                    records = client.advanced_query(query)
-                except Exception as e:
-                    print(
-                        f"Error during querying records for {host} on {loop_day}: {e}"
-                    )
-                    raise
-
-                if len(records) == 0:
-                    logger.warning(f"No records on this day {loop_day}")
-                    loop_day = next_day
-                    continue
-
-                total_records += len(records)
-
-                print(
-                    f"Total Number of Records {len(records)} for {loop_day.date()} to {next_day.date()}"
+            try:
+                records = client.advanced_query(query)
+            except Exception as e:
+                logger.exception(
+                    f"Error during querying records for {host} on {loop_day}: {e}"
                 )
-                df = records_to_df(records)
+                raise
 
-                if config.cluster.watt_per_core:
-                    power_cat = list(config.cluster.watt_per_core.keys())[0]
-                    print(f"power_cat {power_cat}")
-                    power_dict = config.cluster.watt_per_core[power_cat]
-                    print(f"power_dict {power_dict}")
-                    df["watt_per_core"] = df[power_cat].apply(
-                        categorize_power, power_dict=power_dict
-                    )
-                else:
-                    df["watt_per_core"] = config.utilisation.watt_per_core
-
-                if filename:
-                    print(f"Storing data in file {filename}...")
-                    df.to_csv(filename)
-
-                if config.utilisation.grouped_list:
-                    raw_col = config.utilisation.groupedby
-                    df = map_user_name(df, raw_col, config.utilisation.grouped_list)
-                    mapped_col = "names"
-                else:
-                    mapped_col = config.utilisation.groupedby
-
-                summary_data = get_stats_by_user(
-                    df,
-                    config.utilisation.co2_per_kwh,
-                    mapped_col,
-                    config.utilisation.grouped_list,
-                )
-                df_sum = pd.DataFrame(summary_data)
-                df_sum["date"] = loop_day.date()
-                daily_summaries.append(df_sum)
-
+            if len(records) == 0:
+                logger.warning(f"No records on this day {loop_day}")
                 loop_day = next_day
+                continue
 
-            if daily_summaries:
-                df_sum_agg = compute_aggregation(daily_summaries)
+            total_records += len(records)
 
-                if config.email.enable_email_report:
-                    await mailing_list(
-                        config.email.smtp_addr, config.email.smtp_port, df_sum_agg
-                    )
+            logger.info(
+                f"Total Number of Records {len(records)} for {loop_day.date()} to {next_day.date()}"
+            )
+            df = records_to_df(records)
 
-                write_to_csv(df_sum_agg, args.month, args.year)
+            if config.cluster.watt_per_core:
+                power_cat = list(config.cluster.watt_per_core.keys())[0]
+                logger.info(f"power_cat {power_cat}")
+                power_dict = config.cluster.watt_per_core[power_cat]
+                logger.info(f"power_dict {power_dict}")
+                df["watt_per_core"] = df[power_cat].apply(
+                    categorize_power, power_dict=power_dict
+                )
+            else:
+                df["watt_per_core"] = config.utilisation.watt_per_core
 
-        print(f"total records -->> {total_records}")
+            if config.utilisation.grouped_list:
+                raw_col = config.utilisation.groupedby
+                df = map_user_name(df, raw_col, config.utilisation.grouped_list)
+                mapped_col = "names"
+            else:
+                mapped_col = config.utilisation.groupedby
+
+            summary_data = get_stats_by_user(
+                df,
+                config.utilisation.co2_per_kwh,
+                mapped_col,
+                config.utilisation.grouped_list,
+            )
+            df_sum = pd.DataFrame(summary_data)
+            df_sum["date"] = loop_day.date()
+            daily_summaries.append(df_sum)
+
+            loop_day = next_day
+
+        if daily_summaries:
+            df_sum_agg = compute_aggregation(daily_summaries, logger)
+
+            if config.email.enable_email_report:
+                await mailing_list(
+                    config.email.smtp_addr, config.email.smtp_port, df_sum_agg
+                )
+
+            write_to_csv(
+                df_sum_agg,
+                host,
+                args.month,
+                args.year,
+                logger,
+                config.utilisation.file_name,
+                config.utilisation.file_path,
+            )
+
+        logger.info(f"total records -->> {total_records}")
 
         if config.oneshot or args.oneshot:
             logger.info("one-shot finished")
@@ -228,7 +214,7 @@ async def generate_utilization_report(logger, config, args, client):
         await asyncio.sleep(config.utilisation.interval)
 
 
-def compute_aggregation(daily_summaries):
+def compute_aggregation(daily_summaries, logger):
     df_sum_total = pd.concat(daily_summaries, ignore_index=True)
 
     # Aggregate over time (sum up all days)
@@ -242,21 +228,29 @@ def compute_aggregation(daily_summaries):
         }
     )
 
-    print("\n=== Aggregated Summary ===")
-    print(df_sum_agg)
+    logger.info("\n=== Aggregated Summary ===")
+    logger.info(df_sum_agg)
 
     return df_sum_agg
 
 
-async def mailing_list(smtp_addr, smtp_port, df_sum_agg):
-    return await send_email(smtp_addr, smtp_port, df_sum_agg)
+async def mailing_list(smtp_addr, smtp_port, df_sum_agg, logger):
+    return await send_email(smtp_addr, smtp_port, df_sum_agg, logger)
 
 
-def write_to_csv(df_sum_agg, month, year):
-    filename = f"summary_{month}_{year}.csv"
+def write_to_csv(df_sum_agg, host, month, year, logger, file_name, file_path):
+    filename = f"{file_name}_{host}_{month}_{year}.csv"
     try:
-        df_sum_agg.to_csv(filename, index=False)
-        print(f"Successfully wrote file: {filename}")
+        base_dir = Path.cwd() if not file_path else Path(file_path)
+
+        base_dir.mkdir(parents=True, exist_ok=True)
+
+        full_path = base_dir / filename
+
+        df_sum_agg.to_csv(full_path, index=False)
+
+        logger.info(f"Successfully wrote file: {full_path}")
+
     except Exception as e:
-        print(f"Error writing CSV file {filename}: {e}")
+        logger.exception(f"Error writing CSV file {filename}: {e}")
         raise

@@ -19,14 +19,31 @@ class EmailServerConfig(BaseModel):
 
 
 class AuditorConfig(BaseModel):
-    hosts: List[str]
-    port: List[int]
-    timeout: int
-    site_meta_field: Union[str, List[str]]
-    use_tls: bool
-    ca_cert_path: Optional[str] = None
-    client_cert_path: Optional[str] = None
-    client_key_path: Optional[str] = None
+    hosts: List[str] = Field(..., description="List of auditor host machines")
+    port: List[int] = Field(
+        ..., description="List of ports corresponding to each AUDITOR host"
+    )
+    timeout: int = Field(
+        ..., description="timeout (in seconds) for requests sent to AUDITOR"
+    )
+    site_meta_field: Union[str, List[str]] = Field(
+        ...,
+        description="Site meta fields to filter sites (can be a string or a list of strings [site_id, site])",
+    )
+    use_tls: bool = Field(
+        ..., description="Enable TLS for connection to the AUDITOR service"
+    )
+    ca_cert_path: Optional[str] = Field(
+        None, description="Path to the CA certificate file"
+    )
+    client_cert_path: Optional[str] = Field(
+        None,
+        description="Path to the client certificate file for mutual TLS authentication with the AUDITOR service",
+    )
+    client_key_path: Optional[str] = Field(
+        None,
+        description="Path to the client private key file corresponding to the client certificate for mutual TLS",
+    )
 
     @model_validator(mode="after")
     def check_tls_config(self):
@@ -54,6 +71,13 @@ class UtilisationConfig(BaseModel):
     watt_per_core: float = Field(..., description="Watts per CPU core")
     co2_per_kwh: float = Field(..., description="CO2 emitted per kWh (kg)")
     interval: int = Field(..., description="Reporting interval in seconds")
+    file_name: Optional[str] = Field(
+        default="auditor",
+        description="Prefix of filename that stores the summary by month",
+    )
+    file_path: Optional[str] = Field(
+        default=".", description="File path to store the summary CSV"
+    )
 
 
 class ClusterConfig(BaseModel):
