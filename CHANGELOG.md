@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Apel plugin: Add total reported numbers to log of republish script ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Add tests for Python 3.14 ([@dirksammel](https://github.com/dirksammel))
+- Utilization-report: Add Utilization report ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR: Fix clippy and cargo deny issues ([@dirksammel](https://github.com/dirksammel)) 
