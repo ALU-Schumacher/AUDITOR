@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update setuptools from 80.9.0 to 82.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.21.0 to 0.22.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.18.1 to 1.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update x509-parser from 0.18.0 to 0.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
