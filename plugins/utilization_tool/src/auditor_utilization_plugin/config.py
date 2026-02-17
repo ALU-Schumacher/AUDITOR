@@ -65,8 +65,8 @@ class AuditorConfig(BaseModel):
         return self
 
 
-class UtilisationConfig(BaseModel):
-    groupedby: str = Field(..., description="Field to group utilisation data by")
+class UtilizationConfig(BaseModel):
+    groupedby: str = Field(..., description="Field to group utilization data by")
     grouped_list: List[str] = Field(..., description="List of groups to include")
     watt_per_core: float = Field(..., description="Watts per CPU core")
     co2_per_kwh: float = Field(..., description="CO2 emitted per kWh (kg)")
@@ -93,7 +93,7 @@ class ClusterConfig(BaseModel):
 class Config(BaseModel):
     logging: LoggingConfig
     auditor: AuditorConfig
-    utilisation: UtilisationConfig
+    utilization: UtilizationConfig
     cluster: ClusterConfig
     oneshot: bool = False
     email: EmailServerConfig
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     print(f"Logging to: {cfg.logging.file}")
     print(f"Auditor hosts: {cfg.auditor.hosts}")
     print(f"Sites: {cfg.cluster.sites}")
-    print(f"Utilisation groups: {cfg.utilisation.grouped_list}")
+    print(f"Utilization groups: {cfg.utilization.grouped_list}")

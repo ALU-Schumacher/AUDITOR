@@ -1323,7 +1323,9 @@ auditor:
   use_tls: False
   ca_cert_path: /path/rootCA.pem
   client_cert_path: /path/client-cert.pem
-  client_key_path: /path/client-key.pem 
+  client_key_path: /path/client-key.pem
+  file_name: auditor_summary
+  file_path: 
 
 utilisation:
   groupedby: VOMS
@@ -1345,27 +1347,29 @@ email:
   smtp_port: 587
 ```
 
-| Parameter                            | Default       | Description                                                                                    |
-| ------------------------------------ | ------------- | ---------------------------------------------------------------------------------------------- |
-| `logging.level`                      | `INFO`        | Logging verbosity level (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`)                             |
-| `logging.file`                       | `app.log`     | Path to the log file where application logs are written                                        |
-| `auditor.hosts`                      | `[localhost]` | List of hostnames or IP addresses of the `AUDITOR` instances                                   |
-| `auditor.port`                       | `[8000]`      | List of ports corresponding to each `AUDITOR` host                                             |
-| `auditor.timeout`                    | `60`          | Timeout (in seconds) for requests sent to the `AUDITOR`                                        |
-| `auditor.site_meta_field`            | `None`        | Site meta fields to filter sites (can be a string or a list of strings [site_id, site])        |
-| `auditor.use_tls`                    | `False`       | Enable TLS for connections to the `AUDITOR` service                                            |
-| `auditor.ca_cert_path`               | `None`        | Path to the CA certificate used to verify the `AUDITOR` server                                 |
-| `auditor.client_cert_path`           | `None`        | Path to the client TLS certificate                                                             |
-| `auditor.client_key_path`            | `None`        | Path to the private key corresponding to the client certificate                                |
-| `utilisation.groupedby`              | `VOMS`        | Attribute used to group utilisation metrics                                                    |
-| `utilisation.grouped_list`           | `[]`          | List of VOMS for utilisation accounting                                                        |
-| `utilisation.watt_per_core`          | `4.6`         | Default power consumption (in watts) per CPU core                                              |
-| `utilisation.co2_per_kwh`            | `0.363`       | CO₂ emission factor in kg CO₂ per kWh                                                          |
-| `utilisation.interval`               | `10`          | Time interval (in seconds) used for utilisation aggregation                                    |
-| `cluster.watt_per_core.site`         | `{}`          | Site-specific values for watt-per-core power consumption                                       |
-| `email.enable_email_report`          | `False`       | Enable or disable email reporting                                                              |
-| `email.smtp_server`                  | `None`        | SMTP server used to send email reports                                                         |
-| `email.smtp_port`                    | `587`         | SMTP server port                                                                               |
+| Parameter                            | Default          | Description                                                                                    |
+| ------------------------------------ | ---------------- | ---------------------------------------------------------------------------------------------- |
+| `logging.level`                      | `INFO`           | Logging verbosity level (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`)                             |
+| `logging.file`                       | `app.log`        | Path to the log file where application logs are written                                        |
+| `auditor.hosts`                      | `[localhost]`    | List of hostnames or IP addresses of the `AUDITOR` instances                                   |
+| `auditor.port`                       | `[8000]`         | List of ports corresponding to each `AUDITOR` host                                             |
+| `auditor.timeout`                    | `60`             | Timeout (in seconds) for requests sent to the `AUDITOR`                                        |
+| `auditor.site_meta_field`            | `None`           | Site meta fields to filter sites (can be a string or a list of strings [site_id, site])        |
+| `auditor.use_tls`                    | `False`          | Enable TLS for connections to the `AUDITOR` service                                            |
+| `auditor.ca_cert_path`               | `None`           | Path to the CA certificate used to verify the `AUDITOR` server                                 |
+| `auditor.client_cert_path`           | `None`           | Path to the client TLS certificate                                                             |
+| `auditor.client_key_path`            | `None`           | Path to the private key corresponding to the client certificate                                |
+| `utilisation.groupedby`              | `VOMS`           | Attribute used to group utilisation metrics                                                    |
+| `utilisation.grouped_list`           | `[]`             | List of VOMS for utilisation accounting                                                        |
+| `utilisation.watt_per_core`          | `4.6`            | Default power consumption (in watts) per CPU core                                              |
+| `utilisation.co2_per_kwh`            | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                          |
+| `utilisation.interval`               | `10`             | Time interval (in seconds) used for utilisation aggregation                                    |
+| `utilization.file_name`              | `auditor_summary`| File name for the CSV summary file                                                             |
+| `utilization.file_path`              | ``               | Path directory to store the summary                                                            |
+| `cluster.watt_per_core.site`         | `{}`             | Site-specific values for watt-per-core power consumption                                       |
+| `email.enable_email_report`          | `False`          | Enable or disable email reporting                                                              |
+| `email.smtp_server`                  | `None`           | SMTP server used to send email reports                                                         |
+| `email.smtp_port`                    | `587`            | SMTP server port                                                                               |
 
 
 The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.

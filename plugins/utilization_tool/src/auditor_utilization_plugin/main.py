@@ -8,19 +8,21 @@ import asyncio
 import logging
 import signal
 import sys
+from logging import Logger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 import yaml
 from pyauditor import AuditorClientBuilder
 
-from auditor_utilization_plugin.config import Config
+from auditor_utilization_plugin.config import AuditorConfig, Config
 from auditor_utilization_plugin.utilization import generate_utilization_report
 
 TRACE = logging.DEBUG - 5
 
 
-def load_config(path):
+def load_config(path: Path) -> Dict[str, Any]:
     path = Path(path)
     try:
         with path.open("r", encoding="utf-8") as file:
@@ -46,11 +48,11 @@ def override_config(config, args):
     if args.timeout:
         config["auditor"]["timeout"] = args.timeout
     if args.interval:
-        config["utilisation"]["interval"] = args.interval
+        config["utilization"]["interval"] = args.interval
     return config
 
 
-def setup_logging(config):
+def setup_logging(config: Config) -> Logger:
     """Set up global logging."""
     log_level = getattr(logging, config.logging.level.upper(), logging.INFO)
     log_file = config.logging.file
@@ -80,7 +82,7 @@ def setup_logging(config):
     return logger
 
 
-def iter_endpoints(auditor_cfg):
+def iter_endpoints(auditor_cfg: AuditorConfig) -> List[Tuple[str, int]]:
     hosts = list(auditor_cfg.hosts)
     ports = list(auditor_cfg.port)
 
@@ -92,7 +94,9 @@ def iter_endpoints(auditor_cfg):
     return list(zip(hosts, ports))
 
 
-def build_auditor_client(auditor_cfg, host, port):
+def build_auditor_client(
+    auditor_cfg: AuditorConfig, host: str, port: int
+) -> AuditorClientBuilder:
     """Create and configure the Auditor client."""
     builder = AuditorClientBuilder()
 
@@ -111,7 +115,9 @@ def build_auditor_client(auditor_cfg, host, port):
     return client
 
 
-async def run_one_endpoint(logger, config, args, host, port):
+async def run_one_endpoint(
+    logger: Logger, config: Config, args: argparse.Namespace, host: str, port: int
+) -> None:
     client = build_auditor_client(config.auditor, host, port)
 
     logger.info(f"Connected to auditor {host} {port}")
@@ -163,7 +169,7 @@ Outputs a CSV summary
     config = Config.from_yaml(args.config)
 
     logger = setup_logging(config)
-    logger.info("Starting utilization reporter")
+    logger.info("Starting utilization plugin")
 
     endpoints = iter_endpoints(config.auditor)
 
@@ -175,7 +181,7 @@ Outputs a CSV summary
 
     await asyncio.gather(*tasks)
 
-    logger.critical("Utilization reporter stopped")
+    logger.critical("Utilization plugin stopped")
 
 
 def shutdown():
