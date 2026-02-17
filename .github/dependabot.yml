@@ -21,6 +21,12 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 50
     rebase-strategy: "disabled"
+  - package-ecosystem: "pip"
+    directory: "/plugins/utilization_tool"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    rebase-strategy: "disabled"
   # GitHub action
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -28,3 +34,4 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 50
     rebase-strategy: "disabled"
+

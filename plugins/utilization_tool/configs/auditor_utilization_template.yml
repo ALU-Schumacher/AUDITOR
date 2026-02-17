@@ -15,7 +15,7 @@
 #  client_cert_path: /path/client-cert.pem
 #  client_key_path: /path/client-key.pem 
 #
-#utilisation:
+#utilization:
 #  groupedby: VOMS
 #  grouped_list: [production, lcgadmin, ilc, ops]
 #  watt_per_core: 4.6

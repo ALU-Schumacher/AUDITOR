@@ -101,3 +101,50 @@ jobs:
           files: |
             collectors/htcondor/dist/*
             collectors/htcondor/*rpm
+
+# release-utilization-plugin:
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: ./plugins/utilization_tool
+#    permissions:
+#      id-token: write
+#      contents: write
+#    steps:
+#      - name: Check out repo
+#        uses: actions/checkout@v6
+#      - name: Set up Python
+#        uses: actions/setup-python@v6
+#        with:
+#          python-version: ${{ inputs.python-version }}
+#      - name: Install dependencies
+#        run: |
+#          pip install --upgrade pip
+#          pip install .[build] uv rpmvenv
+#      - name: Build binary wheel and source tarball
+#        run: python3 -m build --sdist --wheel --outdir dist/
+#      - name: Publish to PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          packages-dir: plugins/utilization_tool/dist/
+#          attestations: false
+#      - name: Build RPM
+#        uses: nick-fields/retry@v3
+#        with:
+#          max_attempts: 100
+#          timeout_seconds: 20
+#          command: |
+#            cd /home/runner/work/AUDITOR/AUDITOR/plugins/utilization_tool
+#            uv pip compile pyproject.toml -o requirements.txt
+#            echo "." >> requirements.txt
+#            cat requirements.txt
+#            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+#          new_command_on_retry: |
+#            cd /home/runner/work/AUDITOR/AUDITOR/plugins/utilization_tool
+#            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+#      - name: Publish to GitHub
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          files: |
+#            plugins/utilization_tool/dist/*
+#            plugins/utilization_tool/*rpm
