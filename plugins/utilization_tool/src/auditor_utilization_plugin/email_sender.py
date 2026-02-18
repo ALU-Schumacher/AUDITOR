@@ -7,12 +7,13 @@ from logging import Logger
 import pandas as pd
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 async def send_email(
     smtp_server: str, smtp_port: int, df_sum: pd.DataFrame, logger: Logger
 ) -> None:
     try:
-        load_dotenv()
         sender_email = os.getenv("SENDER_EMAIL")
         app_password = os.getenv("PASSWORD")
         receiver_email = os.getenv("RECEIVER_EMAIL")

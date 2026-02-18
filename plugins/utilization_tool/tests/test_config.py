@@ -17,6 +17,11 @@ SAMPLE_YAML = {
         "timeout": 60,
         "site_meta_field": "site_id",
         "use_tls": False,
+        "component_fields_in_record": {
+            "cores": "Cores",
+            "benchmark": "HEPscore23",
+            "total_cpu": "TotalCPU",
+        },
     },
     "utilization": {
         "groupedby": "VOMS",
@@ -51,6 +56,16 @@ def test_load_config_from_yaml(temp_yaml_file):
     assert cfg.utilization.groupedby == "VOMS"
     assert cfg.cluster.sites == ["site1", "site2", "site3"]
     assert cfg.oneshot is False
+
+
+def test_component_fields_loaded(temp_yaml_file):
+    cfg = Config.from_yaml(temp_yaml_file)
+
+    fields = cfg.auditor.component_fields_in_record
+
+    assert fields.cores == "Cores"
+    assert fields.benchmark == "HEPscore23"
+    assert fields.total_cpu == "TotalCPU"
 
 
 def test_tls_validation_requires_parameters():

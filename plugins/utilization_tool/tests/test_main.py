@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from auditor_utilization_plugin.config import AuditorConfig
+from auditor_utilization_plugin.config import AuditorConfig, ComponentFieldsConfig
 from auditor_utilization_plugin.main import (
     build_auditor_client,
     iter_endpoints,
@@ -18,6 +18,11 @@ SAMPLE_CONFIG = {
         "timeout": 60,
         "site_meta_field": "site_id",
         "use_tls": False,
+        "component_fields_in_record": {
+            "cores": "Cores",
+            "benchmark": "HEPscore23",
+            "total_cpu": "TotalCPU",
+        },
     }
 }
 
@@ -63,6 +68,9 @@ def test_iter_endpoints_success():
         timeout=60,
         site_meta_field="site_id",
         use_tls=False,
+        component_fields_in_record=ComponentFieldsConfig(
+            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+        ),
     )
 
     endpoints = iter_endpoints(auditor_cfg)
@@ -77,6 +85,9 @@ def test_iter_endpoints_mismatch():
         timeout=60,
         site_meta_field="site_id",
         use_tls=False,
+        component_fields_in_record=ComponentFieldsConfig(
+            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+        ),
     )
 
     with pytest.raises(ValueError):
@@ -97,6 +108,9 @@ def test_build_auditor_client(mock_builder):
         timeout=60,
         site_meta_field="site_id",
         use_tls=False,
+        component_fields_in_record=ComponentFieldsConfig(
+            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+        ),
     )
 
     client = build_auditor_client(auditor_cfg, "localhost", 8001)

@@ -13,7 +13,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from pyauditor import AuditorClientBuilder, Operator, QueryBuilder, Value
 
-from auditor_utilization_plugin.config import Config
+from auditor_utilization_plugin.config import ComponentFieldsConfig, Config
 from auditor_utilization_plugin.email_sender import send_email
 
 
@@ -81,7 +81,11 @@ def map_user_name(
 
 
 def get_stats_by_user(
-    df_in: pd.DataFrame, co2: float, grouped: str, grouped_list: List[str]
+    df_in: pd.DataFrame,
+    co2: float,
+    grouped: str,
+    grouped_list: List[str],
+    component_fields_in_record: ComponentFieldsConfig,
 ) -> Dict[str, List[Any]]:
     data: Dict[str, List[Any]] = {
         "user": [],
@@ -91,14 +95,30 @@ def get_stats_by_user(
         "power [kWh]": [],
         "co2 [kg]": [],
     }
+    print(component_fields_in_record)
     for user in df_in[grouped].dropna().unique():
         df = df_in[df_in[grouped].str.contains(user)]
         if "/" in user:
             user = rename_user(user)
-        wall_work = (df.HEPscore23 * df.Cores * df.runtime / 3600.0).sum() / 1000.0
-        wall_time = (df.Cores * df.runtime / 3600.0).sum() / 1000.0
-        cpu_eff = df.TotalCPU.sum() / (df.runtime * df.Cores).sum()
-        power = (df.watt_per_core * df.Cores * df.runtime / 3600.0).sum() / 1000.0
+        wall_work = (
+            df[component_fields_in_record.benchmark]
+            * df[component_fields_in_record.cores]
+            * df.runtime
+            / 3600.0
+        ).sum() / 1000.0
+        wall_time = (
+            df[component_fields_in_record.cores] * df.runtime / 3600.0
+        ).sum() / 1000.0
+        cpu_eff = (
+            df[component_fields_in_record.total_cpu].sum()
+            / (df.runtime * df[component_fields_in_record.cores]).sum()
+        )
+        power = (
+            df.watt_per_core
+            * df[component_fields_in_record.cores]
+            * df.runtime
+            / 3600.0
+        ).sum() / 1000.0
         data["user"].append(user)
         data["khs23h"].append(wall_work)
         data["cpu_eff"].append(cpu_eff)
@@ -195,6 +215,7 @@ async def generate_utilization_report(
                 config.utilization.co2_per_kwh,
                 mapped_col,
                 config.utilization.grouped_list,
+                config.auditor.component_fields_in_record,
             )
             df_sum = pd.DataFrame(summary_data)
             df_sum["date"] = loop_day.date()
