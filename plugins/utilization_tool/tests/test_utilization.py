@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 import pandas as pd
 import pytest
 
+from auditor_utilization_plugin.config import ComponentFieldsConfig
 from auditor_utilization_plugin.utilization import (
     categorize_power,
     get_stats_by_user,
@@ -45,6 +46,13 @@ def config_values():
     }
 
 
+@pytest.fixture
+def config_component_values():
+    return ComponentFieldsConfig(
+        cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+    )
+
+
 def test_record_to_dict(sample_json_record):
     d = record_to_dict(sample_json_record)
     assert d["record_id"].startswith("record")
@@ -82,7 +90,9 @@ def test_categorize_power(config_values):
     assert categorize_power("unknown", d) is None
 
 
-def test_get_stats_by_user_with_config(sample_df, config_values):
+def test_get_stats_by_user_with_config(
+    sample_df, config_values, config_component_values
+):
     df = sample_df.copy()
     df["watt_per_core"] = config_values["watt_per_core_default"]
 
@@ -91,6 +101,7 @@ def test_get_stats_by_user_with_config(sample_df, config_values):
         config_values["co2_per_kwh"],
         grouped="VOMS",
         grouped_list=config_values["grouped_list"],
+        component_fields_in_record=config_component_values,
     )
 
     # Only one user in this sample

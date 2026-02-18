@@ -167,6 +167,7 @@ Outputs a CSV summary
     config = override_config(config, args)
 
     config = Config.from_yaml(args.config)
+    # config = Config(**config)
 
     logger = setup_logging(config)
     logger.info("Starting utilization plugin")
