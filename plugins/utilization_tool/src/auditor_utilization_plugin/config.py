@@ -18,6 +18,12 @@ class EmailServerConfig(BaseModel):
     smtp_port: int = Field(..., description="SMTP port")
 
 
+class ComponentFieldsConfig(BaseModel):
+    cores: str
+    benchmark: str
+    total_cpu: str
+
+
 class AuditorConfig(BaseModel):
     hosts: List[str] = Field(..., description="List of auditor host machines")
     port: List[int] = Field(
@@ -43,6 +49,10 @@ class AuditorConfig(BaseModel):
     client_key_path: Optional[str] = Field(
         None,
         description="Path to the client private key file corresponding to the client certificate for mutual TLS",
+    )
+    component_fields_in_record: ComponentFieldsConfig = Field(
+        ...,
+        description="Field names of keys from component section of Record such as HEPScore23, TotalCPU and cores",
     )
 
     @model_validator(mode="after")

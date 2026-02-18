@@ -13,7 +13,11 @@
 #  use_tls: False
 #  ca_cert_path: /path/rootCA.pem
 #  client_cert_path: /path/client-cert.pem
-#  client_key_path: /path/client-key.pem 
+#  client_key_path: /path/client-key.pem
+#  component_fields_in_record:
+#   cores: Cores
+#   benchmark: HEPscore23
+#   total_cpu: TotalCPU
 #
 #utilization:
 #  groupedby: VOMS
