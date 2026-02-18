@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update casbin from 2.15.0 to 2.20.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.43.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update futures from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update futures-util from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update parquet from 57.0.0 to 57.3.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
