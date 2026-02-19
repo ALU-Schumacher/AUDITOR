@@ -19,7 +19,7 @@ readme = "README.md"
 [project.optional-dependencies]
 style = [
       "black==25.11.0",
-      "ruff==0.15.1",
+      "ruff==0.15.2",
 ]
 tests = [
       "pytest==8.4.2",
