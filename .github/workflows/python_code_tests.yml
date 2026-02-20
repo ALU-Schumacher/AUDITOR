@@ -63,3 +63,58 @@ jobs:
           pip install -e .[tests]
       - name: Run mypy
         run: mypy .
+  unit-tests-utilization-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/utilization_tool
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Download wheel
+        uses: actions/download-artifact@v7
+        with:
+          path: ./plugins/utilization_tool
+          name: pyauditor-wheels-linux-${{ inputs.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install *.whl
+          pip install -e .[tests]
+      - name: Run pytest
+        run: pytest
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./plugins/utilization_tool/lcov.info
+          fail_ci_if_error: true
+          token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
+  mypy-utilization-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./plugins/utilization_tool
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Download wheel
+        uses: actions/download-artifact@v7
+        with:
+          path: ./plugins/utilization_tool
+          name: pyauditor-wheels-linux-${{ inputs.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install *.whl
+          pip install -e .[tests]
+      - name: Run mypy
+        run: mypy .
+

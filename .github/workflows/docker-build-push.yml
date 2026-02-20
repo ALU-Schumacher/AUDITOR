@@ -26,6 +26,7 @@ jobs:
           - auditor
           - auditor-apel-plugin
           - auditor-kubernetes-collector
+          - auditor-utilization-report
 
     steps:
       - name: Checkout repository

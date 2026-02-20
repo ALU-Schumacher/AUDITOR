@@ -1,0 +1,76 @@
+{
+    "extensions": {
+        "enabled": [
+            "blocks",
+            "python_venv",
+            "file_extras",
+            "file_permissions"
+        ]
+    },
+    "core": {
+        "license": "BSD-2-Clause-Patent",
+        "name": "auditor_utilization_plugin",
+        "summary": "AUDITOR plugin to create cluster utilization report",
+        "version": "0.10.1"
+    },
+    "python_venv": {
+        "name": "venv",
+        "path": "/opt/auditor_utilization_plugin",
+        "require_setup_py": false
+    },
+    "blocks": {
+        "pre": [
+            "%define _build_id_links none",
+            "if [ \"$1\" -eq 1 ]; then",
+            "  getent group auditor || groupadd --system auditor",
+            "  getent passwd auditor-utilization-plugin || useradd --system --no-create-home --gid auditor --shell /sbin/nologin auditor-utilization-plugin",
+            "fi"
+        ],
+        "post": [
+            "if [ \"$1\" -eq 1 ]; then",
+            "  systemctl --no-reload preset auditor_utilization_plugin",
+            "fi",
+            "if [ \"$1\" -eq 2 ]; then",
+            "  systemctl set-property auditor_utilization_plugin Markers=+needs-restart",
+            "fi"
+        ],
+        "preun": [
+            "if [ \"$1\" -eq 0 ]; then",
+            "  systemctl --no-reload disable --now --no-warn auditor_utilization_plugin",
+            "fi"
+        ],
+        "postun": [
+            "if [ \"$1\" -eq 0 ]; then",
+            "  runuser -u auditor-utilization-plugin -- rm /var/lib/auditor_utilization_plugin/*",
+            "  rmdir /var/lib/auditor_utilization_plugin/ || true",
+            "  rmdir /etc/auditor/ || true",
+            "  rmdir /opt/auditor_utilization_plugin || true",
+            "  userdel auditor-utilization-plugin",
+            "  groupdel auditor || true",
+            "fi"
+        ],
+        "install": "install -d -D -m 0750 %{buildroot}/var/lib/auditor_utilization_plugin",
+        "files": "%dir %attr(0750 auditor-utilization-plugin auditor) /var/lib/auditor_utilization_plugin",
+        "desc": "AUDITOR plugin to create cluster utilization report",
+        "changelog": [
+            "* Wed Feb 4 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.1\n - First version in a package"
+        ]
+    },
+    "file_permissions": {
+        "user": "root",
+        "group": "root"
+    },
+    "file_extras": {
+        "files": [
+            {
+                "src": "unit_files/auditor_utilization_plugin.service",
+                "dest": "/usr/lib/systemd/system/auditor_utilization_plugin.service"
+            },
+            {
+                "src": "configs/auditor_utilization_template.yml",
+                "dest": "/etc/auditor/auditor_utilization_plugin.yml",
+                "config": "noreplace"
+            }
+        ]
+    }
+}

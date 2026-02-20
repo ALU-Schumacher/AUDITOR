@@ -1306,6 +1306,105 @@ Via `min_priority` and `max_priority`, lower and upper limits on the computed pr
 * `FullSpread`:  This mode will spread the resources on the full range given by `min_priority` and `max_priority`, such that the group with the least provided resources will be assigned a priority equal to `min_priority` and the group with the most provided resources will be assigned a priority equal to `max_priority`. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorities of two consecutive runs can be substantially different, leading to large jumps in priorities.
 * `ScaledBySum`: Computes the priorities such that `max_priority` is equal to the sum of all provide resources plus `min_priority`. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources.
 
+
+# Utilization Plugin
+Utilization Plugin is a tool to create monthly summary of user, khs23h, cpu_eff, corehours, power [kWh], co2 [kg].
+
+```yaml
+logging:
+  level: INFO
+  file: app.log
+
+auditor:
+  hosts: [localhost]
+  port: [8000]
+  timeout: 60
+  site_meta_field: site_id # can also be a list, e.g. [site_id, site]
+  use_tls: False
+  ca_cert_path: /path/rootCA.pem
+  client_cert_path: /path/client-cert.pem
+  client_key_path: /path/client-key.pem
+  file_name: auditor_summary
+  file_path: 
+
+utilisation:
+  groupedby: VOMS
+  grouped_list: [production, lcgadmin, ilc, ops]
+  watt_per_core: 4.6
+  co2_per_kwh: 0.363
+  interval: 10
+
+cluster:
+  watt_per_core:
+    site:
+      site-a: 4.6
+      site-b: 4.3
+      stie-c: 4.1
+
+email:
+  enable_email_report: False
+  smtp_server: mail.uni-freiburg.de
+  smtp_port: 587
+```
+
+| Parameter                                     | Default          | Description                                                                                    |
+| ----------------------------------------      | ---------------- | ---------------------------------------------------------------------------------------------- |
+| `logging.level`                               | `INFO`           | Logging verbosity level (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`)                             |
+| `logging.file`                                | `app.log`        | Path to the log file where application logs are written                                        |
+| `auditor.hosts`                               | `[localhost]`    | List of hostnames or IP addresses of the `AUDITOR` instances                                   |
+| `auditor.port`                                | `[8000]`         | List of ports corresponding to each `AUDITOR` host                                             |
+| `auditor.timeout`                             | `60`             | Timeout (in seconds) for requests sent to the `AUDITOR`                                        |
+| `auditor.site_meta_field`                     | `None`           | Site meta fields to filter sites (can be a string or a list of strings [site_id, site])        |
+| `auditor.use_tls`                             | `False`          | Enable TLS for connections to the `AUDITOR` service                                            |
+| `auditor.ca_cert_path`                        | `None`           | Path to the CA certificate used to verify the `AUDITOR` server                                 |
+| `auditor.client_cert_path`                    | `None`           | Path to the client TLS certificate                                                             |
+| `auditor.client_key_path`                     | `None`           | Path to the private key corresponding to the client certificate                                |
+| `auditor.component_fields_in_record.cores`    | `Cores`          | Component field key of the record that specifies the cores                                     |
+| `auditor.component_fields_in_record.benchmark`| `HEPscore23`     | Component field key of the record that specifies the benchmark score                           |
+| `auditor.component_fields_in_record.total_cpu`| `TotalCPU`       | Component field key of the record that specifies the total cpu                                 |
+| `utilisation.groupedby`                       | `VOMS`           | Attribute used to group utilisation metrics                                                    |
+| `utilisation.grouped_list`                    | `[]`             | List of VOMS for utilisation accounting                                                        |
+| `utilisation.watt_per_core`                   | `4.6`            | Default power consumption (in watts) per CPU core                                              |
+| `utilisation.co2_per_kwh`                     | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                          |
+| `utilisation.interval`                        | `10`             | Time interval (in seconds) used for utilisation aggregation                                    |
+| `utilization.file_name`                       | `auditor_summary`| File name for the CSV summary file                                                             |
+| `utilization.file_path`                       | ``               | Path directory to store the summary                                                            |
+| `cluster.watt_per_core.site`                  | `{}`             | Site-specific values for watt-per-core power consumption                                       |
+| `email.enable_email_report`                   | `False`          | Enable or disable email reporting                                                              |
+| `email.smtp_server`                           | `None`           | SMTP server used to send email reports                                                         |
+| `email.smtp_port`                             | `587`            | SMTP server port                                                                               |
+
+
+The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created
+```yaml
+SENDER_EMAIL = "example@gmail.com"
+PASSWORD = "password"
+RECEIVER_EMAIL = "example@gmail.com"
+```
+
+The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
+If run as oneshot, then you can specify the particular month and the year that you want to generate the report using `--month` and `--year` options
+
+### pip
+pip package can be installed by `pip install auditor-utilization-plugin` and then run `auditor-utilization-plugin -c config.yaml` to run it as a service.
+To run it as oneshot for a particular month, `auditor-utilization-plugin -c config.yaml --month 9 --year 2025 --oneshot`
+
+### Docker
+
+Docker can be used to run as a service or one-shot using the command below.
+
+```
+docker run --rm --add-host=host.docker.internal:host-gateway -v "./config_folder:/app/" -v "$PWD/output:/data" aluschumacher/auditor-utilization-plugin:edge auditor-utilization-plugin -c /app/config.yaml
+```
+
+In this example, config_folder contains the config.yaml file.
+
+```$PWD/output:/data``` is dir path to store the summary csv. If this is used, then specify the file_path in the config as `/data`.
+This is an example and can be changed to any dir you want. Make sure to also specify the same dir in the config file.
+
+### rpm
+The RPM installs a Python virtual environment including all dependencies into `/opt/auditor_utilization_plugin`. After installation, a systemd unit file is available at: `/usr/lib/systemd/system/auditor_utilization_plugin.service`. A template configuration file is installed at this location `/etc/auditor/auditor_utilization_plugin.yml`. It must be adjusted to match your local setup.
+
 # Auditor Clients
 
 To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
@@ -1345,6 +1444,7 @@ The individual endpoints are further detailed down below.
   In the event of an invalid query string, such as the inclusion of an unsupported variable, the server responds with an error (`400 BAD REQUEST`).
 
 In the event of unforeseen errors, the server will respond with a `500 INTERNAL SERVER ERROR`.
+
 
 # TLS Certificate Generation Guide
 The following are the guidelines for setting up the certificates for TLS setup. You can change and configure according to your requirements like the encryption type and the validity days for the certificate. 
