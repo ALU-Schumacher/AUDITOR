@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actions/download-artifact from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/upload-artifact from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.11.0 to 4.13.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update anyhow from 1.0.100 to 1.0.101 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update anyhow from 1.0.100 to 1.0.102 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow from 57.0.0 to 58.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 57.0.0 to 58.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.9.0 to 25.11.0 ([@dirksammel](https://github.com/dirksammel))
