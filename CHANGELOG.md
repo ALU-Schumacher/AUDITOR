@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update build from 1.3.0 to 1.4.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update casbin from 2.15.0 to 2.20.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.43.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update chrono from 0.4.42 to 0.4.43 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update futures from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update futures-util from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
