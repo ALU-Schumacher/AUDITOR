@@ -43,7 +43,7 @@ once_cell = "1.21.3"
 opentelemetry = "0.23.0"
 opentelemetry-prometheus = "0.16.0"
 opentelemetry_sdk = "0.23.0"
-parquet = "57"
+parquet = "58"
 prometheus = "0.13.4"
 prometheus-http-query = { version = "0.8.0", default-features = false }
 pyo3 = { version = "0.27.2", features = ["chrono", "extension-module", "anyhow"] }
