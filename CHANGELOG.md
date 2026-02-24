@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update futures from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update futures-util from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update jiff from 0.2.18 to 0.2.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update k8s-openapi from 0.21.1 to 0.27.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update kube from 0.88.1 to 3.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
