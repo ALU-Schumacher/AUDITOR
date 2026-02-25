@@ -95,7 +95,7 @@ def get_stats_by_user(
         "power [kWh]": [],
         "co2 [kg]": [],
     }
-    print(component_fields_in_record)
+
     for user in df_in[grouped].dropna().unique():
         df = df_in[df_in[grouped].str.contains(user)]
         if "/" in user:
