@@ -377,7 +377,7 @@ async fn data_validation(
 
     let converted_count: i64 = record_count.try_into().expect("Conversion failed");
 
-    let row = sqlx::query("SELECT COUNT(*) AS count FROM auditor_accounting WHERE stop_time > $1::timestamptz and stop_time <= $2::timestamptz")
+    let row = sqlx::query("SELECT COUNT(*) AS count FROM auditor_accounting WHERE stop_time >= $1::timestamptz and stop_time < $2::timestamptz")
             .bind(a)
             .bind(b)
             .fetch_one(&pool)
