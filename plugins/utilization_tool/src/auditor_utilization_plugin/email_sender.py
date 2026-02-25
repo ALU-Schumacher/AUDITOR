@@ -23,11 +23,11 @@ async def send_email(
 
         html_table = df_sum.to_html(index=False, border=0, justify="center")
 
-        subject = "Weekly Utilisation Report"
+        subject = "Monthly Utilisation Report"
         body_html = f"""
         <html>
           <body>
-            <h2>Weekly Utilisation Summary</h2>
+            <h2>Monthly Utilisation Summary</h2>
             {html_table}
           </body>
         </html>
