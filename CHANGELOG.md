@@ -60,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3-async-runtimes from 0.24.0 to 0.27.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update quickcheck from 1.0.3 to 1.1.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update quickcheck_macros from 1.1.0 to 1.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update rand from 0.9.2 to 0.10.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update rand_distr from 0.5.1 to 0.6.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update regex from 1.12.2 to 1.12.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update reqwest from 0.12.24 to 0.12.28 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.14.2 to 0.15.4 ([@dirksammel](https://github.com/dirksammel))
