@@ -90,7 +90,7 @@ jobs:
       - name: Save Docker image as tarball
         run: docker save aluschumacher/${{ matrix.containers }}:${{ steps.meta.outputs.version }} -o ${{ matrix.containers }}.tar
       - name: Upload tarball
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.containers }}-container-tar
           path: ${{ matrix.containers }}.tar

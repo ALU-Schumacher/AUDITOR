@@ -42,7 +42,7 @@ jobs:
           args: --release -o dist --interpreter python${{ inputs.python-version }} --manifest-path pyauditor/Cargo.toml
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: dist
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
