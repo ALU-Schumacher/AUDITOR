@@ -113,11 +113,13 @@ function auditor_adding_records() {
   fill_auditor_db_group2
   fill_auditor_db_group3
   stop_auditor
+  sleep 5
   compiling_rust_parquet_restore_script
 }
 
 function run_archive() {
   start_auditor_with_archival_service
+  sleep 5
   check_if_records_are_deleted
 }
 
