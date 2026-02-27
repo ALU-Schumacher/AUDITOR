@@ -313,7 +313,7 @@ async fn deletion_from_db(
     FROM auditor_accounting
     WHERE stop_time >= $1::timestamptz
       AND stop_time <  $2::timestamptz
-    LIMIT 10
+    LIMIT 1000
 )
 DELETE FROM auditor_accounting
 USING to_delete
