@@ -73,6 +73,15 @@ jobs:
     with:
       python-version: ${{ matrix.python-version }}
 
+  utilization-plugin-integration-tests:
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    needs: build-pyauditor-linux
+    uses: ./.github/workflows/utilization_plugin_integration_tests.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+
   htcondor-collector-test:
     needs: [build-pyauditor-linux, docker-build-push]
     uses: ./.github/workflows/htcondor-collector.yaml

@@ -76,7 +76,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
       - name: Download wheel
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./plugins/utilization_tool
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
@@ -106,7 +106,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
       - name: Download wheel
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./plugins/utilization_tool
           name: pyauditor-wheels-linux-${{ inputs.python-version }}
