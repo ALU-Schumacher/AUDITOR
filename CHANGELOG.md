@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR: Fix clippy and cargo deny issues ([@dirksammel](https://github.com/dirksammel))
 - AUDITOR: Prevent the archive service from blocking server startup ([@rkleinem](https://github.com/rkleinem))
 - Archival: Fix validation query logic ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Archival: Increase record deletion rate after archival from postgres ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Remove `MessageType` enum ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Switch to official ruff git action ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
