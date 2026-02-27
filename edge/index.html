@@ -201,6 +201,25 @@
                 
                 
                 <div class="toc-item">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#utilization-plugin">Utilization Plugin</a>
+                </div>
+                
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#pip-1"><small>- pip</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#docker-1"><small>- Docker</small></a>
+                </div>
+                
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#rpm-2"><small>- rpm</small></a>
+                </div>
+                
+                
+                
+                <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#auditor-clients">Auditor Clients</a>
                 </div>
                 
@@ -1205,6 +1224,84 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <li><code>FullSpread</code>:  This mode will spread the resources on the full range given by <code>min_priority</code> and <code>max_priority</code>, such that the group with the least provided resources will be assigned a priority equal to <code>min_priority</code> and the group with the most provided resources will be assigned a priority equal to <code>max_priority</code>. All other groups are distributed inside that range according to their provided resources. This creates maximum spread of the priorities. A disadvantage of this approach is that the computed priorities of two consecutive runs can be substantially different, leading to large jumps in priorities.</li>
 <li><code>ScaledBySum</code>: Computes the priorities such that <code>max_priority</code> is equal to the sum of all provide resources plus <code>min_priority</code>. This leads to a smoother change of priorities over multiple runs of the plugin. The maximum priority can only be reached by a group if all other groups provide no resources.</li>
 </ul>
+<h1 id="utilization-plugin">Utilization Plugin</h1>
+<p>Utilization Plugin is a tool to create monthly summary of user, khs23h, cpu_eff, corehours, power [kWh], co2 [kg].</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">l</span><span style="color: light-dark(#22863A, #85E89D);">ogging</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  l</span><span style="color: light-dark(#22863A, #85E89D);">evel</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> I</span><span style="color: light-dark(#032F62, #9ECBFF);">NFO</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> a</span><span style="color: light-dark(#032F62, #9ECBFF);">pp.log</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">a</span><span style="color: light-dark(#22863A, #85E89D);">uditor</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  h</span><span style="color: light-dark(#22863A, #85E89D);">osts</span><span>:</span><span> [</span><span style="color: light-dark(#032F62, #9ECBFF);">l</span><span style="color: light-dark(#032F62, #9ECBFF);">ocalhost</span><span>]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  p</span><span style="color: light-dark(#22863A, #85E89D);">ort</span><span>:</span><span> [</span><span style="color: light-dark(#005CC5, #79B8FF);">8000</span><span>]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  t</span><span style="color: light-dark(#22863A, #85E89D);">imeout</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 60</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">ite_meta_field</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> s</span><span style="color: light-dark(#032F62, #9ECBFF);">ite_id</span><span style="color: light-dark(#6A737D, #6A737D);"> #</span><span style="color: light-dark(#6A737D, #6A737D);"> can also be a list, e.g. [site_id, site]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  u</span><span style="color: light-dark(#22863A, #85E89D);">se_tls</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> False</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">a_cert_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/rootCA.pem</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">lient_cert_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/client-cert.pem</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">lient_key_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/client-key.pem</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile_name</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> a</span><span style="color: light-dark(#032F62, #9ECBFF);">uditor_summary</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile_path</span><span>:</span><span> </span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">u</span><span style="color: light-dark(#22863A, #85E89D);">tilisation</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  g</span><span style="color: light-dark(#22863A, #85E89D);">roupedby</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> V</span><span style="color: light-dark(#032F62, #9ECBFF);">OMS</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  g</span><span style="color: light-dark(#22863A, #85E89D);">rouped_list</span><span>:</span><span> [</span><span style="color: light-dark(#032F62, #9ECBFF);">p</span><span style="color: light-dark(#032F62, #9ECBFF);">roduction</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> l</span><span style="color: light-dark(#032F62, #9ECBFF);">cgadmin</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> i</span><span style="color: light-dark(#032F62, #9ECBFF);">lc</span><span>,</span><span style="color: light-dark(#032F62, #9ECBFF);"> o</span><span style="color: light-dark(#032F62, #9ECBFF);">ps</span><span>]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  w</span><span style="color: light-dark(#22863A, #85E89D);">att_per_core</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 4.6</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">o2_per_kwh</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 0.363</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  i</span><span style="color: light-dark(#22863A, #85E89D);">nterval</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 10</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">c</span><span style="color: light-dark(#22863A, #85E89D);">luster</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  w</span><span style="color: light-dark(#22863A, #85E89D);">att_per_core</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    s</span><span style="color: light-dark(#22863A, #85E89D);">ite</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">      s</span><span style="color: light-dark(#22863A, #85E89D);">ite-a</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 4.6</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">      s</span><span style="color: light-dark(#22863A, #85E89D);">ite-b</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 4.3</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">      s</span><span style="color: light-dark(#22863A, #85E89D);">tie-c</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 4.1</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">e</span><span style="color: light-dark(#22863A, #85E89D);">mail</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  e</span><span style="color: light-dark(#22863A, #85E89D);">nable_email_report</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> False</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">mtp_server</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> m</span><span style="color: light-dark(#032F62, #9ECBFF);">ail.uni-freiburg.de</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">mtp_port</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 587</span></span></code></pre><table><thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>logging.level</code></td><td><code>INFO</code></td><td>Logging verbosity level (e.g. <code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>)</td></tr>
+<tr><td><code>logging.file</code></td><td><code>app.log</code></td><td>Path to the log file where application logs are written</td></tr>
+<tr><td><code>auditor.hosts</code></td><td><code>[localhost]</code></td><td>List of hostnames or IP addresses of the <code>AUDITOR</code> instances</td></tr>
+<tr><td><code>auditor.port</code></td><td><code>[8000]</code></td><td>List of ports corresponding to each <code>AUDITOR</code> host</td></tr>
+<tr><td><code>auditor.timeout</code></td><td><code>60</code></td><td>Timeout (in seconds) for requests sent to the <code>AUDITOR</code></td></tr>
+<tr><td><code>auditor.site_meta_field</code></td><td><code>None</code></td><td>Site meta fields to filter sites (can be a string or a list of strings [site_id, site])</td></tr>
+<tr><td><code>auditor.use_tls</code></td><td><code>False</code></td><td>Enable TLS for connections to the <code>AUDITOR</code> service</td></tr>
+<tr><td><code>auditor.ca_cert_path</code></td><td><code>None</code></td><td>Path to the CA certificate used to verify the <code>AUDITOR</code> server</td></tr>
+<tr><td><code>auditor.client_cert_path</code></td><td><code>None</code></td><td>Path to the client TLS certificate</td></tr>
+<tr><td><code>auditor.client_key_path</code></td><td><code>None</code></td><td>Path to the private key corresponding to the client certificate</td></tr>
+<tr><td><code>auditor.component_fields_in_record.cores</code></td><td><code>Cores</code></td><td>Component field key of the record that specifies the cores</td></tr>
+<tr><td><code>auditor.component_fields_in_record.benchmark</code></td><td><code>HEPscore23</code></td><td>Component field key of the record that specifies the benchmark score</td></tr>
+<tr><td><code>auditor.component_fields_in_record.total_cpu</code></td><td><code>TotalCPU</code></td><td>Component field key of the record that specifies the total cpu</td></tr>
+<tr><td><code>utilisation.groupedby</code></td><td><code>VOMS</code></td><td>Attribute used to group utilisation metrics</td></tr>
+<tr><td><code>utilisation.grouped_list</code></td><td><code>[]</code></td><td>List of VOMS for utilisation accounting</td></tr>
+<tr><td><code>utilisation.watt_per_core</code></td><td><code>4.6</code></td><td>Default power consumption (in watts) per CPU core</td></tr>
+<tr><td><code>utilisation.co2_per_kwh</code></td><td><code>0.363</code></td><td>CO₂ emission factor in kg CO₂ per kWh</td></tr>
+<tr><td><code>utilisation.interval</code></td><td><code>10</code></td><td>Time interval (in seconds) used for utilisation aggregation</td></tr>
+<tr><td><code>utilization.file_name</code></td><td><code>auditor_summary</code></td><td>File name for the CSV summary file</td></tr>
+<tr><td><code>utilization.file_path</code></td><td>``</td><td>Path directory to store the summary</td></tr>
+<tr><td><code>cluster.watt_per_core.site</code></td><td><code>{}</code></td><td>Site-specific values for watt-per-core power consumption</td></tr>
+<tr><td><code>email.enable_email_report</code></td><td><code>False</code></td><td>Enable or disable email reporting</td></tr>
+<tr><td><code>email.smtp_server</code></td><td><code>None</code></td><td>SMTP server used to send email reports</td></tr>
+<tr><td><code>email.smtp_port</code></td><td><code>587</code></td><td>SMTP server port</td></tr>
+</tbody></table>
+<p>The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="yaml"><span class="giallo-l"><span style="color: light-dark(#032F62, #9ECBFF);">S</span><span style="color: light-dark(#032F62, #9ECBFF);">ENDER_EMAIL = &quot;example@gmail.com&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#032F62, #9ECBFF);">P</span><span style="color: light-dark(#032F62, #9ECBFF);">ASSWORD = &quot;password&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#032F62, #9ECBFF);">R</span><span style="color: light-dark(#032F62, #9ECBFF);">ECEIVER_EMAIL = &quot;example@gmail.com&quot;</span></span></code></pre>
+<p>The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
+If run as oneshot, then you can specify the particular month and the year that you want to generate the report using <code>--month</code> and <code>--year</code> options</p>
+<h3 id="pip-1">pip</h3>
+<p>pip package can be installed by <code>pip install auditor-utilization-plugin</code> and then run <code>auditor-utilization-plugin -c config.yaml</code> to run it as a service.
+To run it as oneshot for a particular month, <code>auditor-utilization-plugin -c config.yaml --month 9 --year 2025 --oneshot</code></p>
+<h3 id="docker-1">Docker</h3>
+<p>Docker can be used to run as a service or one-shot using the command below.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#24292E, #E1E4E8); background-color: light-dark(#FFFFFF, #24292E);"><code data-lang="plain"><span class="giallo-l"><span>docker run --rm --add-host=host.docker.internal:host-gateway -v &quot;./config_folder:/app/&quot; -v &quot;$PWD/output:/data&quot; aluschumacher/auditor-utilization-plugin:edge auditor-utilization-plugin -c /app/config.yaml</span></span></code></pre>
+<p>In this example, config_folder contains the config.yaml file.</p>
+<p><code>$PWD/output:/data</code> is dir path to store the summary csv. If this is used, then specify the file_path in the config as <code>/data</code>.
+This is an example and can be changed to any dir you want. Make sure to also specify the same dir in the config file.</p>
+<h3 id="rpm-2">rpm</h3>
+<p>The RPM installs a Python virtual environment including all dependencies into <code>/opt/auditor_utilization_plugin</code>. After installation, a systemd unit file is available at: <code>/usr/lib/systemd/system/auditor_utilization_plugin.service</code>. A template configuration file is installed at this location <code>/etc/auditor/auditor_utilization_plugin.yml</code>. It must be adjusted to match your local setup.</p>
 <h1 id="auditor-clients">Auditor Clients</h1>
 <p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
 For details please consult the respective documentation pages for <a rel="external" href="https://docs.rs/auditor/">the Rust client</a> and <a rel="external" href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
