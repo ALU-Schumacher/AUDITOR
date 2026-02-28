@@ -35,3 +35,7 @@ component_management:
       name: priority_plugin
       paths:
         - plugins/priority/**
+    - component_id: module_utilization_tool
+      name: utilization_tool
+      paths:
+        - plugins/utilization_tool/**

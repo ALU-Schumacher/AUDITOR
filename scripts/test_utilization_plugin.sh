@@ -3,7 +3,6 @@ set -x
 set -eo pipefail
 
 RELEASE_MODE=${RELEASE_MODE:=false}
-ENV_DIR=${ENV_DIR:=".env_test"}
 
 function compile_auditor() {
   if [ "$RELEASE_MODE" = true ]; then
@@ -39,15 +38,18 @@ function start_auditor() {
 }
 
 function stop_auditor() {
-  echo >&2 "Stopping Auditor"
-  kill $AUDITOR_SERVER_PID
-  wait $AUDITOR_SERVER_PID
+  echo >&2 "Stopping AUDITOR server"
+  if kill -0 "$AUDITOR_SERVER_PID" 2>/dev/null; then
+      kill -2 "$AUDITOR_SERVER_PID"
+      wait "$AUDITOR_SERVER_PID"
+  else
+      echo >&2 "Process $$AUDITOR_SERVER_PID does not exist. Nothing to stop."
+  fi
 }
 
 function install_utilization_report_requirements() {
-  python -m venv $ENV_DIR
-  source $ENV_DIR/bin/activate
   cd plugins/utilization_tool/
+  pip install -e .
 }
 
 function fill_auditor_db() {
@@ -70,7 +72,6 @@ function fill_auditor_db() {
 }
 
 function start_utilization_plugin {
-  pip install -e .
   auditor-utilization-plugin -c configs/config.yaml --month 11 --year 2024 --oneshot
 }
 
@@ -100,8 +101,10 @@ function validate_summary_report {
 
 cleanup_exit() {
   setsid nohup bash -c "
-  kill $AUDITOR_SERVER_PID
-  if [[ -z \"${SKIP_PYAUDITOR_COMPILATION}\" ]]; then rm -rf $ENV_DIR; fi
+  if kill -0 ${AUDITOR_SERVER_PID} 2>/dev/null; then
+    kill -2 ${AUDITOR_SERVER_PID}
+    wait ${AUDITOR_SERVER_PID}
+  fi
   "
 }
 trap "cleanup_exit" SIGINT SIGQUIT SIGTERM EXIT
