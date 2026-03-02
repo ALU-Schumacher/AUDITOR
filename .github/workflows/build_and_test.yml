@@ -31,8 +31,6 @@ jobs:
   build-python-rpms:
     needs: prepare-input-parameters
     uses: ./.github/workflows/build_python_rpms.yml
-    with:
-      python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}
 
   test-pyauditor-source:
     needs: [build-pyauditor-source, prepare-input-parameters]

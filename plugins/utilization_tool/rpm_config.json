@@ -49,7 +49,10 @@
             "  groupdel auditor || true",
             "fi"
         ],
-        "install": "install -d -D -m 0750 %{buildroot}/var/lib/auditor_utilization_plugin",
+        "install": [
+            "install -d -D -m 0750 %{buildroot}/var/lib/auditor_utilization_plugin",
+            "pip install venvctrl"
+        ],
         "files": "%dir %attr(0750 auditor-utilization-plugin auditor) /var/lib/auditor_utilization_plugin",
         "desc": "AUDITOR plugin to create cluster utilization report",
         "changelog": [
