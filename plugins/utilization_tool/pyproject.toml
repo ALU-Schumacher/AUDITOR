@@ -13,7 +13,7 @@ dependencies = [
 	     "pydantic==2.12.3",
        "dotenv==0.9.9",
        "numpy==2.0.2",
-       "pandas==2.2.3",
+       "pandas==2.3.3",
 
 ]
 description = "AUDITOR plugin to create cluster utilization plugin"
