@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.44.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/login-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/setup-buildx-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update futures from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update futures-util from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update jiff from 0.2.18 to 0.2.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
