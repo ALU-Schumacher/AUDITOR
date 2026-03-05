@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update chrono from 0.4.42 to 0.4.44 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.38.1 to 1.44.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.3 to 46.0.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update docker/build-push-action from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/login-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/metadata-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update docker/setup-buildx-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
