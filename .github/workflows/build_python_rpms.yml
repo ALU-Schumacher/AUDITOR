@@ -2,10 +2,6 @@ name: build-python-rpms
 
 on:
   workflow_call:
-    inputs:
-      python-version:
-        required: true
-        type: string
 
 jobs:
   build-apel-plugin-rpm:
@@ -79,7 +75,8 @@ jobs:
           name: htcondor-collector-rpm
 
   build-auditor-utilization-plugin:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: almalinux:9
     defaults:
       run:
         working-directory: ./plugins/utilization_tool
@@ -87,13 +84,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Setup python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ inputs.python-version }}
-        
       - name: Install dependencies
         run: |
+          dnf install -y epel-release dnf-plugins-core
+          dnf config-manager --set-enabled crb
+          dnf install -y python3-pip rpm-build python3-virtualenv
+          dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
           pip install toml-to-requirements rpmvenv
 
