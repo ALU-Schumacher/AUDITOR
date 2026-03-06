@@ -27,7 +27,7 @@ style = [
 tests = [
       "pytest==8.4.2",
       "pytest-cov==7.0.0",
-      "mypy==1.18.2",
+      "mypy==1.19.1",
       "types-pyyaml==6.0.12.20250915",
       "pytest-asyncio==0.24.0",
       "pandas-stubs==2.2.2.240807",
