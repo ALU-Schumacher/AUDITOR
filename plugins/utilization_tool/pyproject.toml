@@ -29,7 +29,7 @@ tests = [
       "pytest-cov==7.0.0",
       "mypy==1.18.2",
       "types-pyyaml==6.0.12.20250915",
-      "pytest-asyncio==0.24.0",
+      "pytest-asyncio==1.2.0",
       "pandas-stubs==2.2.2.240807",
       "types-python-dateutil==2.9.0.20260124",
 
