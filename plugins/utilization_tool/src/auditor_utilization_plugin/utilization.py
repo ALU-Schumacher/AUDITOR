@@ -13,7 +13,11 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from pyauditor import AuditorClientBuilder, Operator, QueryBuilder, Value
 
-from auditor_utilization_plugin.config import ComponentFieldsConfig, Config
+from auditor_utilization_plugin.config import (
+    CollectorType,
+    ComponentFieldsConfig,
+    Config,
+)
 from auditor_utilization_plugin.email_sender import send_email
 
 
@@ -86,6 +90,7 @@ def get_stats_by_user(
     grouped: str,
     grouped_list: List[str],
     component_fields_in_record: ComponentFieldsConfig,
+    collector_type: CollectorType,
 ) -> Dict[str, List[Any]]:
     data: Dict[str, List[Any]] = {
         "user": [],
@@ -106,9 +111,14 @@ def get_stats_by_user(
             * df.runtime
             / 3600.0
         ).sum() / 1000.0
-        wall_time = (
-            df[component_fields_in_record.cores] * df.runtime / 3600.0
-        ).sum() / 1000.0
+        if collector_type is CollectorType.slurm:
+            wall_time = (
+                df[component_fields_in_record.cores] * df.runtime / 3600.0
+            ).sum() / 1000
+        else:
+            wall_time = (
+                df[component_fields_in_record.cores] * df.runtime / 3600.0
+            ).sum()
         cpu_eff = (
             df[component_fields_in_record.total_cpu].sum()
             / (df.runtime * df[component_fields_in_record.cores]).sum()
@@ -216,6 +226,7 @@ async def generate_utilization_report(
                 mapped_col,
                 config.utilization.grouped_list,
                 config.auditor.component_fields_in_record,
+                config.auditor.collector_type,
             )
             df_sum = pd.DataFrame(summary_data)
             df_sum["date"] = loop_day.date()

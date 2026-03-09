@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pandas as pd
 import pytest
 
-from auditor_utilization_plugin.config import ComponentFieldsConfig
+from auditor_utilization_plugin.config import CollectorType, ComponentFieldsConfig
 from auditor_utilization_plugin.utilization import (
     categorize_power,
     get_stats_by_user,
@@ -51,6 +51,11 @@ def config_component_values():
     return ComponentFieldsConfig(
         cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
     )
+
+
+@pytest.fixture
+def config_auditor_collector_type():
+    return CollectorType("htcondor")
 
 
 def test_record_to_dict(sample_json_record):
@@ -102,6 +107,7 @@ def test_get_stats_by_user_with_config(
         grouped="VOMS",
         grouped_list=config_values["grouped_list"],
         component_fields_in_record=config_component_values,
+        collector_type=config_auditor_collector_type,
     )
 
     # Only one user in this sample
@@ -113,8 +119,8 @@ def test_get_stats_by_user_with_config(
     expected_cpu_eff = total_cpu / total_core_time
     assert data["cpu_eff"][0] == pytest.approx(expected_cpu_eff)
 
-    # corehours = sum(Cores * runtime) / 3600 / 1000
-    expected_corehours = (df["Cores"] * df["runtime"]).sum() / 3600.0 / 1000.0
+    # corehours = sum(Cores * runtime) / 3600  (for htcondor/kubernetes, we don't divide by 1000 since the cputime is already in seconds)
+    expected_corehours = (df["Cores"] * df["runtime"]).sum() / 3600.0
     assert data["corehours"][0] == pytest.approx(expected_corehours)
 
     # wall_work = sum(HEPscore23 * Cores * runtime) / 3600 / 1000

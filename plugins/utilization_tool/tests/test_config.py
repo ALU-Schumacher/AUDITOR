@@ -22,6 +22,7 @@ SAMPLE_YAML = {
             "benchmark": "HEPscore23",
             "total_cpu": "TotalCPU",
         },
+        "collector_type": "htcondor",
     },
     "utilization": {
         "groupedby": "VOMS",
@@ -56,6 +57,7 @@ def test_load_config_from_yaml(temp_yaml_file):
     assert cfg.utilization.groupedby == "VOMS"
     assert cfg.cluster.sites == ["site1", "site2", "site3"]
     assert cfg.oneshot is False
+    assert cfg.auditor.collector_type == "htcondor"
 
 
 def test_component_fields_loaded(temp_yaml_file):

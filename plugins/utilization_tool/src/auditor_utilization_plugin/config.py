@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 from typing import Dict, List, Optional, Union
 
 import yaml
@@ -22,6 +23,12 @@ class ComponentFieldsConfig(BaseModel):
     cores: str
     benchmark: str
     total_cpu: str
+
+
+class CollectorType(str, Enum):
+    htcondor = "htcondor"
+    slurm = "slurm"
+    kubernetes = "kubernetes"
 
 
 class AuditorConfig(BaseModel):
@@ -53,6 +60,10 @@ class AuditorConfig(BaseModel):
     component_fields_in_record: ComponentFieldsConfig = Field(
         ...,
         description="Field names of keys from component section of Record such as HEPScore23, TotalCPU and cores",
+    )
+    collector_type: CollectorType = Field(
+        default=CollectorType("htcondor"),
+        description="Specify the source of the job records - htcondor or slurm or kubernetes",
     )
 
     @model_validator(mode="after")

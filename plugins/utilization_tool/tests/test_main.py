@@ -3,7 +3,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from auditor_utilization_plugin.config import AuditorConfig, ComponentFieldsConfig
+from auditor_utilization_plugin.config import (
+    AuditorConfig,
+    CollectorType,
+    ComponentFieldsConfig,
+)
 from auditor_utilization_plugin.main import (
     build_auditor_client,
     iter_endpoints,
@@ -23,6 +27,7 @@ SAMPLE_CONFIG = {
             "benchmark": "HEPscore23",
             "total_cpu": "TotalCPU",
         },
+        "collector_type": "htcondor",
     }
 }
 
@@ -71,6 +76,7 @@ def test_iter_endpoints_success():
         component_fields_in_record=ComponentFieldsConfig(
             cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
         ),
+        collector_type=CollectorType("htcondor"),
     )
 
     endpoints = iter_endpoints(auditor_cfg)
