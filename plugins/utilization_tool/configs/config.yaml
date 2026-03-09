@@ -19,6 +19,7 @@ auditor:
     cores: Cores
     benchmark: HEPscore23
     total_cpu: TotalCPU
+  collector_type: htcondor
 
 utilization:
   groupedby: VOMS

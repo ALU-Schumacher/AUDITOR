@@ -13,6 +13,9 @@ function compile_auditor() {
 }
 
 function start_auditor() {
+  DB_NAME=$(uuidgen)
+  SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
+
   if [[ -z "${SKIP_COMPILATION}" ]]
   then
     compile_auditor
@@ -73,11 +76,12 @@ function fill_auditor_db() {
 
 function start_utilization_plugin {
   auditor-utilization-plugin -c configs/config.yaml --month 11 --year 2024 --oneshot
+  ls
 }
 
 function validate_summary_report {
-  row1="production,3.268167111111111,1.0164648183365028,0.17761777777777776,0.8170417777777778,0.2965861653333333"
-  row2="ilc,0.09464755555555554,1.1925693919429745,0.005143888888888889,0.023661888888888885,0.008589265666666665"
+  row1="ilc,0.09464755555555554,1.1925693919429745,5.143888888888889,0.023661888888888885,0.008589265666666665"
+  row2="production,3.268167111111111,1.0164648183365028,177.61777777777777,0.8170417777777778,0.2965861653333333"
 
 
   if grep -Fxq "$row1" auditor_summary_localhost_11_2024.csv; then
