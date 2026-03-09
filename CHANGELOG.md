@@ -73,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update rustls from 0.23.34 to 0.23.37 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_json from 1.0.145 to 1.0.149 ([@dirksammel](https://github.com/dirksammel)), ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.15.1 to 3.17.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update setuptools from 80.9.0 to 82.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update setuptools from 80.9.0 to 82.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shalzz/zola-deploy-action from 0.21.0 to 0.22.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shell-words from 1.1.0 to 1.1.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update thiserror from 2.0.17 to 2.0.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
