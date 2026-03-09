@@ -36,6 +36,7 @@ class Config(object):
                 "ProcId",
                 "LastMatchTime",
                 "EnteredCurrentStatus",
+                "CompletionDate",
             )
         ),
     }
