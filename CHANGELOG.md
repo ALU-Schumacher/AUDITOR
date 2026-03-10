@@ -80,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update tracing from 0.1.41 to 0.1.44 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 - Dependencies: Update tracing-actix-web from 0.7.19 to 0.7.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tracing-subscriber from 0.3.20 to 0.3.22 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update uuid from 1.18.1 to 1.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.18.1 to 1.22.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update x509-parser from 0.18.0 to 0.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
