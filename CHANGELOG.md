@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2026-25541]: Update bytes from 1.10.1 to 1.11.1 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-25727]: Update time from 0.3.44 to 0.3.47 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2025-0141]: Ignore bincode 1.3.3 as dev team considers version 1.3.3 a complete version of bincode ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- [RUSTSEC-2026-0037]: Ignore quinn-proto vulnerability ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
 - Apel plugin: Add total reported numbers to log of republish script ([@dirksammel](https://github.com/dirksammel))
