@@ -10,6 +10,7 @@ import sqlite3
 from datetime import datetime, time, timedelta, timezone
 from sqlite3 import Error
 from typing import Union, cast
+from urllib.parse import unquote
 
 from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
 from cryptography import x509
@@ -28,6 +29,7 @@ from auditor_apel_plugin.message import (
 from .utility import write_transaction
 
 logger = logging.getLogger("apel_plugin")
+TRACE = logging.DEBUG - 5
 
 
 def get_records(config: Config, client, start_time, site=None, end_time=None):
@@ -49,7 +51,7 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
 
     try:
         start_time_value = Value.set_datetime(start_time)
-        get_since_operator = Operator().gt(start_time_value)
+        get_since_operator = Operator().gte(start_time_value)
         stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
         if end_time is not None:
             end_time_value = Value.set_datetime(end_time)
@@ -60,6 +62,7 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
             for meta_key in meta_key_site:
                 site_query = MetaQuery().meta_operator(meta_key, site_operator)
                 query_string = stop_time_query.with_meta_query(site_query).build()
+                logger.log(TRACE, f"Query to AUDITOR: {unquote(query_string)}")
                 records.extend(client.advanced_query(query_string))
         return records
     except Exception as e:

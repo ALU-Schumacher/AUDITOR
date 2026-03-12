@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Archival: Fix validation query logic ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Archival: Increase record deletion rate after archival from postgres ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Apel plugin: Remove `MessageType` enum ([@dirksammel](https://github.com/dirksammel))
+- Apel plugin: Fix error in query to AUDITOR (change `>` to `>=`) ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Switch to official ruff git action ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Catch error when killing processes in tests ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Improve htcondor-collector workflow ([@dirksammel](https://github.com/dirksammel))
