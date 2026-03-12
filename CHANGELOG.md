@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update k8s-openapi from 0.21.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update kube from 0.88.1 to 3.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update dependabot/cargo/once_cell-1.21.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update parquet from 57.0.0 to 58.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pydantic from 2.12.3 to 2.12.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.24.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
