@@ -1334,7 +1334,13 @@ auditor:
   client_cert_path: /path/client-cert.pem
   client_key_path: /path/client-key.pem
   file_name: auditor_summary
-  file_path: 
+  file_path:
+  component_fields_in_record:
+    cores: Cores
+    benchmark: HEPscore23
+    total_cpu: TotalCPU
+  collector_type: htcondor
+
 
 utilisation:
   groupedby: VOMS
@@ -1356,32 +1362,33 @@ email:
   smtp_port: 587
 ```
 
-| Parameter                                     | Default          | Description                                                                                    |
-| ----------------------------------------      | ---------------- | ---------------------------------------------------------------------------------------------- |
-| `logging.level`                               | `INFO`           | Logging verbosity level (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`)                             |
-| `logging.file`                                | `app.log`        | Path to the log file where application logs are written                                        |
-| `auditor.hosts`                               | `[localhost]`    | List of hostnames or IP addresses of the `AUDITOR` instances                                   |
-| `auditor.port`                                | `[8000]`         | List of ports corresponding to each `AUDITOR` host                                             |
-| `auditor.timeout`                             | `60`             | Timeout (in seconds) for requests sent to the `AUDITOR`                                        |
-| `auditor.site_meta_field`                     | `None`           | Site meta fields to filter sites (can be a string or a list of strings [site_id, site])        |
-| `auditor.use_tls`                             | `False`          | Enable TLS for connections to the `AUDITOR` service                                            |
-| `auditor.ca_cert_path`                        | `None`           | Path to the CA certificate used to verify the `AUDITOR` server                                 |
-| `auditor.client_cert_path`                    | `None`           | Path to the client TLS certificate                                                             |
-| `auditor.client_key_path`                     | `None`           | Path to the private key corresponding to the client certificate                                |
-| `auditor.component_fields_in_record.cores`    | `Cores`          | Component field key of the record that specifies the cores                                     |
-| `auditor.component_fields_in_record.benchmark`| `HEPscore23`     | Component field key of the record that specifies the benchmark score                           |
-| `auditor.component_fields_in_record.total_cpu`| `TotalCPU`       | Component field key of the record that specifies the total cpu                                 |
-| `utilisation.groupedby`                       | `VOMS`           | Attribute used to group utilisation metrics                                                    |
-| `utilisation.grouped_list`                    | `[]`             | List of VOMS for utilisation accounting                                                        |
-| `utilisation.watt_per_core`                   | `4.6`            | Default power consumption (in watts) per CPU core                                              |
-| `utilisation.co2_per_kwh`                     | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                          |
-| `utilisation.interval`                        | `10`             | Time interval (in seconds) used for utilisation aggregation                                    |
-| `utilization.file_name`                       | `auditor_summary`| File name for the CSV summary file                                                             |
-| `utilization.file_path`                       | ``               | Path directory to store the summary                                                            |
-| `cluster.watt_per_core.site`                  | `{}`             | Site-specific values for watt-per-core power consumption                                       |
-| `email.enable_email_report`                   | `False`          | Enable or disable email reporting                                                              |
-| `email.smtp_server`                           | `None`           | SMTP server used to send email reports                                                         |
-| `email.smtp_port`                             | `587`            | SMTP server port                                                                               |
+| Parameter                                     | Default          | Description                                                                                                  |
+| ----------------------------------------      | ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| `logging.level`                               | `INFO`           | Logging verbosity level (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`)                                           |
+| `logging.file`                                | `app.log`        | Path to the log file where application logs are written                                                      |
+| `auditor.hosts`                               | `[localhost]`    | List of hostnames or IP addresses of the `AUDITOR` instances                                                 |
+| `auditor.port`                                | `[8000]`         | List of ports corresponding to each `AUDITOR` host                                                           |
+| `auditor.timeout`                             | `60`             | Timeout (in seconds) for requests sent to the `AUDITOR`                                                      |
+| `auditor.site_meta_field`                     | `None`           | Site meta fields to filter sites (can be a string or a list of strings [site_id, site])                      |
+| `auditor.use_tls`                             | `False`          | Enable TLS for connections to the `AUDITOR` service                                                          |
+| `auditor.ca_cert_path`                        | `None`           | Path to the CA certificate used to verify the `AUDITOR` server                                               |
+| `auditor.client_cert_path`                    | `None`           | Path to the client TLS certificate                                                                           |
+| `auditor.client_key_path`                     | `None`           | Path to the private key corresponding to the client certificate                                              |
+| `auditor.component_fields_in_record.cores`    | `Cores`          | Component field key of the record that specifies the cores                                                   |
+| `auditor.component_fields_in_record.benchmark`| `HEPscore23`     | Component field key of the record that specifies the benchmark score                                         |
+| `auditor.component_fields_in_record.total_cpu`| `TotalCPU`       | Component field key of the record that specifies the total cpu                                               |
+| `auditor.collector_type`                      | `htcondor`       | Specify the batch system that was used to collect the records in AUDITOR (`htcondor`, `slurm`, `kubernetes`) |
+| `utilisation.groupedby`                       | `VOMS`           | Attribute used to group utilisation metrics                                                                  |
+| `utilisation.grouped_list`                    | `[]`             | List of VOMS for utilisation accounting                                                                      |
+| `utilisation.watt_per_core`                   | `4.6`            | Default power consumption (in watts) per CPU core                                                            |
+| `utilisation.co2_per_kwh`                     | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                                        |
+| `utilisation.interval`                        | `10`             | Time interval (in seconds) used for utilisation aggregation                                                  |
+| `utilization.file_name`                       | `auditor_summary`| File name for the CSV summary file                                                                           |
+| `utilization.file_path`                       | ``               | Path directory to store the summary                                                                          |
+| `cluster.watt_per_core.site`                  | `{}`             | Site-specific values for watt-per-core power consumption                                                     |
+| `email.enable_email_report`                   | `False`          | Enable or disable email reporting                                                                            |
+| `email.smtp_server`                           | `None`           | SMTP server used to send email reports                                                                       |
+| `email.smtp_port`                             | `587`            | SMTP server port                                                                                             |
 
 
 The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created
@@ -1413,6 +1420,9 @@ This is an example and can be changed to any dir you want. Make sure to also spe
 
 ### rpm
 The RPM installs a Python virtual environment including all dependencies into `/opt/auditor_utilization_plugin`. After installation, a systemd unit file is available at: `/usr/lib/systemd/system/auditor_utilization_plugin.service`. A template configuration file is installed at this location `/etc/auditor/auditor_utilization_plugin.yml`. It must be adjusted to match your local setup.
+
+
+### 
 
 # Auditor Clients
 
