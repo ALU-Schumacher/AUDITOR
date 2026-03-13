@@ -111,18 +111,20 @@ def get_stats_by_user(
             * df.runtime
             / 3600.0
         ).sum() / 1000.0
-        if collector_type is CollectorType.slurm:
-            wall_time = (
-                df[component_fields_in_record.cores] * df.runtime / 3600.0
-            ).sum() / 1000
-        else:
-            wall_time = (
-                df[component_fields_in_record.cores] * df.runtime / 3600.0
+        wall_time = (df[component_fields_in_record.cores] * df.runtime / 3600.0).sum()
+        if (
+            collector_type is CollectorType.slurm
+            or collector_type is CollectorType.kubernetes
+        ):
+            cpu_eff = (df[component_fields_in_record.total_cpu].sum() / 1000) / (
+                df.runtime * df[component_fields_in_record.cores]
             ).sum()
-        cpu_eff = (
-            df[component_fields_in_record.total_cpu].sum()
-            / (df.runtime * df[component_fields_in_record.cores]).sum()
-        )
+        else:
+            cpu_eff = (
+                df[component_fields_in_record.total_cpu].sum()
+                / (df.runtime * df[component_fields_in_record.cores]).sum()
+            )
+
         power = (
             df.watt_per_core
             * df[component_fields_in_record.cores]
