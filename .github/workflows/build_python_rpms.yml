@@ -108,7 +108,7 @@ jobs:
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
 
       - name: Upload RPM
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: ./plugins/utilization_tool/*rpm
           name: utilization-plugin-rpm
