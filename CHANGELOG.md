@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update shalzz/zola-deploy-action from 0.21.0 to 0.22.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update shell-words from 1.1.0 to 1.1.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update thiserror from 2.0.17 to 2.0.18 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update tokio from 1.48.0 to 1.49.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tokio from 1.48.0 to 1.50.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tokio-cron-scheduler from 0.15.0 to 0.15.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tracing from 0.1.41 to 0.1.44 ([@raghuvar-vijay](https://github.com/raghuvar-vijay)) 
 - Dependencies: Update tracing-actix-web from 0.7.19 to 0.7.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
