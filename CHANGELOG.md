@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update futures-util from 0.3.31 to 0.3.32 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update jiff from 0.2.18 to 0.2.23 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update k8s-openapi from 0.21.1 to 0.27.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update kube from 0.88.1 to 3.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update kube from 0.88.1 to 3.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update mypy from 1.18.2 to 1.19.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update parquet from 57.0.0 to 58.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pydantic from 2.12.3 to 2.12.5 ([@dirksammel](https://github.com/dirksammel))
