@@ -217,6 +217,10 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#rpm-2"><small>- rpm</small></a>
                 </div>
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#"><small>- </small></a>
+                </div>
+                
                 
                 
                 <div class="toc-item">
@@ -1244,7 +1248,13 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">lient_cert_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/client-cert.pem</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">lient_key_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/client-key.pem</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile_name</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> a</span><span style="color: light-dark(#032F62, #9ECBFF);">uditor_summary</span></span>
-<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile_path</span><span>:</span><span> </span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  f</span><span style="color: light-dark(#22863A, #85E89D);">ile_path</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">omponent_fields_in_record</span><span>:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    c</span><span style="color: light-dark(#22863A, #85E89D);">ores</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> C</span><span style="color: light-dark(#032F62, #9ECBFF);">ores</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    b</span><span style="color: light-dark(#22863A, #85E89D);">enchmark</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> H</span><span style="color: light-dark(#032F62, #9ECBFF);">EPscore23</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    t</span><span style="color: light-dark(#22863A, #85E89D);">otal_cpu</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> T</span><span style="color: light-dark(#032F62, #9ECBFF);">otalCPU</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">ollector_type</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> h</span><span style="color: light-dark(#032F62, #9ECBFF);">tcondor</span></span>
+<span class="giallo-l"></span>
 <span class="giallo-l"></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">u</span><span style="color: light-dark(#22863A, #85E89D);">tilisation</span><span>:</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  g</span><span style="color: light-dark(#22863A, #85E89D);">roupedby</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> V</span><span style="color: light-dark(#032F62, #9ECBFF);">OMS</span></span>
@@ -1277,6 +1287,7 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <tr><td><code>auditor.component_fields_in_record.cores</code></td><td><code>Cores</code></td><td>Component field key of the record that specifies the cores</td></tr>
 <tr><td><code>auditor.component_fields_in_record.benchmark</code></td><td><code>HEPscore23</code></td><td>Component field key of the record that specifies the benchmark score</td></tr>
 <tr><td><code>auditor.component_fields_in_record.total_cpu</code></td><td><code>TotalCPU</code></td><td>Component field key of the record that specifies the total cpu</td></tr>
+<tr><td><code>auditor.collector_type</code></td><td><code>htcondor</code></td><td>Specify the batch system that was used to collect the records in AUDITOR (<code>htcondor</code>, <code>slurm</code>, <code>kubernetes</code>)</td></tr>
 <tr><td><code>utilisation.groupedby</code></td><td><code>VOMS</code></td><td>Attribute used to group utilisation metrics</td></tr>
 <tr><td><code>utilisation.grouped_list</code></td><td><code>[]</code></td><td>List of VOMS for utilisation accounting</td></tr>
 <tr><td><code>utilisation.watt_per_core</code></td><td><code>4.6</code></td><td>Default power consumption (in watts) per CPU core</td></tr>
@@ -1306,6 +1317,7 @@ To run it as oneshot for a particular month, <code>auditor-utilization-plugin -c
 This is an example and can be changed to any dir you want. Make sure to also specify the same dir in the config file.</p>
 <h3 id="rpm-2">rpm</h3>
 <p>The RPM installs a Python virtual environment including all dependencies into <code>/opt/auditor_utilization_plugin</code>. After installation, a systemd unit file is available at: <code>/usr/lib/systemd/system/auditor_utilization_plugin.service</code>. A template configuration file is installed at this location <code>/etc/auditor/auditor_utilization_plugin.yml</code>. It must be adjusted to match your local setup.</p>
+<h3 id=""></h3>
 <h1 id="auditor-clients">Auditor Clients</h1>
 <p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
 For details please consult the respective documentation pages for <a rel="external" href="https://docs.rs/auditor/">the Rust client</a> and <a rel="external" href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
