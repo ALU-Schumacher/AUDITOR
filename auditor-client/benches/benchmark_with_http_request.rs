@@ -9,7 +9,7 @@ use crate::configuration::get_configuration;
 use auditor::domain::{Component, RecordAdd, RecordTest, Score};
 use chrono::naive::Days;
 use chrono::{DateTime, TimeZone, Utc};
-use fake::{Fake, Faker};
+use fake::{Fake, Faker, RngExt};
 use rand::Rng;
 use std::collections::HashMap;
 
