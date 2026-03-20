@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+## [0.10.2] 2026-03-23
+
+### Breaking changes
+
+### Security
 - [CVE-2025-66418], [CVE-2025-66471], [CVE-2026-21441]: Update urllib3 from 2.5.0 to 2.6.3 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-21895]: Update rsa from 0.9.8 to 0.9.10 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-25541]: Update bytes from 1.10.1 to 1.11.1 ([@dirksammel](https://github.com/dirksammel))
@@ -979,7 +991,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.10.2...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -1005,3 +1017,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.9.4]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.9.4
 [0.10.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.0
 [0.10.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.1
+[0.10.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.2
