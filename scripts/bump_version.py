@@ -47,12 +47,14 @@ tomls: list[tuple[str, list[Any]]] = [
     ("collectors/slurm-epilog/Cargo.toml", cargo_toml_path),
     #
     ("plugins/apel/pyproject.toml", pyproject_toml_path),
+    ("plugins/utilization_tool/pyproject.toml", pyproject_toml_path),
     ("collectors/htcondor/pyproject.toml", pyproject_toml_path),
 ]
 
 # A list of .json files to update. Works like the `tomls` list.
 jsons: list[tuple[str, list[Any]]] = [
     ("plugins/apel/rpm_config.json", rpm_config_path),
+    ("plugins/utilization_tool/rpm_config.json", rpm_config_path),
     ("collectors/htcondor/rpm_config.json", rpm_config_path),
 ]
 
