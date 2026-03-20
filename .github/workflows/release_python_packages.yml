@@ -35,7 +35,7 @@ jobs:
           packages-dir: plugins/apel/dist/
           attestations: false
       - name: Build RPM
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           max_attempts: 100
           timeout_seconds: 20
@@ -82,7 +82,7 @@ jobs:
           packages-dir: collectors/htcondor/dist/
           attestations: false
       - name: Build RPM
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           max_attempts: 100
           timeout_seconds: 20
@@ -129,7 +129,7 @@ jobs:
          #    packages-dir: plugins/utilization_tool/dist/
          #    attestations: false
        - name: Build RPM
-         uses: nick-fields/retry@v3
+         uses: nick-fields/retry@v4
          with:
            max_attempts: 100
            timeout_seconds: 20
