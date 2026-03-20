@@ -11,7 +11,7 @@
         "license": "BSD-2-Clause-Patent",
         "name": "auditor_utilization_plugin",
         "summary": "AUDITOR plugin to create cluster utilization report",
-        "version": "0.10.1"
+        "version": "0.10.2"
     },
     "python_venv": {
         "name": "venv",
@@ -56,7 +56,7 @@
         "files": "%dir %attr(0750 auditor-utilization-plugin auditor) /var/lib/auditor_utilization_plugin",
         "desc": "AUDITOR plugin to create cluster utilization report",
         "changelog": [
-            "* Wed Feb 4 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.1\n - First version in a package"
+            "* Mon Mar 23 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.2\n - First version in a package"
         ]
     },
     "file_permissions": {
