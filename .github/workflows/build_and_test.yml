@@ -105,8 +105,5 @@ jobs:
 
   release-python-packages:
     if: "startsWith(github.ref, 'refs/tags/')"
-    #needs: [release-pyauditor, prepare-input-parameters, python-code-tests]
-    needs: [prepare-input-parameters, python-code-tests]
+    # needs: release-pyauditor
     uses: ./.github/workflows/release_python_packages.yml
-    with:
-      python-version: ${{ needs.prepare-input-parameters.outputs.python_version }}

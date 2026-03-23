@@ -2,10 +2,6 @@ name: release-python-packages
 
 on:
   workflow_call:
-    inputs:
-      python-version:
-        required: true
-        type: string
 
 jobs:
   release-apel-plugin:
@@ -20,10 +16,6 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v6
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ inputs.python-version }}
       - name: Install dependencies
         run: |
           dnf install -y epel-release dnf-plugins-core
@@ -72,10 +64,6 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v6
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ inputs.python-version }}
       - name: Install dependencies
         run: |
           dnf install -y epel-release dnf-plugins-core
@@ -124,10 +112,6 @@ jobs:
      steps:
        - name: Check out repo
          uses: actions/checkout@v6
-       - name: Set up Python
-         uses: actions/setup-python@v6
-         with:
-           python-version: ${{ inputs.python-version }}
        - name: Install dependencies
          run: |
            dnf install -y epel-release dnf-plugins-core
