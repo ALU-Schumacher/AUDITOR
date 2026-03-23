@@ -23,7 +23,7 @@ jobs:
           dnf install -y python3-pip rpm-build python3-virtualenv
           dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
-          pip install uv rpmvenv
+          pip install uv rpmvenv build
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
       - name: Publish to PyPI
@@ -71,7 +71,7 @@ jobs:
           dnf install -y python3-pip rpm-build python3-virtualenv
           dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
-          pip install uv rpmvenv
+          pip install uv rpmvenv build
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
       # - name: Publish to PyPI
@@ -119,7 +119,7 @@ jobs:
            dnf install -y python3-pip rpm-build python3-virtualenv
            dnf groupinstall -y "Development Tools"
            pip install --upgrade pip
-           pip install uv rpmvenv
+           pip install uv rpmvenv build
        - name: Build binary wheel and source tarball
          run: python3 -m build --sdist --wheel --outdir dist/
          #- name: Publish to PyPI
