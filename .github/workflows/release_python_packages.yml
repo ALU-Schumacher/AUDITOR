@@ -4,63 +4,55 @@ on:
   workflow_call:
 
 jobs:
-  release-apel-plugin:
+  build-apel-plugin-py:
     runs-on: ubuntu-latest
     container: almalinux:9
     defaults:
       run:
         working-directory: ./plugins/apel
-    permissions:
-      id-token: write
-      contents: write
     steps:
       - name: Check out repo
         uses: actions/checkout@v6
       - name: Install dependencies
         run: |
-          dnf install -y epel-release dnf-plugins-core
-          dnf config-manager --set-enabled crb
-          dnf install -y python3-pip rpm-build python3-virtualenv
-          dnf groupinstall -y "Development Tools"
+          dnf install -y python3-pip
           pip install --upgrade pip
-          pip install uv rpmvenv build
+          pip install build
       - name: Build binary wheel and source tarball
         run: python3 -m build --sdist --wheel --outdir dist/
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./plugins/apel/dist
+          name: apel-plugin-release
+
+  publish-apel-plugin-pip:
+    needs: build-apel-plugin-py
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v8
+        with:
+          path: ./plugins/apel/dist
+          name: apel-plugin-release
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: plugins/apel/dist/
           attestations: false
-      - name: Build RPM
-        uses: nick-fields/retry@v4
-        with:
-          max_attempts: 100
-          timeout_seconds: 20
-          command: |
-            cd /home/runner/work/AUDITOR/AUDITOR/plugins/apel
-            uv pip compile pyproject.toml -o requirements.txt
-            echo "." >> requirements.txt
-            cat requirements.txt
-            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
-          new_command_on_retry: |
-            cd /home/runner/work/AUDITOR/AUDITOR/plugins/apel
-            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            plugins/apel/dist/*
-            plugins/apel/*rpm
-          
-  release-htcondor-collector:
+          files: plugins/apel/dist/*
+    
+
+  publish-apel-plugin-rpm:
+    needs: publish-apel-plugin-pip
     runs-on: ubuntu-latest
     container: almalinux:9
-    defaults:
-      run:
-        working-directory: ./collectors/htcondor
-    permissions:
-      id-token: write
-      contents: write
     steps:
       - name: Check out repo
         uses: actions/checkout@v6
@@ -71,79 +63,180 @@ jobs:
           dnf install -y python3-pip rpm-build python3-virtualenv
           dnf groupinstall -y "Development Tools"
           pip install --upgrade pip
-          pip install uv rpmvenv build
-      - name: Build binary wheel and source tarball
-        run: python3 -m build --sdist --wheel --outdir dist/
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     packages-dir: collectors/htcondor/dist/
-      #     attestations: false
+          pip install uv rpmvenv
       - name: Build RPM
         uses: nick-fields/retry@v4
         with:
           max_attempts: 100
           timeout_seconds: 20
           command: |
-            cd /home/runner/work/AUDITOR/AUDITOR/collectors/htcondor
+            cd ./plugins/apel
             uv pip compile pyproject.toml -o requirements.txt
             echo "." >> requirements.txt
             cat requirements.txt
             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
           new_command_on_retry: |
-            cd /home/runner/work/AUDITOR/AUDITOR/collectors/htcondor
+            cd ./plugins/apel
             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            collectors/htcondor/dist/*
-            collectors/htcondor/*rpm
+          files: plugins/apel/*rpm
 
-  release-utilization-plugin:
-     runs-on: ubuntu-latest
-     container: almalinux:9
-     defaults:
-       run:
-         working-directory: ./plugins/utilization_tool
-     permissions:
-       id-token: write
-       contents: write
-     steps:
-       - name: Check out repo
-         uses: actions/checkout@v6
-       - name: Install dependencies
-         run: |
-           dnf install -y epel-release dnf-plugins-core
-           dnf config-manager --set-enabled crb
-           dnf install -y python3-pip rpm-build python3-virtualenv
-           dnf groupinstall -y "Development Tools"
-           pip install --upgrade pip
-           pip install uv rpmvenv build
-       - name: Build binary wheel and source tarball
-         run: python3 -m build --sdist --wheel --outdir dist/
-         #- name: Publish to PyPI
-         #  uses: pypa/gh-action-pypi-publish@release/v1
-         #  with:
-         #    packages-dir: plugins/utilization_tool/dist/
-         #    attestations: false
-       - name: Build RPM
-         uses: nick-fields/retry@v4
-         with:
-           max_attempts: 100
-           timeout_seconds: 20
-           command: |
-             cd /home/runner/work/AUDITOR/AUDITOR/plugins/utilization_tool
-             uv pip compile pyproject.toml -o requirements.txt
-             echo "." >> requirements.txt
-             cat requirements.txt
-             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
-           new_command_on_retry: |
-             cd /home/runner/work/AUDITOR/AUDITOR/plugins/utilization_tool
-             QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
-       - name: Publish to GitHub
-         uses: softprops/action-gh-release@v2
-         with:
-           files: |
-             plugins/utilization_tool/dist/*
-             plugins/utilization_tool/*rpm
+  build-htcondor-collector-py:
+    runs-on: ubuntu-latest
+    container: almalinux:9
+    defaults:
+      run:
+        working-directory: ./collectors/htcondor
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          dnf install -y python3-pip
+          pip install --upgrade pip
+          pip install build
+      - name: Build binary wheel and source tarball
+        run: python3 -m build --sdist --wheel --outdir dist/
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./collectors/hcondor/dist
+          name: htcondor-collector-release
+
+  publish-htcondor-collector-pip:
+    needs: build-htcondor-collector-py
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v8
+        with:
+          path: ./collectors/htcondor/dist
+          name: htcondor-collector-release
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: collectors/htcondor/dist/
+      #     attestations: false
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: collectors/htcondor/dist/*
+    
+
+  publish-htcondor-collector-rpm:
+    needs: publish-htcondor-collector-pip
+    runs-on: ubuntu-latest
+    container: almalinux:9
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          dnf install -y epel-release dnf-plugins-core
+          dnf config-manager --set-enabled crb
+          dnf install -y python3-pip rpm-build python3-virtualenv
+          dnf groupinstall -y "Development Tools"
+          pip install --upgrade pip
+          pip install uv rpmvenv
+      - name: Build RPM
+        uses: nick-fields/retry@v4
+        with:
+          max_attempts: 100
+          timeout_seconds: 20
+          command: |
+            cd ./collectors/htcondor
+            uv pip compile pyproject.toml -o requirements.txt
+            echo "." >> requirements.txt
+            cat requirements.txt
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+          new_command_on_retry: |
+            cd ./collectors/htcondor
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: collectors/htcondor/*rpm
+
+  build-utilization-plugin-py:
+    runs-on: ubuntu-latest
+    container: almalinux:9
+    defaults:
+      run:
+        working-directory: ./plugins/utilization_tool
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          dnf install -y python3-pip
+          pip install --upgrade pip
+          pip install build
+      - name: Build binary wheel and source tarball
+        run: python3 -m build --sdist --wheel --outdir dist/
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./plugins/utilization_tool/dist
+          name: utilization-plugin-release
+
+  publish-utilization-plugin-pip:
+    needs: build-utilization-plugin-py
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v8
+        with:
+          path: ./plugins/utilization_tool/dist
+          name: utilization-plugin-release
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: plugins/utilization_tool/dist/
+      #     attestations: false
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: plugins/utilization_tool/dist/*
+    
+
+  publish-utilization-plugin-rpm:
+    needs: publish-utilization-plugin-pip
+    runs-on: ubuntu-latest
+    container: almalinux:9
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          dnf install -y epel-release dnf-plugins-core
+          dnf config-manager --set-enabled crb
+          dnf install -y python3-pip rpm-build python3-virtualenv
+          dnf groupinstall -y "Development Tools"
+          pip install --upgrade pip
+          pip install uv rpmvenv
+      - name: Build RPM
+        uses: nick-fields/retry@v4
+        with:
+          max_attempts: 100
+          timeout_seconds: 20
+          command: |
+            cd ./plugins/utilization_tool
+            uv pip compile pyproject.toml -o requirements.txt
+            echo "." >> requirements.txt
+            cat requirements.txt
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+          new_command_on_retry: |
+            cd ./plugins/utilization_tool
+            QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: plugins/utilization_tool/*rpm
