@@ -102,7 +102,7 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v7
         with:
-          path: ./collectors/hcondor/dist
+          path: ./collectors/htcondor/dist
           name: htcondor-collector-release
 
   publish-htcondor-collector-pip:
