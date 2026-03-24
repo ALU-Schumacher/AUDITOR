@@ -28,7 +28,7 @@ tests = [
       "types-pyyaml==6.0.12.20250915",
 ]
 build = [
-      "build==1.4.0",
+      "build==1.4.1",
       "setuptools==82.0.1",
 ]
 
