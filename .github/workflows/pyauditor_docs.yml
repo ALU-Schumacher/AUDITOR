@@ -70,7 +70,7 @@ jobs:
             ln -s $RELEASE_VERSION latest
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           add: "pyauditor/latest"
           message: "CI: Redirect latest to new version ${{ env.RELEASE_VERSION }} (pyauditor)"
