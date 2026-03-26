@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [CVE-2026-25645]: Update requests from 2.32.4 to 2.33.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
