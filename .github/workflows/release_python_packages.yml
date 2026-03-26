@@ -38,11 +38,11 @@ jobs:
         with:
           path: ./plugins/apel/dist
           name: apel-plugin-release
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     packages-dir: plugins/apel/dist/
-      #     attestations: false
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: plugins/apel/dist/
+          attestations: false
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
@@ -112,11 +112,11 @@ jobs:
         with:
           path: ./collectors/htcondor/dist
           name: htcondor-collector-release
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     packages-dir: collectors/htcondor/dist/
-      #     attestations: false
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: collectors/htcondor/dist/
+          attestations: false
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
@@ -186,11 +186,11 @@ jobs:
         with:
           path: ./plugins/utilization_tool/dist
           name: utilization-plugin-release
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     packages-dir: plugins/utilization_tool/dist/
-      #     attestations: false
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: plugins/utilization_tool/dist/
+          attestations: false
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v2
         with:
