@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- AUDITOR-Client: Add linebreak to concatenate client cert and client key ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update build from 1.4.0 to 1.4.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.44.0 to 1.45.0 ([@dirksammel](https://github.com/dirksammel))

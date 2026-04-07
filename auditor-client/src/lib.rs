@@ -740,7 +740,8 @@ impl AuditorClientBuilder {
 
         match (fs::read(client_cert_path), fs::read(client_key_path)) {
             (Ok(client_cert), Ok(client_key)) => {
-                match Identity::from_pem(&[client_cert, client_key].concat()) {
+                let combined_pem = [&client_cert[..], b"\n", &client_key[..]].concat();
+                match Identity::from_pem(&combined_pem) {
                     Ok(identity) => tls_config.identity = Some(identity),
                     Err(e) => {
                         eprintln!("Failed to create identity from client cert and key: {e}")
