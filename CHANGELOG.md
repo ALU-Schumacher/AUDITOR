@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update build from 1.4.0 to 1.4.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.44.0 to 1.45.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 46.0.5 to 46.0.6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 46.0.5 to 46.0.7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EndBug/add-and-commit from 9 to 10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest-cov from 7.0.0 to 7.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.15.7 to 0.15.9 ([@dirksammel](https://github.com/dirksammel))
