@@ -9,7 +9,7 @@ requires-python = ">=3.9"
 dependencies = [
 	     "python-auditor==0.10.2",
 	     "pyyaml==6.0.3",
-	     "pydantic==2.12.5",
+	     "pydantic==2.13.1",
          "dotenv==0.9.9",
          "pandas==2.3.3",
 ]
