@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2026-25645]: Update requests from 2.32.4 to 2.33.0 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2026-0097]: Update rand from 0.10.0 to 0.10.1 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2026-0098, RUSTSEC-2026-0099]: Update rustls-webpki from 0.103.10 to 0.103.12 ([@dirksammel](https://github.com/dirksammel))
+- [GHSA-xphw-cqx3-667j]: Update thin-vec from 0.2.14 to 0.2.16 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
