@@ -85,7 +85,7 @@ async fn get_started_since_returns_a_list_of_sorted_records() {
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
-        tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
+        tmp_test_cases.sort_by_key(|a| a.stop_time);
 
         for (j, (record, received)) in tmp_test_cases
             .iter()
@@ -205,7 +205,7 @@ async fn get_stopped_since_returns_a_list_of_sorted_records() {
 
         // make sure the test cases are sorted by stop_time
         let mut tmp_test_cases = test_cases.iter().skip(i - 1).cloned().collect::<Vec<_>>();
-        tmp_test_cases.sort_by(|a, b| a.stop_time.cmp(&b.stop_time));
+        tmp_test_cases.sort_by_key(|a| a.stop_time);
 
         for (j, (record, received)) in tmp_test_cases
             .iter()
