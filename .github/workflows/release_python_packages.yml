@@ -44,7 +44,7 @@ jobs:
       #     packages-dir: plugins/apel/dist/
       #     attestations: false
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: plugins/apel/dist/*
     
@@ -74,7 +74,7 @@ jobs:
           cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: plugins/apel/*rpm
 
@@ -118,7 +118,7 @@ jobs:
       #     packages-dir: collectors/htcondor/dist/
       #     attestations: false
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: collectors/htcondor/dist/*
     
@@ -148,7 +148,7 @@ jobs:
           cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: collectors/htcondor/*rpm
 
@@ -192,7 +192,7 @@ jobs:
       #     packages-dir: plugins/utilization_tool/dist/
       #     attestations: false
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: plugins/utilization_tool/dist/*
     
@@ -222,6 +222,6 @@ jobs:
           cat requirements.txt
           QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
       - name: Publish to GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: plugins/utilization_tool/*rpm
