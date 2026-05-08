@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.4.0 to 1.4.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.44.0 to 1.45.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.44.0 to 1.46.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.5 to 48.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EndBug/add-and-commit from 9 to 10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.12.5 to 2.13.4 ([@dirksammel](https://github.com/dirksammel))
