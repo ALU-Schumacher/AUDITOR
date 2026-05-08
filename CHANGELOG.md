@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pydantic from 2.12.5 to 2.13.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest-cov from 7.0.0 to 7.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.15.7 to 0.15.12 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
