@@ -23,13 +23,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.4.0 to 1.4.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update color-eyre from 0.6.3 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update claim from 0.7.1 to 0.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.44.0 to 1.46.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.5 to 48.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EndBug/add-and-commit from 9 to 10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.12.5 to 2.13.4 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3 from 0.27.2 to 0.28.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pyo3-async-runtimes from 0.27.0 to 0.28.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest-cov from 7.0.0 to 7.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.15.7 to 0.15.12 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde from 1.0.218 to 1.0.228 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde-aux from 4.6.0 to 4.7.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tokio from 1.50.0 to 1.52.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tracing-bunyan-formatter from 0.3.9 to 0.3.10 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 

@@ -36,7 +36,7 @@ jiff.workspace = true
 k8s-openapi = { workspace = true, features = ["v1_35"] }
 kube.workspace = true
 prometheus-http-query = { workspace = true, features = ["rustls-tls"] }
-reqwest = { workspace = true, features = ["rustls-tls"] }
+reqwest.workspace = true
 rustls.workspace = true
 serde.workspace = true
 serde_yaml.workspace = true

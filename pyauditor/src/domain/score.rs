@@ -22,7 +22,7 @@ use pyo3::prelude::*;
 /// :type name: str
 /// :param value: Value
 /// :type value: float
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Score {
     pub(crate) inner: auditor::domain::Score,

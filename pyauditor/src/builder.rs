@@ -36,7 +36,7 @@ use pyo3::prelude::*;
 ///
 ///     client = AuditorClientBuilder().connection_string("http://localhost:8000").build()
 ///
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone)]
 pub struct AuditorClientBuilder {
     inner: auditor_client::AuditorClientBuilder,

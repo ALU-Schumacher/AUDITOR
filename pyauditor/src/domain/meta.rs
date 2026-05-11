@@ -15,7 +15,7 @@ use pyo3::prelude::*;
 ///
 /// The strings must not include the characters. ``/``, ``(``, ``)``,
 /// ``"``, ``<``, ``>``, ``\``, ``{``, ``}``.
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Meta {
     pub(crate) inner: auditor::domain::Meta,
