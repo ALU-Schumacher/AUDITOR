@@ -31,7 +31,7 @@ use pyo3::types::PyDateTime;
 ///       :meth:`QueuedAuditorClient.stop`
 ///       before the client is dropped.
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone)]
 pub struct QueuedAuditorClient {
     pub(crate) inner: auditor_client::QueuedAuditorClient,

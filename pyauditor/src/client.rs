@@ -15,21 +15,21 @@ use pyo3::types::PyDateTime;
 use std::collections::HashMap;
 
 /// The `QueryBuilder` is used to construct `QueryParameters` using the builder pattern.
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Debug, Clone)]
 pub struct QueryBuilder {
     pub(crate) inner: auditor_client::QueryBuilder,
 }
 
 /// The `Operator` is used to specify the operators on the query parameters
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone)]
 pub struct Operator {
     pub(crate) inner: auditor_client::Operator,
 }
 
 /// Value is used to specify the type of the value which is used in the query
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Value {
     pub(crate) inner: auditor_client::Value,
@@ -207,7 +207,7 @@ impl Operator {
     }
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct MetaQuery {
     pub(crate) inner: auditor_client::MetaQuery,
@@ -253,7 +253,7 @@ impl MetaQuery {
 }
 
 /// The `MetaOperator` struct represents operators for metadata queries, specifying conditions for filtering
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct MetaOperator {
     pub(crate) inner: auditor_client::MetaOperator,
@@ -311,7 +311,7 @@ impl MetaOperator {
 
 /// The `ComponentQuery` struct represents a set of component queries associated with specific query IDs.
 /// It is used to filter records based on component-related conditions
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct ComponentQuery {
     pub(crate) inner: auditor_client::ComponentQuery,
@@ -358,7 +358,7 @@ impl ComponentQuery {
 }
 
 /// SortBy provides options on sorting the query records
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct SortBy {
     pub(crate) inner: auditor_client::SortBy,
@@ -598,7 +598,7 @@ impl QueryBuilder {
 /// The `AuditorClient` handles the interaction with the Auditor instances and allows one to add
 /// records to the database, update records in the database and retrieve the records from the
 /// database.
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone)]
 pub struct AuditorClient {
     pub(crate) inner: auditor_client::AuditorClient,

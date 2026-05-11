@@ -48,7 +48,7 @@ use pyo3::types::PyDateTime;
 /// :type record_id: str
 /// :param start_time: Timestamp from which the resource became available
 /// :type group_id: datetime.datetime
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Record {
     pub(crate) inner: auditor::domain::Record,

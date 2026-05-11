@@ -23,7 +23,7 @@ use pyo3::prelude::*;
 /// :type name: str
 /// :param amount: Amount
 /// :type amount: int
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Component {
     pub(crate) inner: auditor::domain::Component,
