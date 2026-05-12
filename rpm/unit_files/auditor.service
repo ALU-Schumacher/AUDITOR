@@ -13,3 +13,7 @@ WorkingDirectory=/etc/auditor
 ExecStart=/usr/bin/auditor /etc/auditor/auditor.yml
 Restart=on-failure
 RestartSec=60
+
+[Service]
+StandardOutput=append:/var/log/auditor/auditor.log
+StandardError=append:/var/log/auditor/auditor.log
