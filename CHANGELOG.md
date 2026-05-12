@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2026-0098, RUSTSEC-2026-0099, RUSTSEC-2026-0104]: Update rustls-webpki from 0.103.10 to 0.103.13 ([@dirksammel](https://github.com/dirksammel))
 - [GHSA-xphw-cqx3-667j]: Update thin-vec from 0.2.14 to 0.2.16 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-28684]: Update python-dotenv from 1.1.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2026-44432]: Update urllib3 from 2.6.3 to 2.7.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
