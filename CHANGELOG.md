@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pyo3 from 0.27.2 to 0.28.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3-async-runtimes from 0.27.0 to 0.28.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pytest-cov from 7.0.0 to 7.1.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.15.7 to 0.15.12 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.15.7 to 0.15.13 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde from 1.0.218 to 1.0.228 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde-aux from 4.6.0 to 4.7.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
