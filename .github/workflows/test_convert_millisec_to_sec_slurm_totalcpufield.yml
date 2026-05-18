@@ -78,6 +78,6 @@ jobs:
       - name: Build auditor
         run: cargo build -p auditor
       
-      - name: Test archival function
+      - name: Test slurm millsec to sec migration
         run: SKIP_COMPILATION=true ./scripts/test_slurm_migration_millisec_to_sec.sh
 

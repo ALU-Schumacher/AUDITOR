@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 import psycopg2
 from dotenv import load_dotenv
 
@@ -31,7 +32,6 @@ def main():
                         ELSE elem
                     END
                 ) ||
-                -- Append the _milli entry
                 jsonb_build_array(
                     jsonb_build_object(
                         'name',   %(cpu_milli)s,
