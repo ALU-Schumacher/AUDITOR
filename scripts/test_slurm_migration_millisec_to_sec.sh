@@ -43,16 +43,22 @@ function start_auditor() {
 }
 
 function stop_auditor() {
-  echo >&2 "Stopping Auditor"
-  kill $AUDITOR_SERVER_PID
-  wait $AUDITOR_SERVER_PID
+  echo >&2 "Stopping AUDITOR server"
+  if kill -0 "$AUDITOR_SERVER_PID" 2>/dev/null; then
+      kill -2 "$AUDITOR_SERVER_PID"
+      wait "$AUDITOR_SERVER_PID"
+  else
+      echo >&2 "Process $$AUDITOR_SERVER_PID does not exist. Nothing to stop."
+  fi
 }
 
-function cleanup_exit() {
-  if [ -n "$AUDITOR_SERVER_PID" ]; then
-    echo >&2 "Stopping Auditor due to script exit"
-    stop_auditor
+cleanup_exit() {
+  setsid nohup bash -c "
+  if kill -0 ${AUDITOR_SERVER_PID} 2>/dev/null; then
+    kill -2 ${AUDITOR_SERVER_PID}
+    wait ${AUDITOR_SERVER_PID}
   fi
+  "
 }
 
 function fill_auditor_db() {
