@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-
 import asyncio
+
 from pyauditor import AuditorClientBuilder
 
 
@@ -13,7 +13,6 @@ async def main():
     assert len(records) == 2
 
     for record in records:
-
         list_of_components = list(record.components)
 
         assert list_of_components[0].name == "TotalCPU"
