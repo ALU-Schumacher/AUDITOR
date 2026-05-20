@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
+- Slurm: Conversion script to change milli-sec to sec for TotalCPU field ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Security
 - [CVE-2026-25645]: Update requests from 2.32.4 to 2.33.0 ([@dirksammel](https://github.com/dirksammel))
