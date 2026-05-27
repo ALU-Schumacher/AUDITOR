@@ -278,7 +278,7 @@ class CondorHistoryCollector(object):
         # Get the stop time of the job
         stop_time = None
         for key in ["CompletionDate", "EnteredCurrentStatus"]:
-            if key in job and job[key] != "undefined":
+            if key in job and job[key] not in ("undefined", 0):
                 stop_time = job[key]
                 break
         if stop_time is None:
