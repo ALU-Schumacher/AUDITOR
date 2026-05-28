@@ -37,6 +37,7 @@ class Config(object):
                 "LastMatchTime",
                 "EnteredCurrentStatus",
                 "CompletionDate",
+                "EpochWriteDate",
             )
         ),
     }
