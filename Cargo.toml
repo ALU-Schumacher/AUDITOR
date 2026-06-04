@@ -45,7 +45,7 @@ opentelemetry-prometheus = "0.16.0"
 opentelemetry_sdk = "0.23.0"
 parquet = "58.0.0"
 prometheus = "0.13.4"
-prometheus-http-query = { version = "0.8.0", default-features = false }
+prometheus-http-query = { version = "0.9.0", default-features = false }
 pyo3 = { version = "0.28.3", features = ["chrono", "extension-module", "anyhow"] }
 pyo3-async-runtimes = { version = "0.28.0", features = ["attributes", "tokio-runtime"] }
 quickcheck = "1.1.0"
