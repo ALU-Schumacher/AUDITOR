@@ -29,16 +29,14 @@ class Config(object):
         "history_file": None,
         "earliest_datetime": date.today().isoformat(),
         "query_type": "shell",
-        "class_ads": frozenset(
-            (
-                "GlobalJobId",
-                "ClusterId",
-                "ProcId",
-                "LastMatchTime",
-                "EnteredCurrentStatus",
-                "CompletionDate",
-                "EpochWriteDate",
-            )
+        "class_ads": (
+            "GlobalJobId",
+            "ClusterId",
+            "ProcId",
+            "LastMatchTime",
+            "EnteredCurrentStatus",
+            "CompletionDate",
+            "EpochWriteDate",
         ),
     }
 
@@ -51,10 +49,19 @@ class Config(object):
         self._config.update(file_config)
         self._config.update({k: v for k, v in args.__dict__.items() if v is not None})
 
-        self._config["class_ads"] = self._config["class_ads"].union(
-            extract_values("key", file_config["components"]),
-            extract_values("key", file_config["meta"]),
-        )
+        # Extend the (ordered) class_ads with the attribute keys referenced by
+        # the components and meta sections, preserving order and de-duplicating.
+        # A dict is used as an order-preserving set so the resulting attribute
+        # set is deterministic (independent of PYTHONHASHSEED), which keeps the
+        # `condor_history` projection stable across runs and hosts.
+        ordered: "dict[str, None]" = {}
+        for attr in (
+            *self._config["class_ads"],
+            *extract_values("key", file_config["components"]),
+            *extract_values("key", file_config["meta"]),
+        ):
+            ordered[attr] = None
+        self._config["class_ads"] = tuple(ordered)
         self._verify()
         self._config["condor_timestamp"] = int(
             dt.fromisoformat(self.earliest_datetime).timestamp()
