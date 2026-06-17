@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
-- Slurm: Conversion script to change milli-sec to sec for TotalCPU field ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Slurm collector: `TotalCPU`, `UserCPU`, `SystemCPU` values to be stored as seconds instead of milli-seconds ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Security
 - [CVE-2026-25645]: Update requests from 2.32.4 to 2.33.0 ([@dirksammel](https://github.com/dirksammel))
@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - AUDITOR: log for including record id if record-exist error occurs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR, slurm, slurm-epilog, priority-plugin: Write logs to a file with rolling file appender ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Slurm collector: Migration script to change milli-sec to sec for TotalCPU field ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR: Stop archival if the file already exists ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
