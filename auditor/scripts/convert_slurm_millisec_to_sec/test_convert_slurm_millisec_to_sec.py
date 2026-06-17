@@ -10,18 +10,20 @@ async def main():
     client = AuditorClientBuilder().address("127.0.0.1", 8000).timeout(10).build()
 
     records = await client.get()
-    assert len(records) == 2
+    assert len(records) == 3
 
-    for record in records:
-        list_of_components = list(record.components)
+    records = sorted(records, key=lambda r: r.start_time)
+    expected_cpu = [3, 5, 0]
+    expected_cpu_milli = [2733, 4577, 3]
 
-        assert list_of_components[0].name == "TotalCPU"
+    for i, record in enumerate(records):
+        components = list(record.components)
 
-        assert list_of_components[0].amount == 0
+        assert components[0].name == "TotalCPU"
+        assert components[0].amount == expected_cpu[i]
 
-        assert list_of_components[1].name == "TotalCPU_milli"
-
-        assert list_of_components[1].amount == 273
+        assert components[1].name == "TotalCPU_milli"
+        assert components[1].amount == expected_cpu_milli[i]
 
 
 if __name__ == "__main__":

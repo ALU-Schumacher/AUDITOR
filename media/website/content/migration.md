@@ -6,6 +6,17 @@ weight = 3
 
 # From 0.10.2 to unreleased
 
+Please backup your db before proceeding with any changes that are listed below.
+
+## Slurm collector 
+The following changes only apply to users who are using Slurm collector (v0.10.2 and earlier), follow these steps to convert the `TotalCPU` time from milli-seconds to seconds:
+
+- Clone the github repository [git_repo](https://github.com/ALU-Schumacher/AUDITOR).
+- Move into the cloned repository `cd AUDITOR`
+- Install the required dependencies with `pip install -r auditor/scripts/convert_slurm_millisec_to_sec/requirements.txt`
+- Replace the placeholder values in the .env file present at `auditor/scripts/convert_slurm_millisec_to_sec` with the values corresponding to your database config. Configure the `TOTAL_CPU_TIME` field to use the same value as the `TotalCPU` field in your Slurm collector components.
+- Run `python auditor/scripts/convert_slurm_millisec_to_sec/convert_totalcpu_millisec_to_sec.py`
+
 # From 0.10.1 to 0.10.2
 
 # From 0.10.0 to 0.10.1

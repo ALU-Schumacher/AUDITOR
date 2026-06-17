@@ -63,11 +63,15 @@ cleanup_exit() {
 
 function fill_auditor_db() {
   curl -X POST --header "Content-Type: application/json" \
-    --data '{ "record_id": "1", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{"name": "TotalCPU", "amount": 273, "scores": []}], "start_time": "2025-05-01T15:00:00Z", "stop_time": "2025-05-01T15:01:00Z" }' \
+    --data '{ "record_id": "1", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{"name": "TotalCPU", "amount": 2733, "scores": []}], "start_time": "2025-05-01T15:00:00Z", "stop_time": "2025-05-01T15:00:02.733Z" }' \
     http://localhost:8000/record
 
   curl -X POST --header "Content-Type: application/json" \
-    --data '{ "record_id": "2", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{"name": "TotalCPU", "amount": 273, "scores": []}], "start_time": "2025-05-01T15:00:00Z", "stop_time": "2025-05-01T15:01:00Z" }' \
+    --data '{ "record_id": "2", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{"name": "TotalCPU", "amount": 4577, "scores": []}], "start_time": "2025-05-01T16:00:00Z", "stop_time": "2025-05-01T16:00:04.577Z" }' \
+    http://localhost:8000/record
+
+    curl -X POST --header "Content-Type: application/json" \
+    --data '{ "record_id": "3", "meta": {"site_id": ["test"], "user_id": ["raghuvar"], "group_id": ["group1"]}, "components": [{"name": "TotalCPU", "amount": 3, "scores": []}], "start_time": "2025-05-01T18:00:00Z", "stop_time": "2025-05-01T18:00:00.003Z" }' \
     http://localhost:8000/record
 }
 

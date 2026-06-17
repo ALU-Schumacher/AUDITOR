@@ -493,8 +493,6 @@ See below for all currently available collectors.
 
 ## SLURM Collector
 
-**Important: the SLURM Collector stores CPU times in milliseconds. If you're later using the APEL plugin, you have to divide these numbers by 1000. Please consult the documentation of the APEL plugin for this.**
-
 The Slurm collector collects information from slurm jobs based on the `sacct` command.
 It can be installed from the provided RPM or can be built with this command:
 
@@ -643,8 +641,6 @@ tls_config:
 ```
 
 ## SLURM Epilog Collector
-
-**Important: the SLURM Epilog Collector stores CPU times in milliseconds. If you're later using the APEL plugin, you have to divide these numbers by 1000. Please consult the documentation of the APEL plugin for this.**
 
 The Slurm epilog collector can installed from the provided RPM or can be built with this command:
 
@@ -934,8 +930,6 @@ tls_config:
 
 ## Kubernetes Collector
 
-**Important: the Kubernetes Collector stores CPU times in milliseconds. If you're later using the APEL plugin, you have to divide these numbers by 1000. Please consult the documentation of the APEL plugin for this.**
-
 This collector retrieves information from two sources: the Kubernetes API and a Prometheus instance. This is necessary because Kubernetes does not expose resource metrics like CPU time via its API. This means that the collector needs to be able to access the API as well as Prometheus.
 
 The easiest way to ensure access to the API is by running the collector directly on Kubernetes via a Helm Chart. Prometheus needs to be able to access the Kubelets of your cluster. If it is installed on Kubernetes, make sure it has some persistent storage. A small tutorial for an example setup will be provided in the near future.
@@ -1218,7 +1212,7 @@ Please make sure that the information you extract from the AUDITOR records has t
 
 Different field types are available, depending on the source of the value that is needed: `ComponentField`, `MetaField`, `ConstantField`, `ScoreField`, and `NormalisedField`. The type to be used is indicated after the name of the field with a leading exclamation mark, e.g. `Processors: !ComponentField`.
 
-`ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used. **If you're working with records coming from the SLURM collector, the Slurm Epilog collector, or the Kubernetes collector, you have to divide the CPU times by 1000.**
+`ComponentField` extracts the value from a `component` in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, e.g. if it has another unit than the one expected by APEL, the optional parameter `divide_by` has to be used.
 
 `MetaField` extracts the value from the `meta` information in the AUDITOR record. The mandatory parameter of this field is `name`, which gives the name of the component in the AUDITOR record. If the value needs to be modified, one of the optional parameters `regex` or `function` can be used. `regex` takes a regular expression, searches the value for this expression, and returns the complete match, `function` has the parameters `name` and `parameters`, where the latter is optional and can be used to provide additional parameters to the function. If you want to manipulate the value of the `Metafield` with a custom function, it has to be present in `utility.py` and can be added via a pull request.
 

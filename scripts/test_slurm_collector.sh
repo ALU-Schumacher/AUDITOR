@@ -162,7 +162,7 @@ function test_collector() {
 		exit 1
 	fi
 
-	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .voms | .[0]')" != '"%2Fatlas%2FRole=production"' ]
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .voms | .[0]')" != '"/atlas/Role=production"' ]
 	then
 		echo >&2 "Incorrect meta of record in accounting database. Returned record:"
 		echo >&2 $TEST1
@@ -171,7 +171,7 @@ function test_collector() {
 		exit 1
 	fi
 
-	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .subject | .[0]')" != '"%2Fsome%2Fthing"' ]
+	if [ "$(echo $TEST1 | jq '.[] | select(.record_id=="slurm-1") | .meta | .subject | .[0]')" != '"/some/thing"' ]
 	then
 		echo >&2 "Incorrect meta of record in accounting database. Returned record:"
 		echo >&2 $TEST1

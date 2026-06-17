@@ -28,7 +28,7 @@ def main():
                 SELECT jsonb_agg(
                     CASE
                         WHEN elem->>'name' = %(cpu)s
-                        THEN jsonb_set(elem, '{amount}', to_jsonb((elem->>'amount')::bigint / 1000))
+                        THEN jsonb_set(elem, '{amount}', to_jsonb(ROUND((elem->>'amount')::numeric / 1000)::int))
                         ELSE elem
                     END
                 ) ||

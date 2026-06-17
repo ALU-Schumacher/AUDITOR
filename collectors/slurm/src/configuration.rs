@@ -450,11 +450,10 @@ impl ParsableType {
                 };
 
                 AllowedTypes::Integer(
-                    pm("milli", &cap)?
-                        + pm("sec", &cap)? * 1_000
-                        + pm("min", &cap)? * 60_000
-                        + pm("hour", &cap)? * 3_600_000
-                        + pm("day", &cap)? * 86_400_000,
+                    pm("sec", &cap)?
+                        + pm("min", &cap)? * 60
+                        + pm("hour", &cap)? * 3_600
+                        + pm("day", &cap)? * 86_400,
                 )
             }
             ParsableType::String => AllowedTypes::String(input.to_owned()),
@@ -494,12 +493,7 @@ impl ParsableType {
                         AllowedTypes::Map(
                             parsed
                                 .into_iter()
-                                .map(|(k, v)| {
-                                    (
-                                        AllowedTypes::String(k.replace('/', "%2F")),
-                                        AllowedTypes::String(v.replace('/', "%2F")),
-                                    )
-                                })
+                                .map(|(k, v)| (AllowedTypes::String(k), AllowedTypes::String(v)))
                                 .collect(),
                         )
                     } else {
@@ -556,15 +550,15 @@ mod tests {
     #[test]
     fn correct_time_parsed() {
         let parsed = ParsableType::Time.parse("43:28.686").unwrap();
-        let expected = AllowedTypes::Integer(2608686);
+        let expected = AllowedTypes::Integer(2608);
         assert_eq!(parsed, expected);
 
         let parsed = ParsableType::Time.parse("10:07:24").unwrap();
-        let expected = AllowedTypes::Integer(36444000);
+        let expected = AllowedTypes::Integer(36444);
         assert_eq!(parsed, expected);
 
         let parsed = ParsableType::Time.parse("2-08:19:41").unwrap();
-        let expected = AllowedTypes::Integer(202781000);
+        let expected = AllowedTypes::Integer(202781);
         assert_eq!(parsed, expected);
     }
 
@@ -573,17 +567,15 @@ mod tests {
         let expected = AllowedTypes::Map(vec![
             (
                 AllowedTypes::String("headnode".to_string()),
-                AllowedTypes::String(
-                    "gsiftp:%2F%2Farc1.bfg.uni-freiburg.de:2811%2Fjobs".to_string(),
-                ),
+                AllowedTypes::String("gsiftp://arc1.bfg.uni-freiburg.de:2811/jobs".to_string()),
             ),
             (
                 AllowedTypes::String("subject".to_string()),
-                AllowedTypes::String("%2Fsome%2Fthings%2F".to_string()),
+                AllowedTypes::String("/some/things/".to_string()),
             ),
             (
                 AllowedTypes::String("voms".to_string()),
-                AllowedTypes::String("%2Fatlas%2FRole=production".to_string()),
+                AllowedTypes::String("/atlas/Role=production".to_string()),
             ),
         ]);
 
