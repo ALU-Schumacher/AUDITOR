@@ -26,11 +26,44 @@ pub struct Settings {
     #[serde(default = "default_log_level")]
     #[serde(deserialize_with = "deserialize_log_level")]
     pub log_level: LevelFilter,
+    #[serde(default = "default_logging")]
+    pub logging: LoggingSettings,
     pub tls_config: Option<TLSConfig>,
     pub rbac_config: Option<RbacConfig>,
     #[serde(default = "default_ignore_record_exists_error")]
     pub ignore_record_exists_error: bool,
     pub archival_config: Option<ArchivalConfig>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
+pub struct LoggingSettings {
+    #[serde(default = "default_log_dir")]
+    pub log_dir: String,
+    #[serde(default = "default_log_file_prefix")]
+    pub log_file_prefix: String,
+    #[serde(default = "default_log_to_file")]
+    pub log_to_file: bool,
+}
+
+fn default_log_dir() -> String {
+    "logs".to_string()
+}
+
+fn default_log_file_prefix() -> String {
+    "auditor_logs".to_string()
+}
+
+fn default_log_to_file() -> bool {
+    false
+}
+
+fn default_logging() -> LoggingSettings {
+    LoggingSettings {
+        log_dir: default_log_dir(),
+        log_file_prefix: default_log_file_prefix(),
+        log_to_file: default_log_to_file(),
+    }
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]

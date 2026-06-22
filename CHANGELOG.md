@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - AUDITOR: log for including record id if record-exist error occurs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR, slurm, slurm-epilog, priority-plugin: Write logs to a file with rolling file appender ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR: Stop archival if the file already exists ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
