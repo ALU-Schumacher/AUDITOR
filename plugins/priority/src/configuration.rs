@@ -59,6 +59,10 @@ pub struct LoggingSettings {
     pub log_file_prefix: String,
     #[serde(default = "default_log_to_file")]
     pub log_to_file: bool,
+    #[serde(default = "default_log_file_size")]
+    pub log_file_size: u64,
+    #[serde(default = "default_number_of_rotated_backups")]
+    pub number_of_rotated_backups: usize,
 }
 
 fn default_log_dir() -> String {
@@ -73,11 +77,21 @@ fn default_log_to_file() -> bool {
     false
 }
 
+fn default_log_file_size() -> u64 {
+    1024
+}
+
+fn default_number_of_rotated_backups() -> usize {
+    5
+}
+
 fn default_logging() -> LoggingSettings {
     LoggingSettings {
         log_dir: default_log_dir(),
         log_file_prefix: default_log_file_prefix(),
         log_to_file: default_log_to_file(),
+        log_file_size: default_log_file_size(),
+        number_of_rotated_backups: default_number_of_rotated_backups(),
     }
 }
 

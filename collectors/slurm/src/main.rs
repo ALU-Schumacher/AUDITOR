@@ -79,6 +79,8 @@ async fn main() -> Result<()> {
         Some((
             CONFIG.logging.log_dir.clone(),
             CONFIG.logging.log_file_prefix.as_str(),
+            CONFIG.logging.log_file_size,
+            CONFIG.logging.number_of_rotated_backups,
         ))
     } else {
         None

@@ -57,6 +57,7 @@ rand.workspace = true
 regex.workspace = true
 reqwest.workspace = true
 reqwest-streams.workspace = true
+rolling-file.workspace = true
 rustls.workspace = true
 secrecy.workspace = true
 serde.workspace = true
