@@ -191,6 +191,8 @@ AUDITORs configuration can be adapted with environment variables.
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX`                   | Specifies the prefix for the archive files. (default: `auditor`)                                                       |
 | `AUDITOR_ARCHIVAL_CONFIG__CRON_SCHEDULE`                         | Archives the file according to the cron schedule                                                                       |
 | `AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE`                      | Specifies the compression algorithm for parquet files -> Gzip or Snappy. (default: `Gzip`)                             |
+| `AUDITOR_LOGGING__LOG_TO_FILE`                                   | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                       |
+| `AUDITOR_LOGGING__LOG_DIR`                                       | Path to the log directory. Creates a new directory if it is not present                                                |
 
 Use `docker run` to execute Auditor:
     
@@ -240,6 +242,9 @@ metrics:
 log_level: info
 tls_config:
   use_tls: false
+logging:
+  log_to_file: false
+  log_dir: "logs"
 ```
 
 To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -543,6 +548,8 @@ The Slurm collector is configured using a yaml-file. Configuration parameters ar
 | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `log_to_file`      | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                                                                                                                                                                                                                                 |
+| `log_dir`          | Path to the log directory. Creates a new directory if it is not present                                                                                                                                                                                                                                                          |
 
 #### Job filter
 
@@ -612,6 +619,9 @@ components:
 log_level: info
 tls_config:
   use_tls: false
+logging:
+  log_to_file: false
+  log_dir: "logs"
 ```
 
 To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -809,6 +819,8 @@ The collector is configured using a yaml-file. Configuration parameters are as f
 | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                     |
 | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                    |
 | `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                       |
+| `log_to_file`      | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                                                                                                                                                                                                                                                      |
+| `log_dir`          | Path to the log directory. Creates a new directory if it is not present                                                                                                                                                                                                                                                                               |
 
 The following parameters are optional:
 
@@ -896,6 +908,9 @@ components:
     key: "RemoteUserCpu"
 tls_config:
   use_tls: False
+logging:
+  log_to_file: false
+  log_dir: "logs"
 ```
 
 To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -1256,6 +1271,9 @@ prometheus:
     - Priority
 tls_config:
   use_tls: false
+logging:
+  log_to_file: false
+  log_dir: "logs"
 ```
 
 To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -1303,6 +1321,8 @@ If TLS is enabled:
 - **`ca_cert_path`:** This parameter should point to the trusted CA certificate used to verify the server's certificate.
 - **`client_cert_path`:** This parameter should point to the client’s TLS certificate, used for mutual TLS (mTLS) authentication.
 - **`client_key_path`:** This parameter should point to the private key corresponding to the client’s certificate.
+`log_to_file` specifies whether logs should be written to a file (`true`) or disabled (`false`)  
+`log_dir` defines the path to the log directory. Creates a new directory if it is not present
 
 ### Priority computation modes
 

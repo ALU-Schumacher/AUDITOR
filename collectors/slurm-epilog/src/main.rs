@@ -114,10 +114,21 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
 async fn main() -> Result<(), Error> {
     let config = configuration::get_configuration()?;
     // Set up logging
-    let subscriber = get_subscriber(
+
+    let file_logging = if config.logging.log_to_file {
+        Some((
+            config.logging.log_dir.clone(),
+            config.logging.log_file_prefix.as_str(),
+        ))
+    } else {
+        None
+    };
+
+    let (subscriber, _log_guards) = get_subscriber(
         "AUDITOR-slurm-epilog-collector".into(),
         config.log_level,
         std::io::stdout,
+        file_logging,
     );
     init_subscriber(subscriber);
 
