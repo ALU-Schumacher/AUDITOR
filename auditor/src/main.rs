@@ -40,6 +40,8 @@ async fn main() -> Result<(), anyhow::Error> {
         Some((
             configuration.logging.log_dir.clone(),
             configuration.logging.log_file_prefix.as_str(),
+            configuration.logging.log_file_size,
+            configuration.logging.number_of_rotated_backups,
         ))
     } else {
         None

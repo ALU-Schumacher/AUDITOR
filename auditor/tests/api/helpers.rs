@@ -22,7 +22,7 @@ static TRACING: Lazy<()> = Lazy::new(|| {
             subscriber_name,
             default_filter_level,
             std::io::stdout,
-            None::<(&str, &str)>,
+            None::<(&str, &str, u64, usize)>,
         );
         init_subscriber(subscriber);
     } else {
@@ -30,7 +30,7 @@ static TRACING: Lazy<()> = Lazy::new(|| {
             subscriber_name,
             default_filter_level,
             std::io::sink,
-            None::<(&str, &str)>,
+            None::<(&str, &str, u64, usize)>,
         );
         init_subscriber(subscriber);
     };

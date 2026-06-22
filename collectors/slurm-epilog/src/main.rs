@@ -119,6 +119,8 @@ async fn main() -> Result<(), Error> {
         Some((
             config.logging.log_dir.clone(),
             config.logging.log_file_prefix.as_str(),
+            config.logging.log_file_size,
+            config.logging.number_of_rotated_backups,
         ))
     } else {
         None

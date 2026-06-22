@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use rolling_file::*;
 use serde::{Deserialize, de};
 use std::str::FromStr;
 use tracing::{Subscriber, subscriber::set_global_default};
@@ -20,7 +21,7 @@ pub fn get_subscriber<Sink>(
     name: String,
     env_filter: LevelFilter,
     sink: Sink,
-    file_config: Option<(impl AsRef<std::path::Path>, &str)>,
+    file_config: Option<(impl AsRef<std::path::Path>, &str, u64, usize)>,
 ) -> (Box<dyn Subscriber + Send + Sync>, Vec<WorkerGuard>)
 where
     Sink: for<'a> MakeWriter<'a> + Send + Sync + 'static,
@@ -36,10 +37,17 @@ where
         .with(stdout_formatting_layer);
 
     match file_config {
-        Some((log_dir, log_file_prefix)) => {
+        Some((log_dir, log_file_prefix, log_file_size, number_of_rotated_backups)) => {
             std::fs::create_dir_all(&log_dir).expect("Failed to create log directory");
 
-            let file_appender = tracing_appender::rolling::daily(log_dir, log_file_prefix);
+            let log_path = log_dir.as_ref().join(log_file_prefix);
+
+            let file_appender = BasicRollingFileAppender::new(
+                log_path,
+                RollingConditionBasic::new().max_size(10 * 1024 * 1024 * log_file_size),
+                number_of_rotated_backups, // rotated backups
+            )
+            .expect("Failed to create rolling file appender");
             let (non_blocking_file, file_guard) = tracing_appender::non_blocking(file_appender);
             let file_formatting_layer = BunyanFormattingLayer::new(name, non_blocking_file);
 
