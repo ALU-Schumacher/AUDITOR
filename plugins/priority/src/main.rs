@@ -234,6 +234,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Some((
             config.logging.log_dir.clone(),
             config.logging.log_file_prefix.as_str(),
+            config.logging.log_file_size,
+            config.logging.number_of_rotated_backups,
         ))
     } else {
         None
@@ -413,6 +415,8 @@ mod tests {
                 log_dir: "logs".to_string(),
                 log_to_file: false,
                 log_file_prefix: "priority_plugin_logs".to_string(),
+                log_file_size: 1024,
+                number_of_rotated_backups: 5,
             },
         };
 
@@ -464,6 +468,8 @@ mod tests {
                 log_dir: "logs".to_string(),
                 log_to_file: false,
                 log_file_prefix: "priority_plugin_logs".to_string(),
+                log_file_size: 1024,
+                number_of_rotated_backups: 5,
             },
         };
 

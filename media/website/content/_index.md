@@ -191,8 +191,10 @@ AUDITORs configuration can be adapted with environment variables.
 | `AUDITOR_ARCHIVAL_CONFIG__ARCHIVE_FILE_PREFIX`                   | Specifies the prefix for the archive files. (default: `auditor`)                                                       |
 | `AUDITOR_ARCHIVAL_CONFIG__CRON_SCHEDULE`                         | Archives the file according to the cron schedule                                                                       |
 | `AUDITOR_ARCHIVAL_CONFIG__COMPRESSION_TYPE`                      | Specifies the compression algorithm for parquet files -> Gzip or Snappy. (default: `Gzip`)                             |
-| `AUDITOR_LOGGING__LOG_TO_FILE`                                   | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                       |
+| `AUDITOR_LOGGING__LOG_TO_FILE`                                   | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                      |
 | `AUDITOR_LOGGING__LOG_DIR`                                       | Path to the log directory. Creates a new directory if it is not present                                                |
+| `AUDITOR_LOGGING__LOG_FILE_SIZE`                                 | Size of the log file. Specify in MB. Default size is 1024 MB                                                           |
+| `AUDITOR_LOGGING__NUMBER_OF_ROTATED_BACKUPS`                     | Number of rotated backups of logs. 5 is default                                                                        |
 
 Use `docker run` to execute Auditor:
     
@@ -245,6 +247,8 @@ tls_config:
 logging:
   log_to_file: false
   log_dir: "logs"
+  log_file_size: 1024
+  number_of_rotated_backups: 5
 ```
 
 To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -548,8 +552,10 @@ The Slurm collector is configured using a yaml-file. Configuration parameters ar
 | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `log_to_file`      | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                                                                                                                                                                                                                                 |
-| `log_dir`          | Path to the log directory. Creates a new directory if it is not present                                                                                                                                                                                                                                                          |
+| `log_to_file`      | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `log_dir`          | Path to the log directory. Creates a new directory if it is not present                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `log_file_size`    |  Size of the log file. Specify in MB. Default size is 1024 MB                                                                                                                                                                                                                                                                                                                                                                                           |
+| `number_of_rotated_backups ` | Number of rotated backups of logs. 5 is default                                                                                                                                                                                                                                                                                                                                                                                               | 
 
 #### Job filter
 
@@ -622,6 +628,8 @@ tls_config:
 logging:
   log_to_file: false
   log_dir: "logs"
+  log_file_size: 1024
+  number_of_rotated_backups: 5
 ```
 
 To enable the TLS for the above config, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -707,7 +715,12 @@ components:
     key: "Mem"
 log_level: info
 tls_config:
-  use_tls: false
+  use_tls: False
+logging:
+  log_to_file: false
+  log_dir: "logs"
+  log_file_size: 1024
+  number_of_rotated_backups: 5
 ```
 
 Extraction of components as well as adding of scores can be done conditionally, as shown in the following example configuration.
@@ -819,8 +832,6 @@ The collector is configured using a yaml-file. Configuration parameters are as f
 | `ca_cert_path`     | Path to the root Certificate Authority (CA) certificate for validating certificates. Example: `/path/rootCA.pem`.                                                                                                                                                                                                                                     |
 | `client_cert_path` | Path to the client's TLS certificate, used for mutual TLS (mTLS) authentication. Example: `/path/client-cert.pem`.                                                                                                                                                                                                                                    |
 | `client_key_path`  | Path to the client's private key used for TLS. Example: `/path/client-key.pem`.                                                                                                                                                                                                                                                                       |
-| `log_to_file`      | Specifies whether logs should be written to a file (`true`) or disabled (`false`)                                                                                                                                                                                                                                                                      |
-| `log_dir`          | Path to the log directory. Creates a new directory if it is not present                                                                                                                                                                                                                                                                               |
 
 The following parameters are optional:
 
@@ -908,9 +919,6 @@ components:
     key: "RemoteUserCpu"
 tls_config:
   use_tls: False
-logging:
-  log_to_file: false
-  log_dir: "logs"
 ```
 
 To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -1274,6 +1282,8 @@ tls_config:
 logging:
   log_to_file: false
   log_dir: "logs"
+  log_file_size: 1024
+  number_of_rotated_backups: 5
 ```
 
 To enable the TLS for both the above configs, you can set the tls_config to `true` and add the cert paths as shown below.
@@ -1323,6 +1333,8 @@ If TLS is enabled:
 - **`client_key_path`:** This parameter should point to the private key corresponding to the client’s certificate.
 `log_to_file` specifies whether logs should be written to a file (`true`) or disabled (`false`)  
 `log_dir` defines the path to the log directory. Creates a new directory if it is not present
+`log_file_size` defines the size of the log file. Specify in MB. Default size is 1024 MB
+`number_of_rotated_backups` specifies the number of rotated backups of logs. 5 is default 
 
 ### Priority computation modes
 
@@ -1362,7 +1374,7 @@ auditor:
   collector_type: htcondor
 
 
-utilisation:
+utilization:
   groupedby: VOMS
   grouped_list: [production, lcgadmin, ilc, ops]
   watt_per_core: 4.6
@@ -1398,11 +1410,11 @@ email:
 | `auditor.component_fields_in_record.benchmark`| `HEPscore23`     | Component field key of the record that specifies the benchmark score                                         |
 | `auditor.component_fields_in_record.total_cpu`| `TotalCPU`       | Component field key of the record that specifies the total cpu                                               |
 | `auditor.collector_type`                      | `htcondor`       | Specify the batch system that was used to collect the records in AUDITOR (`htcondor`, `slurm`, `kubernetes`) |
-| `utilisation.groupedby`                       | `VOMS`           | Attribute used to group utilisation metrics                                                                  |
-| `utilisation.grouped_list`                    | `[]`             | List of VOMS for utilisation accounting                                                                      |
-| `utilisation.watt_per_core`                   | `4.6`            | Default power consumption (in watts) per CPU core                                                            |
-| `utilisation.co2_per_kwh`                     | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                                        |
-| `utilisation.interval`                        | `10`             | Time interval (in seconds) used for utilisation aggregation                                                  |
+| `utilization.groupedby`                       | `VOMS`           | Attribute used to group utilization metrics                                                                  |
+| `utilization.grouped_list`                    | `[]`             | List of VOMS for utilization accounting                                                                      |
+| `utilization.watt_per_core`                   | `4.6`            | Default power consumption (in watts) per CPU core                                                            |
+| `utilization.co2_per_kwh`                     | `0.363`          | CO₂ emission factor in kg CO₂ per kWh                                                                        |
+| `utilization.interval`                        | `10`             | Time interval (in seconds) used for utilization aggregation                                                  |
 | `utilization.file_name`                       | `auditor_summary`| File name for the CSV summary file                                                                           |
 | `utilization.file_path`                       | ``               | Path directory to store the summary                                                                          |
 | `cluster.watt_per_core.site`                  | `{}`             | Site-specific values for watt-per-core power consumption                                                     |

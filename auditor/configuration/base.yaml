@@ -22,3 +22,5 @@ tls_config:
 logging:
   log_to_file: false
   log_dir: "logs"
+  log_file_size: 1024
+  number_of_rotated_backups: 5
