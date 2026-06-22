@@ -19,7 +19,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio_cron_scheduler::{Job, JobScheduler};
-use tracing::info;
+use tracing::{error, info, warn};
 
 #[derive(Debug, Clone)]
 pub struct ArchiveService {
@@ -44,9 +44,9 @@ impl ArchiveService {
             Box::pin(async move {
                 info!("Started scheduled archival process");
                 match Self::archive_old_records(pool, config).await {
-                    Ok(_) => println!("Successfully archived records"),
+                    Ok(_) => info!("Successfully archived records"),
                     Err(e) => {
-                        println!("Archival process failed. Check the logs for more info {e}",)
+                        error!("Archival process failed. Check the logs for more info {e}",)
                     }
                 }
             }) as std::pin::Pin<Box<dyn futures_util::Future<Output = ()> + Send>>
@@ -107,11 +107,11 @@ impl ArchiveService {
 
         let earliest_timestamp = match oldest_record_timestamp_in_db {
             Some(ref record_timestamp) => {
-                println!("Oldest record timestamp stop_time: {record_timestamp:?}");
+                info!("Oldest record timestamp stop_time: {record_timestamp:?}");
                 record_timestamp.stop_time
             }
             None => {
-                println!(
+                warn!(
                     "The database is empty. No records found in auditor_accounting for archival."
                 );
                 return Ok(());
@@ -144,11 +144,11 @@ impl ArchiveService {
             let archive_dir = Path::new(&config.archive_path);
 
             if !archive_dir.exists() {
-                println!(
+                info!(
                     "Directory does not exist. Creating new directory at {archive_dir:?} (as specified in config.archive_path)"
                 );
                 if let Err(e) = std::fs::create_dir_all(archive_dir) {
-                    eprintln!("Failed to create directory: {e}");
+                    error!("Failed to create directory: {e}");
                 }
             }
 
@@ -270,16 +270,16 @@ impl ArchiveService {
 
                 match validated_data {
                     Ok(record_count) => {
-                        println!("Validation is successful for {:?}", &path);
+                        info!("Validation is successful for {:?}", &path);
 
                         deletion_from_db(&a, &b, record_count, pool.clone()).await?;
                     }
                     Err(e) => {
-                        println!("{e}. Aborting deletion of data for month/year ");
+                        error!("{e}. Aborting deletion of data for month/year ");
                     }
                 }
             } else {
-                info!(
+                warn!(
                     "No records found for period {} to {}, skipping file creation",
                     a, b
                 );
@@ -328,12 +328,12 @@ WHERE auditor_accounting.id = to_delete.id;",
         delete_count += i64::try_from(result)?;
 
         if result == 0 && delete_count == record_count {
-            println!("Record deletion is successful. count --> {delete_count}");
+            info!("Record deletion is successful. count --> {delete_count}");
             break;
         }
 
         if delete_count > record_count {
-            println!(
+            error!(
                 "Something went wrong while deletion. Please check the data for the month from this timestamp --> {a} "
             );
             break;
@@ -349,7 +349,7 @@ async fn data_validation(
     a: &String,
     b: &String,
 ) -> anyhow::Result<i64> {
-    println!("checking file path {:?}", &parquet_file_path);
+    info!("checking file path {:?}", &parquet_file_path);
     let file = File::open(parquet_file_path)?;
     let arrow_reader = ParquetRecordBatchReaderBuilder::try_new(file)?;
 
@@ -357,7 +357,7 @@ async fn data_validation(
 
     let num_rows = parquet_metadata.file_metadata().num_rows();
 
-    println!("Number of rows in '{:?}': {}", &parquet_file_path, num_rows);
+    info!("Number of rows in '{:?}': {}", &parquet_file_path, num_rows);
 
     let mut record_count: usize = 0;
 
@@ -365,7 +365,7 @@ async fn data_validation(
         record_count = batch?.num_rows().add(record_count);
     }
 
-    println!("record count --> {record_count}");
+    info!("record count --> {record_count}");
 
     let converted_count: i64 = record_count.try_into().expect("Conversion failed");
 
@@ -377,7 +377,7 @@ async fn data_validation(
 
     let count: i64 = row.get("count");
 
-    println!("count_query_from_db --> {:?}", &count);
+    info!("count_query_from_db --> {:?}", &count);
 
     if converted_count == count {
         Ok(count)

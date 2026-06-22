@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2026-44432]: Update urllib3 from 2.6.3 to 2.7.0 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- AUDITOR, slurm, slurm-epilog, priority-plugin: Write logs to a file with rolling file appender ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR-Client: Add linebreak to concatenate client cert and client key ([@raghuvar-vijay](https://github.com/raghuvar-vijay))

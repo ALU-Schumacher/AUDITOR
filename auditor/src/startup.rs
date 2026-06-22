@@ -99,7 +99,9 @@ pub async fn run(
 
     match tls_params {
         Some(params) if params.use_tls => {
-            println!("********* AUDITOR running in TLS mode *********");
+            info!(
+                "******************************************************* AUDITOR running in TLS mode ***************************************************************************"
+            );
 
             let mut server = HttpServer::new(app_config)
                 .workers(web_workers)
@@ -130,7 +132,9 @@ pub async fn run(
             }
         }
         _ => {
-            println!("********* AUDITOR running without TLS *********");
+            info!(
+                "******************************************************* AUDITOR running without TLS ***************************************************************************"
+            );
 
             let mut server = HttpServer::new(app_config).workers(web_workers);
 
