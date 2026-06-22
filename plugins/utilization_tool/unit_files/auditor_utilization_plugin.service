@@ -7,10 +7,10 @@ RequiredBy=multi-user.target
 
 [Service]
 Type=simple
-User=auditor-utilization-report
+User=auditor-utilization-plugin
 Group=auditor
-WorkingDirectory=/opt/auditor-utilization-report
-ExecStart=/opt/auditor-utilization-report/venv/bin/auditor-utilization-report --config /etc/auditor/auditor_utilization_plugin.yml
+WorkingDirectory=/opt/auditor_utilization_plugin
+ExecStart=/opt/auditor_utilization_plugin/venv/bin/auditor-utilization-plugin --config /etc/auditor/auditor_utilization_plugin.yml
 Restart=on-failure
 RestartSec=60
 
