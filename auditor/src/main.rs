@@ -10,6 +10,7 @@ use auditor::metrics::DatabaseMetricsWatcher;
 use auditor::startup::run;
 use auditor::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
+use tracing::{error, info};
 
 use rustls::{
     RootCertStore, ServerConfig, pki_types::CertificateDer, pki_types::PrivateKeyDer,
@@ -33,7 +34,25 @@ async fn main() -> Result<(), anyhow::Error> {
         .expect("failed to install SIGTERM handler");
 
     // Set up logging
-    let subscriber = get_subscriber("AUDITOR".into(), configuration.log_level, std::io::stdout);
+    //let subscriber = get_subscriber("AUDITOR".into(), configuration.log_level, std::io::stdout);
+
+    let file_logging = if configuration.logging.log_to_file {
+        Some((
+            configuration.logging.log_dir.clone(),
+            configuration.logging.log_file_prefix.as_str(),
+            configuration.logging.log_file_size,
+            configuration.logging.number_of_rotated_backups,
+        ))
+    } else {
+        None
+    };
+
+    let (subscriber, _log_guards) = get_subscriber(
+        "AUDITOR".into(),
+        configuration.log_level,
+        std::io::stdout,
+        file_logging,
+    );
     init_subscriber(subscriber);
 
     // Create a connection pool for the PostgreSQL database
@@ -59,7 +78,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 .unwrap();
 
             if let Err(e) = tls.validate_tls_paths() {
-                eprintln!("Configuration error: {e}");
+                error!("Configuration error: {e}");
                 // Handle the error or return early
             }
 
@@ -68,8 +87,8 @@ async fn main() -> Result<(), anyhow::Error> {
             let server_cert_path = tls.server_cert_path.as_ref().unwrap();
 
             match env::current_dir() {
-                Ok(path) => println!("Current directory: {}", path.display()),
-                Err(e) => eprintln!("Error getting current directory: {e}"),
+                Ok(path) => info!("Current directory: {}", path.display()),
+                Err(e) => error!("Error getting current directory: {e}"),
             }
 
             // import CA cert

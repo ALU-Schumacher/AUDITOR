@@ -230,11 +230,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     debug!(?config, "Loaded config");
 
-    // Set up logging
-    let subscriber = get_subscriber(
+    let file_logging = if config.logging.log_to_file {
+        Some((
+            config.logging.log_dir.clone(),
+            config.logging.log_file_prefix.as_str(),
+            config.logging.log_file_size,
+            config.logging.number_of_rotated_backups,
+        ))
+    } else {
+        None
+    };
+
+    let (subscriber, _log_guards) = get_subscriber(
         "AUDITOR-priority-plugin".into(),
         config.log_level,
         std::io::stdout,
+        file_logging,
     );
     init_subscriber(subscriber);
 
@@ -358,6 +369,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::configuration::LoggingSettings;
     use crate::configuration::TLSConfig;
     use crate::configuration::{AuditorSettings, PrometheusSettings};
     use tracing_subscriber::filter::LevelFilter;
@@ -398,6 +410,13 @@ mod tests {
                 ca_cert_path: None,
                 client_cert_path: None,
                 client_key_path: None,
+            },
+            logging: LoggingSettings {
+                log_dir: "logs".to_string(),
+                log_to_file: false,
+                log_file_prefix: "priority_plugin_logs".to_string(),
+                log_file_size: 1024,
+                number_of_rotated_backups: 5,
             },
         };
 
@@ -444,6 +463,13 @@ mod tests {
                 ca_cert_path: None,
                 client_cert_path: None,
                 client_key_path: None,
+            },
+            logging: LoggingSettings {
+                log_dir: "logs".to_string(),
+                log_to_file: false,
+                log_file_prefix: "priority_plugin_logs".to_string(),
+                log_file_size: 1024,
+                number_of_rotated_backups: 5,
             },
         };
 

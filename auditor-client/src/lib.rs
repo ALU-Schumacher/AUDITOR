@@ -567,6 +567,7 @@ use futures::TryStreamExt;
 use reqwest_streams::*;
 use serde_json::Deserializer;
 use std::io::BufReader;
+use tracing::error;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
@@ -744,21 +745,21 @@ impl AuditorClientBuilder {
                 match Identity::from_pem(&combined_pem) {
                     Ok(identity) => tls_config.identity = Some(identity),
                     Err(e) => {
-                        eprintln!("Failed to create identity from client cert and key: {e}")
+                        error!("Failed to create identity from client cert and key: {e}")
                     }
                 }
             }
             (Err(e), _) | (_, Err(e)) => {
-                eprintln!("Failed to read client certificate or key: {e}");
+                error!("Failed to read client certificate or key: {e}");
             }
         }
 
         match fs::read(ca_cert_path) {
             Ok(ca_cert) => match Certificate::from_pem(&ca_cert) {
                 Ok(ca_certificate) => tls_config.ca_certificate = Some(ca_certificate),
-                Err(e) => eprintln!("Failed to parse CA certificate PEM: {e}"),
+                Err(e) => error!("Failed to parse CA certificate PEM: {e}"),
             },
-            Err(e) => eprintln!("Failed to read CA certificate file: {e}"),
+            Err(e) => error!("Failed to read CA certificate file: {e}"),
         }
 
         self.tls_config = Some(tls_config);

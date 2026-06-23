@@ -85,6 +85,6 @@ jobs:
         run: |
           sudo apt-get install musl musl-tools
       
-      - name: Test priority plugin
+      - name: Test db migration
         run: SKIP_COMPILATION=true ./scripts/test_db_migration.sh
 

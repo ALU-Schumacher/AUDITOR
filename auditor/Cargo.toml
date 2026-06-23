@@ -57,6 +57,7 @@ rand.workspace = true
 regex.workspace = true
 reqwest.workspace = true
 reqwest-streams.workspace = true
+rolling-file.workspace = true
 rustls.workspace = true
 secrecy.workspace = true
 serde.workspace = true
@@ -69,6 +70,7 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
 tokio-cron-scheduler.workspace = true
 tracing-actix-web.workspace = true
+tracing-appender.workspace = true
 tracing-bunyan-formatter.workspace = true
 tracing-log.workspace = true
 tracing-subscriber = { workspace = true, features = ["registry", "env-filter"] }

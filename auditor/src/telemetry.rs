@@ -5,9 +5,11 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use rolling_file::*;
 use serde::{Deserialize, de};
 use std::str::FromStr;
 use tracing::{Subscriber, subscriber::set_global_default};
+use tracing_appender::non_blocking::WorkerGuard;
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_log::LogTracer;
 use tracing_subscriber::{
@@ -19,18 +21,41 @@ pub fn get_subscriber<Sink>(
     name: String,
     env_filter: LevelFilter,
     sink: Sink,
-) -> impl Subscriber + Send + Sync
+    file_config: Option<(impl AsRef<std::path::Path>, &str, u64, usize)>,
+) -> (Box<dyn Subscriber + Send + Sync>, Vec<WorkerGuard>)
 where
     Sink: for<'a> MakeWriter<'a> + Send + Sync + 'static,
 {
     //let env_filter =
     //    EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
     let env_filter = EnvFilter::from_default_env().add_directive(env_filter.into());
-    let formatting_layer = BunyanFormattingLayer::new(name, sink);
-    Registry::default()
+    let stdout_formatting_layer = BunyanFormattingLayer::new(name.clone(), sink);
+
+    let base = Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
-        .with(formatting_layer)
+        .with(stdout_formatting_layer);
+
+    match file_config {
+        Some((log_dir, log_file_prefix, log_file_size, number_of_rotated_backups)) => {
+            std::fs::create_dir_all(&log_dir).expect("Failed to create log directory");
+
+            let log_path = log_dir.as_ref().join(log_file_prefix);
+
+            let file_appender = BasicRollingFileAppender::new(
+                log_path,
+                RollingConditionBasic::new().max_size(10 * 1024 * 1024 * log_file_size),
+                number_of_rotated_backups, // rotated backups
+            )
+            .expect("Failed to create rolling file appender");
+            let (non_blocking_file, file_guard) = tracing_appender::non_blocking(file_appender);
+            let file_formatting_layer = BunyanFormattingLayer::new(name, non_blocking_file);
+
+            let subscriber = base.with(file_formatting_layer);
+            (Box::new(subscriber), vec![file_guard])
+        }
+        None => (Box::new(base), vec![]),
+    }
 }
 
 /// Register a subscriber as global default for processing span data.

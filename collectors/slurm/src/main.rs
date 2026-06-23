@@ -75,7 +75,19 @@ static CONFIG: Lazy<Settings> =
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let subscriber = get_subscriber(NAME.into(), CONFIG.log_level, std::io::stdout);
+    let file_logging = if CONFIG.logging.log_to_file {
+        Some((
+            CONFIG.logging.log_dir.clone(),
+            CONFIG.logging.log_file_prefix.as_str(),
+            CONFIG.logging.log_file_size,
+            CONFIG.logging.number_of_rotated_backups,
+        ))
+    } else {
+        None
+    };
+
+    let (subscriber, _log_guards) =
+        get_subscriber(NAME.into(), CONFIG.log_level, std::io::stdout, file_logging);
     init_subscriber(subscriber);
 
     let run_id = Uuid::new_v4();
