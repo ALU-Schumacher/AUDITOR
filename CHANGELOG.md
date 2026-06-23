@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2026-28684]: Update python-dotenv from 1.1.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-44432]: Update urllib3 from 2.6.3 to 2.7.0 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2026-0190]: Update anyhow from 1.0.102 to 1.0.103 ([@dirksammel](https://github.com/dirksammel))
+- [CVE-2024-3651]: Update idna from 3.10 to 3.15 in /auditor/scripts/revert_encoding ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
 
@@ -30,20 +31,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actions/checkout from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.13.0 to 4.14.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.3.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update anyhow from 1.0.102 to 1.0.103 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow from 58.0.0 to 59.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 58.0.0 to 59.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.11.0 to 26.5.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.4.0 to 1.5.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update chrono from 0.4.44 to 0.4.45 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update claim from 0.7.1 to 0.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update color-eyre from 0.6.3 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update claim from 0.7.1 to 0.8.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update config from 0.15.22 to 0.15.25 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.44.0 to 1.48.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 46.0.5 to 49.0.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update config from 0.15.22 to 0.15.24 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update EndBug/add-and-commit from 9 to 10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update itertools from 0.14.0 to 0.15.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update jiff from 0.2.23 to 0.2.29 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update jiff from 0.2.23 to 0.2.31 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update k8s-openapi from 0.27.1 to 0.28.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update kube from 3.1.0 to 4.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update parquet from 58.0.0 to 59.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pydantic from 2.12.5 to 2.13.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.27.2 to 0.29.0 ([@dirksammel](https://github.com/dirksammel))
@@ -59,8 +64,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde_with from 3.18.0 to 3.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.50.0 to 1.52.3 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tracing-actix-web from 0.7.21 to 0.7.22 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tracing-bunyan-formatter from 0.3.9 to 0.3.10 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update uuid from 1.22.0 to 1.23.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.22.0 to 1.23.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
