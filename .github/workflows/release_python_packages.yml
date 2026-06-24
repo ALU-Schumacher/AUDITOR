@@ -12,7 +12,7 @@ jobs:
         working-directory: ./plugins/apel
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y python3-pip
@@ -58,7 +58,7 @@ jobs:
         working-directory: ./plugins/apel
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y epel-release dnf-plugins-core
@@ -86,7 +86,7 @@ jobs:
         working-directory: ./collectors/htcondor
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y python3-pip
@@ -132,7 +132,7 @@ jobs:
         working-directory: ./collectors/htcondor
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y epel-release dnf-plugins-core
@@ -160,7 +160,7 @@ jobs:
         working-directory: ./plugins/utilization_tool
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y python3-pip
@@ -206,7 +206,7 @@ jobs:
         working-directory: ./plugins/utilization_tool
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           dnf install -y epel-release dnf-plugins-core
