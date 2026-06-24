@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTCondor collector: Fix a bug for detection stop time of some cancelled jobs ([@maxfischer2781](https://github.com/maxfischer2781))
 - Utilization plugin: Fix unit file path ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actix-http from 3.12.0 to 3.12.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.1.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.3.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.4.0 to 1.4.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update color-eyre from 0.6.3 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
