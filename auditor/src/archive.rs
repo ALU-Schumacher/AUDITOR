@@ -19,7 +19,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio_cron_scheduler::{Job, JobScheduler};
-use tracing::info;
+use tracing::{error, info};
 
 #[derive(Debug, Clone)]
 pub struct ArchiveService {
@@ -153,6 +153,14 @@ impl ArchiveService {
             }
 
             let path = archive_dir.join(&archive_filename);
+
+            if path.exists() {
+                error!(
+                    "Archive file already exists {path:?}. Exiting Archival service. Please remove or change the filename and restart the AUDITOR to continue the archival process"
+                );
+
+                break;
+            }
 
             let mut writer: Option<ArrowWriter<File>> = None;
             let mut total_archived = 0i64;

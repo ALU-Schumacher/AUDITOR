@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- AUDITOR: Stop archival if the file already exists ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR-Client: Add linebreak to concatenate client cert and client key ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Certs: Update tls integration test certs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix a bug for detection stop time of some cancelled jobs ([@maxfischer2781](https://github.com/maxfischer2781))
