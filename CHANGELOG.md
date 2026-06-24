@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update color-eyre from 0.6.3 to 0.6.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update claim from 0.7.1 to 0.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.44.0 to 1.48.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update cryptography from 46.0.5 to 48.0.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update cryptography from 46.0.5 to 49.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EndBug/add-and-commit from 9 to 10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.12.5 to 2.13.4 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.27.2 to 0.29.0 ([@dirksammel](https://github.com/dirksammel))
