@@ -27,7 +27,7 @@ jobs:
       RUSTFLAGS: -C link-arg=-s
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: dtolnay/rust-toolchain@stable
         with:

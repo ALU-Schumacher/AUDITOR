@@ -15,7 +15,7 @@ jobs:
         working-directory: ./plugins/apel
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -46,7 +46,7 @@ jobs:
         working-directory: ./plugins/apel
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -70,7 +70,7 @@ jobs:
         working-directory: ./plugins/utilization_tool
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -100,7 +100,7 @@ jobs:
         working-directory: ./plugins/utilization_tool
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
