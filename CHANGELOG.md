@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.50.0 to 1.52.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tracing-bunyan-formatter from 0.3.9 to 0.3.10 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update types-python-dateutil from 2.9.0.20260124 to 2.9.0.20260518 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
