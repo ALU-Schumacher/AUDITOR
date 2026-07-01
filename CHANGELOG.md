@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AUDITOR-Client: Add linebreak to concatenate client cert and client key ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Certs: Update tls integration test certs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix a bug for detection stop time of some cancelled jobs ([@maxfischer2781](https://github.com/maxfischer2781))
+- SLURM-rpm: Fix slurm working directory for unit file ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Utilization plugin: Fix unit file path ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actix-http from 3.12.0 to 3.12.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ad-m/github-push-action from 1.0.0 to 1.1.0 ([@dirksammel](https://github.com/dirksammel))
