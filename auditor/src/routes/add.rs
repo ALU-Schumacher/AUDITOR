@@ -11,6 +11,7 @@ use actix_web::{HttpResponse, ResponseError, web};
 use chrono::Utc;
 use serde_json::Value;
 use sqlx::PgPool;
+use tracing::{error, warn};
 
 #[derive(thiserror::Error)]
 pub enum AddError {
@@ -75,14 +76,28 @@ pub async fn add(
             Some(db_err) => match db_err.code() {
                 Some(code) if code == "23505" => {
                     if **ignore_record_exists_error {
-                        tracing::warn!(
-                            "!! ----- RECORD ALREADY EXISTS – IGNORING DUE TO CONFIGURATION. ----- !!"
-                        );
+                        if let Some(pg_err) =
+                            db_err.try_downcast_ref::<sqlx::postgres::PgDatabaseError>()
+                        {
+                            warn!(
+                                "{:?} !! ----- RECORD ALREADY EXISTS – IGNORING DUE TO CONFIGURATION. ----- !!",
+                                pg_err.detail().unwrap()
+                            );
+                        }
+
                         let body = WarningResponse {
         warning: "Record already exists, but the error was ignored due to AUDITOR configuration.".into(),
     };
                         Ok(HttpResponse::Ok().json(body))
                     } else {
+                        if let Some(pg_err) =
+                            db_err.try_downcast_ref::<sqlx::postgres::PgDatabaseError>()
+                        {
+                            error!(
+                                "!! ----- RECORD ALREADY EXISTS --------!! {:?}",
+                                pg_err.detail().unwrap()
+                            );
+                        }
                         Err(AddError::RecordExists)
                     }
                 }

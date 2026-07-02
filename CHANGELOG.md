@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CVE-2024-3651]: Update idna from 3.10 to 3.15 in /auditor/scripts/revert_encoding ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Added
+- AUDITOR: log for including record id if record-exist error occurs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - AUDITOR: Stop archival if the file already exists ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
