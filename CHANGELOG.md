@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [GHSA-xphw-cqx3-667j]: Update thin-vec from 0.2.14 to 0.2.16 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-28684]: Update python-dotenv from 1.1.1 to 1.2.2 ([@dirksammel](https://github.com/dirksammel))
 - [CVE-2026-44432]: Update urllib3 from 2.6.3 to 2.7.0 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0190]: Update anyhow from 1.0.102 to 1.0.103 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
