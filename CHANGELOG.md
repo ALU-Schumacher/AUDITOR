@@ -66,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update serde-aux from 4.6.0 to 4.7.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde_json from 1.0.149 to 1.0.150 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_with from 3.18.0 to 3.21.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update setuptools from 82.0.1 to 83.0.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update softprops/action-gh-release from 2 to 3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.50.0 to 1.52.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tracing-actix-web from 0.7.21 to 0.7.22 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
