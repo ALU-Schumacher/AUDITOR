@@ -54,7 +54,7 @@
 #           matches: ^slot.+@(?:site1)-.{10}@.+$
 #   - name: "Memory"
 #     key: "MemoryProvisioned"
-#   - name: "UserCPU"
-#     key: "RemoteUserCpu"
+#   - name: "TotalCPU"
+#     key: "RemoteUserCpu+RemoteSysCpu"
 # tls_config:
 #   use_tls: False
