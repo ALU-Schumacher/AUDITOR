@@ -217,10 +217,6 @@
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#rpm-2"><small>- rpm</small></a>
                 </div>
                 
-                <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/#"><small>- </small></a>
-                </div>
-                
                 
                 
                 <div class="toc-item">
@@ -931,8 +927,8 @@ In case the regex contains a group, the value is set to the (first) matching gro
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">          m</span><span style="color: light-dark(#22863A, #85E89D);">atches</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> ^</span><span style="color: light-dark(#032F62, #9ECBFF);">slot.+@(?:site1)-.{10}@.+$</span></span>
 <span class="giallo-l"><span>  -</span><span style="color: light-dark(#22863A, #85E89D);"> n</span><span style="color: light-dark(#22863A, #85E89D);">ame</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">Memory</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    k</span><span style="color: light-dark(#22863A, #85E89D);">ey</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">MemoryProvisioned</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
-<span class="giallo-l"><span>  -</span><span style="color: light-dark(#22863A, #85E89D);"> n</span><span style="color: light-dark(#22863A, #85E89D);">ame</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">UserCPU</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
-<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    k</span><span style="color: light-dark(#22863A, #85E89D);">ey</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">RemoteUserCpu</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span>  -</span><span style="color: light-dark(#22863A, #85E89D);"> n</span><span style="color: light-dark(#22863A, #85E89D);">ame</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">TotalCPU</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    k</span><span style="color: light-dark(#22863A, #85E89D);">ey</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> &quot;</span><span style="color: light-dark(#032F62, #9ECBFF);">RemoteUserCpu+RemoteSysCpu</span><span style="color: light-dark(#032F62, #9ECBFF);">&quot;</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">t</span><span style="color: light-dark(#22863A, #85E89D);">ls_config</span><span>:</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  u</span><span style="color: light-dark(#22863A, #85E89D);">se_tls</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> False</span></span></code></pre>
 <p>To enable the TLS for both the above configs, you can set the tls_config to <code>true</code> and add the cert paths as shown below.</p>
@@ -1326,7 +1322,7 @@ Via <code>min_priority</code> and <code>max_priority</code>, lower and upper lim
 <tr><td><code>utilization.co2_per_kwh</code></td><td><code>0.363</code></td><td>CO₂ emission factor in kg CO₂ per kWh</td></tr>
 <tr><td><code>utilization.interval</code></td><td><code>10</code></td><td>Time interval (in seconds) used for utilization aggregation</td></tr>
 <tr><td><code>utilization.file_name</code></td><td><code>auditor_summary</code></td><td>File name for the CSV summary file</td></tr>
-<tr><td><code>utilization.file_path</code></td><td>``</td><td>Path directory to store the summary</td></tr>
+<tr><td><code>utilization.file_path</code></td><td><code> </code></td><td>Path directory to store the summary</td></tr>
 <tr><td><code>cluster.watt_per_core.site</code></td><td><code>{}</code></td><td>Site-specific values for watt-per-core power consumption</td></tr>
 <tr><td><code>email.enable_email_report</code></td><td><code>False</code></td><td>Enable or disable email reporting</td></tr>
 <tr><td><code>email.smtp_server</code></td><td><code>None</code></td><td>SMTP server used to send email reports</td></tr>
@@ -1349,7 +1345,6 @@ To run it as oneshot for a particular month, <code>auditor-utilization-plugin -c
 This is an example and can be changed to any dir you want. Make sure to also specify the same dir in the config file.</p>
 <h3 id="rpm-2">rpm</h3>
 <p>The RPM installs a Python virtual environment including all dependencies into <code>/opt/auditor_utilization_plugin</code>. After installation, a systemd unit file is available at: <code>/usr/lib/systemd/system/auditor_utilization_plugin.service</code>. A template configuration file is installed at this location <code>/etc/auditor/auditor_utilization_plugin.yml</code>. It must be adjusted to match your local setup.</p>
-<h3 id=""></h3>
 <h1 id="auditor-clients">Auditor Clients</h1>
 <p>To facilitate the development of collectors and plugins, client libraries for Rust and Python are offered which handle the interaction with the Auditor server.
 For details please consult the respective documentation pages for <a rel="external" href="https://docs.rs/auditor/">the Rust client</a> and <a rel="external" href="https://ALU-Schumacher.github.io/AUDITOR/pyauditor/">the Python client</a>.</p>
