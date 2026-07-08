@@ -274,28 +274,24 @@ pub async fn advanced_record_filtering(
                         ));
                         query.push_bind(*operator.1);
 
-                        query.push(" and ".to_string());
+                        query.push(" and ");
                     }
                 }
             }
         }
 
-        // The previous implementation of get and get_since is replicated. Getting all records also includes
-        // the records whose runtime IS NOT NULL. But while querying with the start_time or stop_time,
-        // we also specify the query to only include the records whose runtime is NOT NULL
-
-        if let Some(runtime_filters) = &filters.runtime {
-            if let Some(operators) = get_operator(runtime_filters) {
-                for operator in operators {
-                    // query string ->  a.runtime {} {} and
-                    query.push(format!(" runtime {} ", operator.0));
-                    query.push_bind(*operator.1);
-                    query.push(" and ".to_string());
-                }
+        if let Some(runtime_filters) = &filters.runtime
+            && let Some(operators) = get_operator(runtime_filters)
+        {
+            for operator in operators {
+                // query string ->  a.runtime {} {} and
+                query.push(format!(" runtime {} ", operator.0));
+                query.push_bind(*operator.1);
+                query.push(" and ");
             }
-        } else {
-            query.push(" runtime IS NOT NULL".to_string());
         }
+
+        query.push(" true ");
     }
 
     if let Some(sort_by) = &filters.sort_by {
