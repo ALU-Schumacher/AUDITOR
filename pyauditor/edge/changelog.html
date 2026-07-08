@@ -283,6 +283,9 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <h2><a class="reference external" href="https://github.com/alu-schumacher/AUDITOR/compare/v0.10.2...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Link to this heading"></a></h2>
 <section id="breaking-changes">
 <h3>Breaking changes<a class="headerlink" href="#breaking-changes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Slurm collector: <code class="docutils literal notranslate"><span class="pre">TotalCPU</span></code>, <code class="docutils literal notranslate"><span class="pre">UserCPU</span></code>, <code class="docutils literal notranslate"><span class="pre">SystemCPU</span></code> values to be stored as seconds instead of milli-seconds (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+</ul>
 </section>
 <section id="security">
 <h3>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h3>
@@ -303,6 +306,7 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <ul class="simple">
 <li><p>AUDITOR: log for including record id if record-exist error occurs (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
 <li><p>AUDITOR, slurm, slurm-epilog, priority-plugin: Write logs to a file with rolling file appender (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
+<li><p>Slurm collector: Migration script to change milli-sec to sec for TotalCPU field (<a class="reference external" href="https://github.com/raghuvar-vijay">&#64;raghuvar-vijay</a>)</p></li>
 </ul>
 </section>
 <section id="changed">
