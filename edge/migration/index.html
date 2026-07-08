@@ -79,6 +79,12 @@
                 </div>
                 
                 
+                <div class="toc-item-child">
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#slurm-collector"><small>- Slurm collector</small></a>
+                </div>
+                
+                
+                
                 <div class="toc-item">
                     <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#from-0-10-1-to-0-10-2">From 0.10.1 to 0.10.2</a>
                 </div>
@@ -266,7 +272,7 @@
                 
                 
                 <div class="toc-item-child">
-                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#slurm-collector"><small>- Slurm collector</small></a>
+                    <a class="subtext" href="https://alu-schumacher.github.io/AUDITOR//edge/migration/#slurm-collector-1"><small>- Slurm collector</small></a>
                 </div>
                 
                 <div class="toc-item-child">
@@ -323,6 +329,16 @@
             
 <div class="heading-text">Migration Guide</div>
 <h1 id="from-0-10-2-to-unreleased">From 0.10.2 to unreleased</h1>
+<p>Please backup your db before proceeding with any changes that are listed below.</p>
+<h2 id="slurm-collector">Slurm collector</h2>
+<p>The following changes only apply to users who are using Slurm collector (v0.10.2 and earlier), follow these steps to convert the <code>TotalCPU</code> time from milli-seconds to seconds:</p>
+<ul>
+<li>Clone the github repository <a rel="external" href="https://github.com/ALU-Schumacher/AUDITOR">git_repo</a>.</li>
+<li>Move into the cloned repository <code>cd AUDITOR</code></li>
+<li>Install the required dependencies with <code>pip install -r auditor/scripts/convert_slurm_millisec_to_sec/requirements.txt</code></li>
+<li>Replace the placeholder values in the .env file present at <code>auditor/scripts/convert_slurm_millisec_to_sec</code> with the values corresponding to your database config. Configure the <code>TOTAL_CPU_TIME</code> field to use the same value as the <code>TotalCPU</code> field in your Slurm collector components.</li>
+<li>Run <code>python auditor/scripts/convert_slurm_millisec_to_sec/convert_totalcpu_millisec_to_sec.py</code></li>
+</ul>
 <h1 id="from-0-10-1-to-0-10-2">From 0.10.1 to 0.10.2</h1>
 <h1 id="from-0-10-0-to-0-10-1">From 0.10.0 to 0.10.1</h1>
 <h1 id="from-0-9-4-to-0-10-0">From 0.9.4 to 0.10.0</h1>
@@ -487,7 +503,7 @@ functions but throws a deprecated warning if used.</p>
 <li><code>cargo install --version=0.7.3 sqlx-cli --no-default-features --features postgres,rustls,sqlite</code></li>
 </ul>
 <h1 id="from-0-2-0-to-0-3-0">From 0.2.0 to 0.3.0</h1>
-<h2 id="slurm-collector">Slurm collector</h2>
+<h2 id="slurm-collector-1">Slurm collector</h2>
 <p>New filter options for querying slurm jobs are available.
 Due to this, a new section <code>job_filter</code> has been introduced for the config file.
 The <code>job_status</code> field has been renamed to <code>status</code> and is now part of the <code>job_filter</code> section.</p>
