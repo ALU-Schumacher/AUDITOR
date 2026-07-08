@@ -60,7 +60,7 @@ ls
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%dir %attr(0750,{user},auditor) %{statedir}
+%dir %attr(0750,%{user},auditor) %{statedir}
 %{_bindir}/%{name}
 %{unitdir}/%{name}.service
 %config(noreplace) %{confdir}/%{name}.yml
