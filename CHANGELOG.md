@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Certs: Update tls integration test certs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - HTCondor collector: Fix a bug for detection stop time of some cancelled jobs ([@maxfischer2781](https://github.com/maxfischer2781))
 - HTCondor collector: Change example configuration to use TotalCpu ([@dirksammel](https://github.com/dirksammel))
+- Slurm collector: Fix typo in RPM spec file ([@dirksammel](https://github.com/dirksammel))
 - Utilization plugin: Fix unit file path ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Utilization plugin: Create venv with installation via RPM instead of shipping it ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-http from 3.12.0 to 3.12.1 ([@dirksammel](https://github.com/dirksammel))
