@@ -195,7 +195,7 @@ function compiling_rust_parquet_restore_script() {
 
 function restore_parquet_to_auditor_db() {
   cd auditor/scripts/parquet_to_auditor/rust_script
-  FILE_PATH="../../../../archived_records/auditor_2025_5.parquet" cargo run -- ./configuration/config.yaml
+  FILE_PATH="../../../../archived_records/auditor_2025_05.parquet" cargo run -- ./configuration/config.yaml
 }
 
 function check_if_records_group_4_records_are_restored() {
@@ -234,7 +234,7 @@ function compile_python() {
 }
 
 function run_python_parquet_to_auditor_script() {
-  PARQUET_PATH="../../../../archived_records/auditor_2025_1.parquet" python3 parquet_to_auditor.py
+  PARQUET_PATH="../../../../archived_records/auditor_2025_01.parquet" python3 parquet_to_auditor.py
 }
 
 auditor_adding_records
