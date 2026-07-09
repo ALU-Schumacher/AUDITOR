@@ -35,7 +35,7 @@ fake = { version = "5.1.0", features = ["chrono"] }
 futures = "0.3.32"
 futures-util = "0.3.32"
 itertools = "0.15.0"
-jiff = "0.2.31"
+jiff = "0.2.32"
 k8s-openapi = "0.28.0"
 kube = "4.0.0"
 num-traits = "0.2.19"
@@ -52,7 +52,7 @@ quickcheck = "1.1.0"
 quickcheck_macros = "1.2.0"
 rand = "0.10.2"
 rand_distr = "0.6.0"
-regex = "1.12.4"
+regex = "1.13.0"
 reqwest = { version = "0.12.28", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"] }
 reqwest-streams = { version = "0.12.0", features= ["json"] }
 rolling-file = "0.2.0"
