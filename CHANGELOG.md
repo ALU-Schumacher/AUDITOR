@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update arrow from 58.0.0 to 59.1.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update arrow-array from 58.0.0 to 59.1.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 25.11.0 to 26.5.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update build from 1.4.0 to 1.5.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update build from 1.4.0 to 1.5.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update chrono from 0.4.44 to 0.4.45 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update claim from 0.7.1 to 0.8.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update codecov/codecov-action from 5 to 7 ([@dirksammel](https://github.com/dirksammel))
