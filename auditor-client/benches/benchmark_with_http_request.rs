@@ -33,7 +33,7 @@ async fn insert_records(num: i64, increment: i64) -> Result<(), anyhow::Error> {
     let mut records = Vec::new();
 
     for i in 0..num {
-        let record_id = format!("record-{}", &i);
+        let record_id = format!("record-{}", i);
 
         let stop_time = start_time.checked_add_signed(chrono::Duration::hours(
             generate_stop_time_duration(&mut rand::rng(), &normal),
@@ -76,7 +76,7 @@ async fn insert_records(num: i64, increment: i64) -> Result<(), anyhow::Error> {
 fn start_client() -> Result<AuditorClient, anyhow::Error> {
     let configuration = get_configuration().expect("Failed to read configuration.");
 
-    println!("{} {}", &configuration.addr, configuration.port.clone());
+    println!("{} {}", configuration.addr, configuration.port.clone());
 
     let client = AuditorClientBuilder::new()
         .address(&configuration.addr, configuration.port)

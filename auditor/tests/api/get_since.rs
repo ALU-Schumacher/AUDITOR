@@ -246,7 +246,7 @@ async fn get_wrong_since_returns_a_404() {
     let response = reqwest::Client::new()
         .get(format!(
             "{}/get/wrong/since/2022-03-01T13:00:00-00:00",
-            &app.address
+            app.address
         ))
         .send()
         .await

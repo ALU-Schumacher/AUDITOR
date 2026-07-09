@@ -1352,7 +1352,7 @@ impl AuditorClient {
     pub async fn health_check(&self) -> bool {
         match self
             .client
-            .get(format!("{}/health_check", &self.address))
+            .get(format!("{}/health_check", self.address))
             .send()
             .await
         {
@@ -1376,7 +1376,7 @@ impl AuditorClient {
     pub async fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(format!("{}/record", &self.address))
+            .post(format!("{}/record", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -1402,7 +1402,7 @@ impl AuditorClient {
     pub async fn bulk_insert(&self, records: &Vec<RecordAdd>) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(format!("{}/records", &self.address))
+            .post(format!("{}/records", self.address))
             .header("Content-Type", "application/json")
             .json(records)
             .send()
@@ -1428,7 +1428,7 @@ impl AuditorClient {
     )]
     pub async fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
-            .put(format!("{}/record", &self.address))
+            .put(format!("{}/record", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -1446,7 +1446,7 @@ impl AuditorClient {
     pub async fn get(&self) -> Result<Vec<Record>, ClientError> {
         let response = self
             .client
-            .get(format!("{}/records", &self.address))
+            .get(format!("{}/records", self.address))
             .send()
             .await?
             .error_for_status()?
@@ -1480,7 +1480,7 @@ impl AuditorClient {
             .client
             .get(format!(
                 "{}/records?start_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()
             .await?
@@ -1514,7 +1514,7 @@ impl AuditorClient {
             .client
             .get(format!(
                 "{}/records?stop_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()
             .await?
@@ -1539,7 +1539,7 @@ impl AuditorClient {
     pub async fn advanced_query(&self, query_string: String) -> Result<Vec<Record>, ClientError> {
         let response = self
             .client
-            .get(format!("{}/records?{}", &self.address, query_string))
+            .get(format!("{}/records?{}", self.address, query_string))
             .send()
             .await?
             .error_for_status()?
@@ -1563,7 +1563,7 @@ impl AuditorClient {
     pub async fn get_single_record(&self, record_id: String) -> Result<Record, ClientError> {
         Ok(self
             .client
-            .get(format!("{}/record/{}", &self.address, record_id))
+            .get(format!("{}/record/{}", self.address, record_id))
             .send()
             .await?
             .error_for_status()?
@@ -1812,7 +1812,7 @@ impl AuditorClientBlocking {
     pub fn health_check(&self) -> bool {
         match self
             .client
-            .get(format!("{}/health_check", &self.address))
+            .get(format!("{}/health_check", self.address))
             .send()
         {
             Ok(s) => s.error_for_status().is_ok(),
@@ -1834,7 +1834,7 @@ impl AuditorClientBlocking {
     pub fn add(&self, record: &RecordAdd) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(format!("{}/record", &self.address))
+            .post(format!("{}/record", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()?;
@@ -1859,7 +1859,7 @@ impl AuditorClientBlocking {
     pub fn bulk_insert(&self, records: &Vec<RecordAdd>) -> Result<(), ClientError> {
         let response = self
             .client
-            .post(format!("{}/records", &self.address))
+            .post(format!("{}/records", self.address))
             .header("Content-Type", "application/json")
             .json(records)
             .send()?;
@@ -1882,7 +1882,7 @@ impl AuditorClientBlocking {
     )]
     pub fn update(&self, record: &RecordUpdate) -> Result<(), ClientError> {
         self.client
-            .put(format!("{}/record", &self.address))
+            .put(format!("{}/record", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()?
@@ -1899,7 +1899,7 @@ impl AuditorClientBlocking {
     pub fn get(&self) -> Result<Vec<Record>, ClientError> {
         let response = self
             .client
-            .get(format!("{}/records", &self.address))
+            .get(format!("{}/records", self.address))
             .send()?
             .error_for_status()?;
         let reader = BufReader::new(response);
@@ -1929,7 +1929,7 @@ impl AuditorClientBlocking {
             .client
             .get(format!(
                 "{}/records?start_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()?
             .error_for_status()?;
@@ -1960,7 +1960,7 @@ impl AuditorClientBlocking {
             .client
             .get(format!(
                 "{}/records?stop_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()?
             .error_for_status()?;
@@ -1980,7 +1980,7 @@ impl AuditorClientBlocking {
     pub fn advanced_query(&self, query_params: String) -> Result<Vec<Record>, ClientError> {
         let response = self
             .client
-            .get(format!("{}/records?{}", &self.address, query_params))
+            .get(format!("{}/records?{}", self.address, query_params))
             .send()?
             .error_for_status()?;
 
@@ -2003,7 +2003,7 @@ impl AuditorClientBlocking {
     pub fn get_single_record(&self, record_id: &str) -> Result<Record, ClientError> {
         Ok(self
             .client
-            .get(format!("{}/record/{}", &self.address, record_id))
+            .get(format!("{}/record/{}", self.address, record_id))
             .send()?
             .error_for_status()?
             .json()?)
@@ -2846,7 +2846,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        println!("{:?}", &response);
+        println!("{:?}", response);
         response
             .into_iter()
             .zip(body)
