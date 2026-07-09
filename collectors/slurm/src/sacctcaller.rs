@@ -308,7 +308,7 @@ fn construct_record(
         return Ok(None);
     };
 
-    let record_id = format!("{}-{job_id}", &CONFIG.record_prefix);
+    let record_id = format!("{}-{job_id}", CONFIG.record_prefix);
     // We don't want this record, we have already seen it in a previous run.
     if record_id == last_record_id {
         return Ok(None);
@@ -371,7 +371,7 @@ fn identify_site(job: &Job) -> Option<String> {
             s.only_if.is_none() || {
                 let only_if = s.only_if.as_ref().unwrap();
                 let re = Regex::new(&only_if.matches)
-                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", only_if.matches));
                 re.is_match(&job[&only_if.key].extract_string().unwrap_or_else(|_| {
                     panic!("Key is expected to be a string: {:?}", job[&only_if.key])
                 }))
@@ -399,7 +399,7 @@ fn construct_components(
             c.only_if.is_none() || {
                 let only_if = c.only_if.as_ref().unwrap();
                 let re = Regex::new(&only_if.matches)
-                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", only_if.matches));
                 re.is_match(&job[&only_if.key].extract_string().unwrap_or_else(|_| {
                     panic!("Key is expected to be a string: {:?}", job[&only_if.key])
                 }))
@@ -414,7 +414,7 @@ fn construct_components(
                 } else {
                     // TODO we should probably create our own error type (enum) and return it here
                     // maybe this error type can also be used in other parts of this function
-                    Err(anyhow!("Job information does not contain key {}", &c.key))
+                    Err(anyhow!("Job information does not contain key {}", c.key))
                 }
             } else {
                 Ok(Component::new(
@@ -441,7 +441,7 @@ fn construct_component_scores(job: &Job, component_config: &ComponentConfig) -> 
             s.only_if.is_none() || {
                 let only_if = s.only_if.as_ref().unwrap();
                 let re = Regex::new(&only_if.matches)
-                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", only_if.matches));
                 re.is_match(
                     &job[&only_if.key]
                         .extract_string()

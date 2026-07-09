@@ -72,7 +72,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
             c.only_if.is_none() || {
                 let only_if = c.only_if.as_ref().unwrap();
                 let re = Regex::new(&only_if.matches)
-                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", &only_if.matches));
+                    .unwrap_or_else(|_| panic!("Invalid regex expression: {}", only_if.matches));
                 re.is_match(&job[&only_if.key])
             }
         })
@@ -95,7 +95,7 @@ fn construct_components(config: &configuration::Settings, job: &Job) -> Vec<Comp
                         s.only_if.is_none() || {
                             let only_if = s.only_if.as_ref().unwrap();
                             let re = Regex::new(&only_if.matches).unwrap_or_else(|_| {
-                                panic!("Invalid regex expression: {}", &only_if.matches)
+                                panic!("Invalid regex expression: {}", only_if.matches)
                             });
                             re.is_match(&job[&only_if.key])
                         }
@@ -175,7 +175,7 @@ async fn main() -> Result<(), Error> {
     debug!(?job, "Acquired SLURM job info");
 
     let record = RecordAdd::new(
-        format!("{}-{job_id}", &config.record_prefix),
+        format!("{}-{job_id}", config.record_prefix),
         HashMap::from([
             ("site_id".to_string(), vec![config.site_id.clone()]),
             (

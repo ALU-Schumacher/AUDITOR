@@ -82,7 +82,7 @@ pub(crate) fn pod_to_record(pod: Pod) -> anyhow::Result<Option<RecordAdd>> {
     let name = metadata
         .name
         .clone()
-        .ok_or(anyhow::anyhow!("Pod has no name: {:?}", &pod))?;
+        .ok_or(anyhow::anyhow!("Pod has no name: {:?}", pod))?;
     let namespace = metadata
         .namespace
         .clone()

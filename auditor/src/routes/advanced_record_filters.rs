@@ -65,7 +65,7 @@ impl Filters {
                     if !all_authorized {
                         return Err(format!(
                             "Permission denied to access the site with the meta_id {}",
-                            &key
+                            key
                         ));
                     }
                     return Ok(());
@@ -270,7 +270,7 @@ pub async fn advanced_record_filtering(
                         query.push_bind(key.clone());
                         query.push(format!(
                             " AND (components->0->>'amount')::int {} ",
-                            &operator.0
+                            operator.0
                         ));
                         query.push_bind(*operator.1);
 
@@ -300,10 +300,10 @@ pub async fn advanced_record_filtering(
 
     if let Some(sort_by) = &filters.sort_by {
         if let SortOption::ASC(asc) = sort_by {
-            query.push(format!(" ORDER BY {} ASC", &asc.to_string()));
+            query.push(format!(" ORDER BY {} ASC", asc));
         }
         if let SortOption::DESC(desc) = sort_by {
-            query.push(format!(" ORDER BY {} DESC", &desc.to_string()));
+            query.push(format!(" ORDER BY {} DESC", desc));
         }
     } else {
         query.push(" ORDER BY stop_time ".to_string());

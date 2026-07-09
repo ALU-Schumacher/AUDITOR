@@ -135,7 +135,7 @@ impl ArchiveService {
 
             let archive_filename = format!(
                 "{}_{:04}_{:02}.parquet",
-                config.archive_file_prefix, &year, &month,
+                config.archive_file_prefix, year, month,
             );
 
             let a = month_to_be_archived_lower_bound.to_rfc3339();

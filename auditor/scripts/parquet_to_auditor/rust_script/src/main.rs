@@ -47,7 +47,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
     let num_rows = parquet_metadata.file_metadata().num_rows();
 
-    println!("Number of records in '{:?}': {}", &file_path, num_rows);
+    println!("Number of records in '{:?}': {}", file_path, num_rows);
 
     let _ = restore_to_db(arrow_reader.build()?, database_url).await;
 

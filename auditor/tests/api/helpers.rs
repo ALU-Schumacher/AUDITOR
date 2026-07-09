@@ -52,7 +52,7 @@ impl TestApp {
 
     pub async fn add_record<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
         reqwest::Client::new()
-            .post(format!("{}/record", &self.address))
+            .post(format!("{}/record", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -62,7 +62,7 @@ impl TestApp {
 
     pub async fn bulk_insert<T: serde::Serialize>(&self, record: &T) -> reqwest::Response {
         reqwest::Client::new()
-            .post(format!("{}/records", &self.address))
+            .post(format!("{}/records", self.address))
             .header("Content-Type", "application/json")
             .json(record)
             .send()
@@ -72,7 +72,7 @@ impl TestApp {
 
     pub async fn get_records(&self) -> Result<(Vec<Record>, u16), anyhow::Error> {
         let response = reqwest::Client::new()
-            .get(format!("{}/records", &self.address))
+            .get(format!("{}/records", self.address))
             .send()
             .await?;
 
@@ -97,7 +97,7 @@ impl TestApp {
         let response = reqwest::Client::new()
             .get(format!(
                 "{}/records?start_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()
             .await?;
@@ -123,7 +123,7 @@ impl TestApp {
         let response = reqwest::Client::new()
             .get(format!(
                 "{}/records?stop_time[gte]={}",
-                &self.address, encoded_since
+                self.address, encoded_since
             ))
             .send()
             .await?;
@@ -145,7 +145,7 @@ impl TestApp {
         query_string: T,
     ) -> Result<(Vec<Record>, u16), anyhow::Error> {
         let response = reqwest::Client::new()
-            .get(format!("{}/records?{}", &self.address, query_string))
+            .get(format!("{}/records?{}", self.address, query_string))
             .send()
             .await?;
 
@@ -168,7 +168,7 @@ impl TestApp {
         record_id: T,
     ) -> reqwest::Response {
         reqwest::Client::new()
-            .get(format!("{}/record/{}", &self.address, record_id))
+            .get(format!("{}/record/{}", self.address, record_id))
             .send()
             .await
             .expect("Failed to execute queries.")
