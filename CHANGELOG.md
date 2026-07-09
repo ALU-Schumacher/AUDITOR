@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update pytest-cov from 7.0.0 to 7.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rand from 0.10.1 to 0.10.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update regex from 1.12.3 to 1.12.4 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update ruff from 0.15.7 to 0.15.20 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.15.7 to 0.15.21 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.37 to 0.23.41 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde from 1.0.218 to 1.0.228 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update serde-aux from 4.6.0 to 4.7.0 ([@dirksammel](https://github.com/dirksammel))
