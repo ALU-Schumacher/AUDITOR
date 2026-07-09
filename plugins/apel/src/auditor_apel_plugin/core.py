@@ -50,9 +50,12 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
     records = []
 
     try:
+        runtime_value = Value.set_runtime(0)
+        runtime_operator = Operator().gt(runtime_value)
+        runtime_query = QueryBuilder().with_runtime(runtime_operator)
         start_time_value = Value.set_datetime(start_time)
         get_since_operator = Operator().gte(start_time_value)
-        stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
+        stop_time_query = runtime_query.with_stop_time(get_since_operator)
         if end_time is not None:
             end_time_value = Value.set_datetime(end_time)
             get_range_operator = get_since_operator.lt(end_time_value)
