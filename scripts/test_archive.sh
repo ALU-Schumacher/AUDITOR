@@ -125,11 +125,13 @@ function run_archive() {
 
 function run_parquet_to_auditor_db() {
   restore_parquet_to_auditor_db
+  
+  rm -rf ../../../../archived_records
+
   check_if_records_are_restored_by_rust_script
   
   fill_auditor_db_group4
   
-  rm -rf ../../../../archived_records
 
   sleep 25
 
