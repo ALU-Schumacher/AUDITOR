@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auditor_utilization_plugin"
-version = "0.10.2"
+version = "0.11.0"
 requires-python = ">=3.9"
 dependencies = [
-	     "python-auditor==0.10.2",
+	     "python-auditor==0.11.0",
 	     "pyyaml==6.0.3",
 	     "pydantic==2.13.4",
          "dotenv==0.9.9",
