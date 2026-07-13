@@ -1,5 +1,5 @@
 Name: auditor_utilization_plugin
-Version: 0.10.2
+Version: 0.11.0
 Release: 1
 Summary: AUDITOR plugin to create cluster utilization report
 License: BSD-2-Clause-Patent
@@ -69,6 +69,8 @@ fi
 %dir %attr(0750 auditor-utilization-plugin auditor) /var/lib/auditor_utilization_plugin
 
 %changelog
+* Mon Jul 13 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.0
+  - Release v0.11.0 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Mon Mar 23 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.2
  - First version in a package
 
