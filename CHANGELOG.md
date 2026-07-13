@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Apel plugin: Add runtime greater than zero to query ([@dirksammel](https://github.com/dirksammel))
-- AUDITOR: Stop archival if the file already exists ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Stop archival if the file already exists and fix archival integration test ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR: Fix terminate query using `true` instead of `runtime is not null` ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - AUDITOR-Client: Add linebreak to concatenate client cert and client key ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Archival: Zero padding archive filenames ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
