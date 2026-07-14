@@ -7,7 +7,7 @@
 
 use crate::archive::ArchiveService;
 use crate::configuration::{ArchivalConfig, TLSParams};
-use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder, PrometheusExporterConfig};
+use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
 use crate::middleware::rbac;
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
 use actix_tls::accept::rustls_0_23::TlsStream;
@@ -15,9 +15,7 @@ use actix_web::dev::Server;
 use actix_web::middleware::from_fn;
 use actix_web::{App, HttpResponse, HttpServer, web};
 use actix_web::{dev::Extensions, rt::net::TcpStream};
-use actix_web_opentelemetry::{PrometheusMetricsHandler, RequestMetrics};
 use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter};
-use opentelemetry::global;
 use sqlx::PgPool;
 use std::{any::Any, net::SocketAddr, sync::Arc};
 use tracing::info;
@@ -36,10 +34,9 @@ pub async fn run(
     ignore_record_exists_error: bool,
     archival_config: Option<ArchivalConfig>,
 ) -> Result<Server, anyhow::Error> {
-    let request_metrics: PrometheusExporterConfig = PrometheusExporterBuilder::new()
+    let prometheus_metrics = PrometheusExporterBuilder::new()
         .with_database_watcher(db_watcher)
         .build()?;
-    global::set_meter_provider(request_metrics.provider);
 
     if let Some(archival_config) = archival_config {
         let archival_service = ArchiveService::new(db_pool.clone(), archival_config);
@@ -64,19 +61,12 @@ pub async fn run(
         let ignore_record_exists_error_data = web::Data::new(ignore_record_exists_error);
 
         App::new()
-            // Logging middleware
             .app_data(enforcer_data)
             .app_data(enforce_rbac_data)
             .app_data(ignore_record_exists_error_data)
             .wrap(TracingLogger::default())
-            .wrap(RequestMetrics::default())
+            .wrap(prometheus_metrics.clone())
             .wrap(from_fn(rbac))
-            .route(
-                "/metrics",
-                web::get().to(PrometheusMetricsHandler::new(
-                    request_metrics.prom_registry.clone(),
-                )),
-            )
             // Routes
             .route("/health_check", web::get().to(health_check))
             .service(

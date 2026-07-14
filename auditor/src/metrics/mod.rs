@@ -5,24 +5,26 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use opentelemetry_sdk::metrics::SdkMeterProvider;
+//use opentelemetry_sdk::metrics::SdkMeterProvider;
+use actix_web_prom::{PrometheusMetrics, PrometheusMetricsBuilder};
 use prometheus::Registry;
 
 mod database;
 pub use database::*;
 
-pub struct PrometheusExporterConfig {
-    pub provider: SdkMeterProvider,
-    pub prom_registry: Registry,
-}
-
 pub struct PrometheusExporterBuilder {
     db_watcher: Option<DatabaseMetricsWatcher>,
+    namespace: String,
+    endpoint: String,
 }
 
 impl PrometheusExporterBuilder {
     pub fn new() -> PrometheusExporterBuilder {
-        PrometheusExporterBuilder { db_watcher: None }
+        PrometheusExporterBuilder {
+            db_watcher: None,
+            namespace: "auditor".to_string(),
+            endpoint: "/metrics".to_string(),
+        }
     }
 
     pub fn with_database_watcher(mut self, db_watcher: DatabaseMetricsWatcher) -> Self {
@@ -31,25 +33,18 @@ impl PrometheusExporterBuilder {
     }
 
     #[tracing::instrument(name = "Initializing Prometheus exporter", skip(self))]
-    pub fn build(self) -> Result<PrometheusExporterConfig, anyhow::Error> {
-        let prom_registry = Registry::new();
+    pub fn build(self) -> Result<PrometheusMetrics, anyhow::Error> {
+        let registry = Registry::new();
 
         if let Some(db_watcher) = self.db_watcher {
-            prom_registry.register(std::boxed::Box::new(db_watcher))?;
+            registry.register(std::boxed::Box::new(db_watcher))?;
         }
 
-        let metrics_exporter = opentelemetry_prometheus::exporter()
-            .with_registry(prom_registry.clone())
-            .build()?;
-
-        let provider = SdkMeterProvider::builder()
-            .with_reader(metrics_exporter)
-            .build();
-
-        Ok(PrometheusExporterConfig {
-            provider,
-            prom_registry,
-        })
+        PrometheusMetricsBuilder::new(&self.namespace)
+            .registry(registry)
+            .endpoint(&self.endpoint)
+            .build()
+            .map_err(|e| anyhow::anyhow!("failed to build Prometheus metrics middleware: {e}"))
     }
 }
 
