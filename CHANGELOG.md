@@ -13,8 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- AUDITOR: Update prometheus to 0.14.0 and add actix-web-prom ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
+- AUDITOR: remove opentelemetry, opentelemetry-prometheus, opentelemetry_sdk ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 
 ## [0.11.0] 2026-07-13
