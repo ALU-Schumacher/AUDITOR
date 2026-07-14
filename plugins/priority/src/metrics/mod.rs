@@ -1,13 +1,11 @@
 use crate::configuration::PrometheusMetricsOptions;
-use opentelemetry_sdk::metrics::SdkMeterProvider;
-use prometheus::Registry;
-use prometheus::{IntGaugeVec, Opts};
+use actix_web_prom::{PrometheusMetrics, PrometheusMetricsBuilder};
+use prometheus::{IntGaugeVec, Opts, Registry};
 use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct PrometheusExporterConfig {
-    pub provider: SdkMeterProvider,
-    pub prom_registry: Registry,
+    pub prometheus_metrics: PrometheusMetrics,
     pub resource_metric: IntGaugeVec,
     pub priority_metric: IntGaugeVec,
 }
@@ -15,11 +13,7 @@ pub struct PrometheusExporterConfig {
 impl PrometheusExporterConfig {
     #[tracing::instrument(name = "Initializing Prometheus exporter")]
     pub fn build() -> Result<PrometheusExporterConfig, anyhow::Error> {
-        let prom_registry = Registry::new();
-
-        let metrics_exporter = opentelemetry_prometheus::exporter()
-            .with_registry(prom_registry.clone())
-            .build()?;
+        let registry = Registry::new();
 
         let resource_metric = IntGaugeVec::new(
             Opts::new("resource_usage", "Resource usage metrics"),
@@ -29,16 +23,17 @@ impl PrometheusExporterConfig {
         let priority_metric =
             IntGaugeVec::new(Opts::new("priority", "Priority metrics"), &["group"])?;
 
-        prom_registry.register(Box::new(resource_metric.clone()))?;
-        prom_registry.register(Box::new(priority_metric.clone()))?;
+        registry.register(Box::new(resource_metric.clone()))?;
+        registry.register(Box::new(priority_metric.clone()))?;
 
-        let provider = SdkMeterProvider::builder()
-            .with_reader(metrics_exporter)
-            .build();
+        let prometheus_metrics = PrometheusMetricsBuilder::new("auditor")
+            .registry(registry)
+            .endpoint("/metrics")
+            .build()
+            .map_err(|e| anyhow::anyhow!("failed to build Prometheus metrics middleware: {e}"))?;
 
         Ok(PrometheusExporterConfig {
-            provider,
-            prom_registry,
+            prometheus_metrics,
             resource_metric,
             priority_metric,
         })
