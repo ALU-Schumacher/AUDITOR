@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.15.21 to 0.15.22 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tarides/changelog-check-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 
