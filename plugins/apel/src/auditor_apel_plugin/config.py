@@ -53,7 +53,7 @@ class PluginConfig(Configurable):
 
 
 class SiteConfig(Configurable):
-    sites_to_report: dict[str, list[str]]
+    sites_to_report: dict[str, dict]
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23
 
 
@@ -61,7 +61,6 @@ class AuditorConfig(Configurable):
     ip: str
     port: int
     timeout: int
-    site_meta_field: Union[str, list[str]]
     use_tls: bool
     ca_cert_path: Optional[str] = None
     client_cert_path: Optional[str] = None

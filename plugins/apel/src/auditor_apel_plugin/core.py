@@ -8,6 +8,7 @@ import json
 import logging
 import sqlite3
 from datetime import datetime, time, timedelta, timezone
+from importlib.metadata import version
 from sqlite3 import Error
 from typing import Union, cast
 from urllib.parse import unquote
@@ -32,41 +33,34 @@ logger = logging.getLogger("apel_plugin")
 TRACE = logging.DEBUG - 5
 
 
-def get_records(config: Config, client, start_time, site=None, end_time=None):
-    sites_to_report = config.site.sites_to_report
-    meta_key_site = config.auditor.site_meta_field
-
-    if isinstance(meta_key_site, str):
-        meta_key_site = [meta_key_site]
-
-    site_ids = []
-
-    if site is not None:
-        site_ids = sites_to_report[site]
-    else:
-        for v in sites_to_report.values():
-            site_ids.extend(v)
-
+def get_records(clusters, client, start_time, end_time=None):
     records = []
 
     try:
-        runtime_value = Value.set_runtime(0)
-        runtime_operator = Operator().gt(runtime_value)
-        runtime_query = QueryBuilder().with_runtime(runtime_operator)
+        # runtime_value = Value.set_runtime(0)
+        # runtime_operator = Operator().gt(runtime_value)
+        # runtime_query = QueryBuilder().with_runtime(runtime_operator)
         start_time_value = Value.set_datetime(start_time)
         get_since_operator = Operator().gte(start_time_value)
-        stop_time_query = runtime_query.with_stop_time(get_since_operator)
+        # stop_time_query = runtime_query.with_stop_time(get_since_operator)
+        stop_time_query = QueryBuilder().with_stop_time(get_since_operator)
         if end_time is not None:
             end_time_value = Value.set_datetime(end_time)
             get_range_operator = get_since_operator.lt(end_time_value)
             stop_time_query = stop_time_query.with_stop_time(get_range_operator)
-        for site in site_ids:
-            site_operator = MetaOperator().contains([site])
-            for meta_key in meta_key_site:
-                site_query = MetaQuery().meta_operator(meta_key, site_operator)
-                query_string = stop_time_query.with_meta_query(site_query).build()
-                logger.log(TRACE, f"Query to AUDITOR: {unquote(query_string)}")
-                records.extend(client.advanced_query(query_string))
+        for cluster, values in clusters.items():
+            site_key = values["site_meta_field"]
+            site_operator = MetaOperator().contains([cluster])
+            site_query = MetaQuery().meta_operator(site_key, site_operator)
+            query_string = stop_time_query.with_meta_query(site_query).build()
+            logger.log(TRACE, f"Query to AUDITOR: {unquote(query_string)}")
+            records_cluster = client.advanced_query(query_string)
+            if len(records_cluster) == 0:
+                logger.warning(
+                    f"No records for cluster '{cluster}' on this day. Is site_meta_field '{site_key}' correct?"
+                )
+                continue
+            records.extend(records_cluster)
         return records
     except Exception as e:
         logger.critical(e)
@@ -188,8 +182,13 @@ def fill_db(
         ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
     )
 
+    site_keys = {
+        cluster_values["site_meta_field"]
+        for cluster_values in config.site.sites_to_report[site].values()
+    }
+
     for r in records:
-        data_tuple = get_data_tuple(config, message, fields_dict, site, r)
+        data_tuple = get_data_tuple(config, message, fields_dict, site, site_keys, r)
 
         try:
             with conn:
@@ -206,19 +205,22 @@ def get_data_tuple(
     message: Message,
     fields_dict: dict[str, Field],
     site: str,
+    site_keys: set,
     record: Record,
-) -> tuple[int, float, str]:
+) -> tuple:
     value_list = []
 
     month = record.stop_time.replace(tzinfo=timezone.utc).month
     year = record.stop_time.replace(tzinfo=timezone.utc).year
     record_id = record.record_id
 
+    infrastructure = construct_infrastructure(config, site, site_keys, record)
+
     if isinstance(message, SummaryMessage):
         stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
         runtime = record.runtime
 
-        value_list = [site, month, year, stop_time, runtime, record_id]
+        value_list = [site, month, year, stop_time, runtime, record_id, infrastructure]
 
     elif isinstance(message, SyncMessage):
         submithost_field = config.get_mandatory_fields().get("SubmitHost")
@@ -437,3 +439,32 @@ def send_payload(config, payload):
     except AmsException as e:
         logger.critical(f"Could not send message: {e}")
         raise
+
+
+def construct_infrastructure(
+    config: Config, site: str, site_keys: set, record: Record
+) -> str:
+    compute_element = "UNKNOWN"
+    accounting_tool = "AUDITOR"
+
+    plugin_version = version("auditor_apel_plugin")
+
+    for site_key in site_keys:
+        try:
+            cluster = record.meta.get(site_key)[0]
+            compute_element = config.site.sites_to_report[site][cluster]["ce"]
+            break
+        except TypeError:
+            continue
+
+    try:
+        batch_system = record.meta.get("collector_type")[0]
+        batch_system = batch_system.split("/")[0]
+    except TypeError:
+        batch_system = "UNKNOWN"
+
+    infrastructure = (
+        f"{accounting_tool}/{plugin_version}-{compute_element}-{batch_system}"
+    )
+
+    return infrastructure
