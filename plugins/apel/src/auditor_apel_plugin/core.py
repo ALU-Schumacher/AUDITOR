@@ -215,12 +215,22 @@ def get_data_tuple(
     record_id = record.record_id
 
     infrastructure = construct_infrastructure(config, site, site_keys, record)
+    benchmark_type = get_benchmark_type(config, site, site_keys, record).value
 
     if isinstance(message, SummaryMessage):
         stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
         runtime = record.runtime
 
-        value_list = [site, month, year, stop_time, runtime, record_id, infrastructure]
+        value_list = [
+            site,
+            month,
+            year,
+            stop_time,
+            runtime,
+            record_id,
+            infrastructure,
+            benchmark_type,
+        ]
 
     elif isinstance(message, SyncMessage):
         submithost_field = config.get_mandatory_fields().get("SubmitHost")
@@ -336,6 +346,10 @@ def create_dict(
             if field in group_by_list:
                 hashstr += str(entry[field])
 
+        if isinstance(message, SummaryMessage):
+            message_dict["BenchmarkType"] = entry["BenchmarkType"]
+            hashstr += str(entry["BenchmarkType"])
+
         hash_value = hashlib.md5(hashstr.encode()).hexdigest()
 
         if hash_value in hash_dict:
@@ -352,15 +366,16 @@ def create_dict(
 def create_message(
     message: Message,
     aggr_dict: dict[str, dict[str, Union[str, int]]],
-    benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
 ) -> str:
     header = message.message_header
     message_list = [header]
 
     for group in aggr_dict.values():
         for k, v in group.items():
+            if k == "BenchmarkType":
+                continue
             if "Norm" in k:
-                v = f"{{{benchmark_type.value}: {v}}}"
+                v = f"{{{group['BenchmarkType']}: {v}}}"
             message_list.append(f"{k}: {v}\n")
 
         message_list.append("%%\n")
@@ -459,12 +474,31 @@ def construct_infrastructure(
 
     try:
         batch_system = record.meta.get("collector_type")[0]
-        batch_system = batch_system.split("/")[0]
+        batch_system = batch_system.split("_")[0]
+        batch_system = batch_system.split("-")[0]
     except TypeError:
         batch_system = "UNKNOWN"
 
     infrastructure = (
-        f"{accounting_tool}/{plugin_version}-{compute_element}-{batch_system}"
+        f"{accounting_tool}_{plugin_version}-{compute_element}-{batch_system}"
     )
 
     return infrastructure
+
+
+def get_benchmark_type(
+    config: Config, site: str, site_keys: set, record: Record
+) -> BenchmarkType:
+    benchmark_type = "HEPscore23"
+
+    for site_key in site_keys:
+        try:
+            cluster = record.meta.get(site_key)[0]
+            benchmark_type = config.site.sites_to_report[site][cluster][
+                "benchmark_type"
+            ]
+            break
+        except TypeError:
+            continue
+
+    return BenchmarkType(benchmark_type)

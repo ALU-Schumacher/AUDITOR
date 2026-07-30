@@ -26,6 +26,7 @@ class SummaryMessage(Message):
         "WallDuration INT NOT NULL",
         "RecordID TEXT UNIQUE NOT NULL",
         "InfrastructureDescription TEXT NOT NULL",
+        "BenchmarkType TEXT NOT NULL",
     ]
 
     group_by: list[str] = [
@@ -36,6 +37,7 @@ class SummaryMessage(Message):
         "SubmitHost",
         "Processors",
         "InfrastructureDescription",
+        "BenchmarkType",
     ]
 
     store_as: list[str] = [

@@ -35,7 +35,6 @@ def run(logger: Logger, config: Config, client, args):
     dry_run = args.dry_run
 
     clusters = config.site.sites_to_report[site]
-    benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
     message_dict = {}
     optional_fields = config.get_optional_fields()
@@ -101,7 +100,7 @@ def run(logger: Logger, config: Config, client, args):
         logger.warning(f"No records for site {site} in this month")
         quit()
 
-    message = create_message(SummaryMessage(), message_dict, benchmark_type)
+    message = create_message(SummaryMessage(), message_dict)
     logger.log(TRACE, f"Message:\n{message}")
     signed_message = sign_msg(config, message)
     logger.log(TRACE, f"Signed message:\n{signed_message}")
