@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apel plugin: Send sync message during republishing ([@dirksammel](https://github.com/dirksammel))
 - Apel plugin: Add InfrastructureDescription to Summary ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Add collector type and version to records ([@dirksammel](https://github.com/dirksammel))
+- slurm, slurm-epilog, kubernetes collector: Add collector version info to meta col for every record ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
 - Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))

@@ -130,6 +130,13 @@ pub(crate) fn pod_to_record(pod: Pod) -> anyhow::Result<Option<RecordAdd>> {
     meta.insert(KEY_PODNAME.to_string(), vec![name.clone()]);
     meta.insert(KEY_NAMESPACE.to_string(), vec![namespace.clone()]);
     meta.insert(KEY_STATUS.to_string(), vec![phase]);
+    meta.insert(
+        "collector_type".to_string(),
+        vec![
+            "kubernetes".to_string(),
+            env!("CARGO_PKG_VERSION").to_string(),
+        ],
+    );
 
     let components = get_components(&pod);
     if let Err(ref e) = components {
