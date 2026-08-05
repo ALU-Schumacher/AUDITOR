@@ -475,3 +475,14 @@ class TestConfig:
             )
 
         assert pytest_error.type is ValidationError
+
+    def test_ce_config(self):
+        sites_to_report = {"test": ["test"]}
+        siteconfig = SiteConfig(sites_to_report=sites_to_report)
+
+        assert siteconfig.ce == "UNKNOWN"
+
+        ce = "ARC"
+        siteconfig = SiteConfig(sites_to_report=sites_to_report, ce=ce)
+
+        assert siteconfig.ce == "ARC"

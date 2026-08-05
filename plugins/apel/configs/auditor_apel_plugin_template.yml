@@ -17,6 +17,7 @@
 #     SITE_B:
 #       - site_id_3
 #   benchmark_type: HEPscore23
+#   ce: ARC
 
 # messaging:
 #   host: msg.argo.grnet.gr
@@ -32,7 +33,7 @@
 #   ip: 127.0.0.1
 #   port: 3333
 #   timeout: 60
-#   site_meta_field: site_id # can also be a list, e.g. [site_id, site]
+#   site_meta_field: site # can also be a list, e.g. [site_id, site]
 #   use_tls: True
 #   ca_cert_path: /path/rootCA.pem
 #   client_cert_path: /path/client-cert.pem

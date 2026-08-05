@@ -23,9 +23,18 @@ class SummaryMessage(Message):
         "StopTime INT NOT NULL",
         "WallDuration INT NOT NULL",
         "RecordID TEXT UNIQUE NOT NULL",
+        "InfrastructureDescription TEXT NOT NULL",
     ]
 
-    group_by: list[str] = ["Site", "Month", "Year", "VO", "SubmitHost", "Processors"]
+    group_by: list[str] = [
+        "Site",
+        "Month",
+        "Year",
+        "VO",
+        "SubmitHost",
+        "Processors",
+        "InfrastructureDescription",
+    ]
 
     store_as: list[str] = [
         "COUNT(RecordID) as NumberOfJobs",
@@ -47,6 +56,7 @@ class SummaryMessage(Message):
         "VORole",
         "SubmitHost",
         "Infrastructure",
+        "InfrastructureDescription",
         "NodeCount",
         "Processors",
         "EarliestEndTime",

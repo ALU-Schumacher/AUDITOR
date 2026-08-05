@@ -2,12 +2,14 @@ import json
 import os
 import subprocess
 from datetime import datetime, timezone
+from importlib.metadata import version
 from pathlib import PurePath
 
 import pytest
 import yaml
 from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
+    construct_infrastructure,
     create_time_json,
     get_begin_current_month,
     get_begin_previous_month,
@@ -17,6 +19,8 @@ from auditor_apel_plugin.core import (
     sign_msg,
     update_time_json,
 )
+
+import pyauditor
 
 test_dir = PurePath(__file__).parent
 
@@ -224,33 +228,63 @@ class TestAuditorApelPlugin:
 
         client = FakeAuditorClient("pass")
 
-        sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
-        meta_key_site = ["site_id"]
+        config.auditor.site_meta_field = ["site_id"]
 
-        config.site.sites_to_report = sites_to_report
-        config.auditor.site_meta_field = meta_key_site
+        clusters = ["test-site-1"]
 
         start_time_str = "2022-12-17 20:20:20+01:00"
         start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
-        result = get_records(config, client, start_time)
+        result = get_records(config, client, start_time, clusters)
         assert "".join(result) == "good"
 
     def test_get_records_fail(self):
         with open(test_dir.joinpath("test_config.yml")) as f:
             config: Config = yaml.load(f, Loader=get_loaders())
 
-        sites_to_report = {"TEST_SITE_1": ["test-site-1"]}
-        meta_key_site = ["site_id"]
+        client = FakeAuditorClient("fail")
 
-        config.site.sites_to_report = sites_to_report
-        config.auditor.site_meta_field = meta_key_site
+        config.auditor.site_meta_field = ["site_id"]
+
+        clusters = ["test-site-1"]
 
         start_time_str = "2022-12-17 20:20:20+01:00"
         start_time = datetime.fromisoformat(start_time_str).replace(tzinfo=timezone.utc)
 
-        client = FakeAuditorClient("fail")
-
         with pytest.raises(Exception) as pytest_error:
-            get_records(config, client, start_time)
+            get_records(config, client, start_time, clusters)
         assert pytest_error.type is RuntimeError
+
+    def test_construct_infrastructure(self):
+        compute_element = "ARC"
+        plugin_version = version("auditor_apel_plugin")
+
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        meta = pyauditor.Meta()
+        meta.insert("meta_test", ["value"])
+        record.with_meta(meta)
+
+        infrastructure = construct_infrastructure(
+            plugin_version, compute_element, record
+        )
+
+        assert infrastructure == f"AUDITOR_{plugin_version}-ARC-UNKNOWN"
+
+        record = pyauditor.Record(
+            "record_id",
+            datetime(1984, 3, 3, 0, 0, 0).astimezone(tz=timezone.utc),
+        )
+
+        meta = pyauditor.Meta()
+        meta.insert("collector_type", ["HTCondor", "1.0.0"])
+        record.with_meta(meta)
+
+        infrastructure = construct_infrastructure(
+            plugin_version, compute_element, record
+        )
+
+        assert infrastructure == f"AUDITOR_{plugin_version}-ARC-HTCondor"

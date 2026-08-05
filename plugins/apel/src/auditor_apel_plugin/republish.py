@@ -35,7 +35,7 @@ def run(logger: Logger, config: Config, client, args):
     site = args.site
     dry_run = args.dry_run
 
-    sites_to_report = config.site.sites_to_report
+    clusters = config.site.sites_to_report[site]
     benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
     message_dict = {}
@@ -65,12 +65,12 @@ def run(logger: Logger, config: Config, client, args):
 
         logger.info(
             f"Getting records for {loop_day.date()} for site {site} "
-            f"with site_ids: {sites_to_report[site]}"
+            f"with clusters: {clusters}"
         )
 
         next_day = min(next_day, end_month)
 
-        records = get_records(config, client, loop_day, site, next_day)
+        records = get_records(config, client, loop_day, clusters, next_day)
 
         loop_day = next_day
 

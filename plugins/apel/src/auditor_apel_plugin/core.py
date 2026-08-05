@@ -6,6 +6,7 @@ import json
 import logging
 import sqlite3
 from datetime import datetime, time, timedelta, timezone
+from importlib.metadata import version
 from sqlite3 import Error
 from typing import Union, cast
 from urllib.parse import unquote
@@ -30,20 +31,11 @@ logger = logging.getLogger("apel_plugin")
 TRACE = logging.DEBUG - 5
 
 
-def get_records(config: Config, client, start_time, site=None, end_time=None):
-    sites_to_report = config.site.sites_to_report
+def get_records(config: Config, client, start_time, clusters, end_time=None):
     meta_key_site = config.auditor.site_meta_field
 
     if isinstance(meta_key_site, str):
         meta_key_site = [meta_key_site]
-
-    clusters = []
-
-    if site is not None:
-        clusters = sites_to_report[site]
-    else:
-        for v in sites_to_report.values():
-            clusters.extend(v)
 
     records = []
 
@@ -54,6 +46,7 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
         start_time_value = Value.set_datetime(start_time)
         get_since_operator = Operator().gte(start_time_value)
         stop_time_query = runtime_query.with_stop_time(get_since_operator)
+
         if end_time is not None:
             end_time_value = Value.set_datetime(end_time)
             get_range_operator = get_since_operator.lt(end_time_value)
@@ -183,8 +176,21 @@ def fill_db(
 
     insert_db_str = f"INSERT INTO records({field_list_str}) VALUES({q_marks})"
 
+    compute_element = config.site.ce
+    submithost_field = config.get_mandatory_fields().get("SubmitHost")
+    plugin_version = version("auditor_apel_plugin")
+
     for r in records:
-        data_tuple = get_data_tuple(config, message, fields_dict, site, r)
+        infrastructure = construct_infrastructure(plugin_version, compute_element, r)
+
+        data_tuple = get_data_tuple(
+            infrastructure,
+            submithost_field,
+            message,
+            fields_dict,
+            site,
+            r,
+        )
 
         try:
             with conn:
@@ -197,12 +203,13 @@ def fill_db(
 
 
 def get_data_tuple(
-    config: Config,
+    infrastructure: str,
+    submithost_field: Union[Field, None],
     message: Message,
     fields_dict: dict[str, Field],
     site: str,
     record: Record,
-) -> tuple[int, float, str]:
+) -> tuple:
     value_list = []
 
     month = record.stop_time.replace(tzinfo=timezone.utc).month
@@ -213,10 +220,9 @@ def get_data_tuple(
         stop_time = record.stop_time.replace(tzinfo=timezone.utc).timestamp()
         runtime = record.runtime
 
-        value_list = [site, month, year, stop_time, runtime, record_id]
+        value_list = [site, month, year, stop_time, runtime, record_id, infrastructure]
 
     elif isinstance(message, SyncMessage):
-        submithost_field = config.get_mandatory_fields().get("SubmitHost")
         if submithost_field is not None:
             submithost = submithost_field.get_value(record)
         else:
@@ -425,3 +431,20 @@ def send_payload(config, payload):
     except AmsException as e:
         logger.critical(f"Could not send message: {e}")
         raise
+
+
+def construct_infrastructure(
+    plugin_version: str, compute_element: str, record: Record
+) -> str:
+    accounting_tool = "AUDITOR"
+
+    try:
+        batch_system = record.meta.get("collector_type")[0]
+    except TypeError:
+        batch_system = "UNKNOWN"
+
+    infrastructure = (
+        f"{accounting_tool}_{plugin_version}-{compute_element}-{batch_system}"
+    )
+
+    return infrastructure

@@ -74,7 +74,7 @@ def run(logger: Logger, config: Config, client, args):
         else:
             begin_month = get_begin_current_month(current_time)
 
-        for site in sites_to_report:
+        for site, clusters in sites_to_report.items():
             aggr_sync_dict: dict[str, dict[str, Union[str, int]]] = {}
             aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
             loop_day = begin_month
@@ -85,10 +85,10 @@ def run(logger: Logger, config: Config, client, args):
 
                 logger.info(
                     f"Getting records for {loop_day.date()} for site {site} "
-                    f"with site_ids: {sites_to_report[site]}"
+                    f"with clusters: {clusters}"
                 )
 
-                records = get_records(config, client, loop_day, site, next_day)
+                records = get_records(config, client, loop_day, clusters, next_day)
 
                 loop_day = next_day
 

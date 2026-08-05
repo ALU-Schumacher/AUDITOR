@@ -5,8 +5,6 @@ sort_by = "weight"
 
 # Auditor
 
-**Important: it is currently not advised to store records coming from the SLURM collector, the SLURM Epilog collector, or the Kubernetes collector together with records from the HTCondor collector. The former three store CPU times in milliseconds, the latter in seconds.**
-
 Auditor stands for **A**cco**u**nting **D**ata Handl**i**ng **T**oolbox For **O**pportunistic **R**esources.
 Auditor ingests accounting data provided by so-called *collectors*, stores it and provides it to the outside to so-called *plugins*.
 
@@ -1094,6 +1092,7 @@ site:
     SITE_B: 
       - site_id_3
   benchmark_type: HEPscore23
+  ce: ARC
 
 messaging:
   host: msg.argo.grnet.gr
@@ -1109,7 +1108,7 @@ auditor:
   ip: 127.0.0.1
   port: 3333
   timeout: 60
-  site_meta_field: site_id # can also be a list, e.g. [site_id, site]
+  site_meta_field: site # can also be a list, e.g. [site_id, site]
   use_tls: True
   ca_cert_path: /path/rootCA.pem
   client_cert_path: /path/client-cert.pem
@@ -1162,6 +1161,7 @@ The individual parameters in the config file are:
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
 | `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
 | `site`      | `benchmark_type`   | The name of the benchmark that you report. Possible values are `si2k`, `hepspec` and `HEPscore23`. The default value is `HEPscore23`.                                                        |
+| `site`      | `ce`               | The compute element of the site, e.g. `ARC` or `HTCondor`. The default value is `UNKNOWN`.                                                                                                   |
 | `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                             |
 | `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                        |
 | `messaging` | `client_cert`      | Path of the host certificate.                                                                                                                                                                |

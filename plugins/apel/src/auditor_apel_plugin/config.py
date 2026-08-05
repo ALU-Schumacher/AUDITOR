@@ -54,6 +54,7 @@ class PluginConfig(Configurable):
 class SiteConfig(Configurable):
     sites_to_report: dict[str, list[str]]
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23
+    ce: str = "UNKNOWN"
 
 
 class AuditorConfig(Configurable):
