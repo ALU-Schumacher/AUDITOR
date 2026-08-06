@@ -3,6 +3,7 @@ from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
+from importlib.metadata import version
 from typing import Optional
 
 from pyauditor import (
@@ -242,6 +243,9 @@ class CondorHistoryCollector:
 
     def _get_meta(self, job: dict) -> Meta:
         meta = Meta()
+        meta.insert(
+            "collector_type", ["htcondor", version("auditor_htcondor_collector")]
+        )
         for key, entry in self.config.meta.items():
             values = []
             for item in entry if isinstance(entry, list) else [entry]:

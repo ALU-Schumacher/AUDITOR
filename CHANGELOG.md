@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- HTCondor collector: Add collector type and version to records ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
 - Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
