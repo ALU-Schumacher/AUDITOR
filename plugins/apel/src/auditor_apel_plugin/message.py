@@ -34,6 +34,7 @@ class SummaryMessage(Message):
         "SubmitHost",
         "Processors",
         "InfrastructureDescription",
+        "NodeCount",
     ]
 
     store_as: list[str] = [

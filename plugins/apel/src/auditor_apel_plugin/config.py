@@ -294,6 +294,12 @@ class Config(Configurable):
             logger.critical("summary_fields missing in config!")
             raise ValueError
 
+        if (
+            "NodeCount" not in field_config.mandatory
+            and "NodeCount" not in field_config.optional
+        ):
+            field_config.mandatory["NodeCount"] = ConstantField(value=1)
+
         return field_config
 
     def get_mandatory_fields(self) -> dict[str, Field]:
