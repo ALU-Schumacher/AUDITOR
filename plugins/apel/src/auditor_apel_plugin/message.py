@@ -27,7 +27,15 @@ class SummaryMessage(Message):
         "RecordID TEXT UNIQUE NOT NULL",
     ]
 
-    group_by: list[str] = ["Site", "Month", "Year", "VO", "SubmitHost", "Processors"]
+    group_by: list[str] = [
+        "Site",
+        "Month",
+        "Year",
+        "VO",
+        "SubmitHost",
+        "Processors",
+        "NodeCount",
+    ]
 
     store_as: list[str] = [
         "COUNT(RecordID) as NumberOfJobs",

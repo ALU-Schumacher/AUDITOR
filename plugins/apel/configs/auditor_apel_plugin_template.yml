@@ -45,6 +45,8 @@
 #       regex: (?<=/).*?(?=/|$)
 #     Processors: !ComponentField
 #       name: Cores
+#     NodeCount: !ComponentField
+#       name: NNodes
 #     SubmitHost: !MetaField
 #       name: headnode
 #     NormalisedWallDuration: !NormalisedField
@@ -71,5 +73,3 @@
 #       regex: '(?=Role).*?(?=/|$)'
 #     Infrastructure: !ConstantField
 #       value: grid
-#     NodeCount: !ComponentField
-#       name: NNodes

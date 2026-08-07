@@ -1122,6 +1122,8 @@ summary_fields:
       regex: (?<=/).*?(?=/|$)
     Processors: !ComponentField
       name: Cores
+    NodeCount: !ComponentField
+      name: NNodes
     SubmitHost: !MetaField
       name: headnode
     NormalisedWallDuration: !NormalisedField
@@ -1148,8 +1150,6 @@ summary_fields:
       regex: '(?=Role).*?(?=/|$)'
     Infrastructure: !ConstantField
       value: grid
-    NodeCount: !ComponentField
-      name: NNodes
 ```
 
 The individual parameters in the config file are:
@@ -1183,14 +1183,17 @@ The section `summary_fields` has the subsections `mandatory` and `optional`. `ma
 
 | Name                     | Data type |
 |:-------------------------|:---------:|
-| `CpuDuration`            | `int`     |
-| `NormalisedCpuDuration`  | `int`     |
-| `NormalisedWallDuration` | `int`     |
-| `VO`                     | `str`     |
-| `SubmitHost`             | `str`     |
-| `Processors`             | `int`     |
+| `CpuDuration`            |   `int`   |
+| `NormalisedCpuDuration`  |   `int`   |
+| `NormalisedWallDuration` |   `int`   |
+| `VO`                     |   `str`   |
+| `SubmitHost`             |   `str`   |
+| `Processors`             |   `int`   |
+| `NodeCount`              |   `int`   |
 
-`CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `RemoteSysCpu + RemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline). 
+`CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `RemoteSysCpu + RemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline).
+
+If `NodeCount` is not present in the config, a default value of 1 is assumed.
 
 There are actually more mandatory fields, but they are handled internally and don't need any input from the user.
 
@@ -1202,9 +1205,8 @@ There are actually more mandatory fields, but they are handled internally and do
 | `VOGroup`        | `str`     |
 | `VORole`         | `str`     |
 | `Infrastructure` | `str`     |
-| `NodeCount`      | `int`     |
 
-Except for `NodeCount`, none of the `optional` information appears on the [EGI Accounting Portal](https://accounting.egi.eu/), so it is possible that this information is not used at all.
+Except for `Infrastructure`, none of the `optional` information appears on the [EGI Accounting Portal](https://accounting.egi.eu/), so it is possible that this information is not used at all.
 
 The information about the possible fields, their required data types, and what is mandatory or optional, is taken from [https://github.com/apel/apel/tree/master/apel/db/records](https://github.com/apel/apel/tree/master/apel/db/records). Exceptions are `VO`, `SubmitHost`, and `Processors`, which the APEL plugin considers necessary.
 
