@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - slurm, slurm-epilog, kubernetes collector: Add collector version info to meta col for every record ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Changed
+- Apel plugin: Add default value of 1 for NodeCount ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update actix-web from 4.14.0 to 4.15.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update anyhow from 1.0.103 to 1.0.104 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
