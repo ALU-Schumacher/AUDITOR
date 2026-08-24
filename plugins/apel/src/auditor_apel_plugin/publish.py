@@ -3,13 +3,15 @@
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
+from __future__ import annotations
+
 import argparse
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 from logging import Logger
 from logging.handlers import RotatingFileHandler
 from time import sleep
-from typing import Union
 
 import yaml
 from pyauditor import AuditorClientBuilder
@@ -53,9 +55,9 @@ def run(logger: Logger, config: Config, client, args):
     while True:
         time_dict = get_time_json(config)
         last_report_time = get_report_time(time_dict)
-        current_time = datetime.now()
-        next_report_time = datetime.now()
-        latest_report_time = datetime.now()
+        current_time = datetime.now(tz=timezone.utc)
+        next_report_time = datetime.now(tz=timezone.utc)
+        latest_report_time = datetime.now(tz=timezone.utc)
         time_since_report = (current_time - last_report_time).total_seconds()
 
         if not dry_run:
@@ -74,8 +76,8 @@ def run(logger: Logger, config: Config, client, args):
             begin_month = get_begin_current_month(current_time)
 
         for site in sites_to_report:
-            aggr_sync_dict: dict[str, dict[str, Union[str, int]]] = {}
-            aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
+            aggr_sync_dict: dict[str, dict[str, str | int]] = {}
+            aggr_summary_dict: dict[str, dict[str, str | int]] = {}
             loop_day = begin_month
             has_records = False
 
@@ -150,7 +152,7 @@ def run(logger: Logger, config: Config, client, args):
                 post_message = send_payload(config, payload_message)
                 logger.info(f"Message sent to server, response:\n{post_message}")
 
-                latest_report_time = datetime.now()
+                latest_report_time = datetime.now(tz=timezone.utc)
                 update_time_json(config, time_dict, latest_report_time)
 
             total_numbers = get_total_numbers(message_dict)
@@ -158,7 +160,7 @@ def run(logger: Logger, config: Config, client, args):
 
         if dry_run:
             logger.info("One-shot dry-run finished!")
-            quit()
+            sys.exit()
 
         next_report_time = latest_report_time + timedelta(seconds=report_interval)
         logger.info(f"Next report scheduled for {next_report_time}")

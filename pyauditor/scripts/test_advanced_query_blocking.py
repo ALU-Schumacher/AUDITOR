@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 import datetime
 
 from tzlocal import get_localzone
@@ -39,7 +36,7 @@ def main():
 
     print("Adding a records to Auditor")
 
-    for i in range(0, 24):
+    for i in range(24):
         record_id = f"record-{i:02d}"
 
         # datetimes sent to auditor MUST BE in UTC.
@@ -63,7 +60,7 @@ def main():
 
         client.add(record)
 
-    for i in range(0, 10):
+    for i in range(10):
         record_id = f"record2-{i:02d}"
 
         # datetimes sent to auditor MUST BE in UTC.
@@ -211,7 +208,7 @@ def main():
     records = client.advanced_query(query_string)
     assert len(records) == 34
 
-    for i in range(0, 10):
+    for i in range(10):
         assert records[i].record_id == f"record2-{9 - i:02d}"
 
     query_string = QueryBuilder().limit(4).build()

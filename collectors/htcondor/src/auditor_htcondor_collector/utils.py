@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 import re
-from typing import AnyStr, Iterator, TypeVar, Union
+from collections.abc import Iterator
+from typing import AnyStr, TypeVar
 
 from .custom_types import Config as T_Config
 
 V = TypeVar("V")
 
 
-def extract_values(key: str, var: "dict[str, V] | list[V] | V") -> Iterator[V]:
+def extract_values(key: str, var: dict[str, V] | list[V] | V) -> Iterator[V]:
     """Extracts all values from nested dictionary for a given key.
 
     Args:
@@ -27,14 +30,14 @@ def extract_values(key: str, var: "dict[str, V] | list[V] | V") -> Iterator[V]:
             yield from extract_values(key, item)
 
 
-def maybe_convert(value: AnyStr) -> Union[int, float, bool, AnyStr]:
+def maybe_convert(value: AnyStr) -> int | float | bool | AnyStr:
     """Convert string to int, float or bool if possible.
 
     Args:
         value (str): String to convert.
 
     Returns:
-        Union[int, float, bool, str]: Converted value.
+        int | float | bool | str: Converted value.
     """
     try:
         return int(value)

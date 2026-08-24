@@ -37,7 +37,6 @@ rpm_config_path = ["core", "version"]
 # (mypy will complain if we don't provide the type here.)
 tomls: list[tuple[str, list[Any]]] = [
     ("Cargo.toml", cargo_toml_root_path),
-    #
     ("auditor/Cargo.toml", cargo_toml_path),
     ("auditor-client/Cargo.toml", cargo_toml_path),
     ("pyauditor/Cargo.toml", cargo_toml_path),
@@ -45,7 +44,6 @@ tomls: list[tuple[str, list[Any]]] = [
     ("collectors/kubernetes/Cargo.toml", cargo_toml_path),
     ("collectors/slurm/Cargo.toml", cargo_toml_path),
     ("collectors/slurm-epilog/Cargo.toml", cargo_toml_path),
-    #
     ("plugins/apel/pyproject.toml", pyproject_toml_path),
     ("plugins/utilization_tool/pyproject.toml", pyproject_toml_path),
     ("collectors/htcondor/pyproject.toml", pyproject_toml_path),

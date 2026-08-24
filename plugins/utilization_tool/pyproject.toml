@@ -7,6 +7,7 @@ name = "auditor_utilization_plugin"
 version = "0.11.0"
 requires-python = ">=3.9"
 dependencies = [
+         "eval_type_backport==0.4.0",
 	     "python-auditor==0.11.0",
 	     "pyyaml==6.0.3",
 	     "pydantic==2.13.4",
@@ -19,7 +20,7 @@ readme = "README.md"
 [project.optional-dependencies]
 style = [
       "black==26.5.1",
-      "ruff==0.15.22",
+      "ruff==0.16.5",
 ]
 tests = [
       "pytest==8.4.2",

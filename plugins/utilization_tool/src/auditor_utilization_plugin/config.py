@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import logging
 from enum import Enum
-from typing import Dict, List, Optional, Union
 
 import yaml
+from eval_type_backport import install_patch
 from pydantic import BaseModel, Field, model_validator
+
+install_patch()
 
 logger = logging.getLogger("utilization")
 
@@ -32,28 +36,28 @@ class CollectorType(str, Enum):
 
 
 class AuditorConfig(BaseModel):
-    hosts: List[str] = Field(..., description="List of auditor host machines")
-    port: List[int] = Field(
+    hosts: list[str] = Field(..., description="List of auditor host machines")
+    port: list[int] = Field(
         ..., description="List of ports corresponding to each AUDITOR host"
     )
     timeout: int = Field(
         ..., description="timeout (in seconds) for requests sent to AUDITOR"
     )
-    site_meta_field: Union[str, List[str]] = Field(
+    site_meta_field: str | list[str] = Field(
         ...,
         description="Site meta fields to filter sites (can be a string or a list of strings [site_id, site])",
     )
     use_tls: bool = Field(
         ..., description="Enable TLS for connection to the AUDITOR service"
     )
-    ca_cert_path: Optional[str] = Field(
+    ca_cert_path: str | None = Field(
         None, description="Path to the CA certificate file"
     )
-    client_cert_path: Optional[str] = Field(
+    client_cert_path: str | None = Field(
         None,
         description="Path to the client certificate file for mutual TLS authentication with the AUDITOR service",
     )
-    client_key_path: Optional[str] = Field(
+    client_key_path: str | None = Field(
         None,
         description="Path to the client private key file corresponding to the client certificate for mutual TLS",
     )
@@ -88,26 +92,26 @@ class AuditorConfig(BaseModel):
 
 class UtilizationConfig(BaseModel):
     groupedby: str = Field(..., description="Field to group utilization data by")
-    grouped_list: List[str] = Field(..., description="List of groups to include")
+    grouped_list: list[str] = Field(..., description="List of groups to include")
     watt_per_core: float = Field(..., description="Watts per CPU core")
     co2_per_kwh: float = Field(..., description="CO2 emitted per kWh (kg)")
     interval: int = Field(..., description="Reporting interval in seconds")
-    file_name: Optional[str] = Field(
+    file_name: str | None = Field(
         default="auditor",
         description="Prefix of filename that stores the summary by month",
     )
-    file_path: Optional[str] = Field(
+    file_path: str | None = Field(
         default=".", description="File path to store the summary CSV"
     )
 
 
 class ClusterConfig(BaseModel):
-    watt_per_core: Dict[str, Dict[str, float]] = Field(
+    watt_per_core: dict[str, dict[str, float]] = Field(
         ..., description="Nested mapping of site → watt_per_core values"
     )
 
     @property
-    def sites(self) -> List[str]:
+    def sites(self) -> list[str]:
         return list(self.watt_per_core.get("site", {}).keys())
 
 
@@ -120,7 +124,7 @@ class Config(BaseModel):
     email: EmailServerConfig
 
     @classmethod
-    def from_yaml(cls, path: str) -> "Config":
+    def from_yaml(cls, path: str) -> Config:
         """Load configuration from a YAML file."""
         with open(path, "r") as f:
             data = yaml.safe_load(f)

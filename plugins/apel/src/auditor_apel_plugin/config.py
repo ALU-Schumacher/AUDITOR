@@ -1,18 +1,21 @@
-#!/usr/bin/env python3
-
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
+
+from __future__ import annotations
 
 import logging
 import re
 from enum import Enum
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 import yaml
+from eval_type_backport import install_patch
 from pyauditor import Record
 from pydantic import BaseModel, model_validator
 
 from .utility import vo_mapping
+
+install_patch()
 
 logger = logging.getLogger("apel_plugin")
 
@@ -47,7 +50,7 @@ class Function(Configurable):
 
 class PluginConfig(Configurable):
     log_level: str
-    log_file: Optional[str] = None
+    log_file: str | None = None
     time_json_path: str
     report_interval: int
 
@@ -61,11 +64,11 @@ class AuditorConfig(Configurable):
     ip: str
     port: int
     timeout: int
-    site_meta_field: Union[str, list[str]]
+    site_meta_field: str | list[str]
     use_tls: bool
-    ca_cert_path: Optional[str] = None
-    client_cert_path: Optional[str] = None
-    client_key_path: Optional[str] = None
+    ca_cert_path: str | None = None
+    client_cert_path: str | None = None
+    client_key_path: str | None = None
 
     @model_validator(mode="after")
     def check_tls_config(self):
@@ -99,7 +102,7 @@ class MessageConfig(Configurable):
 
 
 class Field(Configurable):
-    def get_value(self, record: Optional[Record]) -> Union[str, int, float]:
+    def get_value(self, record: Record | None) -> str | int | float:
         raise NotImplementedError()
 
 
@@ -130,7 +133,7 @@ class FieldConfig(Configurable):
 
 class ComponentField(Field):
     name: str
-    divide_by: Optional[int] = None
+    divide_by: int | None = None
 
     def get_value(self, record: Record) -> int:
         components = record.components
@@ -155,11 +158,11 @@ class ComponentField(Field):
 
 class MetaField(Field):
     name: str
-    regex: Optional[str] = None
-    function: Optional[Function] = None
+    regex: str | None = None
+    function: Function | None = None
 
-    def get_value(self, record: Record) -> Union[str, int, float]:
-        function_dict: dict[str, Callable[[str, Any], Union[str, int, float]]] = {
+    def get_value(self, record: Record) -> str | int | float:
+        function_dict: dict[str, Callable[[str, Any], str | int | float]] = {
             "vo_mapping": vo_mapping
         }
 
@@ -230,9 +233,9 @@ class ScoreField(Field):
 
 class RecordField(Field):
     name: str
-    modify: Optional[str] = None
+    modify: str | None = None
 
-    def get_value(self, record: Record) -> Union[str, int]:
+    def get_value(self, record: Record) -> str | int:
         try:
             value = getattr(record, self.name)
         except AttributeError:
@@ -255,7 +258,7 @@ class RecordField(Field):
 
 
 class NormalisedField(Field):
-    base_value: Union[ComponentField, RecordField] = RecordField(name="runtime")
+    base_value: ComponentField | RecordField = RecordField(name="runtime")
     score: ScoreField
 
     def get_value(self, record: Record) -> int:
@@ -274,9 +277,9 @@ class NormalisedField(Field):
 
 
 class ConstantField(Field):
-    value: Union[str, int, float]
+    value: str | int | float
 
-    def get_value(self, record: Optional[Record] = None) -> Union[str, int, float]:
+    def get_value(self, record: Record | None = None) -> str | int | float:
         return self.value
 
 

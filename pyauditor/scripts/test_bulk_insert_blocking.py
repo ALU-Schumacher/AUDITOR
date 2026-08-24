@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import datetime
 
 from tzlocal import get_localzone

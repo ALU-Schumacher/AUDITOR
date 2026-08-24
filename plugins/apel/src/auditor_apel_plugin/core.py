@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
-
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
+
+from __future__ import annotations
 
 import hashlib
 import json
@@ -9,7 +9,7 @@ import logging
 import sqlite3
 from datetime import datetime, time, timedelta, timezone
 from sqlite3 import Error
-from typing import Union, cast
+from typing import cast
 from urllib.parse import unquote
 
 from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
@@ -39,13 +39,13 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
     if isinstance(meta_key_site, str):
         meta_key_site = [meta_key_site]
 
-    site_ids = []
+    clusters = []
 
     if site is not None:
-        site_ids = sites_to_report[site]
+        clusters = sites_to_report[site]
     else:
         for v in sites_to_report.values():
-            site_ids.extend(v)
+            clusters.extend(v)
 
     records = []
 
@@ -60,8 +60,8 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
             end_time_value = Value.set_datetime(end_time)
             get_range_operator = get_since_operator.lt(end_time_value)
             stop_time_query = stop_time_query.with_stop_time(get_range_operator)
-        for site in site_ids:
-            site_operator = MetaOperator().contains([site])
+        for cluster in clusters:
+            site_operator = MetaOperator().contains([cluster])
             for meta_key in meta_key_site:
                 site_query = MetaQuery().meta_operator(meta_key, site_operator)
                 query_string = stop_time_query.with_meta_query(site_query).build()
@@ -105,7 +105,7 @@ def get_time_json(config):
 
 
 def create_time_json(time_json_path):
-    initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
+    initial_report_time = datetime(1970, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
     time_dict = {"last_report_time": initial_report_time.isoformat()}
 
     try:
@@ -151,10 +151,7 @@ def create_db(fields_dict: dict[str, Field], message: Message) -> sqlite3.Connec
 
     field_list_str = ",".join(field_list)
 
-    create_db_str = "".join(
-        ["CREATE TABLE IF NOT EXISTS records(", field_list_str, ")"]
-    )
-
+    create_db_str = f"CREATE TABLE IF NOT EXISTS records({field_list_str})"
     conn = sqlite3.connect(":memory:")
 
     try:
@@ -177,16 +174,13 @@ def fill_db(
 ) -> sqlite3.Connection:
     field_list = [field.split(" ")[0] for field in message.create_sql]
 
-    for k in fields_dict:
-        field_list.append(k)
+    field_list.extend(fields_dict)
 
     field_list_str = ",".join(field_list)
 
     q_marks = ",".join(len(field_list) * ["?"])
 
-    insert_db_str = "".join(
-        ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
-    )
+    insert_db_str = f"INSERT INTO records({field_list_str}) VALUES({q_marks})"
 
     for r in records:
         data_tuple = get_data_tuple(config, message, fields_dict, site, r)
@@ -250,15 +244,8 @@ def group_db(
     sql_group_by = ",".join(group_by_list)
     sql_store_as = ",".join(message.store_as)
 
-    group_str = "".join(
-        [
-            "SELECT ",
-            sql_group_by,
-            ",",
-            sql_store_as,
-            " FROM records GROUP BY ",
-            sql_group_by,
-        ]
+    group_str = (
+        f"SELECT {sql_group_by}, {sql_store_as} FROM records GROUP BY {sql_group_by}"
     )
 
     conn.row_factory = sqlite3.Row
@@ -269,12 +256,12 @@ def group_db(
     return grouped_sql
 
 
-def get_total_numbers(summary_dict: dict[str, dict[str, Union[str, int]]]) -> str:
+def get_total_numbers(summary_dict: dict[str, dict[str, str | int]]) -> str:
     message = PluginMessage()
     aggr_fields = message.aggr_fields
     group_by_list = message.group_by
 
-    hash_dict: dict[str, dict[str, Union[str, int]]] = {}
+    hash_dict: dict[str, dict[str, str | int]] = {}
 
     for group in summary_dict.values():
         hashstr = ""
@@ -312,8 +299,8 @@ def create_dict(
     message: Message,
     grouped_sql: list[sqlite3.Row],
     fields_dict: dict[str, Field],
-    hash_dict: dict[str, dict[str, Union[str, int]]],
-) -> dict[str, dict[str, Union[str, int]]]:
+    hash_dict: dict[str, dict[str, str | int]],
+) -> dict[str, dict[str, str | int]]:
     group_by_list = message.group_by
     for k in fields_dict:
         group_by_list.append(k)
@@ -349,7 +336,7 @@ def create_dict(
 
 def create_message(
     message: Message,
-    aggr_dict: dict[str, dict[str, Union[str, int]]],
+    aggr_dict: dict[str, dict[str, str | int]],
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
 ) -> str:
     header = message.message_header
@@ -369,10 +356,10 @@ def create_message(
 
 
 def aggregate_messages(
-    new_dict: dict[str, Union[str, int]],
-    aggr_dict: dict[str, Union[str, int]],
+    new_dict: dict[str, str | int],
+    aggr_dict: dict[str, str | int],
     aggr_fields: list[str],
-) -> dict[str, Union[str, int]]:
+) -> dict[str, str | int]:
     for field in aggr_fields:
         aggr_dict[field] = cast(int, aggr_dict[field]) + cast(int, new_dict[field])
 

@@ -3,11 +3,13 @@
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
+from __future__ import annotations
+
 import argparse
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 from logging import Logger
-from typing import Union
 
 import yaml
 from pyauditor import AuditorClientBuilder
@@ -54,7 +56,7 @@ def run(logger: Logger, config: Config, client, args):
     if dry_run:
         logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
-    aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
+    aggr_summary_dict: dict[str, dict[str, str | int]] = {}
     loop_day = begin_month
 
     while end_month > loop_day:
@@ -65,8 +67,7 @@ def run(logger: Logger, config: Config, client, args):
             f"with site_ids: {sites_to_report[site]}"
         )
 
-        if next_day > end_month:
-            next_day = end_month
+        next_day = min(next_day, end_month)
 
         records = get_records(config, client, loop_day, site, next_day)
 
@@ -99,7 +100,7 @@ def run(logger: Logger, config: Config, client, args):
 
     if not has_records:
         logger.warning(f"No records for site {site} in this month")
-        quit()
+        sys.exit()
 
     message = create_message(SummaryMessage(), message_dict, benchmark_type)
     logger.log(TRACE, f"Message:\n{message}")

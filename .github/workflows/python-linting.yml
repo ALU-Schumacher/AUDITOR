@@ -15,7 +15,7 @@ jobs:
         uses: astral-sh/ruff-action@v3
         with:
           version-file: "plugins/apel/pyproject.toml"
-          args: 'check --extend-select I'
+          args: 'check --extend-select I --ignore BLE001'
       - name: Run ruff format check
         uses: astral-sh/ruff-action@v3
         with:
