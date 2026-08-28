@@ -186,6 +186,13 @@ async fn main() -> Result<(), Error> {
                 "group_id".to_string(),
                 vec![job["GroupId"].split('(').take(1).collect::<Vec<_>>()[0].to_string()],
             ),
+            (
+                "collector_type".to_string(),
+                vec![
+                    "slurm_epilog".to_string(),
+                    env!("CARGO_PKG_VERSION").to_string(),
+                ],
+            ),
         ]),
         construct_components(&config, &job),
         parse_slurm_timestamp(&job["StartTime"])?,

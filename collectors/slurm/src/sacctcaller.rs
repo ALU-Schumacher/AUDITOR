@@ -344,6 +344,10 @@ fn construct_record(
     meta.insert("site_id".to_string(), vec![site]);
     meta.insert("user_id".to_string(), vec![map[USER].extract_string()?]);
     meta.insert("group_id".to_string(), vec![map[GROUP].extract_string()?]);
+    meta.insert(
+        "collector_type".to_string(),
+        vec!["slurm".to_string(), env!("CARGO_PKG_VERSION").to_string()],
+    );
 
     let components = if let Ok(components) = construct_components(map, &config.components) {
         components
