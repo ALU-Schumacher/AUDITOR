@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import json
 import logging
+import re
 from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
@@ -19,7 +21,23 @@ from pyauditor import (
 from .config import Config
 from .exceptions import RecordGenerationException
 from .state_db import StateDB
-from .utils import get_value, maybe_convert
+from .utils import get_value
+
+# A bare ClassAd attribute name (used to tell attribute keys from expressions).
+_BARE_ATTR_RE = re.compile(r"\A[A-Za-z_][A-Za-z0-9_]*\Z")
+# Any attribute name occurring inside an expression.
+_ATTR_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+# A sum/difference of attributes and numeric literals, e.g. "A+B-3".
+_SUM_EXPR_RE = re.compile(r"\A[A-Za-z0-9_.]+(?:[+-][A-Za-z0-9_.]+)*\Z")
+
+
+def _is_valid_job_id(job_id) -> bool:
+    """True iff `job_id` is a (cluster, proc) pair of plain ints (not bools)."""
+    return (
+        isinstance(job_id, tuple)
+        and len(job_id) == 2
+        and all(isinstance(v, int) and not isinstance(v, bool) for v in job_id)
+    )
 
 
 class CondorHistoryCollector(object):
@@ -117,7 +135,9 @@ class CondorHistoryCollector(object):
             except RecordGenerationException as e:
                 failed += 1
                 self.logger.debug(e.args[0])
-            self.set_last_job(schedd_name, (job["ClusterId"], job["ProcId"]))
+            self.set_last_job(
+                schedd_name, (job.get("ClusterId"), job.get("ProcId"))
+            )
         self.logger.info(
             f"Added {added} records."
             f"{f' Failed to generate {failed} records.' if failed else ''}"
@@ -132,10 +152,28 @@ class CondorHistoryCollector(object):
                 f"prefix {self.config.record_prefix!r}. Starting from timestamp."
             )
             return None
+        if not _is_valid_job_id(job):
+            # A previously stored checkpoint may be corrupt (e.g. written by an
+            # older version that mis-parsed `condor_history` output). Do not let
+            # it crash the collector; ignore it and resume from the timestamp.
+            self.logger.warning(
+                f"Stored checkpoint {job!r} for schedd {schedd_name!r} and record "
+                f"prefix {self.config.record_prefix!r} is not a valid (int, int) "
+                f"job id. Ignoring it and starting from timestamp."
+            )
+            return None
         return job
 
     def set_last_job(self, schedd_name: str, job_id: Tuple[int, int]):
         """Sets the last job id that was processed for a given schedd and prefix."""
+        if not _is_valid_job_id(job_id):
+            # Never persist a non-integer job id: that would crash the next run
+            # on read. Leave the previous checkpoint in place instead.
+            self.logger.warning(
+                f"Refusing to store invalid job id {job_id!r} for schedd "
+                f"{schedd_name!r}; keeping the previous checkpoint."
+            )
+            return
         self.state_db.set(schedd_name, self.config.record_prefix, *job_id)
         self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name!r}.")
 
@@ -143,9 +181,13 @@ class CondorHistoryCollector(object):
         self, schedd_name: str, job: Optional[Tuple[int, int]]
     ) -> List[dict]:
         """Queries HTCondor history for jobs with a given schedd name and job id."""
-        if job is not None:
-            assert type(job) is tuple and len(job) == 2, "Invalid job id"
-            assert isinstance(job[0], int) and isinstance(job[1], int), "Invalid job id"
+        if job is not None and not _is_valid_job_id(job):
+            # Be defensive rather than fatal: a malformed job id must not abort
+            # the whole collector run. Fall back to the timestamp-based query.
+            self.logger.warning(
+                f"Ignoring invalid job id {job!r}; starting from timestamp."
+            )
+            job = None
 
         def escape(arg: str) -> str:
             """Escape a CLI argument to avoid interpretation for the chosen execution type"""
@@ -178,8 +220,9 @@ class CondorHistoryCollector(object):
             schedd_name,
             "-since",
             escape(since),
-            "-af:,",
-            *self.config.class_ads,
+            "-json",
+            "-attributes",
+            escape(",".join(self._projection_attributes())),
         ]
         if self.config.get("pool"):
             cmd.extend(["-pool", self.config.pool])
@@ -204,12 +247,99 @@ class CondorHistoryCollector(object):
         if err:
             self.logger.error(f"Error querying HTCondor history:\n{err}")
 
-        jobs = [
-            map(maybe_convert, map(str.strip, job.decode("utf-8").split(",")))
-            for job in output.strip().splitlines()
-        ]
+        return self._parse_history(output)
 
-        return [dict(zip(self.config.class_ads, job)) for job in jobs]
+    def _projection_attributes(self) -> List[str]:
+        """Plain ClassAd attribute names to request from `condor_history`.
+
+        `condor_history` only projects attribute *names* (not expressions) in
+        `-json` mode, so for expression keys such as
+        ``RemoteUserCpu+RemoteSysCpu`` the referenced attribute names are
+        requested and the expression is evaluated locally (see
+        `_eval_expression`).
+        """
+        attrs: "dict[str, None]" = {}
+        for class_ad in self.config.class_ads:
+            if _BARE_ATTR_RE.match(class_ad):
+                attrs[class_ad] = None
+            else:
+                for name in _ATTR_RE.findall(class_ad):
+                    attrs[name] = None
+        return list(attrs)
+
+    def _parse_history(self, output: bytes) -> List[dict]:
+        """Parse `condor_history -json` output into a list of job dicts.
+
+        Parsing structured JSON instead of comma-separated autoformat avoids
+        column misalignment when a ClassAd value contains a comma (e.g. an
+        X.509 subject with ``O=Fermi Forward Discovery Group, LLC``). JSON also
+        yields correctly typed values, so ``ClusterId``/``ProcId`` are real
+        ints. Undefined/null attributes are dropped so downstream lookups see
+        them as missing, and expression keys are evaluated locally.
+        """
+        text = output.decode("utf-8").strip()
+        if not text:
+            return []
+        try:
+            ads = json.loads(text)
+        except json.JSONDecodeError:
+            # Tolerate JSON-lines output (`-jsonl`): one JSON object per line.
+            ads = []
+            for line in text.splitlines():
+                line = line.strip().rstrip(",")
+                if not line or line in ("[", "]"):
+                    continue
+                try:
+                    ads.append(json.loads(line))
+                except json.JSONDecodeError as e:
+                    self.logger.warning(f"Skipping unparseable history line: {e}")
+
+        jobs = []
+        for ad in ads:
+            job = {
+                key: value
+                for key, value in ad.items()
+                if value is not None and value != "undefined"
+            }
+            self._add_expression_values(job)
+            jobs.append(job)
+        return jobs
+
+    def _add_expression_values(self, job: dict) -> None:
+        """Populate expression-valued class_ads (e.g. CPU-time sums) in-place."""
+        for class_ad in self.config.class_ads:
+            if class_ad in job or _BARE_ATTR_RE.match(class_ad):
+                continue
+            value = self._eval_expression(class_ad, job)
+            if value is not None:
+                job[class_ad] = value
+
+    def _eval_expression(self, expr: str, job: dict):
+        """Safely evaluate a sum/difference of attributes and numeric literals.
+
+        Supports the documented case of combining CPU times, e.g.
+        ``RemoteUserCpu+RemoteSysCpu``. Anything beyond ``+``/``-`` of
+        attributes or numbers is not evaluated and returns ``None``.
+        """
+        compact = expr.replace(" ", "")
+        if not _SUM_EXPR_RE.match(compact):
+            self.logger.warning(
+                f"Unsupported expression class_ad {expr!r}; only sums/differences "
+                f"of attributes and numbers are evaluated. Skipping."
+            )
+            return None
+        total = 0.0
+        for term in re.findall(r"[+-]?[A-Za-z0-9_.]+", compact):
+            sign = -1.0 if term[0] == "-" else 1.0
+            name = term.lstrip("+-")
+            if re.fullmatch(r"\d+(?:\.\d+)?", name):
+                total += sign * float(name)
+            else:
+                value = job.get(name)
+                if not isinstance(value, (int, float)) or isinstance(value, bool):
+                    return None
+                total += sign * float(value)
+        return int(total) if total.is_integer() else total
 
     def _generate_components(self, job: dict) -> List[Component]:
         components = []

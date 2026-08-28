@@ -87,7 +87,7 @@ def get_value(config_entry: T_Config, job: dict):
 
     if "matches" in config_entry:
         pattern = re.compile(config_entry["matches"])
-        match = pattern.search(val)
+        match = pattern.search(str(val))
         if match:
             if pattern.groups > 0:
                 val = match.group(1)
@@ -97,8 +97,14 @@ def get_value(config_entry: T_Config, job: dict):
             return None
 
     if "only_if" in config_entry:
+        only_if_key = config_entry["only_if"]["key"]
+        if only_if_key not in job:
+            # The condition attribute is undefined for this job (and therefore
+            # absent from the parsed ad), so the condition cannot match.
+            return None
         cond = re.search(
-            config_entry["only_if"]["matches"], job[config_entry["only_if"]["key"]]
+            config_entry["only_if"]["matches"],
+            str(job[only_if_key]),
         )
         return val if cond else None
     else:
