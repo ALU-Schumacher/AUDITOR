@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.5.1 to 1.6.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 49.0.0 to 50.0.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update pydantic from 2.13.4 to 2.13.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.15.21 to 0.16.5 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tarides/changelog-check-action from 3 to 4 ([@dirksammel](https://github.com/dirksammel))
 
