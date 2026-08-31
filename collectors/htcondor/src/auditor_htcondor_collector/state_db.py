@@ -1,9 +1,10 @@
 import sqlite3
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Generator, Optional, Tuple
+from typing import Optional
 
 
-class StateDB(object):
+class StateDB:
     """
     A simple wrapper for an sqlite database for persistent storage of the last
     job id for each scheduler name/record prefix combination.
@@ -28,7 +29,7 @@ class StateDB(object):
         self._cursor.close()
         self._conn.close()
 
-    def get(self, schedd: str, prefix: str) -> Optional[Tuple[int, int]]:
+    def get(self, schedd: str, prefix: str) -> Optional[tuple[int, int]]:
         self._cursor.execute(
             "SELECT cluster, proc FROM last_jobs WHERE schedd = ? AND prefix = ?",
             (schedd, prefix),

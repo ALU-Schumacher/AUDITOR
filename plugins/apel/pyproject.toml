@@ -19,7 +19,7 @@ readme = "README.md"
 [project.optional-dependencies]
 style = [
       "black==26.5.1",
-      "ruff==0.15.22",
+      "ruff==0.16.5",
 ]
 tests = [
       "pytest==8.4.2",
@@ -61,3 +61,4 @@ ignore_missing_imports = true
 
 [tool.ruff.lint]
 extend-select = ["I"]
+ignore = ["FA100"]

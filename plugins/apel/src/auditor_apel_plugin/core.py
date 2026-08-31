@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # SPDX-FileCopyrightText: © 2022 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -16,7 +14,6 @@ from argo_ams_library import AmsException, AmsMessage, ArgoMessagingService
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
-from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, Value
 
 from auditor_apel_plugin.config import BenchmarkType, Config, Field
 from auditor_apel_plugin.message import (
@@ -25,6 +22,7 @@ from auditor_apel_plugin.message import (
     SummaryMessage,
     SyncMessage,
 )
+from pyauditor import MetaOperator, MetaQuery, Operator, QueryBuilder, Record, Value
 
 from .utility import write_transaction
 
@@ -39,13 +37,13 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
     if isinstance(meta_key_site, str):
         meta_key_site = [meta_key_site]
 
-    site_ids = []
+    clusters = []
 
     if site is not None:
-        site_ids = sites_to_report[site]
+        clusters = sites_to_report[site]
     else:
         for v in sites_to_report.values():
-            site_ids.extend(v)
+            clusters.extend(v)
 
     records = []
 
@@ -60,8 +58,8 @@ def get_records(config: Config, client, start_time, site=None, end_time=None):
             end_time_value = Value.set_datetime(end_time)
             get_range_operator = get_since_operator.lt(end_time_value)
             stop_time_query = stop_time_query.with_stop_time(get_range_operator)
-        for site in site_ids:
-            site_operator = MetaOperator().contains([site])
+        for cluster in clusters:
+            site_operator = MetaOperator().contains([cluster])
             for meta_key in meta_key_site:
                 site_query = MetaQuery().meta_operator(meta_key, site_operator)
                 query_string = stop_time_query.with_meta_query(site_query).build()
@@ -105,7 +103,7 @@ def get_time_json(config):
 
 
 def create_time_json(time_json_path):
-    initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
+    initial_report_time = datetime(1970, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
     time_dict = {"last_report_time": initial_report_time.isoformat()}
 
     try:
@@ -119,7 +117,9 @@ def create_time_json(time_json_path):
 
 
 def get_report_time(time_dict):
-    report_time = datetime.fromisoformat(time_dict["last_report_time"])
+    report_time = datetime.fromisoformat(time_dict["last_report_time"]).replace(
+        tzinfo=timezone.utc
+    )
 
     return report_time
 
@@ -151,9 +151,7 @@ def create_db(fields_dict: dict[str, Field], message: Message) -> sqlite3.Connec
 
     field_list_str = ",".join(field_list)
 
-    create_db_str = "".join(
-        ["CREATE TABLE IF NOT EXISTS records(", field_list_str, ")"]
-    )
+    create_db_str = f"CREATE TABLE IF NOT EXISTS records({field_list_str})"
 
     conn = sqlite3.connect(":memory:")
 
@@ -177,16 +175,13 @@ def fill_db(
 ) -> sqlite3.Connection:
     field_list = [field.split(" ")[0] for field in message.create_sql]
 
-    for k in fields_dict:
-        field_list.append(k)
+    field_list.extend(fields_dict)
 
     field_list_str = ",".join(field_list)
 
     q_marks = ",".join(len(field_list) * ["?"])
 
-    insert_db_str = "".join(
-        ["INSERT INTO records(", field_list_str, ") VALUES(", q_marks, ")"]
-    )
+    insert_db_str = f"INSERT INTO records({field_list_str}) VALUES({q_marks})"
 
     for r in records:
         data_tuple = get_data_tuple(config, message, fields_dict, site, r)
@@ -250,15 +245,8 @@ def group_db(
     sql_group_by = ",".join(group_by_list)
     sql_store_as = ",".join(message.store_as)
 
-    group_str = "".join(
-        [
-            "SELECT ",
-            sql_group_by,
-            ",",
-            sql_store_as,
-            " FROM records GROUP BY ",
-            sql_group_by,
-        ]
+    group_str = (
+        f"SELECT {sql_group_by}, {sql_store_as} FROM records GROUP BY {sql_group_by}"
     )
 
     conn.row_factory = sqlite3.Row

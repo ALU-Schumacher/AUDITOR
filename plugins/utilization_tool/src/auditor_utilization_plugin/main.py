@@ -11,32 +11,33 @@ import sys
 from logging import Logger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import yaml
-from pyauditor import AuditorClientBuilder
 
 from auditor_utilization_plugin.config import AuditorConfig, Config
 from auditor_utilization_plugin.utilization import generate_utilization_report
+from pyauditor import AuditorClientBuilder
 
+logger = logging.getLogger("utilization_plugin")
 TRACE = logging.DEBUG - 5
 
 
-def load_config(path: Path) -> Dict[str, Any]:
+def load_config(path: Path) -> dict[str, Any]:
     path = Path(path)
     try:
         with path.open("r", encoding="utf-8") as file:
             config = yaml.safe_load(file) or {}
-        logging.info(f"Loaded configuration from {path}")
+        logger.info(f"Loaded configuration from {path}")
         return config
     except yaml.YAMLError as e:
-        logging.info(f"YAML parsing error in {path}: {e}")
+        logger.info(f"YAML parsing error in {path}: {e}")
         raise ValueError(f"Invalid YAML format in {path}") from e
     except PermissionError:
-        logging.info(f"Permission denied reading {path}")
+        logger.info(f"Permission denied reading {path}")
         raise
     except Exception as e:
-        logging.info(f"Unexpected error loading configuration from {path}: {e}")
+        logger.info(f"Unexpected error loading configuration from {path}: {e}")
         raise
 
 
@@ -70,7 +71,7 @@ def setup_logging(config: Config) -> Logger:
         force=True,
     )
 
-    logger = logging.getLogger("utilization")
+    logger = logging.getLogger("utilization_plugin")
 
     if log_file:
         handler = RotatingFileHandler(
@@ -82,7 +83,7 @@ def setup_logging(config: Config) -> Logger:
     return logger
 
 
-def iter_endpoints(auditor_cfg: AuditorConfig) -> List[Tuple[str, int]]:
+def iter_endpoints(auditor_cfg: AuditorConfig) -> list[tuple[str, int]]:
     hosts = list(auditor_cfg.hosts)
     ports = list(auditor_cfg.port)
 
@@ -186,7 +187,7 @@ Outputs a CSV summary
 
 
 def shutdown():
-    logging.info("\nExiting gracefully...")
+    logger.info("\nExiting gracefully...")
     sys.exit(0)
 
 

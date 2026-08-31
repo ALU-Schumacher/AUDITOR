@@ -1,10 +1,11 @@
 import re
 from argparse import Namespace
-from datetime import date
+from collections.abc import Iterator
 from datetime import datetime as dt
+from datetime import timezone
 from functools import reduce
 from os.path import isfile
-from typing import Iterator, List, Tuple, Union
+from typing import ClassVar, Union
 
 import yaml
 
@@ -18,16 +19,16 @@ from .exceptions import (
 from .utils import extract_values
 
 
-class Config(object):
+class Config:
     """Utility class to aggregate the configuration from CLI, file and defaults"""
 
     # default configuration
-    _config: T_Config = {
+    _default_config: ClassVar[T_Config] = {
         "interval": 900,
         "log_level": "INFO",
         "log_file": None,
         "history_file": None,
-        "earliest_datetime": date.today().isoformat(),
+        "earliest_datetime": dt.now(tz=timezone.utc).date().isoformat(),
         "query_type": "shell",
         "class_ads": frozenset(
             (
@@ -43,7 +44,7 @@ class Config(object):
     }
 
     def __init__(self, args: Namespace):
-        self._config = type(self)._config.copy()
+        self._config = self._default_config.copy()
         with open(args.config) as f:
             file_config = yaml.safe_load(f)
             assert "class_ads" not in file_config, "config may not set 'class_ads'"
@@ -57,7 +58,9 @@ class Config(object):
         )
         self._verify()
         self._config["condor_timestamp"] = int(
-            dt.fromisoformat(self.earliest_datetime).timestamp()
+            dt.fromisoformat(self.earliest_datetime)
+            .replace(tzinfo=timezone.utc)
+            .timestamp()
         )
 
     def __getattr__(self, attr: str):
@@ -71,7 +74,7 @@ class Config(object):
 
         def get_nested(
             keys: Keys, config: T_Config = self._config
-        ) -> Union[T_Config, int, str, List[T_Config], List[int], List[str], None]:
+        ) -> Union[T_Config, int, str, list[T_Config], list[int], list[str], None]:
             """Provide `config[keys[0]]...[keys[-1]]` if present else `None`"""
             try:
                 return reduce(lambda d, k: d[k], keys, config)
@@ -199,19 +202,24 @@ class Config(object):
             if not isfile(self._config["history_file"]):
                 raise MalformedConfigEntryError(["history_file"], "Is not a file")
 
-        if "query_type" in self._config:
-            if self._config["query_type"] not in ("shell", "exec"):
-                raise MalformedConfigEntryError(
-                    ["query_type"], "Must be one of 'shell' or 'exec'"
-                )
+        if "query_type" in self._config and self._config["query_type"] not in (
+            "shell",
+            "exec",
+        ):
+            raise MalformedConfigEntryError(
+                ["query_type"], "Must be one of 'shell' or 'exec'"
+            )
 
-        if "constraint" in self._config:
-            if not isinstance(self._config["constraint"], str):
-                raise MalformedConfigEntryError(["constraint"], "Must be a string")
+        if "constraint" in self._config and not isinstance(
+            self._config["constraint"], str
+        ):
+            raise MalformedConfigEntryError(["constraint"], "Must be a string")
 
         def _iter_config(
-            keys: Keys = [], config: T_Config = self._config
-        ) -> Iterator[Tuple[Keys, Union[str, int]]]:
+            keys: Keys = None, config: T_Config = self._config
+        ) -> Iterator[tuple[Keys, Union[str, int]]]:
+            if keys is None:
+                keys = []
             for key, value in config.items():
                 _keys = [*keys, key]
                 if isinstance(value, dict):
@@ -241,25 +249,24 @@ class Config(object):
             elif keys[-1] == "earliest_datetime":
                 try:
                     assert isinstance(value, str)  # For type checking
-                    dt.fromisoformat(value)
+                    dt.fromisoformat(value).replace(tzinfo=timezone.utc)
                 except (TypeError, ValueError):
                     raise MalformedConfigEntryError(
                         keys, "Must be a valid ISO 8601 datetime string"
                     )
-            if len(keys) > 1:
-                if keys[-2] == "only_if":
-                    only_if = get_nested(keys[:-1])
-                    if not isinstance(only_if, dict):
-                        raise MalformedConfigEntryError(
-                            keys[:-1],
-                            "Must be a dictionary with keys 'key' and 'matches'",
-                        )
-                    if "key" not in only_if:
-                        raise MalformedConfigEntryError(
-                            keys[:-1], "Must contain the key 'key'"
-                        )
-                    if "matches" not in only_if:
-                        raise MalformedConfigEntryError(
-                            keys[:-1],
-                            "Must contain the key 'matches' (a regular expression)",
-                        )
+            if len(keys) > 1 and keys[-2] == "only_if":
+                only_if = get_nested(keys[:-1])
+                if not isinstance(only_if, dict):
+                    raise MalformedConfigEntryError(
+                        keys[:-1],
+                        "Must be a dictionary with keys 'key' and 'matches'",
+                    )
+                if "key" not in only_if:
+                    raise MalformedConfigEntryError(
+                        keys[:-1], "Must contain the key 'key'"
+                    )
+                if "matches" not in only_if:
+                    raise MalformedConfigEntryError(
+                        keys[:-1],
+                        "Must contain the key 'matches' (a regular expression)",
+                    )

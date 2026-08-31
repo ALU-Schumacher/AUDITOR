@@ -1,5 +1,6 @@
 import re
-from typing import AnyStr, Iterator, TypeVar, Union
+from collections.abc import Iterator
+from typing import AnyStr, TypeVar, Union
 
 from .custom_types import Config as T_Config
 

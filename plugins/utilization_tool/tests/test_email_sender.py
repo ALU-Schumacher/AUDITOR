@@ -2,7 +2,6 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-
 from auditor_utilization_plugin.email_sender import send_email
 
 

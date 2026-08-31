@@ -5,6 +5,7 @@
 
 import argparse
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 from logging import Logger
 from logging.handlers import RotatingFileHandler
@@ -12,7 +13,6 @@ from time import sleep
 from typing import Union
 
 import yaml
-from pyauditor import AuditorClientBuilder
 
 from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
@@ -33,6 +33,7 @@ from auditor_apel_plugin.core import (
     update_time_json,
 )
 from auditor_apel_plugin.message import SummaryMessage, SyncMessage
+from pyauditor import AuditorClientBuilder
 
 TRACE = logging.DEBUG - 5
 
@@ -53,9 +54,9 @@ def run(logger: Logger, config: Config, client, args):
     while True:
         time_dict = get_time_json(config)
         last_report_time = get_report_time(time_dict)
-        current_time = datetime.now()
-        next_report_time = datetime.now()
-        latest_report_time = datetime.now()
+        current_time = datetime.now(tz=timezone.utc)
+        next_report_time = datetime.now(tz=timezone.utc)
+        latest_report_time = datetime.now(tz=timezone.utc)
         time_since_report = (current_time - last_report_time).total_seconds()
 
         if not dry_run:
@@ -150,7 +151,7 @@ def run(logger: Logger, config: Config, client, args):
                 post_message = send_payload(config, payload_message)
                 logger.info(f"Message sent to server, response:\n{post_message}")
 
-                latest_report_time = datetime.now()
+                latest_report_time = datetime.now(tz=timezone.utc)
                 update_time_json(config, time_dict, latest_report_time)
 
             total_numbers = get_total_numbers(message_dict)
@@ -158,7 +159,7 @@ def run(logger: Logger, config: Config, client, args):
 
         if dry_run:
             logger.info("One-shot dry-run finished!")
-            quit()
+            sys.exit()
 
         next_report_time = latest_report_time + timedelta(seconds=report_interval)
         logger.info(f"Next report scheduled for {next_report_time}")

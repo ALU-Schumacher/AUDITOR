@@ -5,12 +5,12 @@
 
 import argparse
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 from logging import Logger
 from typing import Union
 
 import yaml
-from pyauditor import AuditorClientBuilder
 
 from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
@@ -26,6 +26,7 @@ from auditor_apel_plugin.core import (
     sign_msg,
 )
 from auditor_apel_plugin.message import SummaryMessage
+from pyauditor import AuditorClientBuilder
 
 TRACE = logging.DEBUG - 5
 
@@ -65,8 +66,7 @@ def run(logger: Logger, config: Config, client, args):
             f"with site_ids: {sites_to_report[site]}"
         )
 
-        if next_day > end_month:
-            next_day = end_month
+        next_day = min(next_day, end_month)
 
         records = get_records(config, client, loop_day, site, next_day)
 
@@ -99,7 +99,7 @@ def run(logger: Logger, config: Config, client, args):
 
     if not has_records:
         logger.warning(f"No records for site {site} in this month")
-        quit()
+        sys.exit()
 
     message = create_message(SummaryMessage(), message_dict, benchmark_type)
     logger.log(TRACE, f"Message:\n{message}")

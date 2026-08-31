@@ -1,17 +1,15 @@
-#!/usr/bin/env python
-
 import argparse
 import asyncio
 import datetime
 import json
+import sys
 from datetime import timedelta, timezone
 from logging import Logger
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from pyauditor import AuditorClientBuilder, Operator, QueryBuilder, Value
 
 from auditor_utilization_plugin.config import (
     CollectorType,
@@ -19,6 +17,7 @@ from auditor_utilization_plugin.config import (
     Config,
 )
 from auditor_utilization_plugin.email_sender import send_email
+from pyauditor import AuditorClientBuilder, Operator, QueryBuilder, Value
 
 
 def build_query(start: datetime.datetime, end: datetime.datetime) -> str:
@@ -35,7 +34,7 @@ def build_query(start: datetime.datetime, end: datetime.datetime) -> str:
     return query_string_start + "&" + query_string_end
 
 
-def records_to_df(records: List[Any]) -> pd.DataFrame:
+def records_to_df(records: list[Any]) -> pd.DataFrame:
     mylist = []
     for r in records:
         rec = json.loads(r.to_json())
@@ -46,7 +45,7 @@ def records_to_df(records: List[Any]) -> pd.DataFrame:
 def record_to_dict(rec):
     my_dict = {}
     for k, v in rec.items():
-        if isinstance(v, str) or isinstance(v, int):
+        if isinstance(v, (str, int)):
             my_dict[k] = v
         elif isinstance(v, list):
             for e in v:
@@ -71,7 +70,7 @@ def rename_user(vo: str) -> str:
 
 
 def map_user_name(
-    df: pd.DataFrame, col_name: str, group_list: List[str]
+    df: pd.DataFrame, col_name: str, group_list: list[str]
 ) -> pd.DataFrame:
     names = []
     for voms in df[col_name]:
@@ -88,11 +87,11 @@ def get_stats_by_user(
     df_in: pd.DataFrame,
     co2: float,
     grouped: str,
-    grouped_list: List[str],
+    grouped_list: list[str],
     component_fields_in_record: ComponentFieldsConfig,
     collector_type: CollectorType,
-) -> Dict[str, List[Any]]:
-    data: Dict[str, List[Any]] = {
+) -> dict[str, list[Any]]:
+    data: dict[str, list[Any]] = {
         "user": [],
         "khs23h": [],
         "cpu_eff": [],
@@ -140,7 +139,7 @@ def get_stats_by_user(
     return data
 
 
-def categorize_power(site_name: str, power_dict: Dict[str, float]) -> Optional[float]:
+def categorize_power(site_name: str, power_dict: dict[str, float]) -> Optional[float]:
     return power_dict.get(site_name, None)
 
 
@@ -159,8 +158,7 @@ async def generate_utilization_report(
                 args.year, args.month, 1, 0, 0, tzinfo=timezone.utc
             )
             end_day = start_day + relativedelta(months=+1)
-            if today <= end_day:
-                end_day = today
+            end_day = min(today, end_day)
 
         else:
             prev_month = today - relativedelta(months=1)
@@ -188,9 +186,9 @@ async def generate_utilization_report(
 
             try:
                 records = client.advanced_query(query)
-            except Exception as e:
+            except Exception:
                 logger.exception(
-                    f"Error during querying records for {host} on {loop_day}: {e}"
+                    f"Error during querying records for {host} on {loop_day}"
                 )
                 raise
 
@@ -258,13 +256,13 @@ async def generate_utilization_report(
 
         if config.oneshot or args.oneshot:
             logger.info("one-shot finished")
-            quit()
+            sys.exit()
 
         await asyncio.sleep(config.utilization.interval)
 
 
 def compute_aggregation(
-    daily_summaries: List[pd.DataFrame], logger: Logger
+    daily_summaries: list[pd.DataFrame], logger: Logger
 ) -> pd.DataFrame:
     df_sum_total = pd.concat(daily_summaries, ignore_index=True)
 
@@ -312,6 +310,6 @@ def write_to_csv(
 
         logger.info(f"Successfully wrote file: {full_path}")
 
-    except Exception as e:
-        logger.exception(f"Error writing CSV file {filename}: {e}")
+    except Exception:
+        logger.exception(f"Error writing CSV file {filename}")
         raise

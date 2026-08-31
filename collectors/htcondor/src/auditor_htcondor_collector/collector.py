@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
-
 import logging
 from asyncio import create_subprocess_exec, create_subprocess_shell
 from asyncio.subprocess import PIPE
 from datetime import datetime as dt
 from datetime import timezone
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from pyauditor import (
     AuditorClient,
@@ -22,7 +20,7 @@ from .state_db import StateDB
 from .utils import get_value, maybe_convert
 
 
-class CondorHistoryCollector(object):
+class CondorHistoryCollector:
     def __init__(self, config: Config):
         self.config = config
         self.logger = self.setup_logger()
@@ -92,7 +90,7 @@ class CondorHistoryCollector(object):
         """
         self.logger.info(f"Collecting jobs for schedd {schedd_name!r}.")
         # Convert Job ID to (cluster, proc) tuple
-        parsed_job_id: Optional[Tuple[int, int]] = None
+        parsed_job_id: Optional[tuple[int, int]] = None
         if job_id:
             try:
                 if "." in job_id:
@@ -123,7 +121,7 @@ class CondorHistoryCollector(object):
             f"{f' Failed to generate {failed} records.' if failed else ''}"
         )
 
-    def get_last_job(self, schedd_name: str) -> Optional[Tuple[int, int]]:
+    def get_last_job(self, schedd_name: str) -> Optional[tuple[int, int]]:
         """Returns the last job id that was processed for a given schedd and prefix."""
         job = self.state_db.get(schedd_name, self.config.record_prefix)
         if job is None:
@@ -134,14 +132,14 @@ class CondorHistoryCollector(object):
             return None
         return job
 
-    def set_last_job(self, schedd_name: str, job_id: Tuple[int, int]):
+    def set_last_job(self, schedd_name: str, job_id: tuple[int, int]):
         """Sets the last job id that was processed for a given schedd and prefix."""
         self.state_db.set(schedd_name, self.config.record_prefix, *job_id)
         self.logger.debug(f"Set last job id to {job_id} for schedd {schedd_name!r}.")
 
     async def query_htcondor_history(
-        self, schedd_name: str, job: Optional[Tuple[int, int]]
-    ) -> List[dict]:
+        self, schedd_name: str, job: Optional[tuple[int, int]]
+    ) -> list[dict]:
         """Queries HTCondor history for jobs with a given schedd name and job id."""
         if job is not None:
             assert type(job) is tuple and len(job) == 2, "Invalid job id"
@@ -159,7 +157,7 @@ class CondorHistoryCollector(object):
         if job is None:
             self.logger.debug(
                 f"Querying HTCondor history for {schedd_name!r} starting "
-                f"from {dt.fromtimestamp(self.config.condor_timestamp)}."
+                f"from {dt.fromtimestamp(self.config.condor_timestamp, tz=timezone.utc)}."
             )
             # need to exclude 0 CompletionDate, see AUDITOR#1309
             since = f"CompletionDate <= {self.config.condor_timestamp} && CompletionDate > 0"
@@ -211,7 +209,7 @@ class CondorHistoryCollector(object):
 
         return [dict(zip(self.config.class_ads, job)) for job in jobs]
 
-    def _generate_components(self, job: dict) -> List[Component]:
+    def _generate_components(self, job: dict) -> list[Component]:
         components = []
         for component in self.config.components:
             amount = get_value(component, job)

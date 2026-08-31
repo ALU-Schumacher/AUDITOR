@@ -2,7 +2,6 @@ import secrets
 from pathlib import Path
 
 import pytest
-
 from auditor_apel_plugin.utility import vo_mapping, write_transaction
 
 CONTENT = [

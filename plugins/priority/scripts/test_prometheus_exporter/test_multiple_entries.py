@@ -1,13 +1,13 @@
 import time
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 
 
 class TestMultipleEntries(unittest.TestCase):
     def setUp(self):
-        current_time_utc = datetime.utcnow()
+        current_time_utc = datetime.now(tz=timezone.utc)
         two_days_ago = current_time_utc - timedelta(days=2)
 
         stop_time = current_time_utc.strftime("%Y-%m-%dT%H:%M:%SZ")

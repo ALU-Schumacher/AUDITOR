@@ -1,11 +1,11 @@
 import logging
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
 
-logger = logging.getLogger("utilization")
+logger = logging.getLogger("utilization_plugin")
 
 
 class LoggingConfig(BaseModel):
@@ -32,14 +32,14 @@ class CollectorType(str, Enum):
 
 
 class AuditorConfig(BaseModel):
-    hosts: List[str] = Field(..., description="List of auditor host machines")
-    port: List[int] = Field(
+    hosts: list[str] = Field(..., description="List of auditor host machines")
+    port: list[int] = Field(
         ..., description="List of ports corresponding to each AUDITOR host"
     )
     timeout: int = Field(
         ..., description="timeout (in seconds) for requests sent to AUDITOR"
     )
-    site_meta_field: Union[str, List[str]] = Field(
+    site_meta_field: Union[str, list[str]] = Field(
         ...,
         description="Site meta fields to filter sites (can be a string or a list of strings [site_id, site])",
     )
@@ -88,7 +88,7 @@ class AuditorConfig(BaseModel):
 
 class UtilizationConfig(BaseModel):
     groupedby: str = Field(..., description="Field to group utilization data by")
-    grouped_list: List[str] = Field(..., description="List of groups to include")
+    grouped_list: list[str] = Field(..., description="List of groups to include")
     watt_per_core: float = Field(..., description="Watts per CPU core")
     co2_per_kwh: float = Field(..., description="CO2 emitted per kWh (kg)")
     interval: int = Field(..., description="Reporting interval in seconds")
@@ -102,12 +102,12 @@ class UtilizationConfig(BaseModel):
 
 
 class ClusterConfig(BaseModel):
-    watt_per_core: Dict[str, Dict[str, float]] = Field(
+    watt_per_core: dict[str, dict[str, float]] = Field(
         ..., description="Nested mapping of site → watt_per_core values"
     )
 
     @property
-    def sites(self) -> List[str]:
+    def sites(self) -> list[str]:
         return list(self.watt_per_core.get("site", {}).keys())
 
 
