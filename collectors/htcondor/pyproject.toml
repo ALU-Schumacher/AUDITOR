@@ -19,7 +19,7 @@ readme = "README.md"
 
 [project.optional-dependencies]
 build = [
-      "build==1.5.1",
+      "build==1.6.0",
       "setuptools==82.0.1",
 ]
 
