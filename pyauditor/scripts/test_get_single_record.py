@@ -24,7 +24,7 @@ async def main():
 
     print("Adding a records to Auditor")
 
-    for i in range(0, 24):
+    for i in range(24):
         record_id = f"record-{i:02d}"
 
         # datetimes sent to auditor MUST BE in UTC.
@@ -41,7 +41,7 @@ async def main():
 
     records = sorted(records, key=lambda x: x.record_id)
 
-    for i in range(0, 24):
+    for i in range(24):
         assert records[i].record_id == f"record-{i:02d}"
 
     record = await client.get_single_record("record-03")

@@ -1,4 +1,5 @@
-from typing import Any, Dict, Sequence, Union
+from collections.abc import Sequence
+from typing import Any, Optional, Union
 
-Keys = Sequence[Union[str, int]]
-Config = Dict[Union[str, int], Any]
+Keys = Optional[Sequence[Union[str, int]]]
+Config = dict[Union[str, int], Any]

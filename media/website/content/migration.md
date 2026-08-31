@@ -210,14 +210,14 @@ Auditor REST APIs are changed as shown in the table below.
 The config parameter `site_name_mapping` is removed and the structure of the config parameter `sites_to_report` is changed. `sites_to_report` is now a dictionary, where the keys are the site names as configured in the GOCDB, and the values are lists of the corresponding site names in the AUDITOR records.
 
 Before:
-```python
-sites_to_report = ["site_id_1", "site_id_2", "site_id_3"]
-site_name_mapping = {"site_id_1": "SITE_A", "site_id_2": "SITE_A", "site_id_3": "SITE_B"}
+```yaml
+sites_to_report: ["site_id_1", "site_id_2", "site_id_3"]
+site_name_mapping: {"site_id_1": "SITE_A", "site_id_2": "SITE_A", "site_id_3": "SITE_B"}
 ```
 
 After:
-```python
-sites_to_report = {"SITE_A": ["site_id_1", "site_id_2"], "SITE_B": ["site_id_3"]}
+```yaml
+sites_to_report: {"SITE_A": ["site_id_1", "site_id_2"], "SITE_B": ["site_id_3"]}
 ```
 
 ## Removed
@@ -355,7 +355,9 @@ Use this command to update the sqlx-cli to 0.7.2
       from tzlocal import get_localzone
 
       local_tz = get_localzone()
-      start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=local_tz).astimezone(pytz.utc)
+      start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=local_tz).astimezone(
+          pytz.utc
+      )
       ```
     - After
       ```python
@@ -363,7 +365,9 @@ Use this command to update the sqlx-cli to 0.7.2
       from tzlocal import get_localzone
 
       local_tz = get_localzone()
-      start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=local_tz).astimezone(datetime.timezone.utc)
+      start_since = datetime.datetime(2022, 8, 8, 11, 30, 0, 0, tzinfo=local_tz).astimezone(
+          datetime.timezone.utc
+      )
       ```
 ## Auditor server
 

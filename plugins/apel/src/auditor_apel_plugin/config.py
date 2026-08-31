@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # SPDX-FileCopyrightText: © 2024 Dirk Sammel <dirk.sammel@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -9,8 +7,9 @@ from enum import Enum
 from typing import Any, Callable, Optional, Union
 
 import yaml
-from pyauditor import Record
 from pydantic import BaseModel, model_validator
+
+from pyauditor import Record
 
 from .utility import vo_mapping
 

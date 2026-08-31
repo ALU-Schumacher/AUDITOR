@@ -2,7 +2,6 @@ import tempfile
 
 import pytest
 import yaml
-
 from auditor_utilization_plugin.config import (
     AuditorConfig,
     ClusterConfig,

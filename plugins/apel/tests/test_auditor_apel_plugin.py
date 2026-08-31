@@ -6,7 +6,6 @@ from pathlib import PurePath
 
 import pytest
 import yaml
-
 from auditor_apel_plugin.config import Config, get_loaders
 from auditor_apel_plugin.core import (
     create_time_json,
@@ -35,8 +34,8 @@ class FakeAuditorClient:
 
 class TestAuditorApelPlugin:
     def test_get_begin_previous_month(self):
-        time_a = datetime(2022, 10, 23, 12, 23, 55)
-        time_b = datetime(1970, 1, 1, 00, 00, 00)
+        time_a = datetime(2022, 10, 23, 12, 23, 55, tzinfo=timezone.utc)
+        time_b = datetime(1970, 1, 1, 00, 00, 00, tzinfo=timezone.utc)
 
         result = get_begin_previous_month(time_a)
         assert result == datetime(2022, 9, 1, 00, 00, 00, tzinfo=timezone.utc)
@@ -45,8 +44,8 @@ class TestAuditorApelPlugin:
         assert result == datetime(1969, 12, 1, 00, 00, 00, tzinfo=timezone.utc)
 
     def test_get_begin_current_month(self):
-        time_a = datetime(2022, 10, 23, 12, 23, 55)
-        time_b = datetime(1970, 1, 1, 00, 00, 00)
+        time_a = datetime(2022, 10, 23, 12, 23, 55, tzinfo=timezone.utc)
+        time_b = datetime(1970, 1, 1, 00, 00, 00, tzinfo=timezone.utc)
 
         result = get_begin_current_month(time_a)
         assert result == datetime(2022, 10, 1, 00, 00, 00, tzinfo=timezone.utc)
@@ -59,14 +58,14 @@ class TestAuditorApelPlugin:
 
         result = create_time_json(path)
 
-        assert result["last_report_time"] == "1970-01-01T00:00:00"
+        assert result["last_report_time"] == "1970-01-01T00:00:00+00:00"
 
         with open("/tmp/test.json", encoding="utf-8") as f:
             result = json.load(f)
 
         os.remove(path)
 
-        assert result["last_report_time"] == "1970-01-01T00:00:00"
+        assert result["last_report_time"] == "1970-01-01T00:00:00+00:00"
 
     def test_create_time_json_fail(self):
         path = "/home/nonexistent/55/abc/time.db"
@@ -87,13 +86,13 @@ class TestAuditorApelPlugin:
         result = get_time_json(config)
         os.remove(path)
 
-        assert result["last_report_time"] == "1970-01-01T00:00:00"
+        assert result["last_report_time"] == "1970-01-01T00:00:00+00:00"
 
         create_time_json(path)
         result = get_time_json(config)
         os.remove(path)
 
-        assert result["last_report_time"] == "1970-01-01T00:00:00"
+        assert result["last_report_time"] == "1970-01-01T00:00:00+00:00"
 
     def test_sign_msg(self):
         with open(test_dir.joinpath("test_config.yml")) as f:
@@ -154,11 +153,11 @@ class TestAuditorApelPlugin:
 
         result = get_report_time(time_dict)
 
-        initial_report_time = datetime(1970, 1, 1, 0, 0, 0)
+        initial_report_time = datetime(1970, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
 
         assert result == initial_report_time
 
-        new_report_time = datetime(2023, 2, 10, 11, 13, 45)
+        new_report_time = datetime(2023, 2, 10, 11, 13, 45, tzinfo=timezone.utc)
 
         update_time_json(
             config,
@@ -181,9 +180,9 @@ class TestAuditorApelPlugin:
         time_dict = create_time_json(path)
 
         report_time_list = [
-            datetime(1993, 4, 4, 0, 0, 0),
-            datetime(2100, 8, 19, 14, 16, 11),
-            datetime(1887, 2, 27, 0, 11, 31),
+            datetime(1993, 4, 4, 0, 0, 0, tzinfo=timezone.utc),
+            datetime(2100, 8, 19, 14, 16, 11, tzinfo=timezone.utc),
+            datetime(1887, 2, 27, 0, 11, 31, tzinfo=timezone.utc),
         ]
 
         for report_time in report_time_list:
@@ -207,7 +206,7 @@ class TestAuditorApelPlugin:
 
         time_dict = create_time_json(path)
 
-        report_time = datetime(1993, 4, 4, 0, 0, 0)
+        report_time = datetime(1993, 4, 4, 0, 0, 0, tzinfo=timezone.utc)
 
         os.remove(path)
 
