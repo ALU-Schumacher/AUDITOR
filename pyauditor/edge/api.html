@@ -212,14 +212,14 @@
 <span class="n">builder</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span>
 
 <span class="c1"># Configure the builder</span>
-<span class="n">builder</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s2">"localhost"</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="c1"># Build the client</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Using an connection string:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">connection_string</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">connection_string</span><span class="p">(</span><span class="s2">"http://localhost:8000"</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -373,7 +373,7 @@ Get one record using record_id</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">"record-1"</span>
 <span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_one_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -641,7 +641,7 @@ Sets the runtime value to query</p>
 <p>name
 :type sort_by: SortBy object</p>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span>
 <span class="n">records</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -659,7 +659,7 @@ Sets the runtime value to query</p>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
 <span class="n">records</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_component_query</span><span class="p">(</span><span class="n">component_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -672,8 +672,8 @@ Sets the runtime value to query</p>
 <p>:param meta- meta contains the meta key and value
 :type meta- MetaQuery object</p>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
-<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">"group_1"</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">"group_id"</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_meta_query</span><span class="p">(</span><span class="n">meta_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -689,7 +689,7 @@ Sets the runtime value to query</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;r101&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record_id</span> <span class="o">=</span> <span class="s2">"r101"</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="n">record_id</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -776,8 +776,8 @@ Sets the runtime value to query</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
-<span class="n">operator</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">"group_1"</span><span class="p">)</span>
+<span class="n">operator</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">"group_id"</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -802,8 +802,8 @@ corresponding metadata key</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
-<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">"group_1"</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">"group_id"</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -822,7 +822,7 @@ corresponding metadata key</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">does_not_contain</span><span class="p">(</span><span class="s2">&quot;group_1&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">does_not_contain</span><span class="p">(</span><span class="s2">"group_1"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -849,7 +849,7 @@ It is used to filter records based on component-related conditions</p>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -870,7 +870,7 @@ It is used to filter records based on component-related conditions</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">ascending</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -885,7 +885,7 @@ It is used to filter records based on component-related conditions</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1086,7 +1086,7 @@ Get one record using record_id</p>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">"record-1"</span>
 <span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_one_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </pre></div>
 </div>

@@ -130,7 +130,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Meta</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">score</span>
 
 <span class="c1"># Define meta information</span>
-<span class="n">record_id</span> <span class="o">=</span> <span class="s2">&quot;record-1&quot;</span> <span class="c1"># Must be unique for all records in Auditor!</span>
+<span class="n">record_id</span> <span class="o">=</span> <span class="s2">"record-1"</span> <span class="c1"># Must be unique for all records in Auditor!</span>
 
 <span class="c1"># Time when the resource became available</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">79043</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="c1"># in UTC</span>
@@ -139,10 +139,10 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <span class="n">record</span> <span class="o">=</span> <span class="n">Record</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
 
 <span class="c1"># Create a component (10 CPU cores)</span>
-<span class="n">component</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">component</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="s2">"CPU"</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># Create a score</span>
-<span class="n">score</span> <span class="o">=</span> <span class="n">Score</span><span class="p">(</span><span class="s2">&quot;HEPSPEC06&quot;</span><span class="p">,</span> <span class="mf">9.2</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">Score</span><span class="p">(</span><span class="s2">"HEPSPEC06"</span><span class="p">,</span> <span class="mf">9.2</span><span class="p">)</span>
 
 <span class="c1"># Attach the score to the component</span>
 <span class="n">component</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">with_score</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
@@ -154,7 +154,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <span class="n">meta</span> <span class="o">=</span> <span class="n">Meta</span><span class="p">()</span>
 
 <span class="c1"># Add information to meta</span>
-<span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;site1&quot;</span><span class="p">])</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">"site_id"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"site1"</span><span class="p">])</span>
 
 <span class="c1"># Attach meta to record</span>
 <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">with_meta</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
@@ -175,7 +175,7 @@ For instance, in case of CPUs these could be HEPSPEC06 benchmark values.</p>
 <span class="n">builder</span> <span class="o">=</span> <span class="n">AuditorClientBuilder</span><span class="p">()</span>
 
 <span class="c1"># Configure the Builder</span>
-<span class="n">auditor_address</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="n">auditor_address</span> <span class="o">=</span> <span class="s2">"127.0.0.1"</span>
 <span class="n">auditor_port</span> <span class="o">=</span> <span class="mi">8000</span>
 <span class="n">builder</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="n">auditor_address</span><span class="p">,</span> <span class="n">auditor_port</span><span class="p">)</span>
 
@@ -373,8 +373,8 @@ as an argument to advanced_query function to get the records.</p>
 <p>Query records with meta key = site_id and value = site1</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaOperator</span><span class="p">,</span> <span class="n">MetaQuery</span><span class="p">,</span> <span class="n">QueryBuilder</span>
 
-<span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;[site1]&quot;</span><span class="p">)</span>
-<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">&quot;site_id&quot;</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
+<span class="n">meta_operator</span> <span class="o">=</span> <span class="n">MetaOperator</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">"[site1]"</span><span class="p">)</span>
+<span class="n">meta_query</span> <span class="o">=</span> <span class="n">MetaQuery</span><span class="p">()</span><span class="o">.</span><span class="n">meta_operator</span><span class="p">(</span><span class="s2">"site_id"</span><span class="p">,</span> <span class="n">meta_operator</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_meta_query</span><span class="p">(</span><span class="n">meta_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
@@ -387,7 +387,7 @@ as an argument to advanced_query function to get the records.</p>
 
 <span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="n">set_count</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">component_operator</span> <span class="o">=</span> <span class="n">Operator</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
+<span class="n">component_query</span> <span class="o">=</span> <span class="n">ComponentQuery</span><span class="p">()</span><span class="o">.</span><span class="n">component_operator</span><span class="p">(</span><span class="s2">"CPU"</span><span class="p">,</span> <span class="n">component_operator</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_component_query</span><span class="p">(</span><span class="n">component_query</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
@@ -398,7 +398,7 @@ as an argument to advanced_query function to get the records.</p>
 <p>Query records sorted by stop_time in descending order and limit the query to 500 records</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span><span class="p">,</span> <span class="n">SortBy</span>
 
-<span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">&quot;stop_time&quot;</span><span class="p">)</span>
+<span class="n">sort_by</span> <span class="o">=</span> <span class="n">SortBy</span><span class="p">()</span><span class="o">.</span><span class="n">descending</span><span class="p">(</span><span class="s2">"stop_time"</span><span class="p">)</span>
 <span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
@@ -409,7 +409,7 @@ as an argument to advanced_query function to get the records.</p>
 <p>Query records by exact record_id</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyauditor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span>
 
-<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="s2">&quot;record-1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">query_string</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">with_record_id</span><span class="p">(</span><span class="s2">"record-1"</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">records</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">advanced_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -420,9 +420,9 @@ as an argument to advanced_query function to get the records.</p>
 <p>The health of Auditor can be checked with</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">healthy</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">health_check</span><span class="p">()</span>
 <span class="k">if</span> <span class="n">healthy</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;:)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">":)"</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;:(&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">":("</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
