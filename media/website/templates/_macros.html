@@ -1,4 +1,4 @@
-{% macro render_header() %}
+{% component render_header(config) %}
 {% set section = get_section(path="_index.md") %}
 <a href="{{ section.permalink }}">
     <div class="logo">
@@ -17,4 +17,4 @@
         {% endfor %}
     {% endif %}
 </nav>
-{% endmacro render_header %}
+{% endcomponent render_header %}
