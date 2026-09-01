@@ -1,4 +1,3 @@
-{% import "_macros.html" as macros %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +21,7 @@
     {% block header %}
 
     <header class="pos-absolute" style="text-color : white; background-color: transparent">
-        {{ macros::render_header() }}
+        {{ <render_header config={config} /> }}
     </header>
 
     <div class="hero">
@@ -70,12 +69,12 @@
 
     <main>
         {% block toc %}
-        {% if section.toc %}
+        {% if section is defined and section.toc %}
         {% set toc = section.toc %}
         {% elif page.toc %}
         {% set toc = page.toc %}
         {% endif %}
-        {% if toc %}
+        {% if toc is defined and toc %}
         <div class="toc">
             <div class="toc-sticky">
                 {% for h in toc %}
@@ -98,7 +97,9 @@
         <div class="content text">
             {% block content %}
             <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
+            {% if section is defined %}
             {{ section.content | safe }}
+            {% endif %}
             {% endblock content %}
         </div>
 
