@@ -5,6 +5,8 @@ plugin:
   report_interval: 20
   
 site:
+  ce: ARC
+  benchmark_type: HEPscore23
   sites_to_report:
     TEST-SITE: ["test"]
 
