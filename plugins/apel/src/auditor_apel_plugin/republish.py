@@ -25,7 +25,7 @@ from auditor_apel_plugin.core import (
     send_payload,
     sign_msg,
 )
-from auditor_apel_plugin.message import SummaryMessage
+from auditor_apel_plugin.message import SummaryMessage, SyncMessage
 from pyauditor import AuditorClientBuilder
 
 TRACE = logging.DEBUG - 5
@@ -39,6 +39,7 @@ def run(logger: Logger, config: Config, client, args):
     benchmark_type = config.site.benchmark_type
     field_dict = config.get_all_fields()
     message_dict = {}
+    sync_dict = {}
     optional_fields = config.get_optional_fields()
 
     month = args.month
@@ -55,6 +56,7 @@ def run(logger: Logger, config: Config, client, args):
     if dry_run:
         logger.info("Starting one-shot dry-run, nothing will be sent to APEL!")
 
+    aggr_sync_dict: dict[str, dict[str, Union[str, int]]] = {}
     aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
     loop_day = begin_month
 
@@ -81,6 +83,12 @@ def run(logger: Logger, config: Config, client, args):
         latest_stop_time = records[-1].stop_time.replace(tzinfo=timezone.utc)
         logger.debug(f"Latest stop time is {latest_stop_time}")
 
+        sync_db = create_db({}, SyncMessage())
+        filled_sync_db = fill_db(config, sync_db, SyncMessage(), {}, site, records)
+        grouped_sync_db = group_db(filled_sync_db, SyncMessage(), {})
+        filled_sync_db.close()
+        sync_dict = create_dict(SyncMessage(), grouped_sync_db, {}, aggr_sync_dict)
+
         db = create_db(field_dict, SummaryMessage())
         filled_db = fill_db(
             config,
@@ -100,6 +108,17 @@ def run(logger: Logger, config: Config, client, args):
     if not has_records:
         logger.warning(f"No records for site {site} in this month")
         sys.exit()
+
+    sync_message = create_message(SyncMessage(), sync_dict)
+    logger.debug(f"Sync message:\n{sync_message}")
+    signed_sync = sign_msg(config, sync_message)
+    logger.debug(f"Signed sync message:\n{signed_sync}")
+    payload_sync = build_payload(signed_sync)
+    logger.debug(f"Payload sync message:\n{payload_sync}")
+
+    if not dry_run:
+        post_sync = send_payload(config, payload_sync)
+        logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
     message = create_message(SummaryMessage(), message_dict, benchmark_type)
     logger.log(TRACE, f"Message:\n{message}")

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Apel plugin: Send sync message during republishing ([@dirksammel](https://github.com/dirksammel))
 - HTCondor collector: Add collector type and version to records ([@dirksammel](https://github.com/dirksammel))
 
 ### Changed
