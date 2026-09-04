@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dependencies: Update actions/setup-python from 6 to 7 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update build from 1.5.1 to 1.6.0 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update crate-ci/typos from 1.48.0 to 1.50.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update crate-ci/typos from 1.48.0 to 1.50.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 49.0.0 to 50.0.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update EndBug/add-and-commit from 10 to 11 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pydantic from 2.13.4 to 2.13.5 ([@dirksammel](https://github.com/dirksammel))
