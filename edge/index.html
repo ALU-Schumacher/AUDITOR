@@ -282,7 +282,6 @@
             <div id="features" class="heading-text" style = "letter-spacing: 0">Overview</div>
             
             <h1 id="auditor">Auditor</h1>
-<p><strong>Important: it is currently not advised to store records coming from the SLURM collector, the SLURM Epilog collector, or the Kubernetes collector together with records from the HTCondor collector. The former three store CPU times in milliseconds, the latter in seconds.</strong></p>
 <p>Auditor stands for <strong>A</strong>cco<strong>u</strong>nting <strong>D</strong>ata Handl<strong>i</strong>ng <strong>T</strong>oolbox For <strong>O</strong>pportunistic <strong>R</strong>esources.
 Auditor ingests accounting data provided by so-called <em>collectors</em>, stores it and provides it to the outside to so-called <em>plugins</em>.</p>
 <p>It comes with a well-defined REST API which allows for the implementation of application-specific collectors and plugins. This makes it well suited for a wide range of use cases.</p>
@@ -1047,6 +1046,7 @@ See below for all currently available collectors.</p>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">    S</span><span style="color: light-dark(#22863A, #85E89D);">ITE_B</span><span>:</span><span> </span></span>
 <span class="giallo-l"><span>      -</span><span style="color: light-dark(#032F62, #9ECBFF);"> s</span><span style="color: light-dark(#032F62, #9ECBFF);">ite_id_3</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  b</span><span style="color: light-dark(#22863A, #85E89D);">enchmark_type</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> H</span><span style="color: light-dark(#032F62, #9ECBFF);">EPscore23</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">e</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> A</span><span style="color: light-dark(#032F62, #9ECBFF);">RC</span></span>
 <span class="giallo-l"></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">m</span><span style="color: light-dark(#22863A, #85E89D);">essaging</span><span>:</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  h</span><span style="color: light-dark(#22863A, #85E89D);">ost</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> m</span><span style="color: light-dark(#032F62, #9ECBFF);">sg.argo.grnet.gr</span></span>
@@ -1062,7 +1062,7 @@ See below for all currently available collectors.</p>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  i</span><span style="color: light-dark(#22863A, #85E89D);">p</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 127.0.0.1</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  p</span><span style="color: light-dark(#22863A, #85E89D);">ort</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 3333</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  t</span><span style="color: light-dark(#22863A, #85E89D);">imeout</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> 60</span></span>
-<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">ite_meta_field</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> s</span><span style="color: light-dark(#032F62, #9ECBFF);">ite_id</span><span style="color: light-dark(#6A737D, #6A737D);"> #</span><span style="color: light-dark(#6A737D, #6A737D);"> can also be a list, e.g. [site_id, site]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  s</span><span style="color: light-dark(#22863A, #85E89D);">ite_meta_field</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> s</span><span style="color: light-dark(#032F62, #9ECBFF);">ite</span><span style="color: light-dark(#6A737D, #6A737D);"> #</span><span style="color: light-dark(#6A737D, #6A737D);"> can also be a list, e.g. [site_id, site]</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  u</span><span style="color: light-dark(#22863A, #85E89D);">se_tls</span><span>:</span><span style="color: light-dark(#005CC5, #79B8FF);"> True</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">a_cert_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/rootCA.pem</span></span>
 <span class="giallo-l"><span style="color: light-dark(#22863A, #85E89D);">  c</span><span style="color: light-dark(#22863A, #85E89D);">lient_cert_path</span><span>:</span><span style="color: light-dark(#032F62, #9ECBFF);"> /</span><span style="color: light-dark(#032F62, #9ECBFF);">path/client-cert.pem</span></span>
@@ -1111,6 +1111,7 @@ See below for all currently available collectors.</p>
 <tr><td><code>plugin</code></td><td><code>report_interval</code></td><td>Time in seconds between reports to APEL.</td></tr>
 <tr><td><code>site</code></td><td><code>sites_to_report</code></td><td>Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.</td></tr>
 <tr><td><code>site</code></td><td><code>benchmark_type</code></td><td>The name of the benchmark that you report. Possible values are <code>si2k</code>, <code>hepspec</code> and <code>HEPscore23</code>. The default value is <code>HEPscore23</code>.</td></tr>
+<tr><td><code>site</code></td><td><code>ce</code></td><td>The compute element of the site, e.g. <code>ARC</code> or <code>HTCondor</code>. The default value is <code>UNKNOWN</code>.</td></tr>
 <tr><td><code>messaging</code></td><td><code>host</code></td><td>Host address of the AMS service.</td></tr>
 <tr><td><code>messaging</code></td><td><code>port</code></td><td>Port of the AMS host.</td></tr>
 <tr><td><code>messaging</code></td><td><code>client_cert</code></td><td>Path of the host certificate.</td></tr>
