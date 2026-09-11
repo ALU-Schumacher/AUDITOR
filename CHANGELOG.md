@@ -48,8 +48,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update thiserror from 2.0.18 to 2.0.20 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update tokio from 1.52.3 to 1.53.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update uuid from 1.23.5 to 1.26.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Update prometheus to 0.14.0 and add actix-web-prom ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
+- AUDITOR: remove opentelemetry, opentelemetry-prometheus, opentelemetry_sdk ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 
 ## [0.11.0] 2026-07-13
