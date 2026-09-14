@@ -11,7 +11,7 @@
         "license": "BSD-2-Clause-Patent",
         "name": "auditor_htcondor_collector",
         "summary": "AUDITOR collector for aggregating data from the HTCondor batch system",
-        "version": "0.11.0"
+        "version": "0.11.1"
     },
     "python_venv": {
         "name": "venv",
@@ -56,6 +56,7 @@
         "files": "%dir %attr(0750 auditor-htcondor-collector auditor) /var/lib/auditor_htcondor_collector",
         "desc": "AUDITOR collector for aggregating data from the HTCondor batch system",
         "changelog": [
+            "* Mon Sep 14 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.1\n- Release v0.11.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Mon Jul 13 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.0\n- Release v0.11.0 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Mon Mar 23 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.2\n- Release v0.10.2 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",
             "* Mon Oct 27 2025 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.10.1\n- Release v0.10.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes",

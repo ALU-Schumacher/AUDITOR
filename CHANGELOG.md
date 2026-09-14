@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+
+### Added
+
+### Changed
+
+### Removed
+
+
+## [0.11.1] 2026-09-14
+
+### Breaking changes
+
+### Security
 - [RUSTSEC-2026-0037]: Removed because advisory was not encountered ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - [RUSTSEC-2024-0436]: Removed because advisory was not encountered ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - [RUSTSEC-2024-0384]: Removed because advisory was not encountered ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -1112,7 +1125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.11.1...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -1140,3 +1153,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.10.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.1
 [0.10.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.2
 [0.11.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.11.0
+[0.11.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.11.1
