@@ -200,28 +200,17 @@ jobs:
   publish-utilization-plugin-rpm:
     needs: publish-utilization-plugin-pip
     runs-on: ubuntu-latest
-    container: almalinux:9
     defaults:
       run:
         working-directory: ./plugins/utilization_tool
     steps:
       - name: Check out repo
         uses: actions/checkout@v7
-      - name: Install dependencies
-        run: |
-          dnf install -y epel-release dnf-plugins-core
-          dnf config-manager --set-enabled crb
-          dnf install -y python3-pip rpm-build python3-virtualenv
-          dnf groupinstall -y "Development Tools"
-          pip install --upgrade pip
-          pip install uv rpmvenv
       - name: Build RPM
         run: |
-          uv pip compile pyproject.toml -o requirements.txt
-          echo "." >> requirements.txt
-          cat requirements.txt
-          QA_SKIP_BUILD_ROOT=1 rpmvenv --verbose rpm_config.json
+          rpmbuild -bb util.spec --build-in-place
+
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v3
         with:
-          files: plugins/utilization_tool/*rpm
+          files: /home/runner/rpmbuild/RPMS/x86_64/auditor_utilization_plugin*.rpm
