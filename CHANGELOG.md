@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update crate-ci/typos from 1.50.1 to 1.50.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.6 to 0.16.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.44 to 0.23.45 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update shalzz/zola-deploy-action from 0.23.4 to 0.23.6 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
