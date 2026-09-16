@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slurm collector: Limit the size of the timewindow read by sacct at once and make it configurable ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
+- Dependencies: Update build from 1.6.0 to 1.6.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.1 to 1.50.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 50.0.1 to 50.0.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.6 to 0.16.10 ([@dirksammel](https://github.com/dirksammel))
