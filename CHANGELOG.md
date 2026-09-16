@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Slurm collector: Limit the size of the timewindow read by sacct at once and make it configurable ([@rkleinem](https://github.com/rkleinem))
-- Slurm collector: Add Regex to ignore .interactive suffix jobs([@staliostefano-art](https://github.com/staliostefano-art)) 
+- Slurm collector: Add Regex to ignore .interactive suffix jobs([@staliostefano-art](https://github.com/staliostefano-art))
+- Slurm collector: Amend slurm regex to handle + in sacct parsing for heterogeneous jobs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+
 
 ### Changed
 - Apel plugin: Fix InfrastructureDescription issue ([@dirksammel](https://github.com/dirksammel))
