@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update rustls from 0.23.44 to 0.23.45 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
