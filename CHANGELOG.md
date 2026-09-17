@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Dependencies: Update ruff from 0.16.6 to 0.16.9 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.44 to 0.23.45 ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
@@ -50,10 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update kube from 4.0.0 to 4.2.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update parquet from 59.1.0 to 59.3.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update pydantic from 2.13.4 to 2.13.5 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.15.21 to 0.16.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update pyo3 from 0.29.0 to 0.29.2 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update regex from 1.13.0 to 1.13.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
-- Dependencies: Update ruff from 0.15.21 to 0.16.5 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.15.21 to 0.16.6 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.41 to 0.23.43 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde from 1.0.228 to 1.0.229 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update serde_json from 1.0.150 to 1.0.151 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
