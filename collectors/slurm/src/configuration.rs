@@ -48,6 +48,9 @@ pub struct Settings {
     #[serde(default = "default_sender_frequency")]
     #[serde_as(as = "serde_with::DurationSeconds<i64>")]
     pub sender_frequency: Duration,
+    #[serde(default = "default_max_sacct_window")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
+    pub max_sacct_window: Duration,
     #[serde(default = "default_database_path")]
     pub database_path: String,
     #[serde(default = "default_job_filter_settings")]
@@ -286,6 +289,10 @@ fn default_sacct_frequency() -> Duration {
 
 fn default_sender_frequency() -> Duration {
     Duration::try_seconds(1).expect("This should never fail")
+}
+
+fn default_max_sacct_window() -> Duration {
+    Duration::try_days(7).expect("This should never fail")
 }
 
 fn default_database_path() -> String {
@@ -540,7 +547,19 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
             .prefix_separator("_"),
     );
 
-    settings.build()?.try_deserialize()
+    check_settings_sanity(settings.build()?.try_deserialize()?)
+}
+
+/// Does sanity checks on the configuration
+#[tracing::instrument(name = "Checking configuration sanity")]
+fn check_settings_sanity(settings: Settings) -> Result<Settings, config::ConfigError> {
+    if settings.sacct_frequency >= settings.max_sacct_window {
+        return Err(config::ConfigError::Message(
+            "Configuration error: max_sacct_window must be greater than sacct_frequency".to_owned(),
+        ));
+    }
+
+    Ok(settings)
 }
 
 #[cfg(test)]

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+- Slurm collector: Limit the size of the timewindow read by sacct at once and make it configurable ([@rkleinem](https://github.com/rkleinem))
 
 ### Changed
 - Dependencies: Update crate-ci/typos from 1.50.1 to 1.50.3 ([@dirksammel](https://github.com/dirksammel))

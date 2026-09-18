@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use std::cmp;
 use std::collections::HashMap;
 
 use anyhow::anyhow;
@@ -96,8 +97,16 @@ async fn place_records_on_queue(records: Vec<RecordAdd>, tx: &mpsc::Sender<Recor
     }
 }
 
-#[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
+#[tracing::instrument(name = "Building sacct time window", skip(database))]
 async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
+    let (lastcheck, _) = database.get_lastcheck().await?;
+    let until = cmp::min(lastcheck + CONFIG.max_sacct_window, Local::now());
+
+    get_job_info_until(database, until).await
+}
+
+#[tracing::instrument(name = "Calling sacct and parsing output", skip(database))]
+async fn get_job_info_until(database: &Database, until: DateTime<Local>) -> Result<Vec<RecordAdd>> {
     let (lastcheck, last_record_id) = database.get_lastcheck().await?;
     tracing::debug!("Last check: {:?}", lastcheck);
     tracing::debug!("Last record id: {:?}", last_record_id);
@@ -115,7 +124,7 @@ async fn get_job_info(database: &Database) -> Result<Vec<RecordAdd>> {
         "-S".to_string(),
         format!("{}", lastcheck.format("%Y-%m-%dT%H:%M:%S")),
         "-E".to_string(),
-        "now".to_string(),
+        format!("{}", until.format("%Y-%m-%dT%H:%M:%S")),
         "-P".to_string(),
     ];
 
