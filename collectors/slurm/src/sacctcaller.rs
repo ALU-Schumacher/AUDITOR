@@ -33,6 +33,11 @@ static BATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
         .expect("Could not construct essential Regex for matching job ids.")
 });
 
+static INTERACTIVE_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"^[0-9_]+\.interactive$")
+        .expect("Could not construct essential Regex for matching job ids.")
+});
+
 static SUB_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"^[0-9_]+\.[0-9]*$")
         .expect("Could not construct essential Regex for matching job ids.")
@@ -242,11 +247,13 @@ fn parse_sacct_rows(sacct_rows: SacctRows, keys: &[KeyConfig]) -> Result<Vec<Job
     for id in sacct_rows
         .keys()
         .filter(|k| !BATCH_REGEX.is_match(k))
+        .filter(|k| !INTERACTIVE_REGEX.is_match(k))
         .filter(|k| !SUB_REGEX.is_match(k))
         .filter(|k| !EXTERN_REGEX.is_match(k))
     {
         let map1 = sacct_rows.get(id).ok_or(eyre!("Cannot get map1"))?;
         let map2 = sacct_rows.get(&format!("{id}.batch"));
+        let map3 = sacct_rows.get(&format!("{id}.interactive"));
         // A state might look like "CANCELLED by 1000"
         let cancelled = map1
             .get(STATE)
@@ -257,6 +264,19 @@ fn parse_sacct_rows(sacct_rows: SacctRows, keys: &[KeyConfig]) -> Result<Vec<Job
         if cancelled
             && map1.get(START).and_then(Option::as_ref).is_none()
             && map2
+                .and_then(|m| m.get(START))
+                .and_then(Option::as_ref)
+                .is_none()
+        {
+            tracing::debug!(
+                "Ignore Job {} since it was cancelled before it was started.",
+                id
+            );
+            continue;
+        };
+        if cancelled
+            && map1.get(START).and_then(Option::as_ref).is_none()
+            && map3
                 .and_then(|m| m.get(START))
                 .and_then(Option::as_ref)
                 .is_none()
@@ -484,6 +504,8 @@ mod tests {
     fn match_job_ids() {
         assert!(BATCH_REGEX.is_match("1234.batch"));
         assert!(BATCH_REGEX.is_match("1234_10.batch"));
+        assert!(INTERACTIVE_REGEX.is_match("1234.interactive"));
+        assert!(INTERACTIVE_REGEX.is_match("1234_10.interactive"));
         assert!(SUB_REGEX.is_match("123.456"));
     }
 
@@ -848,7 +870,7 @@ mod tests {
 
         // Slurm always returns two rows for each job.
         // The first line contains the normal job ID and most information
-        // The second line contains the "<jobid>.batch" job id.
+        // The second line contains the "<jobid>.batch" or the "<jobid>.interactive" job id. 
         // Here, the some information like user, group, partition, or ReqMem is missing.
         // However, the second line contains information such as MaxRSS
         let sacct_rows = SacctRows::from([
@@ -919,6 +941,52 @@ mod tests {
                     (
                         JOBID.to_owned(),
                         Some(AllowedTypes::String("1234567.batch".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("COMPLETED".to_owned())),
+                    ),
+                ]),
+            ),
+            (
+                "1234567.interactive".to_owned(),
+                SacctRow::from([
+                    ("NCPUS".to_owned(), Some(AllowedTypes::Integer(1))),
+                    ("NNodes".to_owned(), Some(AllowedTypes::Integer(1))),
+                    ("MaxRSS".to_owned(), Some(AllowedTypes::Integer(1_000_000))),
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.interactive".to_owned())),
                     ),
                     (
                         START.to_owned(),
@@ -1061,6 +1129,21 @@ mod tests {
                     ),
                 ]),
             ),
+            (
+                "1234567.interactive".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.interactive".to_owned())),
+                    ),
+                    (START.to_owned(), None),
+                    (END.to_owned(), None),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
         ]);
 
         let parsed_sacct_rows = parse_sacct_rows(sacct_rows, &keys).unwrap();
@@ -1144,6 +1227,49 @@ mod tests {
                     (
                         JOBID.to_owned(),
                         Some(AllowedTypes::String("1234567.batch".to_owned())),
+                    ),
+                    (
+                        START.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T10:14:01",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        END.to_owned(),
+                        Some(AllowedTypes::DateTime(DateTime::<Utc>::from(
+                            NaiveDateTime::parse_from_str(
+                                "2023-11-07T11:39:09",
+                                "%Y-%m-%dT%H:%M:%S",
+                            )
+                            .unwrap()
+                            .and_local_timezone(
+                                FixedOffset::east_opt(Local::now().offset().local_minus_utc())
+                                    .unwrap(),
+                            )
+                            .unwrap(),
+                        ))),
+                    ),
+                    (
+                        STATE.to_owned(),
+                        Some(AllowedTypes::String("CANCELLED by 1000".to_owned())),
+                    ),
+                ]),
+            ),
+            (
+                "1234567.interactive".to_owned(),
+                SacctRow::from([
+                    (
+                        JOBID.to_owned(),
+                        Some(AllowedTypes::String("1234567.interactive".to_owned())),
                     ),
                     (
                         START.to_owned(),
