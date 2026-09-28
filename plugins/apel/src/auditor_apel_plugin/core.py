@@ -165,7 +165,7 @@ def fill_db(
     fields_dict: dict[str, Field],
     site: str,
     records: list[Record],
-) -> sqlite3.Connection:
+) -> tuple[sqlite3.Connection, list]:
     field_list = [field.split(" ")[0] for field in message.create_sql]
 
     field_list.extend(fields_dict)
@@ -176,12 +176,17 @@ def fill_db(
 
     insert_db_str = f"INSERT INTO records({field_list_str}) VALUES({q_marks})"
 
-    compute_element = config.site.ce
     submithost_field = config.get_mandatory_fields().get("SubmitHost")
+
+    compute_element = config.site.ce
     plugin_version = version("auditor_apel_plugin")
+    infrastructure = f"AUDITOR_{plugin_version}-{compute_element}-"
+
+    batch_system_set = set()
 
     for r in records:
-        infrastructure = construct_infrastructure(plugin_version, compute_element, r)
+        batch_system_string = get_batch_system(r)
+        batch_system_set.add(batch_system_string)
 
         data_tuple = get_data_tuple(
             infrastructure,
@@ -199,7 +204,7 @@ def fill_db(
             logger.critical(e)
             raise
 
-    return conn
+    return conn, list(batch_system_set)
 
 
 def get_data_tuple(
@@ -345,7 +350,11 @@ def create_message(
     message: Message,
     aggr_dict: dict[str, dict[str, Union[str, int]]],
     benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
+    batch_system: Union[list[str], None] = None,
 ) -> str:
+    if batch_system is None:
+        batch_system = ["UNKNOWN"]
+
     header = message.message_header
     message_list = [header]
 
@@ -353,6 +362,14 @@ def create_message(
         for k, v in group.items():
             if "Norm" in k:
                 v = f"{{{benchmark_type.value}: {v}}}"
+            if "Description" in k:
+                if len(batch_system) == 1:
+                    v = f"{v}{batch_system[0]}"
+                else:
+                    sorted_batch_systems = (
+                        f"[{', '.join(sorted(batch_system, key=str.casefold))}]"
+                    )
+                    v = f"{v}{sorted_batch_systems}"
             message_list.append(f"{k}: {v}\n")
 
         message_list.append("%%\n")
@@ -433,18 +450,10 @@ def send_payload(config, payload):
         raise
 
 
-def construct_infrastructure(
-    plugin_version: str, compute_element: str, record: Record
-) -> str:
-    accounting_tool = "AUDITOR"
-
+def get_batch_system(record: Record) -> str:
     try:
         batch_system = record.meta.get("collector_type")[0]
     except TypeError:
         batch_system = "UNKNOWN"
 
-    infrastructure = (
-        f"{accounting_tool}_{plugin_version}-{compute_element}-{batch_system}"
-    )
-
-    return infrastructure
+    return batch_system
