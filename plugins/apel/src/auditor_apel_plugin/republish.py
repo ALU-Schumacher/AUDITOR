@@ -60,6 +60,8 @@ def run(logger: Logger, config: Config, client, args):
     aggr_summary_dict: dict[str, dict[str, Union[str, int]]] = {}
     loop_day = begin_month
 
+    batch_system_set = set()
+
     while end_month > loop_day:
         next_day = loop_day + timedelta(days=1)
 
@@ -85,8 +87,8 @@ def run(logger: Logger, config: Config, client, args):
 
         sync_db = create_db({}, SyncMessage())
         filled_sync_db = fill_db(config, sync_db, SyncMessage(), {}, site, records)
-        grouped_sync_db = group_db(filled_sync_db, SyncMessage(), {})
-        filled_sync_db.close()
+        grouped_sync_db = group_db(filled_sync_db[0], SyncMessage(), {})
+        filled_sync_db[0].close()
         sync_dict = create_dict(SyncMessage(), grouped_sync_db, {}, aggr_sync_dict)
 
         db = create_db(field_dict, SummaryMessage())
@@ -99,11 +101,12 @@ def run(logger: Logger, config: Config, client, args):
             records,
         )
         del records
-        grouped_db = group_db(filled_db, SummaryMessage(), optional_fields)
-        filled_db.close()
+        grouped_db = group_db(filled_db[0], SummaryMessage(), optional_fields)
+        filled_db[0].close()
         message_dict = create_dict(
             SummaryMessage(), grouped_db, optional_fields, aggr_summary_dict
         )
+        batch_system_set.update(filled_db[1])
 
     if not has_records:
         logger.warning(f"No records for site {site} in this month")
@@ -120,7 +123,9 @@ def run(logger: Logger, config: Config, client, args):
         post_sync = send_payload(config, payload_sync)
         logger.info(f"Sync message sent to server, response:\n{post_sync}")
 
-    message = create_message(SummaryMessage(), message_dict, benchmark_type)
+    message = create_message(
+        SummaryMessage(), message_dict, benchmark_type, list(batch_system_set)
+    )
     logger.log(TRACE, f"Message:\n{message}")
     signed_message = sign_msg(config, message)
     logger.log(TRACE, f"Signed message:\n{signed_message}")
