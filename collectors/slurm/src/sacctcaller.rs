@@ -870,7 +870,7 @@ mod tests {
 
         // Slurm always returns two rows for each job.
         // The first line contains the normal job ID and most information
-        // The second line contains the "<jobid>.batch" or the "<jobid>.interactive" job id. 
+        // The second line contains the "<jobid>.batch" or the "<jobid>.interactive" job id.
         // Here, the some information like user, group, partition, or ReqMem is missing.
         // However, the second line contains information such as MaxRSS
         let sacct_rows = SacctRows::from([
