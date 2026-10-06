@@ -15,12 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Apel plugin: Fix InfrastructureDescription issue ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update actix-tls from 3.6.0 to 3.6.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update arrow from 59.3.0 to 60.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update arrow-array from 59.3.0 to 60.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update build from 1.6.0 to 1.6.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update config from 0.15.25 to 0.15.27 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update crate-ci/typos from 1.50.1 to 1.50.3 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update cryptography from 50.0.1 to 50.0.2 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update parquet from 59.3.0 to 60.0.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update rand from 0.10.2 to 0.10.3 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update ruff from 0.16.6 to 0.16.10 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.44 to 0.23.45 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update serde_with from 3.23.0 to 3.24.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update shalzz/zola-deploy-action from 0.23.4 to 0.23.6 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update thiserror from 2.0.20 to 2.0.21 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update tracing-actix-web from 0.7.22 to 0.7.25 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update uuid from 1.26.1 to 1.27.0 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 
 ### Removed
 
