@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Added
+
+### Changed
+
+### Removed
+
+
+## [0.11.2] 2026-10-09
+
+### Breaking changes
+
+### Security
+
+### Added
 - Slurm collector: Limit the size of the timewindow read by sacct at once and make it configurable ([@rkleinem](https://github.com/rkleinem))
 - Slurm collector: Add Regex to ignore .interactive suffix jobs([@staliostefano-art](https://github.com/staliostefano-art))
 - Slurm collector: Amend slurm regex to handle + in sacct parsing for heterogeneous jobs ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
@@ -1145,7 +1158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/alu-schumacher/AUDITOR/compare/v0.11.2...HEAD
 [0.0.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.1
 [0.0.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.2
 [0.0.3]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.0.3
@@ -1174,3 +1187,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.10.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.10.2
 [0.11.0]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.11.0
 [0.11.1]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.11.1
+[0.11.2]: https://github.com/alu-schumacher/AUDITOR/releases/tag/v0.11.2

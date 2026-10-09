@@ -66,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{confdir}/%{name}.yml
 
 %changelog
+* Fri Oct 09 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.2
+  - Release v0.11.2 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Mon Sep 14 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.1
   - Release v0.11.1 - see https://github.com/ALU-Schumacher/AUDITOR/blob/main/CHANGELOG.md for changes
 * Mon Jul 13 2026 Raghuvar Vijayakumar <raghuvar.vijayakumar@physik.uni-freiburg.de> - 0.11.0
