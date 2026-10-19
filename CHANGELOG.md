@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 ### Security
+- [RUSTSEC-2026-0381]: Update webpki-roots from 1.0.9 to 1.0.10 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0382]: Update rustls-webpki from 0.103.15 to 0.103.16 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0383]: Update webpki-root-certs from 1.0.9 to 1.0.10 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
@@ -16,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.51.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.10 to 0.17.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
+- CI: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
