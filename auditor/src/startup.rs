@@ -9,6 +9,7 @@ use crate::archive::ArchiveService;
 use crate::configuration::{ArchivalConfig, TLSParams};
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
 use crate::middleware::rbac;
+use crate::routes::openstack_update;
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
 use actix_tls::accept::rustls_0_23::TlsStream;
 use actix_web::dev::Server;
@@ -81,6 +82,7 @@ pub async fn run(
                     .route(web::post().to(bulk_add))
                     .route(web::get().to(query_records)),
             )
+            .service(web::resource("/openstack").route(web::put().to(openstack_update)))
             .app_data(db_pool.clone())
             .default_service(web::route().to(|| async {
                 HttpResponse::NotFound().body("The requested resource was not found. 404 Not Found")

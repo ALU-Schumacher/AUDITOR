@@ -9,6 +9,7 @@ mod add;
 mod advanced_record_filters;
 mod get;
 mod health_check;
+mod openstack;
 mod record_handlers;
 mod update;
 
@@ -16,5 +17,6 @@ pub use add::*;
 pub use advanced_record_filters::*;
 pub use get::*;
 pub use health_check::*;
+pub use openstack::*;
 pub use record_handlers::*;
 pub use update::*;
