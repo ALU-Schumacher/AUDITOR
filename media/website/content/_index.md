@@ -20,6 +20,14 @@ It comes with a well-defined REST API which allows for the implementation of app
 Overview of the AUDITOR ecosystem. AUDITOR accepts records from collectors, stores them in a PostgreSQL
 database and offers these records to plugins which take an action based on the records.
 
+## Important
+
+Auditor uses UTC timestamps (e.g. the `start_time` and `stop_time` of a record are in UTC). Please keep this in mind when comparing data with other systems.
+
+## Auditor Demo
+
+A tutorial for Auditor can be found here: [https://github.com/ALU-Schumacher/auditor-demo](https://github.com/ALU-Schumacher/auditor-demo)
+
 # Running Auditor
 
 Auditor can be run by compiling the source from the repository or by running a pre-built docker container.
