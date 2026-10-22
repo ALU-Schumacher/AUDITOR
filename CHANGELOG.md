@@ -12,15 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2026-0381]: Update webpki-roots from 1.0.9 to 1.0.10 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2026-0382]: Update rustls-webpki from 0.103.15 to 0.103.16 ([@dirksammel](https://github.com/dirksammel))
 - [RUSTSEC-2026-0383]: Update webpki-root-certs from 1.0.9 to 1.0.10 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0391]: Update zstd from 0.14.0 to 0.14.3 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0398]: Update zstd-safe from 0.8.0 to 0.8.2 ([@dirksammel](https://github.com/dirksammel))
+- [RUSTSEC-2026-0410]: Update zstd-sys from 2.1.0+zstd.1.5.7 to 2.1.2+zstd.1.5.7 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
 
 ### Changed
+- Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update certifi from 2025.1.31 to 2026.10.19 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.51.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.10 to 0.17.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update tokio from 1.53.1 to 1.54.1 ([@dirksammel](https://github.com/dirksammel))
 - CI: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
