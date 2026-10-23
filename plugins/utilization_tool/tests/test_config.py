@@ -18,7 +18,7 @@ SAMPLE_YAML = {
         "use_tls": False,
         "component_fields_in_record": {
             "cores": "Cores",
-            "benchmark": "HEPscore23",
+            "benchmark": "HEPScore23",
             "total_cpu": "TotalCPU",
         },
         "collector_type": "htcondor",
@@ -65,7 +65,7 @@ def test_component_fields_loaded(temp_yaml_file):
     fields = cfg.auditor.component_fields_in_record
 
     assert fields.cores == "Cores"
-    assert fields.benchmark == "HEPscore23"
+    assert fields.benchmark == "HEPScore23"
     assert fields.total_cpu == "TotalCPU"
 
 

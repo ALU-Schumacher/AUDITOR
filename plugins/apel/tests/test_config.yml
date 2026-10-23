@@ -6,7 +6,7 @@ plugin:
   
 site:
   ce: ARC
-  benchmark_type: HEPscore23
+  benchmark_type: HEPScore23
   sites_to_report:
     TEST-SITE: ["test"]
 
@@ -43,7 +43,7 @@ summary_fields:
       name: Cores
     NormalisedWallDuration: !NormalisedField
       score:
-        name: hepscore23
+        name: HEPScore23
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
@@ -53,7 +53,7 @@ summary_fields:
         name: TotalCPU
         divide_by: 1000
       score:
-        name: hepscore23
+        name: HEPScore23
         component_name: Cores
     
   optional:

@@ -449,15 +449,15 @@ class TestConfig:
 
         siteconfig = SiteConfig(sites_to_report=sites_to_report)
 
-        assert siteconfig.benchmark_type.value == "HEPscore23"
+        assert siteconfig.benchmark_type.value == "HEPScore23"
 
-        benchmark_type = "HEPscore23"
+        benchmark_type = "HEPScore23"
 
         siteconfig = SiteConfig(
             sites_to_report=sites_to_report, benchmark_type=benchmark_type
         )
 
-        assert siteconfig.benchmark_type.value == "HEPscore23"
+        assert siteconfig.benchmark_type.value == "HEPScore23"
 
         benchmark_type = "HEPSPEC"
 
