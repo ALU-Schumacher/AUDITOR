@@ -40,9 +40,9 @@ components:
         only_if:
           key: "LastRemoteHost"
           matches: ^slot.+@execute$
-      - name: "HEPscore23"
+      - name: "HEPScore23"
         key: "MachineAttrApelSpecs0"
-        matches: HEPscore23\D+(\d+(\.\d+)?)
+        matches: HEPScore23\D+(\d+(\.\d+)?)
         only_if:
           key: "LastRemoteHost"
           matches: ^slot.+@execute$

@@ -17,7 +17,7 @@ auditor:
   client_key_path: /path/client-key.pem
   component_fields_in_record:
     cores: Cores
-    benchmark: HEPscore23
+    benchmark: HEPScore23
     total_cpu: TotalCPU
   collector_type: htcondor
 

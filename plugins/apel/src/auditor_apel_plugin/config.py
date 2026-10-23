@@ -18,7 +18,7 @@ logger = logging.getLogger("apel_plugin")
 
 class BenchmarkType(Enum):
     hepspec = "hepspec"
-    HEPscore23 = "HEPscore23"
+    HEPScore23 = "HEPScore23"
     si2k = "si2k"
 
     @classmethod
@@ -53,7 +53,7 @@ class PluginConfig(Configurable):
 
 class SiteConfig(Configurable):
     sites_to_report: dict[str, list[str]]
-    benchmark_type: BenchmarkType = BenchmarkType.HEPscore23
+    benchmark_type: BenchmarkType = BenchmarkType.HEPScore23
     ce: str = "UNKNOWN"
 
 

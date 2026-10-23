@@ -20,7 +20,7 @@ def sample_json_record():
     "record_id":"record-1",
     "meta":{"VOMS":["/atlas/Role=production/Capability=NULL"],"user":["user-1"]},
     "components":[
-        {"name":"Cores","amount":1,"scores":[{"name":"HEPscore23","value":18.4}]},
+        {"name":"Cores","amount":1,"scores":[{"name":"HEPScore23","value":18.4}]},
         {"name":"TotalCPU","amount":72327,"scores":[]}
            ],
     "start_time":"2025-07-15T20:39:48Z",
@@ -48,7 +48,7 @@ def config_values():
 @pytest.fixture
 def config_component_values():
     return ComponentFieldsConfig(
-        cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+        cores="Cores", benchmark="HEPScore23", total_cpu="TotalCPU"
     )
 
 
@@ -61,7 +61,7 @@ def test_record_to_dict(sample_json_record):
     d = record_to_dict(sample_json_record)
     assert d["record_id"].startswith("record")
     assert d["Cores"] == 1
-    assert d["HEPscore23"] == 18.4
+    assert d["HEPScore23"] == 18.4
     assert d["TotalCPU"] == 72327
     assert d["runtime"] == 59879
 
@@ -72,7 +72,7 @@ def test_records_to_df(sample_json_record):
     df = records_to_df([mock_record])
     assert isinstance(df, pd.DataFrame)
     assert "Cores" in df.columns
-    assert df.loc[0, "HEPscore23"] == 18.4
+    assert df.loc[0, "HEPScore23"] == 18.4
 
 
 def test_rename_user_realistic():
@@ -122,9 +122,9 @@ def test_get_stats_by_user_with_config(
     expected_corehours = (df["Cores"] * df["runtime"]).sum() / 3600.0
     assert data["corehours"][0] == pytest.approx(expected_corehours)
 
-    # wall_work = sum(HEPscore23 * Cores * runtime) / 3600 / 1000
+    # wall_work = sum(HEPScore23 * Cores * runtime) / 3600 / 1000
     expected_khs23h = (
-        (df["HEPscore23"] * df["Cores"] * df["runtime"]).sum() / 3600.0 / 1000.0
+        (df["HEPScore23"] * df["Cores"] * df["runtime"]).sum() / 3600.0 / 1000.0
     )
     assert data["khs23h"][0] == pytest.approx(expected_khs23h)
 

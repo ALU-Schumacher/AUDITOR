@@ -1458,7 +1458,7 @@ mod tests {
                     only_if: None,
                 },
                 ScoreConfig {
-                    name: "hepscore23".to_owned(),
+                    name: "HEPScore23".to_owned(),
                     value: 10.0,
                     only_if: None,
                 },
@@ -1474,7 +1474,7 @@ mod tests {
                 value: ValidValue::parse(10.0).unwrap(),
             },
             Score {
-                name: ValidName::parse("hepscore23".to_owned()).unwrap(),
+                name: ValidName::parse("HEPScore23".to_owned()).unwrap(),
                 value: ValidValue::parse(10.0).unwrap(),
             },
         ];
