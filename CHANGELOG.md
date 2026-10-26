@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update certifi from 2025.1.31 to 2026.10.19 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.51.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.10 to 0.17.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
