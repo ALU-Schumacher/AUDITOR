@@ -19,10 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.51.1 ([@dirksammel](https://github.com/dirksammel))
-- Dependencies: Update ruff from 0.16.10 to 0.17.1 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update ruff from 0.16.10 to 0.17.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.53.1 to 1.54.1 ([@dirksammel](https://github.com/dirksammel))
 - CI: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
