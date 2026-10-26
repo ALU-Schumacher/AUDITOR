@@ -911,7 +911,7 @@ components:
   - name: "Memory"
     key: "MemoryProvisioned"
   - name: "TotalCPU"
-    key: "RemoteUserCpu+RemoteSysCpu"
+    key: "CumulativeRemoteUserCpu+CumulativeRemoteSysCpu"
 tls_config:
   use_tls: False
 ```
@@ -1192,7 +1192,7 @@ The section `summary_fields` has the subsections `mandatory` and `optional`. `ma
 | `Processors`             |   `int`   |
 | `NodeCount`              |   `int`   |
 
-`CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `RemoteSysCpu + RemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline).
+`CpuDuration` and `NormalisedCpuDuration` have to contain the sum of user- and system CPU time, and the sum of all cores that were running (e.g. `CumulativeRemoteSysCpu + CumulativeRemoteUserCpu` for HTCondor). `NormalisedWallDuration` has to contain the time the job was actually running, i.e. **not** multiplied by the number of cores (this is done later in the APEL pipeline).
 
 If `NodeCount` is not present in the config, a default value of 1 is assumed.
 
