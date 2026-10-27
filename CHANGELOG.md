@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update ruff from 0.16.10 to 0.17.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
 - CI: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
+- Docs: Change `Remote...Cpu` to `CumulativeRemote...Cpu` ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 
