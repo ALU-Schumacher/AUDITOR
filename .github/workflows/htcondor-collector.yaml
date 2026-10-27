@@ -102,7 +102,7 @@ jobs:
     
     - name: Check accounting table
       run: |
-        echo "${{ steps.table.outputs.table }}" | grep -q "HEPscore23 |  45.6"
+        echo "${{ steps.table.outputs.table }}" | grep -q "HEPScore23 |  45.6"
         echo "${{ steps.table.outputs.table }}" | grep -q "HEPSPEC    |  12.3"
 
     - name: Stop docker containers
