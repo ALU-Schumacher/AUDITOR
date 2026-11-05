@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dependencies: Update actix-web from 4.15.0 to 4.20.0 ([@dirksammel](https://github.com/dirksammel))
+- Dependencies: Update arrow from 60.0.0 to 60.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.52.2 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update ruff from 0.16.10 to 0.17.5 ([@dirksammel](https://github.com/dirksammel))
