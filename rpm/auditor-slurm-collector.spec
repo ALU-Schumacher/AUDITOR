@@ -6,6 +6,9 @@ BuildArch:      x86_64
 
 License:        MIT or Apache-2.0
 
+Provides:       user(auditor-slurm-collector)
+Provides:       group(auditor)
+
 %description
 Slurm collector for Auditor
 

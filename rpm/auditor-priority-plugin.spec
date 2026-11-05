@@ -6,6 +6,9 @@ BuildArch:      x86_64
 
 License:        MIT or Apache-2.0
 
+Provides:       user(auditor-priority-plugin)
+Provides:       group(auditor)
+
 %description
 Priority plugin for Auditor
 
