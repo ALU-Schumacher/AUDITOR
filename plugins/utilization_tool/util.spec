@@ -8,7 +8,6 @@ Source0: /__w/AUDITOR/AUDITOR/plugins/utilization_tool
 
 Requires:       python3
 Requires:       python3-pip
-Requires:       python3-virtualenv
 Requires:       systemd
 
 %description
