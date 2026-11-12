@@ -23,6 +23,7 @@
 #utilization:
 #  groupedby: VOMS
 #  grouped_list: [production, lcgadmin, ilc, ops]
+#  metadata_filters: {} # Example: {site: RHUL-LOCAL} or {group: LOCAL}
 #  watt_per_core: 4.6
 #  co2_per_kwh: 0.363
 #  interval: 10

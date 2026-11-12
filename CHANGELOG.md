@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2026-0410]: Update zstd-sys from 2.1.0+zstd.1.5.7 to 2.1.2+zstd.1.5.7 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- Utilisation plugin: Add YAML metadata filters for site, group and other record metadata independently of report grouping ([@benjamindonnachie](https://github.com/benjamindonnachie))
 
 ### Changed
 - Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@dirksammel](https://github.com/dirksammel))

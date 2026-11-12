@@ -1,4 +1,5 @@
 import tempfile
+from copy import deepcopy
 
 import pytest
 import yaml
@@ -103,3 +104,46 @@ def test_cluster_sites_property():
 def test_default_oneshot():
     cfg = Config(**SAMPLE_YAML)
     assert cfg.oneshot is False
+
+
+def test_metadata_filters_default_to_empty(temp_yaml_file):
+    assert Config.from_yaml(temp_yaml_file).utilization.metadata_filters == {}
+
+
+@pytest.mark.parametrize(
+    "filters",
+    [
+        {},
+        {"site": "RHUL-LOCAL"},
+        {"group": "LOCAL"},
+        {"site": "RHUL-LOCAL", "group": "LOCAL"},
+    ],
+)
+def test_metadata_filters_from_yaml(tmp_path, filters):
+    data = deepcopy(SAMPLE_YAML)
+    data["utilization"]["metadata_filters"] = filters
+    path = tmp_path / "config.yaml"
+    path.write_text(yaml.safe_dump(data))
+
+    assert Config.from_yaml(str(path)).utilization.metadata_filters == filters
+
+
+@pytest.mark.parametrize(
+    "filters",
+    [
+        None,
+        [],
+        {"site": []},
+        {"site": ["RHUL-LOCAL"]},
+        {"site": ""},
+        {"site": " "},
+        {"": "LOCAL"},
+        {" ": "LOCAL"},
+        {"site": 123},
+    ],
+)
+def test_invalid_metadata_filters_rejected(filters):
+    data = deepcopy(SAMPLE_YAML)
+    data["utilization"]["metadata_filters"] = filters
+    with pytest.raises(ValueError):
+        Config(**data)
