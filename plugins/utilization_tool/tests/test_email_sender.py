@@ -40,3 +40,48 @@ async def test_send_email_missing_env(mock_getenv):
 
     with pytest.raises(ValueError):
         await send_email("smtp.test.com", 587, df, logger)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "filters, suffix, html_suffix",
+    [
+        (None, "", ""),
+        ({}, "", ""),
+        ({"site": "RHUL-LOCAL"}, " [site=RHUL-LOCAL]", " [site=RHUL-LOCAL]"),
+        ({"group": "LOCAL"}, " [group=LOCAL]", " [group=LOCAL]"),
+        (
+            {"site": "RHUL-LOCAL", "group": "LOCAL"},
+            " [group=LOCAL, site=RHUL-LOCAL]",
+            " [group=LOCAL, site=RHUL-LOCAL]",
+        ),
+        (
+            {"group": '<LOCAL & "special">'},
+            ' [group=<LOCAL & "special">]',
+            " [group=&lt;LOCAL &amp; &quot;special&quot;&gt;]",
+        ),
+        ({"site": "RHUL\r\nLOCAL"}, " [site=RHUL LOCAL]", " [site=RHUL LOCAL]"),
+    ],
+)
+@patch("auditor_utilization_plugin.email_sender.smtplib.SMTP")
+@patch("auditor_utilization_plugin.email_sender.os.getenv")
+async def test_email_labels_include_filters(
+    mock_getenv, mock_smtp, filters, suffix, html_suffix
+):
+    mock_getenv.side_effect = {
+        "SENDER_EMAIL": "sender@test.com",
+        "PASSWORD": "password",
+        "RECEIVER_EMAIL": "receiver@test.com",
+    }.get
+    server = mock_smtp.return_value.__enter__.return_value
+
+    await send_email(
+        "smtp.test.com", 587, pd.DataFrame(), MagicMock(), metadata_filters=filters
+    )
+
+    server.send_message.assert_called_once()
+    message = server.send_message.call_args.args[0]
+    assert message["Subject"] == "Monthly Utilisation Report" + suffix
+    assert f"<h2>Monthly Utilisation Summary{html_suffix}</h2>" in (
+        message.get_payload()[0].get_payload()
+    )

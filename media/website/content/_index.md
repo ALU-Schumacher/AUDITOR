@@ -1446,6 +1446,8 @@ Alternatively, select a group independently of the output grouping:
 
 The filter keys must match the metadata keys stored in your records, for example `site`, `site_id`, `group` or `GROUP`. `auditor.site_meta_field` does not select a site value. The `cluster.watt_per_core.site` mapping supplies power estimates, rather than selecting records. `grouped_list` maps matching grouping labels; it is not a record filter. With `groupedby: user`, use `grouped_list: []` to retain individual usernames.
 
+When filters are active, the email subject and HTML heading include them, for example `Monthly Utilisation Report [site=RHUL-LOCAL]` and `Monthly Utilisation Summary [site=RHUL-LOCAL]`. Multiple filters are listed in alphabetical order by metadata key, for example `[group=LOCAL, site=RHUL-LOCAL]`. Reports without filters retain their existing labels.
+
 #### Email reporting
 
 The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created

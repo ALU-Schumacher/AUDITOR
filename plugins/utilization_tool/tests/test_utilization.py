@@ -13,11 +13,28 @@ from auditor_utilization_plugin.utilization import (
     categorize_power,
     generate_utilization_report,
     get_stats_by_user,
+    mailing_list,
     map_user_name,
     record_to_dict,
     records_to_df,
     rename_user,
 )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "filters", [None, {}, {"site": "RHUL-LOCAL", "group": "LOCAL"}]
+)
+async def test_mailing_list_passes_metadata_filters(filters):
+    df = pd.DataFrame({"user": ["test"]})
+    logger = MagicMock()
+    with patch(
+        "auditor_utilization_plugin.utilization.send_email", new_callable=AsyncMock
+    ) as sender:
+        await mailing_list("smtp.test.com", 587, df, logger, metadata_filters=filters)
+        sender.assert_awaited_once_with(
+            "smtp.test.com", 587, df, logger, metadata_filters=filters
+        )
 
 
 @pytest.mark.parametrize(
@@ -171,6 +188,7 @@ async def test_report_filters_are_independent_of_user_grouping(
     assert client.advanced_query.call_count == 31
     if expected_users:
         sender.assert_awaited_once()
+        assert sender.call_args.kwargs["metadata_filters"] == filters
         writer.assert_called_once()
         assert set(writer.call_args.args[0]["user"]) == expected_users
         assert set(sender.call_args.args[2]["user"]) == expected_users

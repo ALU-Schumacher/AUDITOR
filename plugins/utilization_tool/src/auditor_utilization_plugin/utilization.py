@@ -256,7 +256,11 @@ async def generate_utilization_report(
 
             if config.email.enable_email_report:
                 await mailing_list(
-                    config.email.smtp_server, config.email.smtp_port, df_sum_agg, logger
+                    config.email.smtp_server,
+                    config.email.smtp_port,
+                    df_sum_agg,
+                    logger,
+                    metadata_filters=config.utilization.metadata_filters,
                 )
 
             write_to_csv(
@@ -301,9 +305,15 @@ def compute_aggregation(
 
 
 async def mailing_list(
-    smtp_server: str, smtp_port: int, df_sum_agg: pd.DataFrame, logger: Logger
+    smtp_server: str,
+    smtp_port: int,
+    df_sum_agg: pd.DataFrame,
+    logger: Logger,
+    metadata_filters: Optional[dict[str, str]] = None,
 ):
-    return await send_email(smtp_server, smtp_port, df_sum_agg, logger)
+    return await send_email(
+        smtp_server, smtp_port, df_sum_agg, logger, metadata_filters=metadata_filters
+    )
 
 
 def write_to_csv(
