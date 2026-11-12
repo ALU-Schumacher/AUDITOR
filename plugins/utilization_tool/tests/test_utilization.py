@@ -1,17 +1,65 @@
+import argparse
+import datetime
 import json
-from unittest.mock import MagicMock
+from copy import deepcopy
+from unittest.mock import AsyncMock, MagicMock, patch
+from urllib.parse import parse_qs
 
 import pandas as pd
 import pytest
 from auditor_utilization_plugin.config import CollectorType, ComponentFieldsConfig
 from auditor_utilization_plugin.utilization import (
+    build_query,
     categorize_power,
+    generate_utilization_report,
     get_stats_by_user,
+    mailing_list,
     map_user_name,
     record_to_dict,
     records_to_df,
     rename_user,
 )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "filters", [None, {}, {"site": "RHUL-LOCAL", "group": "LOCAL"}]
+)
+async def test_mailing_list_passes_metadata_filters(filters):
+    df = pd.DataFrame({"user": ["test"]})
+    logger = MagicMock()
+    with patch(
+        "auditor_utilization_plugin.utilization.send_email", new_callable=AsyncMock
+    ) as sender:
+        await mailing_list("smtp.test.com", 587, df, logger, metadata_filters=filters)
+        sender.assert_awaited_once_with(
+            "smtp.test.com", 587, df, logger, metadata_filters=filters
+        )
+
+
+@pytest.mark.parametrize(
+    "filters",
+    [
+        None,
+        {},
+        {"site": "RHUL-LOCAL"},
+        {"group": "LOCAL"},
+        {"site": "RHUL-LOCAL", "group": "LOCAL"},
+        {"GROUP": "LOCAL"},
+        {"site": "a & b/+"},
+    ],
+)
+def test_build_query_preserves_time_bounds_and_metadata(filters):
+    start = datetime.datetime(2026, 10, 1, tzinfo=datetime.timezone.utc)
+    end = datetime.datetime(2026, 10, 2, tzinfo=datetime.timezone.utc)
+    original = parse_qs(build_query(start, end))
+    query = parse_qs(build_query(start, end, filters))
+    assert query["stop_time[gte]"] == original["stop_time[gte]"]
+    assert query["stop_time[lt]"] == original["stop_time[lt]"]
+    expected = {**original}
+    for key, value in (filters or {}).items():
+        expected[f"meta[{key}][c][0]"] = [value]
+    assert query == expected
 
 
 @pytest.fixture
@@ -55,6 +103,98 @@ def config_component_values():
 @pytest.fixture
 def config_auditor_collector_type():
     return CollectorType("htcondor")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "filters, expected_users",
+    [
+        (
+            {},
+            {"local-user", "other-user", "grid-user", "shared-user", "unlabelled-user"},
+        ),
+        ({"site": "RHUL-LOCAL"}, {"local-user", "other-user"}),
+        ({"group": "LOCAL"}, {"local-user", "shared-user"}),
+        ({"site": "RHUL-LOCAL", "group": "LOCAL"}, {"local-user"}),
+        ({"site": "unknown"}, set()),
+        ({"site": "rhul-local"}, set()),
+    ],
+)
+async def test_report_filters_are_independent_of_user_grouping(
+    sample_json_record, config_component_values, filters, expected_users
+):
+    stored_records = []
+    for user, site, group in [
+        ("local-user", "RHUL-LOCAL", "LOCAL"),
+        ("other-user", "RHUL-LOCAL", "ATLAS"),
+        ("grid-user", "RHUL", "ATLAS"),
+        ("shared-user", "RHUL", "LOCAL"),
+    ]:
+        record = deepcopy(sample_json_record)
+        record["meta"].update(user=[user], site=[site], group=[group])
+        if user == "local-user":
+            record["meta"]["site"].insert(0, "another-site")
+        stored_records.append(record)
+
+    unlabelled = deepcopy(sample_json_record)
+    unlabelled["meta"]["user"] = ["unlabelled-user"]
+    stored_records.append(unlabelled)
+
+    def query_records(query):
+        params = parse_qs(query)
+        for key, value in filters.items():
+            assert params[f"meta[{key}][c][0]"] == [value]
+        if not params["stop_time[gte]"][0].startswith("2025-07-16"):
+            return []
+        result = []
+        for record in stored_records:
+            if all(
+                values[0] in record["meta"].get(key[5:].split("]")[0], [])
+                for key, values in params.items()
+                if key.startswith("meta[")
+            ):
+                item = MagicMock()
+                item.to_json.return_value = json.dumps(record)
+                result.append(item)
+        return result
+
+    client = MagicMock()
+    client.advanced_query.side_effect = query_records
+    config = MagicMock()
+    config.oneshot = True
+    config.cluster.watt_per_core = {}
+    config.utilization.watt_per_core = 4.6
+    config.utilization.groupedby = "user"
+    config.utilization.grouped_list = []
+    config.utilization.metadata_filters = filters
+    config.utilization.co2_per_kwh = 0.363
+    config.auditor.component_fields_in_record = config_component_values
+    config.auditor.collector_type = CollectorType.htcondor
+    config.email.enable_email_report = True
+    args = argparse.Namespace(month=7, year=2025, oneshot=True)
+
+    with (
+        patch(
+            "auditor_utilization_plugin.utilization.mailing_list",
+            new_callable=AsyncMock,
+        ) as sender,
+        patch("auditor_utilization_plugin.utilization.write_to_csv") as writer,
+        pytest.raises(SystemExit),
+    ):
+        await generate_utilization_report(
+            MagicMock(), config, args, client, "localhost"
+        )
+
+    assert client.advanced_query.call_count == 31
+    if expected_users:
+        sender.assert_awaited_once()
+        assert sender.call_args.kwargs["metadata_filters"] == filters
+        writer.assert_called_once()
+        assert set(writer.call_args.args[0]["user"]) == expected_users
+        assert set(sender.call_args.args[2]["user"]) == expected_users
+    else:
+        sender.assert_not_awaited()
+        writer.assert_not_called()
 
 
 def test_record_to_dict(sample_json_record):

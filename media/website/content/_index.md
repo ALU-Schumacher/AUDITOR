@@ -1408,7 +1408,8 @@ email:
 | `auditor.component_fields_in_record.total_cpu` | `TotalCPU`        | Component field key of the record that specifies the total cpu                                               |
 | `auditor.collector_type`                       | `htcondor`        | Specify the batch system that was used to collect the records in AUDITOR (`htcondor`, `slurm`, `kubernetes`) |
 | `utilization.groupedby`                        | `VOMS`            | Attribute used to group utilization metrics                                                                  |
-| `utilization.grouped_list`                     | `[]`              | List of VOMS for utilization accounting                                                                      |
+| `utilization.grouped_list`                     | `[]`              | Labels used to map grouping values; does not filter records                                                   |
+| `utilization.metadata_filters`                | `{}`              | Metadata keys and exact string values required in each record; all filters must match                         |
 | `utilization.watt_per_core`                    | `4.6`             | Default power consumption (in watts) per CPU core                                                            |
 | `utilization.co2_per_kwh`                      | `0.363`           | CO₂ emission factor in kg CO₂ per kWh                                                                        |
 | `utilization.interval`                         | `10`              | Time interval (in seconds) used for utilization aggregation                                                  |
@@ -1419,6 +1420,35 @@ email:
 | `email.smtp_server`                            | `None`            | SMTP server used to send email reports                                                                       |
 | `email.smtp_port`                              | `587`             | SMTP server port                                                                                             |
 
+
+#### Filtering records independently of grouping
+
+Use `utilization.metadata_filters` to select records by their metadata before calculating the report. Filters are sent to AUDITOR as part of each daily query, alongside the existing stop-time bounds. Each entry requires an exact, case-sensitive value in the corresponding metadata array. If several entries are supplied, all must match (AND). A missing metadata key does not match. Each key accepts one non-empty string value; lists are not supported. Omit the setting or use `{}` to retain unfiltered reporting.
+
+For example, report individual users at one site:
+
+```yaml
+utilization:
+  groupedby: user
+  grouped_list: []
+  metadata_filters:
+    site: RHUL-LOCAL
+  file_name: auditor_local_users
+  # Keep the remaining utilisation settings from your configuration.
+```
+
+Alternatively, select a group independently of the output grouping:
+
+```yaml
+  metadata_filters:
+    group: LOCAL
+```
+
+The filter keys must match the metadata keys stored in your records, for example `site`, `site_id`, `group` or `GROUP`. `auditor.site_meta_field` does not select a site value. The `cluster.watt_per_core.site` mapping supplies power estimates, rather than selecting records. `grouped_list` maps matching grouping labels; it is not a record filter. With `groupedby: user`, use `grouped_list: []` to retain individual usernames.
+
+When filters are active, the email subject and HTML heading include them, for example `Monthly Utilisation Report [site=RHUL-LOCAL]` and `Monthly Utilisation Summary [site=RHUL-LOCAL]`. Multiple filters are listed in alphabetical order by metadata key, for example `[group=LOCAL, site=RHUL-LOCAL]`. Reports without filters retain their existing labels.
+
+#### Email reporting
 
 The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created
 ```yaml
