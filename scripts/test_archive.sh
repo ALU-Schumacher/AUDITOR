@@ -236,7 +236,7 @@ function compile_python() {
 }
 
 function run_python_parquet_to_auditor_script() {
-  PARQUET_PATH="../../../../archived_records/auditor_2025_01.parquet" python3 parquet_to_auditor.py
+  PARQUET_PATH="../../../../archived_records/auditor_2025_01.parquet" python3 -X faulthandler parquet_to_auditor.py
 }
 
 auditor_adding_records

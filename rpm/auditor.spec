@@ -13,6 +13,7 @@ Auditor: Accounting toolchain.
 %global confdir %{_sysconfdir}/auditor
 %global sharedir /usr/share/auditor
 %global user %{name}
+%global debug_package %{nil}
 
 %pre
 # On install
