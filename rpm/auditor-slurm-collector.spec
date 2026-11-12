@@ -13,6 +13,7 @@ Slurm collector for Auditor
 %global confdir %{_sysconfdir}/auditor
 %global statedir %{_localstatedir}/lib/%{name}
 %global user %{name}
+%global debug_package %{nil}
 
 %pre
 # On install

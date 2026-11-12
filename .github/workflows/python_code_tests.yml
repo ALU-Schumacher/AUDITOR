@@ -9,7 +9,7 @@ on:
         
 jobs:
   unit-tests-apel-plugin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -40,7 +40,7 @@ jobs:
           token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
           #${{ secrets.CODECOV_TOKEN }} doesn't work for PRs from forks
   mypy-apel-plugin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./plugins/apel
@@ -64,7 +64,7 @@ jobs:
       - name: Run mypy
         run: mypy .
   unit-tests-utilization-plugin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./plugins/utilization_tool
@@ -94,7 +94,7 @@ jobs:
           fail_ci_if_error: true
           token: ef0e698e-e1de-4603-88fa-b3d7c10fb0e1
   mypy-utilization-plugin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./plugins/utilization_tool

@@ -12,6 +12,7 @@ Slurm epilog collector for Auditor
 %global unitdir /usr/lib/systemd/system
 %global confdir %{_sysconfdir}/auditor
 %global user %{name}
+%global debug_package %{nil}
 
 %pre
 # On install

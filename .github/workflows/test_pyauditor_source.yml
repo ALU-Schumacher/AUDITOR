@@ -9,7 +9,7 @@ on:
 
 jobs:
   test-pyauditor:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download pyauditor source
         uses: actions/download-artifact@v8

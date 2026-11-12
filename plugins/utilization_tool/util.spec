@@ -14,6 +14,8 @@ Requires:       systemd
 %description
 AUDITOR plugin to create cluster utilization report
 
+%global debug_package %{nil}
+
 %prep
 %autosetup
 

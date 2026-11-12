@@ -57,7 +57,7 @@ function test_pyauditor() {
     DB_NAME=$(uuidgen)
     SKIP_DOCKER=true POSTGRES_DB=$DB_NAME ./scripts/init_db.sh
     start_auditor
-    python3 $script
+    python3 -X faulthandler $script
     echo >&2 "Stopping AUDITOR server"
     if kill -0 "$AUDITOR_SERVER_PID" 2>/dev/null; then
         kill -2 "$AUDITOR_SERVER_PID"
