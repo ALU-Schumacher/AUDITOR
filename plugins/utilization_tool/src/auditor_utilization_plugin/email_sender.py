@@ -11,7 +11,11 @@ load_dotenv()
 
 
 async def send_email(
-    smtp_server: str, smtp_port: int, df_sum: pd.DataFrame, logger: Logger
+    smtp_server: str,
+    smtp_port: int,
+    df_sum: pd.DataFrame,
+    logger: Logger,
+    report_period: str = "",
 ) -> None:
     try:
         sender_email = os.getenv("SENDER_EMAIL")
@@ -23,11 +27,12 @@ async def send_email(
 
         html_table = df_sum.to_html(index=False, border=0, justify="center")
 
-        subject = "Monthly Utilisation Report"
+        period_suffix = f" - {report_period}" if report_period else ""
+        subject = f"Monthly Utilisation Report{period_suffix}"
         body_html = f"""
         <html>
           <body>
-            <h2>Monthly Utilisation Summary</h2>
+            <h2>Monthly Utilisation Summary{period_suffix}</h2>
             {html_table}
           </body>
         </html>

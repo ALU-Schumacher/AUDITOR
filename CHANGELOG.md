@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Utilisation plugin: Include the reporting month and year in email subjects and headings ([@benjamindonnachie](https://github.com/benjamindonnachie))
 - Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update crate-ci/typos from 1.50.3 to 1.52.0 ([@dirksammel](https://github.com/dirksammel))
