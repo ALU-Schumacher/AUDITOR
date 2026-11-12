@@ -1,0 +1,75 @@
+name: test-python-rpms
+
+on:
+  workflow_call:
+    inputs:
+      container:
+        required: true
+        type: string
+
+jobs:
+  test-apel-plugin-rpm:
+    runs-on: ubuntu-latest
+    container: ${{ inputs.container }}
+    steps:
+      - name: Download RPM
+        uses: actions/download-artifact@v7
+        with:
+          name: apel-plugin-rpm
+      - name: Install RPM
+        run: |
+          ls -rlth
+          dnf -y install auditor_apel_plugin*.rpm
+          rc=0
+          out=$(/opt/auditor_apel_plugin/venv/bin/auditor-apel-publish 2>&1) || rc=$?
+          echo "$out"
+          echo "exit code: $rc"
+
+          if ! echo "$out" | grep -q "usage"; then
+            echo "::error::Expected string not found in output"
+            exit 1
+          fi
+
+  test-htcondor-collector-rpm:
+    runs-on: ubuntu-latest
+    container: ${{ inputs.container }}
+    steps:
+      - name: Download RPM
+        uses: actions/download-artifact@v7
+        with:
+          name: htcondor-collector-rpm
+      - name: Install RPM
+        run: |
+          ls -rlth
+          dnf -y install auditor_htcondor_collector*.rpm
+          rc=0
+          out=$(/opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector 2>&1) || rc=$?
+          echo "$out"
+          echo "exit code: $rc"
+
+          if ! echo "$out" | grep -q "usage"; then
+            echo "::error::Expected string not found in output"
+            exit 1
+          fi
+
+  test-auditor-utilization-plugin-rpm:
+    runs-on: ubuntu-latest
+    container: ${{ inputs.container }}
+    steps:
+      - name: Download RPM
+        uses: actions/download-artifact@v7
+        with:
+          name: utilization-plugin-rpm
+      - name: Install RPM
+        run: |
+          ls -rlth
+          dnf -y install auditor_utilization_plugin*.rpm
+          rc=0
+          out=$(/opt/auditor_utilization_plugin/venv/bin/auditor-utilization-plugin 2>&1) || rc=$?
+          echo "$out"
+          echo "exit code: $rc"
+
+          if ! echo "$out" | grep -q "usage"; then
+            echo "::error::Expected string not found in output"
+            exit 1
+          fi
