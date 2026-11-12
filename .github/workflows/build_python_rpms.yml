@@ -83,6 +83,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Verify utilization systemd units
+        run: |
+          unit_dir=$(mktemp -d)
+          trap 'rm -rf "$unit_dir"' EXIT
+          cp unit_files/auditor_utilization_plugin.{service,timer} "$unit_dir/"
+          # Validate the unit definitions without installing the application.
+          sed -i 's|^ExecStart=.*|ExecStart=/usr/bin/true|' "$unit_dir/auditor_utilization_plugin.service"
+          systemd-analyze verify "$unit_dir/auditor_utilization_plugin.service" "$unit_dir/auditor_utilization_plugin.timer"
+
       - name: Build RPM
         run: |
           rpmbuild -bb util.spec --build-in-place

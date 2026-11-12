@@ -35,17 +35,20 @@ install -d %{buildroot}/usr/lib/systemd/system
 
 install -m 0755 bootstrap-venv.sh %{buildroot}/usr/libexec/%{name}/bootstrap-venv.sh
 install -m 0644 unit_files/auditor_utilization_plugin.service %{buildroot}/usr/lib/systemd/system/auditor_utilization_plugin.service
+install -m 0644 unit_files/auditor_utilization_plugin.timer %{buildroot}/usr/lib/systemd/system/auditor_utilization_plugin.timer
 install -m 0644 configs/auditor_utilization_template.yml %{buildroot}/etc/auditor/auditor_utilization_plugin.yml
 
 %post
 if [ "$1" -ge 1 ]; then
     /usr/libexec/%{name}/bootstrap-venv.sh %{version}
-    systemctl --no-reload preset auditor_utilization_plugin
+    if [ "$1" -eq 1 ]; then
+        systemctl --no-reload preset auditor_utilization_plugin.timer
+    fi
 fi
 
 %preun
 if [ "$1" -eq 0 ]; then
-  systemctl --no-reload disable --now --no-warn auditor_utilization_plugin
+  systemctl --no-reload disable --now --no-warn auditor_utilization_plugin.timer auditor_utilization_plugin.service
 fi
 
 %postun
@@ -66,6 +69,7 @@ fi
 %config(noreplace) /etc/auditor/auditor_utilization_plugin.yml
 /usr/libexec/%{name}/bootstrap-venv.sh
 /usr/lib/systemd/system/auditor_utilization_plugin.service
+/usr/lib/systemd/system/auditor_utilization_plugin.timer
 %dir %attr(0750 auditor-utilization-plugin auditor) /var/lib/auditor_utilization_plugin
 
 %changelog

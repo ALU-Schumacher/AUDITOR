@@ -28,7 +28,7 @@
         ],
         "post": [
             "if [ \"$1\" -eq 1 ]; then",
-            "  systemctl --no-reload preset auditor_utilization_plugin",
+            "  systemctl --no-reload preset auditor_utilization_plugin.timer",
             "fi",
             "if [ \"$1\" -eq 2 ]; then",
             "  systemctl set-property auditor_utilization_plugin Markers=+needs-restart",
@@ -36,7 +36,7 @@
         ],
         "preun": [
             "if [ \"$1\" -eq 0 ]; then",
-            "  systemctl --no-reload disable --now --no-warn auditor_utilization_plugin",
+            "  systemctl --no-reload disable --now --no-warn auditor_utilization_plugin.timer auditor_utilization_plugin.service",
             "fi"
         ],
         "postun": [
@@ -71,6 +71,10 @@
             {
                 "src": "unit_files/auditor_utilization_plugin.service",
                 "dest": "/usr/lib/systemd/system/auditor_utilization_plugin.service"
+            },
+            {
+                "src": "unit_files/auditor_utilization_plugin.timer",
+                "dest": "/usr/lib/systemd/system/auditor_utilization_plugin.timer"
             },
             {
                 "src": "configs/auditor_utilization_template.yml",
