@@ -6,6 +6,7 @@ from auditor_utilization_plugin.config import (
     AuditorConfig,
     ClusterConfig,
     Config,
+    EmailServerConfig,
 )
 
 SAMPLE_YAML = {
@@ -103,3 +104,22 @@ def test_cluster_sites_property():
 def test_default_oneshot():
     cfg = Config(**SAMPLE_YAML)
     assert cfg.oneshot is False
+
+
+def test_email_tls_defaults_to_false(temp_yaml_file):
+    cfg = Config.from_yaml(temp_yaml_file)
+    assert cfg.email.use_tls is False
+
+
+@pytest.mark.parametrize("use_tls", [False, True])
+def test_email_tls_from_yaml(tmp_path, use_tls):
+    data = {**SAMPLE_YAML, "email": {**SAMPLE_YAML["email"], "use_tls": use_tls}}
+    path = tmp_path / "config.yaml"
+    path.write_text(yaml.safe_dump(data))
+
+    assert Config.from_yaml(str(path)).email.use_tls is use_tls
+
+
+def test_email_tls_rejects_invalid_value():
+    with pytest.raises(ValueError):
+        EmailServerConfig(**SAMPLE_YAML["email"], use_tls="invalid")

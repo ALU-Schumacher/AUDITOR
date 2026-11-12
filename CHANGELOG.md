@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [RUSTSEC-2026-0410]: Update zstd-sys from 2.1.0+zstd.1.5.7 to 2.1.2+zstd.1.5.7 ([@dirksammel](https://github.com/dirksammel))
 
 ### Added
+- Utilisation plugin: Add optional STARTTLS for email reports and support SMTP relays without authentication ([@benjamindonnachie](https://github.com/benjamindonnachie), [#2112](https://github.com/ALU-Schumacher/AUDITOR/issues/2112))
 
 ### Changed
 - Dependencies: Update actix-web from 4.15.0 to 4.18.1 ([@dirksammel](https://github.com/dirksammel))

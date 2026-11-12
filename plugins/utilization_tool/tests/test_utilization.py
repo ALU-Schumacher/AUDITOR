@@ -1,5 +1,5 @@
 import json
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pandas as pd
 import pytest
@@ -7,11 +7,26 @@ from auditor_utilization_plugin.config import CollectorType, ComponentFieldsConf
 from auditor_utilization_plugin.utilization import (
     categorize_power,
     get_stats_by_user,
+    mailing_list,
     map_user_name,
     record_to_dict,
     records_to_df,
     rename_user,
 )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("use_tls", [False, True])
+async def test_mailing_list_passes_tls_setting(use_tls):
+    df = pd.DataFrame({"user": ["test"]})
+    logger = MagicMock()
+    with patch(
+        "auditor_utilization_plugin.utilization.send_email", new_callable=AsyncMock
+    ) as sender:
+        await mailing_list("smtp.test.com", 25, df, logger, use_tls=use_tls)
+        sender.assert_awaited_once_with(
+            "smtp.test.com", 25, df, logger, use_tls=use_tls
+        )
 
 
 @pytest.fixture

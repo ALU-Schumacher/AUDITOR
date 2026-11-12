@@ -1389,6 +1389,7 @@ email:
   enable_email_report: False
   smtp_server: mail.uni-freiburg.de
   smtp_port: 587
+  use_tls: False
 ```
 
 | Parameter                                      | Default           | Description                                                                                                  |
@@ -1418,14 +1419,32 @@ email:
 | `email.enable_email_report`                    | `False`           | Enable or disable email reporting                                                                            |
 | `email.smtp_server`                            | `None`            | SMTP server used to send email reports                                                                       |
 | `email.smtp_port`                              | `587`             | SMTP server port                                                                                             |
+| `email.use_tls`                               | `False`           | Require STARTTLS with certificate and hostname validation; no plaintext fallback on failure                   |
 
 
-The .env file contains 3 fields for setting up automatic email dispatcher after the summary CSV is created
-```yaml
+The email dispatcher reads the following environment variables. An example `.env` file is available at `plugins/utilization_tool/configs/.env` in the source repository. The plugin calls `load_dotenv()` without an explicit path; the example under `configs/` is not automatically selected by the YAML configuration path. You can instead export the variables, or supply them through the service or container environment.
+
+`SENDER_EMAIL` and `RECEIVER_EMAIL` must be non-empty. `PASSWORD` is optional: an empty or unset value disables SMTP authentication; a non-empty value enables authentication using `SENDER_EMAIL` as the username.
+
+```dotenv
 SENDER_EMAIL = "example@gmail.com"
 PASSWORD = "password"
 RECEIVER_EMAIL = "example@gmail.com"
 ```
+
+SMTP authentication and encryption are configured independently. `email.use_tls: False` uses plain SMTP and preserves the existing behaviour when the setting is omitted. Both the report and any supplied authentication credentials are sent without transport encryption in this mode. Set `email.use_tls: True` to require STARTTLS with certificate and hostname validation using the system trust store. A STARTTLS or certificate validation failure aborts delivery; it does not fall back to plaintext. Implicit TLS (SMTP over TLS, usually port 465) is not supported by this setting.
+
+For a trusted internal relay that accepts mail without authentication or encryption, use:
+
+```yaml
+email:
+  enable_email_report: True
+  smtp_server: smtp.internal.example
+  smtp_port: 25
+  use_tls: False
+```
+
+Set `PASSWORD=` or omit `PASSWORD` from the process environment and any loaded `.env` file. The sender and recipient addresses are still required. An internal relay must also permit mail from the reporting host.
 
 The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
 If run as oneshot, then you can specify the particular month and the year that you want to generate the report using `--month` and `--year` options

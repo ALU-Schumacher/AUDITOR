@@ -1,5 +1,6 @@
 import os
 import smtplib
+import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logging import Logger
@@ -11,15 +12,19 @@ load_dotenv()
 
 
 async def send_email(
-    smtp_server: str, smtp_port: int, df_sum: pd.DataFrame, logger: Logger
+    smtp_server: str,
+    smtp_port: int,
+    df_sum: pd.DataFrame,
+    logger: Logger,
+    use_tls: bool = False,
 ) -> None:
     try:
         sender_email = os.getenv("SENDER_EMAIL")
         app_password = os.getenv("PASSWORD")
         receiver_email = os.getenv("RECEIVER_EMAIL")
 
-        if not sender_email or not app_password or not receiver_email:
-            raise ValueError("Missing required email environment variables")
+        if not sender_email or not receiver_email:
+            raise ValueError("SENDER_EMAIL and RECEIVER_EMAIL must be non-empty")
 
         html_table = df_sum.to_html(index=False, border=0, justify="center")
 
@@ -41,7 +46,11 @@ async def send_email(
         message.attach(MIMEText(body_html, "html"))
 
         with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.login(sender_email, app_password)
+            if use_tls:
+                server.starttls(context=ssl.create_default_context())
+                server.ehlo()
+            if app_password:
+                server.login(sender_email, app_password)
             server.send_message(message)
 
         logger.info("Email with DataFrame sent successfully!")
