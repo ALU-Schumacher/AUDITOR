@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies: Update rustls from 0.23.45 to 0.23.46 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update tokio from 1.53.1 to 1.54.1 ([@dirksammel](https://github.com/dirksammel))
 - CI: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
+- Docs: Use HEPScore23 everywhere (also in shipped config examples) ([@dirksammel](https://github.com/dirksammel))
 
 ### Removed
 

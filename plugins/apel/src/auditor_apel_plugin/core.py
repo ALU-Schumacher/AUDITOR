@@ -349,7 +349,7 @@ def create_dict(
 def create_message(
     message: Message,
     aggr_dict: dict[str, dict[str, Union[str, int]]],
-    benchmark_type: BenchmarkType = BenchmarkType.HEPscore23,
+    benchmark_type: BenchmarkType = BenchmarkType.HEPScore23,
     batch_system: Union[list[str], None] = None,
 ) -> str:
     if batch_system is None:

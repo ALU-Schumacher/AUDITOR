@@ -23,7 +23,7 @@ SAMPLE_CONFIG = {
         "use_tls": False,
         "component_fields_in_record": {
             "cores": "Cores",
-            "benchmark": "HEPscore23",
+            "benchmark": "HEPScore23",
             "total_cpu": "TotalCPU",
         },
         "collector_type": "htcondor",
@@ -73,7 +73,7 @@ def test_iter_endpoints_success():
         site_meta_field="site_id",
         use_tls=False,
         component_fields_in_record=ComponentFieldsConfig(
-            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+            cores="Cores", benchmark="HEPScore23", total_cpu="TotalCPU"
         ),
         collector_type=CollectorType("htcondor"),
     )
@@ -91,7 +91,7 @@ def test_iter_endpoints_mismatch():
         site_meta_field="site_id",
         use_tls=False,
         component_fields_in_record=ComponentFieldsConfig(
-            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+            cores="Cores", benchmark="HEPScore23", total_cpu="TotalCPU"
         ),
     )
 
@@ -114,7 +114,7 @@ def test_build_auditor_client(mock_builder):
         site_meta_field="site_id",
         use_tls=False,
         component_fields_in_record=ComponentFieldsConfig(
-            cores="Cores", benchmark="HEPscore23", total_cpu="TotalCPU"
+            cores="Cores", benchmark="HEPScore23", total_cpu="TotalCPU"
         ),
     )
 

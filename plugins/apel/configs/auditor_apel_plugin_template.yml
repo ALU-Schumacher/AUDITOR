@@ -16,7 +16,7 @@
 #       - site_id_2
 #     SITE_B:
 #       - site_id_3
-#   benchmark_type: HEPscore23
+#   benchmark_type: HEPScore23
 #   ce: ARC
 
 # messaging:
@@ -52,7 +52,7 @@
 #       name: headnode
 #     NormalisedWallDuration: !NormalisedField
 #       score:
-#         name: hepscore23
+#         name: HEPScore23
 #         component_name: Cores
 #     CpuDuration: !ComponentField
 #       name: TotalCPU
@@ -60,7 +60,7 @@
 #       base_value: !ComponentField
 #         name: TotalCPU
 #       score:
-#         name: hepscore23
+#         name: HEPScore23
 #         component_name: Cores
     
 #   optional:

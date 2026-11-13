@@ -30,7 +30,7 @@
 #     scores:
 #       - name: "HEPSPEC06"
 #         value: 10.0
-#       - name: "hepscore23"
+#       - name: "HEPScore23"
 #         value: 10.0
 #   - name: "SystemCPU"
 #     key: "SystemCPU"

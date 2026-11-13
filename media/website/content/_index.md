@@ -600,7 +600,7 @@ components:
     scores:
       - name: "HEPSPEC06"
         value: 10.0
-      - name: "hepscore23"
+      - name: "HEPScore23"
         value: 10.0
   - name: "SystemCPU"
     key: "SystemCPU"
@@ -902,9 +902,9 @@ components:
         only_if:
           key: "LastRemoteHost"
           matches: ^slot.+@(?:site1)-.{10}@.+$  # This score is only attributed to the component on site1
-      - name: "HEPscore23"
+      - name: "HEPScore23"
         key: "MachineAttrApelSpecs0"
-        matches: HEPscore23\D+(\d+(\.\d+)?)
+        matches: HEPScore23\D+(\d+(\.\d+)?)
         only_if:
           key: "LastRemoteHost"
           matches: ^slot.+@(?:site1)-.{10}@.+$
@@ -1092,7 +1092,7 @@ site:
       - site_id_2
     SITE_B: 
       - site_id_3
-  benchmark_type: HEPscore23
+  benchmark_type: HEPScore23
   ce: ARC
 
 messaging:
@@ -1128,7 +1128,7 @@ summary_fields:
       name: headnode
     NormalisedWallDuration: !NormalisedField
       score:
-        name: hepscore23
+        name: HEPScore23
         component_name: Cores
     CpuDuration: !ComponentField
       name: TotalCPU
@@ -1136,7 +1136,7 @@ summary_fields:
       base_value: !ComponentField
         name: TotalCPU
       score:
-        name: hepscore23
+        name: HEPScore23
         component_name: Cores
     
   optional:
@@ -1161,7 +1161,7 @@ The individual parameters in the config file are:
 | `plugin`    | `time_json_path`   | Path of the `time.json` file. The JSON file should be located at a persistent path and stores the stop times of the latest reported job per site, and the time of the latest report to APEL. |
 | `plugin`    | `report_interval`  | Time in seconds between reports to APEL.                                                                                                                                                     |
 | `site`      | `sites_to_report`  | Dictionary of the sites that will be reported. The keys are the names of the sites in the GOCDB, the values are lists of the corresponding site names in the AUDITOR records.                |
-| `site`      | `benchmark_type`   | The name of the benchmark that you report. Possible values are `si2k`, `hepspec` and `HEPscore23`. The default value is `HEPscore23`.                                                        |
+| `site`      | `benchmark_type`   | The name of the benchmark that you report. Possible values are `si2k`, `hepspec` and `HEPScore23`. The default value is `HEPScore23`.                                                        |
 | `site`      | `ce`               | The compute element of the site, e.g. `ARC` or `HTCondor`. The default value is `UNKNOWN`.                                                                                                   |
 | `messaging` | `host`             | Host address of the AMS service.                                                                                                                                                             |
 | `messaging` | `port`             | Port of the AMS host.                                                                                                                                                                        |
@@ -1366,7 +1366,7 @@ auditor:
   file_path:
   component_fields_in_record:
     cores: Cores
-    benchmark: HEPscore23
+    benchmark: HEPScore23
     total_cpu: TotalCPU
   collector_type: htcondor
 
@@ -1404,7 +1404,7 @@ email:
 | `auditor.client_cert_path`                     | `None`            | Path to the client TLS certificate                                                                           |
 | `auditor.client_key_path`                      | `None`            | Path to the private key corresponding to the client certificate                                              |
 | `auditor.component_fields_in_record.cores`     | `Cores`           | Component field key of the record that specifies the cores                                                   |
-| `auditor.component_fields_in_record.benchmark` | `HEPscore23`      | Component field key of the record that specifies the benchmark score                                         |
+| `auditor.component_fields_in_record.benchmark` | `HEPScore23`      | Component field key of the record that specifies the benchmark score                                         |
 | `auditor.component_fields_in_record.total_cpu` | `TotalCPU`        | Component field key of the record that specifies the total cpu                                               |
 | `auditor.collector_type`                       | `htcondor`        | Specify the batch system that was used to collect the records in AUDITOR (`htcondor`, `slurm`, `kubernetes`) |
 | `utilization.groupedby`                        | `VOMS`            | Attribute used to group utilization metrics                                                                  |
