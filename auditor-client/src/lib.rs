@@ -581,6 +581,27 @@ pub enum ClientError {
     Other(String),
 }
 
+// Accept both streamed JSON objects and JSON arrays, but never discard decoding errors.
+#[derive(serde::Deserialize)]
+#[serde(untagged)]
+enum RecordResponse {
+    Single(Record),
+    Batch(Vec<Record>),
+}
+
+fn read_record_stream(reader: impl std::io::Read) -> Result<Vec<Record>, ClientError> {
+    let mut records = Vec::new();
+    for response in Deserializer::from_reader(reader).into_iter::<RecordResponse>() {
+        match response
+            .map_err(|error| ClientError::Other(format!("Invalid record stream: {error}")))?
+        {
+            RecordResponse::Single(record) => records.push(record),
+            RecordResponse::Batch(batch) => records.extend(batch),
+        }
+    }
+    Ok(records)
+}
+
 impl std::fmt::Display for ClientError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -1382,8 +1403,11 @@ impl AuditorClient {
             .send()
             .await?;
 
+        let status_error = response.error_for_status_ref().err();
         if response.text().await? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
+        } else if let Some(error) = status_error {
+            Err(ClientError::ReqwestError(error))
         } else {
             Ok(())
         }
@@ -1408,8 +1432,11 @@ impl AuditorClient {
             .send()
             .await?;
 
+        let status_error = response.error_for_status_ref().err();
         if response.text().await? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
+        } else if let Some(error) = status_error {
+            Err(ClientError::ReqwestError(error))
         } else {
             Ok(())
         }
@@ -1454,7 +1481,7 @@ impl AuditorClient {
         let records: Vec<Record> = response
             .try_collect()
             .await
-            .expect("Unexpected error while processing the stream");
+            .map_err(|error| ClientError::Other(format!("Invalid record stream: {error}")))?;
         Ok(records)
     }
 
@@ -1489,7 +1516,7 @@ impl AuditorClient {
         let records: Vec<Record> = response
             .try_collect()
             .await
-            .expect("Unexpected error while processing the stream");
+            .map_err(|error| ClientError::Other(format!("Invalid record stream: {error}")))?;
         Ok(records)
     }
 
@@ -1523,7 +1550,7 @@ impl AuditorClient {
         let records: Vec<Record> = response
             .try_collect()
             .await
-            .expect("Unexpected error while processing the stream");
+            .map_err(|error| ClientError::Other(format!("Invalid record stream: {error}")))?;
         Ok(records)
     }
 
@@ -1547,7 +1574,7 @@ impl AuditorClient {
         let records: Vec<Record> = response
             .try_collect()
             .await
-            .expect("Unexpected error while processing the stream");
+            .map_err(|error| ClientError::Other(format!("Invalid record stream: {error}")))?;
         Ok(records)
     }
 
@@ -1839,8 +1866,11 @@ impl AuditorClientBlocking {
             .json(record)
             .send()?;
 
+        let status_error = response.error_for_status_ref().err();
         if response.text()? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
+        } else if let Some(error) = status_error {
+            Err(ClientError::ReqwestError(error))
         } else {
             Ok(())
         }
@@ -1864,8 +1894,11 @@ impl AuditorClientBlocking {
             .json(records)
             .send()?;
 
+        let status_error = response.error_for_status_ref().err();
         if response.text()? == ERR_RECORD_EXISTS {
             Err(ClientError::RecordExists)
+        } else if let Some(error) = status_error {
+            Err(ClientError::ReqwestError(error))
         } else {
             Ok(())
         }
@@ -1903,8 +1936,7 @@ impl AuditorClientBlocking {
             .send()?
             .error_for_status()?;
         let reader = BufReader::new(response);
-        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
-        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+        let records = read_record_stream(reader)?;
 
         Ok(records)
     }
@@ -1935,8 +1967,7 @@ impl AuditorClientBlocking {
             .error_for_status()?;
 
         let reader = BufReader::new(response);
-        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
-        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+        let records = read_record_stream(reader)?;
 
         Ok(records)
     }
@@ -1966,8 +1997,7 @@ impl AuditorClientBlocking {
             .error_for_status()?;
 
         let reader = BufReader::new(response);
-        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
-        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+        let records = read_record_stream(reader)?;
 
         Ok(records)
     }
@@ -1985,8 +2015,7 @@ impl AuditorClientBlocking {
             .error_for_status()?;
 
         let reader = BufReader::new(response);
-        let stream = Deserializer::from_reader(reader).into_iter::<Record>();
-        let records: Vec<Record> = stream.filter_map(|result| result.ok()).collect();
+        let records = read_record_stream(reader)?;
 
         Ok(records)
     }
@@ -3190,5 +3219,103 @@ mod tests {
             .await
             .unwrap();
         assert_err!(res);
+    }
+    #[tokio::test]
+    async fn inserts_reject_http_errors_other_than_duplicates() {
+        for status in [400, 401, 403, 404, 429, 500, 502, 503] {
+            for endpoint in ["/record", "/records"] {
+                let server = MockServer::start().await;
+                Mock::given(method("POST"))
+                    .and(path(endpoint))
+                    .respond_with(ResponseTemplate::new(status).set_body_string("UNEXPECTED_ERROR"))
+                    .expect(1)
+                    .mount(&server)
+                    .await;
+                let client = AuditorClientBuilder::new()
+                    .connection_string(&server.uri())
+                    .build()
+                    .unwrap();
+                let result = if endpoint == "/record" {
+                    client.add(&record()).await
+                } else {
+                    client.bulk_insert(&vec![record()]).await
+                };
+                assert!(
+                    matches!(result, Err(ClientError::ReqwestError(error)) if error.status().unwrap().as_u16() == status)
+                );
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn blocking_inserts_reject_http_errors_other_than_duplicates() {
+        for status in [400, 401, 403, 404, 429, 500, 502, 503] {
+            for endpoint in ["/record", "/records"] {
+                let server = MockServer::start().await;
+                Mock::given(method("POST"))
+                    .and(path(endpoint))
+                    .respond_with(ResponseTemplate::new(status).set_body_string("UNEXPECTED_ERROR"))
+                    .expect(1)
+                    .mount(&server)
+                    .await;
+                let uri = server.uri();
+                let result = tokio::task::spawn_blocking(move || {
+                    let client = AuditorClientBuilder::new()
+                        .connection_string(&uri)
+                        .build_blocking()
+                        .unwrap();
+                    if endpoint == "/record" {
+                        client.add(&record())
+                    } else {
+                        client.bulk_insert(&vec![record()])
+                    }
+                })
+                .await
+                .unwrap();
+                assert!(
+                    matches!(result, Err(ClientError::ReqwestError(error)) if error.status().unwrap().as_u16() == status)
+                );
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn blocking_query_rejects_malformed_record_stream() {
+        let server = MockServer::start().await;
+        Mock::given(method("GET"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("invalid JSON"))
+            .expect(1)
+            .mount(&server)
+            .await;
+        let uri = server.uri();
+        let result = tokio::task::spawn_blocking(move || {
+            let client = AuditorClientBuilder::new()
+                .connection_string(&uri)
+                .build_blocking()
+                .unwrap();
+            client.advanced_query(String::new())
+        })
+        .await
+        .unwrap();
+        assert!(matches!(result, Err(ClientError::Other(_))));
+    }
+    #[test]
+    fn blocking_record_decoder_accepts_arrays_and_concatenated_records() {
+        let first = serde_json::to_string(&record::<Record>()).unwrap();
+        let concatenated = format!("{first}{first}");
+        assert_eq!(
+            read_record_stream(concatenated.as_bytes()).unwrap().len(),
+            2
+        );
+        let array = format!("[{first},{first}]");
+        assert_eq!(read_record_stream(array.as_bytes()).unwrap().len(), 2);
+        assert!(read_record_stream("".as_bytes()).unwrap().is_empty());
+    }
+
+    #[test]
+    fn blocking_record_decoder_rejects_truncated_streams() {
+        let first = serde_json::to_string(&record::<Record>()).unwrap();
+        let truncated = format!("{first}{{");
+        assert!(read_record_stream(truncated.as_bytes()).is_err());
     }
 }
