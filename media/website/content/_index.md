@@ -1430,6 +1430,8 @@ RECEIVER_EMAIL = "example@gmail.com"
 The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
 If run as oneshot, then you can specify the particular month and the year that you want to generate the report using `--month` and `--year` options
 
+Email report subjects and HTML headings include the reporting month and year, for example `Monthly Utilisation Report - October 2026`. The label follows the selected reporting period, including historical one-shot reports, rather than the date on which the email is sent.
+
 ### pip
 pip package can be installed by `pip install auditor-utilization-plugin` and then run `auditor-utilization-plugin -c config.yaml` to run it as a service.
 To run it as oneshot for a particular month, `auditor-utilization-plugin -c config.yaml --month 9 --year 2025 --oneshot`

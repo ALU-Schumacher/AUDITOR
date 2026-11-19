@@ -1,17 +1,35 @@
+import argparse
 import json
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pandas as pd
 import pytest
 from auditor_utilization_plugin.config import CollectorType, ComponentFieldsConfig
 from auditor_utilization_plugin.utilization import (
     categorize_power,
+    generate_utilization_report,
     get_stats_by_user,
+    mailing_list,
     map_user_name,
     record_to_dict,
     records_to_df,
     rename_user,
 )
+
+
+@pytest.mark.asyncio
+async def test_mailing_list_passes_report_period():
+    df = pd.DataFrame({"user": ["test"]})
+    logger = MagicMock()
+    with patch(
+        "auditor_utilization_plugin.utilization.send_email", new_callable=AsyncMock
+    ) as sender:
+        await mailing_list(
+            "smtp.test.com", 587, df, logger, report_period="December 2025"
+        )
+        sender.assert_awaited_once_with(
+            "smtp.test.com", 587, df, logger, report_period="December 2025"
+        )
 
 
 @pytest.fixture
@@ -137,3 +155,45 @@ def test_get_stats_by_user_with_config(
     # CO2 = power * co2_per_kwh
     expected_co2 = expected_power * config_values["co2_per_kwh"]
     assert data["co2 [kg]"][0] == pytest.approx(expected_co2)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "month, year, expected_period",
+    [(12, 2025, "December 2025"), (1, 2026, "January 2026")],
+)
+async def test_report_email_uses_requested_period(
+    sample_json_record, config_component_values, month, year, expected_period
+):
+    record = MagicMock()
+    record.to_json.return_value = json.dumps(sample_json_record)
+    client = MagicMock()
+    client.advanced_query.side_effect = [[record]] + [[]] * 31
+    config = MagicMock()
+    config.oneshot = True
+    config.cluster.watt_per_core = {}
+    config.utilization.watt_per_core = 4.6
+    config.utilization.groupedby = "VOMS"
+    config.utilization.grouped_list = ["production"]
+    config.utilization.co2_per_kwh = 0.363
+    config.auditor.component_fields_in_record = config_component_values
+    config.auditor.collector_type = CollectorType.htcondor
+    config.email.enable_email_report = True
+    config.email.smtp_server = "smtp.test.com"
+    config.email.smtp_port = 25
+    args = argparse.Namespace(month=month, year=year, oneshot=True)
+
+    with (
+        patch(
+            "auditor_utilization_plugin.utilization.mailing_list",
+            new_callable=AsyncMock,
+        ) as sender,
+        patch("auditor_utilization_plugin.utilization.write_to_csv"),
+        pytest.raises(SystemExit),
+    ):
+        await generate_utilization_report(
+            MagicMock(), config, args, client, "localhost"
+        )
+
+    sender.assert_awaited_once()
+    assert sender.call_args.kwargs["report_period"] == expected_period
