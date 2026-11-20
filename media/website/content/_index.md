@@ -1427,8 +1427,8 @@ PASSWORD = "password"
 RECEIVER_EMAIL = "example@gmail.com"
 ```
 
-The Utilization plugin can be run as a service or oneshot. If run as a service, it triggers the summary creation once every month which generates the summary report for the previous month.
-If run as oneshot, then you can specify the particular month and the year that you want to generate the report using `--month` and `--year` options
+The Utilization plugin can run continuously or as a one-shot. Continuous execution generates a report immediately, then repeats after `utilization.interval` seconds; it is not a calendar-month schedule. The RPM's systemd timer instead runs a one-shot on the first day of each month at 03:00, reporting the previous calendar month.
+For a one-shot covering a particular month and year, use `--month`, `--year` and `--oneshot`.
 
 ### pip
 pip package can be installed by `pip install auditor-utilization-plugin` and then run `auditor-utilization-plugin -c config.yaml` to run it as a service.
@@ -1449,6 +1449,23 @@ This is an example and can be changed to any dir you want. Make sure to also spe
 
 ### rpm
 The RPM installs a Python virtual environment including all dependencies into `/opt/auditor_utilization_plugin`. After installation, a systemd unit file is available at: `/usr/lib/systemd/system/auditor_utilization_plugin.service`. A template configuration file is installed at this location `/etc/auditor/auditor_utilization_plugin.yml`. It must be adjusted to match your local setup.
+
+The RPM also installs `auditor_utilization_plugin.timer`. After configuring the plugin, enable the timer rather than the service:
+
+```sh
+# When migrating from the continuously running service:
+systemctl disable --now auditor_utilization_plugin.service
+
+systemctl daemon-reload
+systemctl enable --now auditor_utilization_plugin.timer
+systemctl list-timers --all auditor_utilization_plugin.timer
+```
+
+Review existing service drop-ins that override the execution mode or working directory. Fresh RPM installations apply the host's preset policy to the timer; upgrades require the migration commands above.
+
+The timer runs at 03:00 on the first of each month in the server's local time zone. The service runs with `--oneshot`, so `utilization.interval` is ignored. `Persistent=true` catches up one missed activation after downtime, generating the previous calendar month's report at execution time rather than backfilling all missed months. The service is normally inactive between reports. To request an immediate report, run `systemctl start auditor_utilization_plugin.service`.
+
+The service uses `/var/lib/auditor_utilization_plugin` as its writable working directory. Relative log and output paths resolve there; use absolute paths for input files such as certificates.
 
 # Auditor Clients
 

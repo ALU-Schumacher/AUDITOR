@@ -1,0 +1,11 @@
+[Unit]
+Description=Generate the monthly AUDITOR utilization report
+Documentation=https://alu-schumacher.github.io/AUDITOR/
+
+[Timer]
+OnCalendar=*-*-01 03:00:00
+Persistent=true
+Unit=auditor_utilization_plugin.service
+
+[Install]
+WantedBy=timers.target

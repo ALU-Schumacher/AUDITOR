@@ -2,15 +2,12 @@
 Description=Utilization report for AUDITOR
 Documentation=https://alu-schumacher.github.io/AUDITOR/
 
-[Install]
-RequiredBy=multi-user.target
-
 [Service]
-Type=simple
+Type=oneshot
 User=auditor-utilization-plugin
 Group=auditor
-WorkingDirectory=/opt/auditor_utilization_plugin
-ExecStart=/opt/auditor_utilization_plugin/venv/bin/auditor-utilization-plugin --config /etc/auditor/auditor_utilization_plugin.yml
-Restart=on-failure
-RestartSec=60
+StateDirectory=auditor_utilization_plugin
+StateDirectoryMode=0750
+WorkingDirectory=/var/lib/auditor_utilization_plugin
+ExecStart=/opt/auditor_utilization_plugin/venv/bin/auditor-utilization-plugin --config /etc/auditor/auditor_utilization_plugin.yml --oneshot
 
