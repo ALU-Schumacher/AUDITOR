@@ -41,3 +41,4 @@ email:
   enable_email_report: False
   smtp_server: mail.uni-freiburg.de
   smtp_port: 587
+  use_tls: False # Set True to require certificate-validated STARTTLS

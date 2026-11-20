@@ -17,6 +17,10 @@ class EmailServerConfig(BaseModel):
     enable_email_report: bool = Field(..., description="Enable or disable email report")
     smtp_server: str = Field(..., description="SMTP server")
     smtp_port: int = Field(..., description="SMTP port")
+    use_tls: bool = Field(
+        default=False,
+        description="Require certificate-validated STARTTLS for SMTP",
+    )
 
 
 class ComponentFieldsConfig(BaseModel):
