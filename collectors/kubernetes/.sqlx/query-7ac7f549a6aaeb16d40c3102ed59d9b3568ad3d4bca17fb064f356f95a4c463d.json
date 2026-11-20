@@ -6,7 +6,13 @@
       {
         "name": "time",
         "ordinal": 0,
-        "type_info": "Datetime"
+        "type_info": "Datetime",
+        "origin": {
+          "Table": {
+            "table": "lastcheck",
+            "name": "time"
+          }
+        }
       }
     ],
     "parameters": {
