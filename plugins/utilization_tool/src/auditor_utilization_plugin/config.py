@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional, Union
 
 import yaml
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 logger = logging.getLogger("utilization_plugin")
 
@@ -88,7 +88,13 @@ class AuditorConfig(BaseModel):
 
 class UtilizationConfig(BaseModel):
     groupedby: str = Field(..., description="Field to group utilization data by")
-    grouped_list: list[str] = Field(..., description="List of groups to include")
+    grouped_list: list[str] = Field(
+        ..., description="Labels used to map matching values in the grouping field"
+    )
+    metadata_filters: dict[str, str] = Field(
+        default_factory=dict,
+        description="Metadata keys and exact values required in every queried record",
+    )
     watt_per_core: float = Field(..., description="Watts per CPU core")
     co2_per_kwh: float = Field(..., description="CO2 emitted per kWh (kg)")
     interval: int = Field(..., description="Reporting interval in seconds")
@@ -99,6 +105,13 @@ class UtilizationConfig(BaseModel):
     file_path: Optional[str] = Field(
         default=".", description="File path to store the summary CSV"
     )
+
+    @field_validator("metadata_filters")
+    @classmethod
+    def check_metadata_filters(cls, filters: dict[str, str]) -> dict[str, str]:
+        if any(not key.strip() or not value.strip() for key, value in filters.items()):
+            raise ValueError("Metadata filter keys and values must be non-empty")
+        return filters
 
 
 class ClusterConfig(BaseModel):

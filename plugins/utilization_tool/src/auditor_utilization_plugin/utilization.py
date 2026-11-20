@@ -17,10 +17,21 @@ from auditor_utilization_plugin.config import (
     Config,
 )
 from auditor_utilization_plugin.email_sender import send_email
-from pyauditor import AuditorClientBuilder, Operator, QueryBuilder, Value
+from pyauditor import (
+    AuditorClientBuilder,
+    MetaOperator,
+    MetaQuery,
+    Operator,
+    QueryBuilder,
+    Value,
+)
 
 
-def build_query(start: datetime.datetime, end: datetime.datetime) -> str:
+def build_query(
+    start: datetime.datetime,
+    end: datetime.datetime,
+    metadata_filters: Optional[dict[str, str]] = None,
+) -> str:
     _start = start.astimezone(datetime.timezone.utc)
     _end = end.astimezone(datetime.timezone.utc)
     query_string_start = (
@@ -31,7 +42,13 @@ def build_query(start: datetime.datetime, end: datetime.datetime) -> str:
     query_string_end = (
         QueryBuilder().with_stop_time(Operator().lt(Value.set_datetime(_end))).build()
     )
-    return query_string_start + "&" + query_string_end
+    query_string = query_string_start + "&" + query_string_end
+    if metadata_filters:
+        meta_query = MetaQuery()
+        for key, value in metadata_filters.items():
+            meta_query.meta_operator(key, MetaOperator().contains([value]))
+        query_string += "&" + QueryBuilder().with_meta_query(meta_query).build()
+    return query_string
 
 
 def records_to_df(records: list[Any]) -> pd.DataFrame:
@@ -182,7 +199,7 @@ async def generate_utilization_report(
 
         while end_day > loop_day:
             next_day = loop_day + timedelta(days=1)
-            query = build_query(loop_day, next_day)
+            query = build_query(loop_day, next_day, config.utilization.metadata_filters)
 
             try:
                 records = client.advanced_query(query)
@@ -239,7 +256,11 @@ async def generate_utilization_report(
 
             if config.email.enable_email_report:
                 await mailing_list(
-                    config.email.smtp_server, config.email.smtp_port, df_sum_agg, logger
+                    config.email.smtp_server,
+                    config.email.smtp_port,
+                    df_sum_agg,
+                    logger,
+                    metadata_filters=config.utilization.metadata_filters,
                 )
 
             write_to_csv(
@@ -284,9 +305,15 @@ def compute_aggregation(
 
 
 async def mailing_list(
-    smtp_server: str, smtp_port: int, df_sum_agg: pd.DataFrame, logger: Logger
+    smtp_server: str,
+    smtp_port: int,
+    df_sum_agg: pd.DataFrame,
+    logger: Logger,
+    metadata_filters: Optional[dict[str, str]] = None,
 ):
-    return await send_email(smtp_server, smtp_port, df_sum_agg, logger)
+    return await send_email(
+        smtp_server, smtp_port, df_sum_agg, logger, metadata_filters=metadata_filters
+    )
 
 
 def write_to_csv(
