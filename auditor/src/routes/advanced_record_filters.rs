@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use std::fmt::Display;
 
 use actix_web::web::Bytes;
-use async_stream::stream;
+use async_stream::try_stream;
 use futures::Stream;
 use futures_util::TryStreamExt;
 
@@ -351,24 +351,24 @@ pub async fn advanced_record_filtering(
         std::any::TypeId::of::<T>() == std::any::TypeId::of::<DateTime<Utc>>()
     }
 
-    stream! {
+    try_stream! {
 
     let mut rows = query.build().persistent(false).fetch(&pool);
 
-    while let Some(row) = rows.try_next().await.unwrap_or(None)
+    while let Some(row) = rows.try_next().await?
 
         {
             let beam_object = Record {
-                record_id: row.try_get("record_id").unwrap(),
-                meta: row.try_get("meta").ok().and_then(|value| serde_json::from_value(value).ok()),
-                components: row.try_get("components").ok().and_then(|value| serde_json::from_value(value).ok()),
-                start_time: row.try_get("start_time").ok(),
-                stop_time: row.try_get("stop_time").ok(),
-                runtime: row.try_get("runtime").ok(),
+                record_id: row.try_get("record_id")?,
+                meta: row.try_get::<Option<serde_json::Value>, _>("meta")?.map(serde_json::from_value).transpose()?,
+                components: row.try_get::<Option<serde_json::Value>, _>("components")?.map(serde_json::from_value).transpose()?,
+                start_time: row.try_get("start_time")?,
+                stop_time: row.try_get("stop_time")?,
+                runtime: row.try_get("runtime")?,
             };
 
-            let json_bytes = serde_json::to_vec(&beam_object).unwrap().into();
-            yield Ok(json_bytes);
+            let json_bytes = serde_json::to_vec(&beam_object)?.into();
+            yield json_bytes;
         }
     }
 }
