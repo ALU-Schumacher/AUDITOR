@@ -32,6 +32,15 @@ jobs:
     needs: prepare-input-parameters
     uses: ./.github/workflows/build_python_rpms.yml
 
+  test-python-rpms:
+    needs: build-python-rpms
+    uses: ./.github/workflows/test_python_rpms.yml
+    strategy:
+      matrix:
+        container: ["almalinux:9", "almalinux:10"]
+    with:
+      container: ${{ matrix.container }}
+
   test-pyauditor-source:
     needs: [build-pyauditor-source, prepare-input-parameters]
     uses: ./.github/workflows/test_pyauditor_source.yml

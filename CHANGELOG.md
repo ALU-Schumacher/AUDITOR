@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Ignore [RUSTSEC-2026-0258], has to be fixed by actix-http ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Pin some workflows to ubuntu-24.04 instead of ubuntu-latest ([@dirksammel](https://github.com/dirksammel))
 - CI/CD: Changes in .spec files due to Ubuntu 26.04 in ubuntu-latest ([@dirksammel](https://github.com/dirksammel))
+- CI/CD: Changes in python RPMs to support Alma10 ([@dirksammel](https://github.com/dirksammel))
 
 
 ### Removed
