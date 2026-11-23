@@ -14,7 +14,7 @@ use tracing::{error, info};
 
 use rustls::{
     RootCertStore, ServerConfig, pki_types::CertificateDer, pki_types::PrivateKeyDer,
-    pki_types::PrivatePkcs8KeyDer, pki_types::pem::PemObject, server::WebPkiClientVerifier,
+    pki_types::pem::PemObject, server::WebPkiClientVerifier,
 };
 
 use std::{fs::File, io::BufReader, sync::Arc};
@@ -111,13 +111,10 @@ async fn main() -> Result<(), anyhow::Error> {
             let cert_chain = CertificateDer::pem_reader_iter(cert_file)
                 .collect::<Result<Vec<_>, _>>()
                 .unwrap();
-            let mut keys: Vec<PrivatePkcs8KeyDer<'_>> =
-                PrivatePkcs8KeyDer::pem_reader_iter(key_file)
-                    .collect::<Result<Vec<_>, _>>()
-                    .unwrap();
-            let config = config
-                .with_single_cert(cert_chain, PrivateKeyDer::Pkcs8(keys.remove(0)))
-                .unwrap();
+
+            let key = PrivateKeyDer::from_pem_reader(key_file)?;
+
+            let config = config.with_single_cert(cert_chain, key)?;
 
             let tls_params = TLSParams {
                 config,

@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- AUDITOR: use distinct types for enforce_rbac and ignore_record_exists_error app data ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
+- AUDITOR: Support SEC1-encoded ECC private keys in TLS configuration ([@raghuvar-vijay](https://github.com/raghuvar-vijay))
 - Dependencies: Update actix-web from 4.15.0 to 4.20.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update arrow from 60.0.0 to 60.1.0 ([@dirksammel](https://github.com/dirksammel))
 - Dependencies: Update black from 26.5.1 to 26.10.1 ([@dirksammel](https://github.com/dirksammel))

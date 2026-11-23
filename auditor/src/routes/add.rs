@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::configuration::IgnoreRecordExistsError;
 use crate::constants::{ERR_RECORD_EXISTS, ERR_UNEXPECTED_ERROR};
 use crate::domain::RecordAdd;
 use actix_web::{HttpResponse, ResponseError, web};
@@ -68,14 +69,14 @@ impl ResponseError for AddError {
 pub async fn add(
     record: web::Json<RecordAdd>,
     pool: web::Data<PgPool>,
-    ignore_record_exists_error: web::Data<bool>,
+    ignore_record_exists_error: web::Data<IgnoreRecordExistsError>,
 ) -> Result<HttpResponse, AddError> {
     match add_record(&record, &pool).await {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
         Err(e) => match e.0.as_database_error() {
             Some(db_err) => match db_err.code() {
                 Some(code) if code == "23505" => {
-                    if **ignore_record_exists_error {
+                    if ignore_record_exists_error.0 {
                         if let Some(pg_err) =
                             db_err.try_downcast_ref::<sqlx::postgres::PgDatabaseError>()
                         {
@@ -152,7 +153,7 @@ pub async fn add_record(record: &RecordAdd, pool: &PgPool) -> Result<(), AddReco
 pub async fn bulk_add(
     records: web::Json<Vec<RecordAdd>>,
     pool: web::Data<PgPool>,
-    ignore_record_exists_error: web::Data<bool>,
+    ignore_record_exists_error: web::Data<IgnoreRecordExistsError>,
 ) -> Result<HttpResponse, AddError> {
     match bulk_insert(&records, &pool).await {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
@@ -162,7 +163,7 @@ pub async fn bulk_add(
                 && let Some(code) = db_err.code().as_ref()
                 && code == "23505"
             {
-                if **ignore_record_exists_error {
+                if ignore_record_exists_error.0 {
                     tracing::warn!(
                         "!! ----- ONE OR MORE RECORDS ALREADY EXIST – IGNORING DUE TO CONFIGURATION. ----- !!"
                     );

@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::archive::ArchiveService;
-use crate::configuration::{ArchivalConfig, TLSParams};
+use crate::configuration::{ArchivalConfig, EnforceRbac, IgnoreRecordExistsError, TLSParams};
 use crate::metrics::{DatabaseMetricsWatcher, PrometheusExporterBuilder};
 use crate::middleware::rbac;
 use crate::routes::{add, bulk_add, health_check, query_one_record, query_records, update};
@@ -57,8 +57,10 @@ pub async fn run(
 
     let app_config = move || {
         let enforcer_data = web::Data::new(enforcer_settings.clone());
-        let enforce_rbac_data = web::Data::new(enforce_rbac);
-        let ignore_record_exists_error_data = web::Data::new(ignore_record_exists_error);
+        let enforce_rbac_data = web::Data::new(EnforceRbac(enforce_rbac));
+
+        let ignore_record_exists_error_data =
+            web::Data::new(IgnoreRecordExistsError(ignore_record_exists_error));
 
         App::new()
             .app_data(enforcer_data)

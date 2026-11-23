@@ -178,6 +178,12 @@ fn default_base_policies() -> Vec<Vec<String>> {
     ]
 }
 
+#[derive(Clone, Copy, Debug)]
+pub struct EnforceRbac(pub bool);
+
+#[derive(Clone, Copy, Debug)]
+pub struct IgnoreRecordExistsError(pub bool);
+
 //Set the default values for TLSConfig options
 #[derive(serde::Deserialize, Debug)]
 #[serde(deny_unknown_fields)]

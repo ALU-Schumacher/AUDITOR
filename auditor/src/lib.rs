@@ -20,6 +20,7 @@ pub mod error;
 pub mod metrics;
 #[macro_use]
 mod macros;
+#[cfg(feature = "server")]
 pub mod middleware;
 #[cfg(feature = "server")]
 pub mod routes;

@@ -20,6 +20,8 @@ use std::sync::Arc;
 use actix_web::error::ErrorInternalServerError;
 use actix_web::web;
 
+use crate::configuration::EnforceRbac;
+
 pub struct CommonNameFromClientCert {
     pub common_name: String,
 }
@@ -49,11 +51,11 @@ pub async fn rbac(
     let is_https = req.connection_info().scheme().eq_ignore_ascii_case("https");
 
     let enforce_rbac = req
-        .app_data::<web::Data<bool>>()
-        .ok_or_else(|| ErrorInternalServerError("enforce_rbac bool value is missing"))?
-        .clone();
+        .app_data::<web::Data<EnforceRbac>>()
+        .ok_or_else(|| ErrorInternalServerError("enforce_rbac value is missing"))?
+        .0;
 
-    if is_https && **enforce_rbac {
+    if is_https && enforce_rbac {
         let enforcer_data = req
             .app_data::<web::Data<Option<Arc<Enforcer>>>>()
             .ok_or_else(|| ErrorInternalServerError("Enforcer option missing"))?;
