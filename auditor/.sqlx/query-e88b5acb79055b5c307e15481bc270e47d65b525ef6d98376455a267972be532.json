@@ -6,32 +6,68 @@
       {
         "ordinal": 0,
         "name": "record_id",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "record_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "meta",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "meta"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "components",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "components"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "start_time",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "start_time"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "stop_time",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "stop_time"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "runtime",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "auditor_accounting",
+            "name": "runtime"
+          }
+        }
       }
     ],
     "parameters": {

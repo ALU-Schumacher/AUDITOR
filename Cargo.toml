@@ -62,7 +62,7 @@ serde_qs = { version = "0.15.0", features = ["actix4"] }
 serde_with = { version = "3.24.0", features = ["chrono_0_4"] }
 serde_yaml = "0.9.34"
 shell-words = "1.1.1"
-sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "macros", "uuid", "chrono", "migrate", "runtime-tokio", "json"] }
+sqlx = { version = "0.9.1", default-features = false, features = ["macros", "uuid", "chrono", "migrate", "runtime-tokio", "json"] }
 thiserror = "2.0.21"
 tokio = "1.54.1"
 tokio-cron-scheduler = "0.15.1"
