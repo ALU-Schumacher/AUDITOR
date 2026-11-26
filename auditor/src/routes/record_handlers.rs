@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::configuration::EnforceRbac;
 use crate::routes::{Filters, advanced_record_filtering, get_one_record};
 use actix_web::{HttpMessage, HttpRequest, HttpResponse, ResponseError, web};
 use serde_json::json;
@@ -15,7 +16,7 @@ pub struct RecordQuery {
 pub async fn query_records(
     query: HttpRequest,
     pool: web::Data<PgPool>,
-    enforce_rbac: web::Data<bool>,
+    enforce_rbac: web::Data<EnforceRbac>,
 ) -> Result<HttpResponse, GetFilterError> {
     let query_string = query.query_string();
 
@@ -24,7 +25,7 @@ pub async fn query_records(
         Err(err) => return Err(GetFilterError::InvalidQuery(err.to_string())),
     };
 
-    if **enforce_rbac
+    if enforce_rbac.0
         && let Some(meta_info) = query.extensions().get::<HashMap<String, Vec<String>>>()
     {
         let meta_info = meta_info.clone();
