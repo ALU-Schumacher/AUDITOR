@@ -8,12 +8,13 @@ database:
   database_name: "auditor"
 metrics:
   database:
-    frequency: 30
-    metrics:
-      - RecordCount
-      - RecordCountPerSite
-      - RecordCountPerGroup
-      - RecordCountPerUser
+    enable_metrics: false
+    enable_wlcg_metrics: true
+    wlcg_metrics_delay: 360  #seconds delayed to gather jobs processed later in time
+    benchmark_name: hepscore23
+    component_name_cores: Cores
+    component_name_total_cpu: CPUTime
+
 tls_config:
   use_tls: false
   ca_cert_path: "/path/rootCA.pem"
