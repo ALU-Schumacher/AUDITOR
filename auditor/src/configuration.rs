@@ -274,29 +274,98 @@ pub struct DatabaseMetricsSettings {
     #[serde(default = "default_db_metrics_frequency")]
     #[serde_as(as = "serde_with::DurationSeconds<i64>")]
     pub frequency: chrono::Duration,
+    /// Generic hourly dashboard: summed component amount per
+    /// (meta key, meta value, component).
+    #[serde(default)]
+    pub enable_metrics: bool,
+
+    /// RecordCount PerSite/PerGroup/PerUser variants
+    /// are still accepted but deprecated.
+    #[serde(default)]
     pub metrics: Vec<crate::metrics::DatabaseMetricsOptions>,
+
+    /// Meta keys that are NOT exported by the generic dashboard.
+    #[serde(default = "default_dashboard_excluded_meta_keys")]
+    pub dashboard_excluded_meta_keys: Vec<String>,
+    /// Component names that are NOT exported by the generic dashboard.
+    #[serde(default = "default_dashboard_excluded_components")]
+    pub dashboard_excluded_components: Vec<String>,
+
+    /// Hourly WLCG dashboard (formerly `enable_dashboard`).
+    #[serde(default)]
+    pub enable_wlcg_metrics: bool,
+
+    /// Seconds to wait after an hour ends before aggregating it, so late
+    /// records are included. Shared by both dashboards.
+    /// Keep below ~25 minutes (1500 s).
+    #[serde(default = "default_wlcg_metrics_delay")]
+    #[serde_as(as = "serde_with::DurationSeconds<i64>")]
+    pub wlcg_metrics_delay: chrono::Duration,
+
+    // WLCG-dashboard-only settings.
+    #[serde(default = "default_benchmark_name")]
+    pub benchmark_name: String,
     #[serde(default = "default_meta_key_site")]
-    pub meta_key_site: String,
-    #[serde(default = "default_meta_key_group")]
-    pub meta_key_group: String,
+    pub meta_key_site: Option<String>,
     #[serde(default = "default_meta_key_user")]
-    pub meta_key_user: String,
-}
-
-fn default_meta_key_site() -> String {
-    "site".to_string()
-}
-
-fn default_meta_key_group() -> String {
-    "group".to_string()
-}
-
-fn default_meta_key_user() -> String {
-    "user".to_string()
+    pub meta_key_user: Option<String>,
+    #[serde(default = "default_meta_key_submithost")]
+    pub meta_key_submithost: Option<String>,
+    #[serde(default = "default_meta_key_group")]
+    pub meta_key_group: Option<String>,
+    #[serde(default = "default_meta_key_infrastructure")]
+    pub meta_key_infrastructure: Option<String>,
+    #[serde(default = "default_component_name_cores")]
+    pub component_name_cores: String,
+    #[serde(default = "default_component_name_total_cpu")]
+    pub component_name_total_cpu: String,
 }
 
 fn default_db_metrics_frequency() -> chrono::Duration {
     chrono::Duration::try_seconds(30).expect("This should never fail")
+}
+
+fn default_wlcg_metrics_delay() -> chrono::Duration {
+    chrono::Duration::try_seconds(360).expect("This should never fail")
+}
+
+fn default_dashboard_excluded_meta_keys() -> Vec<String> {
+    vec!["TardisDroneUUID".to_string(), "CPUUsage".to_string()]
+}
+
+fn default_dashboard_excluded_components() -> Vec<String> {
+    vec![
+        "DiskUsage".to_string(),
+        "BytesIn".to_string(),
+        "BytesOut".to_string(),
+    ]
+}
+
+fn default_benchmark_name() -> String {
+    "HEPscore23".to_string()
+}
+
+fn default_meta_key_site() -> Option<String> {
+    Some("site".to_string())
+}
+fn default_meta_key_user() -> Option<String> {
+    Some("user".to_string())
+}
+fn default_meta_key_submithost() -> Option<String> {
+    Some("submithost".to_string())
+}
+fn default_meta_key_group() -> Option<String> {
+    Some("group".to_string())
+}
+fn default_meta_key_infrastructure() -> Option<String> {
+    Some("infrastructure".to_string())
+}
+
+fn default_component_name_cores() -> String {
+    "Cores".to_string()
+}
+fn default_component_name_total_cpu() -> String {
+    "TotalCPU".to_string()
 }
 
 fn default_metrics() -> MetricsSettings {
@@ -304,9 +373,19 @@ fn default_metrics() -> MetricsSettings {
         database: DatabaseMetricsSettings {
             frequency: default_db_metrics_frequency(),
             metrics: vec![],
+            enable_metrics: false,
+            dashboard_excluded_meta_keys: default_dashboard_excluded_meta_keys(),
+            dashboard_excluded_components: default_dashboard_excluded_components(),
+            enable_wlcg_metrics: false,
+            wlcg_metrics_delay: default_wlcg_metrics_delay(),
+            benchmark_name: default_benchmark_name(),
             meta_key_site: default_meta_key_site(),
-            meta_key_group: default_meta_key_group(),
             meta_key_user: default_meta_key_user(),
+            meta_key_submithost: default_meta_key_submithost(),
+            meta_key_group: default_meta_key_group(),
+            meta_key_infrastructure: default_meta_key_infrastructure(),
+            component_name_cores: default_component_name_cores(),
+            component_name_total_cpu: default_component_name_total_cpu(),
         },
     }
 }
