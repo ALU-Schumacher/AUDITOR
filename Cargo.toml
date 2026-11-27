@@ -35,7 +35,7 @@ fake = { version = "5.1.0", features = ["chrono"] }
 futures = "0.3.34"
 futures-util = "0.3.34"
 itertools = "0.15.0"
-jiff = "0.2.35"
+jiff = "1.0.3"
 k8s-openapi = "0.28.0"
 kube = "4.2.0"
 num-traits = "0.2.19"
